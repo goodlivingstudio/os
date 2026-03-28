@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+:root {
+  --bg:    #0E100B;
+  --surf:  #141910;
+  --surf2: #1C2316;
+  --bdr:   #252E1C;
+  --t1:    #F5F0E8;
+  --t2:    #8C8880;
+  --t3:    #4A4840;
+  --t4:    #2A2A28;
+  --acc:   #5B8C3A;
+  --acc-d: #2D5016;
+  --acc-l: #1B2E12;
+  --grn:   #7A9E6E;
+  --grn-l: #1A2E18;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--t1);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--acc-l); color: var(--t1); }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bdr); border-radius: 2px; }
+
+.tag-ai       { background: #0F1F2E; color: #6EB5E8; }
+.tag-health   { background: #1B2E18; color: #7A9E6E; }
+.tag-creative { background: #2A1F14; color: #C8955A; }
+.tag-design   { background: #1E1B2E; color: #9B8FD4; }
+.tag-market   { background: #2E1B1B; color: #D47A7A; }
