@@ -1,19 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  --bg:    #0E100B;
-  --surf:  #141910;
-  --surf2: #1C2316;
-  --bdr:   #252E1C;
-  --t1:    #F5F0E8;
-  --t2:    #8C8880;
-  --t3:    #4A4840;
-  --t4:    #2A2A28;
-  --acc:   #5B8C3A;
-  --acc-d: #2D5016;
-  --acc-l: #1B2E12;
-  --grn:   #7A9E6E;
-  --grn-l: #1A2E18;
+  --bg:    #0D0F0B;
+  --surf:  #121410;
+  --surf2: #181B14;
+  --bdr:   #1E221A;
+  --bdr2:  #252B20;
+  --t1:    #F0EDE8;
+  --t2:    #8A8680;
+  --t3:    #4A4740;
+  --t4:    #2E2C28;
+  --acc:   #4A7A2A;
+  --acc-l: #162010;
+  --cat-ai:       #6EB5E8;
+  --cat-health:   #7A9E6E;
+  --cat-creative: #C8955A;
+  --cat-design:   #9B8FD4;
+  --cat-market:   #C49A6E;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,19 +26,17 @@ html, body {
   background: var(--bg);
   color: var(--t1);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  font-size: 14px;
-  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection { background: var(--acc-l); color: var(--t1); }
-
-::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--bdr); border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: var(--bdr2); border-radius: 2px; }
 
-.tag-ai       { background: rgba(110,181,232,0.07); color: #6EB5E8; border: 0.5px solid rgba(110,181,232,0.18); }
-.tag-health   { background: rgba(122,158,110,0.07); color: #7A9E6E; border: 0.5px solid rgba(122,158,110,0.18); }
-.tag-creative { background: rgba(200,149,90,0.07);  color: #C8955A; border: 0.5px solid rgba(200,149,90,0.18); }
-.tag-design   { background: rgba(155,143,212,0.07); color: #9B8FD4; border: 0.5px solid rgba(155,143,212,0.18); }
-.tag-market   { background: rgba(212,122,122,0.07); color: #D47A7A; border: 0.5px solid rgba(212,122,122,0.18); }
+.cat-ai       { color: var(--cat-ai); }
+.cat-health   { color: var(--cat-health); }
+.cat-creative { color: var(--cat-creative); }
+.cat-design   { color: var(--cat-design); }
+.cat-market   { color: var(--cat-market); }

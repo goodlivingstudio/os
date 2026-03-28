@@ -32,31 +32,28 @@ function timeAgo(iso: string) {
   return `${Math.floor(h / 24)}d ago`
 }
 
-function TagPill({ tag, label }: { tag: string; label: string }) {
-  return (
-    <span className={`tag-${tag} inline-flex items-center text-[10px] font-mono uppercase tracking-widest px-1.5 py-px rounded-sm`}>
-      {label}
-    </span>
-  )
-}
-
 function ArticleCard({ article }: { article: Article }) {
   const [expanded, setExpanded] = useState(false)
 
   return (
-    <div
+    <article
       className="group cursor-pointer"
       style={{ borderBottom: "0.5px solid var(--bdr)" }}
       onClick={() => setExpanded(e => !e)}
     >
-      <div className="px-6 py-4">
-        {/* Meta */}
-        <div className="flex items-center gap-2 mb-2">
-          <TagPill tag={article.tag} label={article.category} />
+      <div className="px-7 py-5">
+        {/* Meta line */}
+        <div className="flex items-baseline gap-2 mb-2.5">
+          <span
+            className={`cat-${article.tag} text-[10px] font-mono uppercase tracking-[0.1em]`}
+          >
+            {article.category}
+          </span>
+          <span style={{ color: "var(--bdr2)" }}>·</span>
           <span className="text-[11px]" style={{ color: "var(--t3)" }}>
             {article.source}
           </span>
-          <span style={{ color: "var(--t4)" }}>·</span>
+          <span style={{ color: "var(--bdr2)" }}>·</span>
           <span className="text-[11px]" style={{ color: "var(--t3)" }}>
             {timeAgo(article.publishedAt)}
           </span>
@@ -64,16 +61,23 @@ function ArticleCard({ article }: { article: Article }) {
 
         {/* Headline */}
         <p
-          className="text-[14px] leading-[1.55] font-medium group-hover:text-[var(--acc)] transition-colors duration-150"
-          style={{ color: "var(--t1)", letterSpacing: "-0.012em" }}
+          className="text-[14.5px] leading-[1.55] group-hover:opacity-70 transition-opacity duration-150"
+          style={{
+            color: "var(--t1)",
+            fontWeight: 500,
+            letterSpacing: "-0.015em",
+          }}
         >
           {article.title}
         </p>
 
-        {/* Expanded summary */}
+        {/* Expanded */}
         {expanded && (
-          <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid var(--bdr)" }}>
-            <p className="text-[13px] leading-[1.8]" style={{ color: "var(--t2)" }}>
+          <div className="mt-4 pt-4" style={{ borderTop: "0.5px solid var(--bdr)" }}>
+            <p
+              className="text-[13px] leading-[1.85] mb-3"
+              style={{ color: "var(--t2)" }}
+            >
               {article.summary}
             </p>
             {article.url !== "#" && (
@@ -82,7 +86,7 @@ function ArticleCard({ article }: { article: Article }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={e => e.stopPropagation()}
-                className="inline-block mt-2.5 text-[11px] hover:underline"
+                className="text-[11px] hover:underline"
                 style={{ color: "var(--acc)" }}
               >
                 Read full article →
@@ -91,7 +95,7 @@ function ArticleCard({ article }: { article: Article }) {
           </div>
         )}
       </div>
-    </div>
+    </article>
   )
 }
 
@@ -107,43 +111,57 @@ function FeedPanel({ articles, categories, isLive, loading }: {
 
   return (
     <div className="flex flex-col h-full" style={{ borderRight: "0.5px solid var(--bdr)" }}>
-      {/* Tabs */}
+      {/* Tab bar */}
       <div
         className="flex items-center shrink-0 overflow-x-auto"
-        style={{ borderBottom: "0.5px solid var(--bdr)", height: "44px", paddingLeft: "8px" }}
+        style={{ borderBottom: "0.5px solid var(--bdr)", height: "46px" }}
       >
         {allCats.map(c => (
           <button
             key={c.id}
             onClick={() => setActive(c.tag)}
-            className="flex items-center h-full px-4 text-[11px] font-mono uppercase tracking-widest shrink-0 whitespace-nowrap transition-colors duration-150"
+            className="flex items-center h-full px-5 text-[10.5px] font-mono uppercase tracking-[0.09em] shrink-0 whitespace-nowrap transition-all duration-150"
             style={{
               color: active === c.tag ? "var(--t1)" : "var(--t3)",
-              borderBottom: active === c.tag ? "1px solid var(--acc)" : "1px solid transparent",
-              letterSpacing: "0.08em",
+              borderBottom: active === c.tag
+                ? "1px solid var(--acc)"
+                : "1px solid transparent",
             }}
           >
             {c.label}
           </button>
         ))}
-        <div className="ml-auto flex items-center gap-1.5 px-5 shrink-0">
+        <div className="ml-auto flex items-center gap-2 px-6 shrink-0">
           <span
-            className="w-1.5 h-1.5 rounded-full inline-block"
-            style={{ background: isLive ? "var(--acc)" : "var(--t4)" }}
+            className="w-1.5 h-1.5 rounded-full"
+            style={{ background: isLive ? "var(--acc)" : "var(--t4)", display: "inline-block" }}
           />
-          <span className="text-[10px] font-mono uppercase tracking-widest" style={{ color: "var(--t4)" }}>
+          <span
+            className="text-[10px] font-mono uppercase tracking-[0.08em]"
+            style={{ color: "var(--t3)" }}
+          >
             {isLive ? "Live" : "Demo"}
           </span>
         </div>
       </div>
 
-      {/* Articles */}
+      {/* Feed */}
       <div className="flex-1 overflow-y-auto">
         {loading ? (
-          <div className="flex items-center justify-center h-32">
-            <span className="text-[12px]" style={{ color: "var(--t3)" }}>Loading feed…</span>
+          <div className="flex items-center justify-center h-40">
+            <span className="text-[12px]" style={{ color: "var(--t3)" }}>
+              Loading feed…
+            </span>
           </div>
-        ) : filtered.map(a => <ArticleCard key={a.id} article={a} />)}
+        ) : filtered.length === 0 ? (
+          <div className="flex items-center justify-center h-40">
+            <span className="text-[12px]" style={{ color: "var(--t3)" }}>
+              No articles
+            </span>
+          </div>
+        ) : (
+          filtered.map(a => <ArticleCard key={a.id} article={a} />)
+        )}
       </div>
     </div>
   )
@@ -157,13 +175,19 @@ function SynthesisPanel({ articles }: { articles: Article[] }) {
   const run = async () => {
     if (running || !articles.length) return
     setRunning(true)
-    const context = articles.slice(0, 12).map(a => `[${a.category}] ${a.title}: ${a.summary}`).join("\n")
+    const context = articles
+      .slice(0, 12)
+      .map(a => `[${a.category}] ${a.title}: ${a.summary}`)
+      .join("\n")
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [{ role: "user", content: "Synthesize today's feed. What are the 2–3 most important patterns or signals for someone in my position? Be direct and specific." }],
+          messages: [{
+            role: "user",
+            content: "Synthesize today's feed. What are the 2–3 most important patterns or signals for someone in my position? Be direct and specific.",
+          }],
           feedContext: { count: articles.length, articles: context },
         }),
       })
@@ -180,14 +204,14 @@ function SynthesisPanel({ articles }: { articles: Article[] }) {
     <div className="flex flex-col h-full">
       {/* Header */}
       <div
-        className="flex items-center justify-between px-6 shrink-0"
-        style={{ borderBottom: "0.5px solid var(--bdr)", height: "44px" }}
+        className="flex items-center justify-between px-7 shrink-0"
+        style={{ borderBottom: "0.5px solid var(--bdr)", height: "46px" }}
       >
         <span
-          className="text-[11px] font-mono uppercase tracking-widest"
-          style={{ color: "var(--t3)", letterSpacing: "0.1em" }}
+          className="text-[10.5px] font-mono uppercase tracking-[0.1em]"
+          style={{ color: "var(--t3)" }}
         >
-          Synthesis
+          Today's Brief
         </span>
         <div className="flex items-center gap-3">
           {lastRun && (
@@ -200,9 +224,9 @@ function SynthesisPanel({ articles }: { articles: Article[] }) {
             disabled={running || !articles.length}
             className="text-[11px] px-3 py-1 rounded-sm transition-all duration-150"
             style={{
-              background: running ? "transparent" : "var(--acc-l)",
+              background: "transparent",
               color: running ? "var(--t3)" : "var(--acc)",
-              border: "0.5px solid var(--bdr)",
+              border: "0.5px solid var(--bdr2)",
               cursor: running || !articles.length ? "not-allowed" : "pointer",
               letterSpacing: "0.02em",
             }}
@@ -212,21 +236,22 @@ function SynthesisPanel({ articles }: { articles: Article[] }) {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto px-6 py-5">
+      {/* Body */}
+      <div className="flex-1 overflow-y-auto px-7 py-6">
         {synthesis ? (
           <p
-            className="text-[13.5px] leading-[1.9]"
+            className="text-[13.5px] leading-[1.95]"
             style={{ color: "var(--t2)" }}
           >
             {synthesis}
           </p>
         ) : (
-          <div className="flex items-start pt-1">
-            <p className="text-[12px] leading-[1.7]" style={{ color: "var(--t3)", maxWidth: 220 }}>
-              Run synthesis to surface patterns and signals across today's feed.
-            </p>
-          </div>
+          <p
+            className="text-[12px] leading-[1.75]"
+            style={{ color: "var(--t3)", maxWidth: 240 }}
+          >
+            Run to surface what matters in today's feed — patterns, signals, and anything directly relevant to your positioning.
+          </p>
         )}
       </div>
     </div>
@@ -241,11 +266,16 @@ function CerebroChat({ articles }: { articles: Article[] }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }) }, [messages, loading])
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages, loading])
 
   useEffect(() => {
     const el = textareaRef.current
-    if (el) { el.style.height = "auto"; el.style.height = Math.min(el.scrollHeight, 96) + "px" }
+    if (el) {
+      el.style.height = "auto"
+      el.style.height = Math.min(el.scrollHeight, 96) + "px"
+    }
   }, [input])
 
   const send = useCallback(async (text: string) => {
@@ -257,20 +287,32 @@ function CerebroChat({ articles }: { articles: Article[] }) {
 
     const feedContext = articles.length ? {
       count: articles.length,
-      articles: articles.slice(0, 15).map(a => `[${a.category}] ${a.title}: ${a.summary}`).join("\n"),
+      articles: articles
+        .slice(0, 15)
+        .map(a => `[${a.category}] ${a.title}: ${a.summary}`)
+        .join("\n"),
     } : null
 
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: updated.map(m => ({ role: m.role, content: m.content })), feedContext }),
+        body: JSON.stringify({
+          messages: updated.map(m => ({ role: m.role, content: m.content })),
+          feedContext,
+        }),
       })
       const data = await res.json()
-      setMessages(prev => [...prev, { role: "assistant", content: data.text || "No response." }])
+      setMessages(prev => [
+        ...prev,
+        { role: "assistant", content: data.text || "No response." },
+      ])
       setTotalTokens(t => t + (data.inputTokens || 0) + (data.outputTokens || 0))
     } catch {
-      setMessages(prev => [...prev, { role: "assistant", content: "Failed to reach Cerebro." }])
+      setMessages(prev => [
+        ...prev,
+        { role: "assistant", content: "Failed to reach Cerebro." },
+      ])
     }
     setLoading(false)
   }, [messages, loading, articles])
@@ -283,19 +325,19 @@ function CerebroChat({ articles }: { articles: Article[] }) {
       {/* Thread */}
       {messages.length > 0 && (
         <div
-          className="overflow-y-auto px-6 pt-4 pb-3 space-y-4"
-          style={{ maxHeight: "240px", borderBottom: "0.5px solid var(--bdr)" }}
+          className="overflow-y-auto px-7 pt-5 pb-3 space-y-4"
+          style={{ maxHeight: "260px", borderBottom: "0.5px solid var(--bdr)" }}
         >
           {messages.map((m, i) => (
             <div key={i} className={m.role === "user" ? "flex justify-end" : ""}>
               {m.role === "user" ? (
                 <span
-                  className="inline-block text-[12.5px] leading-[1.5] px-3 py-1.5 rounded-sm"
+                  className="inline-block text-[12.5px] leading-[1.55] px-4 py-2 rounded-sm"
                   style={{
                     background: "var(--acc-l)",
                     color: "var(--acc)",
                     maxWidth: "65%",
-                    border: "0.5px solid var(--bdr)",
+                    border: "0.5px solid var(--bdr2)",
                   }}
                 >
                   {m.content}
@@ -303,7 +345,7 @@ function CerebroChat({ articles }: { articles: Article[] }) {
               ) : (
                 <p
                   className="text-[13.5px] leading-[1.85]"
-                  style={{ color: "var(--t2)", maxWidth: "85%" }}
+                  style={{ color: "var(--t2)", maxWidth: "82%" }}
                 >
                   {m.content}
                 </p>
@@ -319,21 +361,24 @@ function CerebroChat({ articles }: { articles: Article[] }) {
         </div>
       )}
 
-      {/* Input bar */}
-      <div className="flex items-center gap-4 px-6 py-3">
+      {/* Input */}
+      <div className="flex items-center gap-4 px-7 py-3.5">
         <span
-          className="text-[11px] font-mono uppercase tracking-widest shrink-0"
-          style={{ color: "var(--acc)", letterSpacing: "0.1em" }}
+          className="text-[10.5px] font-mono uppercase tracking-[0.1em] shrink-0"
+          style={{ color: "var(--acc)" }}
         >
           Cerebro
         </span>
-        <div className="w-px h-4 shrink-0" style={{ background: "var(--bdr)" }} />
+        <div className="w-px h-3.5 shrink-0" style={{ background: "var(--bdr2)" }} />
         <textarea
           ref={textareaRef}
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => {
-            if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(input) }
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault()
+              send(input)
+            }
           }}
           placeholder="Ask anything about the feed…"
           rows={1}
@@ -343,23 +388,21 @@ function CerebroChat({ articles }: { articles: Article[] }) {
         <button
           onClick={() => send(input)}
           disabled={!input.trim() || loading}
-          className="shrink-0 text-[11px] px-3 py-1.5 rounded-sm transition-all duration-150"
+          className="shrink-0 text-[11px] px-3.5 py-1.5 rounded-sm transition-all duration-150"
           style={{
             background: input.trim() && !loading ? "var(--acc)" : "transparent",
-            color: input.trim() && !loading ? "var(--bg)" : "var(--t4)",
-            border: "0.5px solid var(--bdr)",
+            color: input.trim() && !loading ? "#0D0F0B" : "var(--t4)",
+            border: "0.5px solid var(--bdr2)",
             cursor: input.trim() && !loading ? "pointer" : "not-allowed",
-            letterSpacing: "0.02em",
           }}
         >
           Send
         </button>
-        <span
-          className="shrink-0 text-[10px] font-mono"
-          style={{ color: "var(--t4)" }}
-        >
-          {totalTokens > 0 ? `${totalTokens.toLocaleString()}t` : ""}
-        </span>
+        {totalTokens > 0 && (
+          <span className="shrink-0 text-[10px] font-mono" style={{ color: "var(--t4)" }}>
+            {totalTokens.toLocaleString()}t
+          </span>
+        )}
       </div>
     </div>
   )
@@ -372,7 +415,9 @@ export default function Page() {
   const [loading, setLoading] = useState(true)
 
   const now = new Date().toLocaleDateString("en-US", {
-    weekday: "long", month: "long", day: "numeric"
+    weekday: "long",
+    month: "long",
+    day: "numeric",
   })
 
   useEffect(() => {
@@ -389,26 +434,34 @@ export default function Page() {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
-      {/* Header */}
+      {/* Masthead */}
       <header
-        className="flex items-center justify-between px-6 shrink-0"
+        className="flex items-center justify-between shrink-0"
         style={{
           height: "52px",
           borderBottom: "0.5px solid var(--bdr)",
           background: "var(--surf)",
+          paddingLeft: "28px",
+          paddingRight: "28px",
         }}
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-baseline gap-4">
           <span
-            className="text-[15px] font-semibold tracking-tight"
-            style={{ color: "var(--t1)", letterSpacing: "-0.04em" }}
+            style={{
+              color: "var(--t1)",
+              fontSize: "15px",
+              fontWeight: 600,
+              letterSpacing: "-0.04em",
+            }}
           >
             Dispatch
           </span>
-          <span style={{ color: "var(--bdr)" }}>·</span>
           <span
-            className="text-[12px]"
-            style={{ color: "var(--t3)" }}
+            style={{
+              color: "var(--t3)",
+              fontSize: "12px",
+              letterSpacing: "-0.01em",
+            }}
           >
             {now}
           </span>
@@ -421,9 +474,10 @@ export default function Page() {
         </span>
       </header>
 
-      {/* Body */}
+      {/* Body — two columns */}
       <div className="flex flex-1 overflow-hidden">
-        <div style={{ flex: "3" }} className="overflow-hidden">
+        {/* Feed — 60% */}
+        <div className="overflow-hidden" style={{ flex: "3" }}>
           <FeedPanel
             articles={articles}
             categories={categories}
@@ -431,12 +485,13 @@ export default function Page() {
             loading={loading}
           />
         </div>
-        <div style={{ flex: "2" }} className="overflow-hidden">
+        {/* Brief / Synthesis — 40% */}
+        <div className="overflow-hidden" style={{ flex: "2" }}>
           <SynthesisPanel articles={articles} />
         </div>
       </div>
 
-      {/* Cerebro */}
+      {/* Cerebro — pinned bottom */}
       <CerebroChat articles={articles} />
     </div>
   )
