@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --bg:    #0A0A08;
-  --surf:  #101010;
-  --surf2: #171715;
-  --bdr:   #1A1A17;
-  --bdr2:  #232320;
-  --t1:    #EDEBE5;
-  --t2:    #8D8B86;
-  --t3:    #514F4B;
-  --t4:    #2E2D2A;
+  --bg:    #0C0C0A;
+  --surf:  #141412;
+  --surf2: #1C1C1A;
+  --bdr:   #222220;
+  --bdr2:  #2C2C2A;
+  --t1:    #EDEAE3;
+  --t2:    #8A8882;
+  --t3:    #524F4A;
+  --t4:    #333028;
   --acc:   #6CB842;
-  --acc-l: #0D1C08;
+  --acc-l: #0E1E08;
 
   /* 11 category accent colors */
   --cat-policy:            #7B9EC8;

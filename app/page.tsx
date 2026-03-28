@@ -62,47 +62,47 @@ function ArticleCard({ article }: { article: Article }) {
       onClick={() => setExpanded(e => !e)}
     >
       <div
-        className="px-8 py-4 transition-colors duration-100"
+        className="px-9 py-5 transition-colors duration-100"
         style={{ background: expanded ? "var(--surf)" : "transparent" }}
       >
-        {/* Meta */}
-        <div className="flex items-center gap-2 mb-1.5">
-          {cat && (
-            <span
-              className="w-1.5 h-1.5 rounded-full shrink-0"
-              style={{ background: cat.color }}
-            />
-          )}
-          <span
-            className="text-[10px] font-mono uppercase tracking-[0.08em]"
-            style={{ color: "var(--t3)" }}
-          >
-            {article.source}
-          </span>
-          <span style={{ color: "var(--bdr2)" }}>·</span>
-          <span className="text-[10px] font-mono" style={{ color: "var(--t4)" }}>
-            {timeAgo(article.publishedAt)}
-          </span>
-        </div>
-
-        {/* Headline */}
+        {/* Headline — dominant */}
         <p
-          className="leading-[1.45] group-hover:opacity-60 transition-opacity duration-150"
+          className="leading-[1.42] mb-2.5 group-hover:opacity-55 transition-opacity duration-150"
           style={{
             color: "var(--t1)",
-            fontSize: "14px",
+            fontSize: "15.5px",
             fontWeight: 500,
-            letterSpacing: "-0.016em",
+            letterSpacing: "-0.02em",
           }}
         >
           {article.title}
         </p>
 
+        {/* Meta — recessed below headline */}
+        <div className="flex items-center gap-2">
+          {cat && (
+            <span
+              className="w-1.5 h-1.5 rounded-full shrink-0"
+              style={{ background: cat.color, opacity: 0.7 }}
+            />
+          )}
+          <span
+            className="text-[10.5px] font-mono uppercase tracking-[0.07em]"
+            style={{ color: "var(--t3)" }}
+          >
+            {article.source}
+          </span>
+          <span style={{ color: "var(--bdr2)" }}>·</span>
+          <span className="text-[10.5px] font-mono" style={{ color: "var(--t4)" }}>
+            {timeAgo(article.publishedAt)}
+          </span>
+        </div>
+
         {/* Expanded */}
         {expanded && (
-          <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid var(--bdr)" }}>
+          <div className="mt-4 pt-4" style={{ borderTop: "0.5px solid var(--bdr)" }}>
             <p
-              className="text-[12.5px] leading-[1.8] mb-3"
+              className="text-[13px] leading-[1.85] mb-3"
               style={{ color: "var(--t2)" }}
             >
               {article.summary}
@@ -151,18 +151,18 @@ function Sidebar({
     <aside
       className="flex flex-col shrink-0"
       style={{
-        width: 196,
+        width: 224,
         borderRight: "0.5px solid var(--bdr)",
         background: "var(--surf)",
       }}
     >
       {/* Masthead */}
-      <div className="px-6 pt-6 pb-5" style={{ borderBottom: "0.5px solid var(--bdr)" }}>
+      <div className="px-7 pt-7 pb-6" style={{ borderBottom: "0.5px solid var(--bdr)" }}>
         <div
           style={{
-            fontSize: 15,
-            fontWeight: 600,
-            letterSpacing: "-0.04em",
+            fontSize: 19,
+            fontWeight: 650,
+            letterSpacing: "-0.05em",
             color: "var(--t1)",
             lineHeight: 1,
           }}
@@ -170,18 +170,18 @@ function Sidebar({
           Dispatch
         </div>
         <div
-          className="mt-1.5"
-          style={{ fontSize: "10.5px", color: "var(--t3)", letterSpacing: "-0.01em" }}
+          className="mt-2"
+          style={{ fontSize: "11px", color: "var(--t3)", letterSpacing: "-0.01em" }}
         >
           {day}, {date}
         </div>
-        <div className="flex items-center gap-1.5 mt-3">
+        <div className="flex items-center gap-2 mt-3.5">
           <span
-            className="w-1 h-1 rounded-full"
+            className="w-1.5 h-1.5 rounded-full"
             style={{ background: loading ? "var(--t4)" : isLive ? "var(--acc)" : "var(--t4)" }}
           />
           <span
-            className="text-[9px] font-mono uppercase tracking-[0.09em]"
+            className="text-[9.5px] font-mono uppercase tracking-[0.1em]"
             style={{ color: loading ? "var(--t4)" : isLive ? "var(--acc)" : "var(--t4)" }}
           >
             {loading ? "Loading" : isLive ? "Live" : "Demo"}
@@ -194,13 +194,13 @@ function Sidebar({
         {/* All */}
         <button
           onClick={() => onSelect("all")}
-          className="w-full flex items-center justify-between px-6 py-2 transition-colors duration-100"
+          className="w-full flex items-center justify-between px-7 py-2.5 transition-colors duration-100"
           style={{
             color: active === "all" ? "var(--t1)" : "var(--t3)",
             background: active === "all" ? "var(--surf2)" : "transparent",
           }}
         >
-          <span className="text-[11px] tracking-[-0.01em]" style={{ fontWeight: active === "all" ? 500 : 400 }}>
+          <span className="text-[12px] tracking-[-0.01em]" style={{ fontWeight: active === "all" ? 500 : 400 }}>
             All
           </span>
           <span className="text-[10px] font-mono" style={{ color: "var(--t4)" }}>
@@ -208,7 +208,7 @@ function Sidebar({
           </span>
         </button>
 
-        <div className="mx-6 my-2" style={{ borderTop: "0.5px solid var(--bdr)" }} />
+        <div className="mx-7 my-2.5" style={{ borderTop: "0.5px solid var(--bdr)" }} />
 
         {CATEGORY_CONFIG.map(cat => {
           const n = countFor(cat.tag)
@@ -218,7 +218,7 @@ function Sidebar({
             <button
               key={cat.id}
               onClick={() => onSelect(cat.tag)}
-              className="w-full flex items-center gap-2.5 px-6 py-[7px] transition-colors duration-100"
+              className="w-full flex items-center gap-3 px-7 py-2 transition-colors duration-100"
               style={{
                 color: isActive ? "var(--t1)" : "var(--t3)",
                 background: isActive ? "var(--surf2)" : "transparent",
@@ -226,10 +226,10 @@ function Sidebar({
             >
               <span
                 className="w-1.5 h-1.5 rounded-full shrink-0 transition-opacity duration-100"
-                style={{ background: cat.color, opacity: isActive ? 1 : 0.5 }}
+                style={{ background: cat.color, opacity: isActive ? 1 : 0.55 }}
               />
               <span
-                className="flex-1 text-left text-[11px] tracking-[-0.01em]"
+                className="flex-1 text-left text-[12px] tracking-[-0.01em]"
                 style={{ fontWeight: isActive ? 500 : 400 }}
               >
                 {cat.label}
@@ -244,8 +244,8 @@ function Sidebar({
         })}
 
         {/* Watching */}
-        <div className="mx-6 my-3" style={{ borderTop: "0.5px solid var(--bdr)" }} />
-        <div className="px-6 mb-2">
+        <div className="mx-7 my-3" style={{ borderTop: "0.5px solid var(--bdr)" }} />
+        <div className="px-7 mb-2">
           <span
             className="text-[9px] font-mono uppercase tracking-[0.12em]"
             style={{ color: "var(--t4)" }}
@@ -257,16 +257,16 @@ function Sidebar({
           <button
             key={co}
             onClick={() => onSelect("company")}
-            className="w-full flex items-center gap-2.5 px-6 py-[6px] hover:opacity-70 transition-opacity duration-100"
+            className="w-full flex items-center gap-3 px-7 py-1.5 hover:opacity-70 transition-opacity duration-100"
           >
             <span className="w-1 h-1 rounded-full shrink-0" style={{ background: "var(--t4)" }} />
-            <span className="text-[10.5px]" style={{ color: "var(--t3)" }}>{co}</span>
+            <span className="text-[11.5px]" style={{ color: "var(--t3)" }}>{co}</span>
           </button>
         ))}
       </nav>
 
       {/* Footer */}
-      <div className="px-6 py-4" style={{ borderTop: "0.5px solid var(--bdr)" }}>
+      <div className="px-7 py-4" style={{ borderTop: "0.5px solid var(--bdr)" }}>
         <span className="text-[10px] font-mono" style={{ color: "var(--t4)" }}>
           Jeremy Grant
         </span>
@@ -314,11 +314,11 @@ function SynthesisPanel({ articles }: { articles: Article[] }) {
     <div style={{ borderBottom: "0.5px solid var(--bdr)" }}>
       {/* Header */}
       <div
-        className="flex items-center justify-between px-5 shrink-0"
-        style={{ borderBottom: "0.5px solid var(--bdr)", height: 40 }}
+        className="flex items-center justify-between px-6 shrink-0"
+        style={{ borderBottom: "0.5px solid var(--bdr)", height: 48 }}
       >
         <span
-          className="text-[9px] font-mono uppercase tracking-[0.12em]"
+          className="text-[10px] font-mono uppercase tracking-[0.12em]"
           style={{ color: "var(--t3)" }}
         >
           Today's Brief
@@ -332,7 +332,7 @@ function SynthesisPanel({ articles }: { articles: Article[] }) {
           <button
             onClick={run}
             disabled={running || !articles.length}
-            className="text-[10px] px-2.5 py-1 rounded-sm transition-all duration-150"
+            className="text-[10px] px-3 py-1.5 rounded-sm transition-all duration-150"
             style={{
               background: "transparent",
               color: running ? "var(--t4)" : "var(--acc)",
@@ -347,13 +347,13 @@ function SynthesisPanel({ articles }: { articles: Article[] }) {
       </div>
 
       {/* Body */}
-      <div className="px-5 py-4 overflow-y-auto" style={{ maxHeight: 180 }}>
+      <div className="px-6 py-5 overflow-y-auto" style={{ maxHeight: 200 }}>
         {synthesis ? (
-          <p className="text-[12.5px] leading-[1.85]" style={{ color: "var(--t2)" }}>
+          <p className="text-[13px] leading-[1.85]" style={{ color: "var(--t2)" }}>
             {synthesis}
           </p>
         ) : (
-          <p className="text-[11px] leading-[1.7]" style={{ color: "var(--t4)" }}>
+          <p className="text-[12px] leading-[1.75]" style={{ color: "var(--t4)" }}>
             Surface patterns and signals across today's feed.
           </p>
         )}
@@ -418,11 +418,11 @@ function CerebroPanel({ articles }: { articles: Article[] }) {
     <div className="flex flex-col flex-1 min-h-0">
       {/* Header */}
       <div
-        className="flex items-center justify-between px-5 shrink-0"
-        style={{ borderBottom: "0.5px solid var(--bdr)", height: 40 }}
+        className="flex items-center justify-between px-6 shrink-0"
+        style={{ borderBottom: "0.5px solid var(--bdr)", height: 48 }}
       >
         <span
-          className="text-[9px] font-mono uppercase tracking-[0.12em]"
+          className="text-[10px] font-mono uppercase tracking-[0.12em]"
           style={{ color: "var(--acc)" }}
         >
           Cerebro
@@ -435,9 +435,9 @@ function CerebroPanel({ articles }: { articles: Article[] }) {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+      <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
         {messages.length === 0 && (
-          <p className="text-[11px] leading-[1.75]" style={{ color: "var(--t4)" }}>
+          <p className="text-[12px] leading-[1.75]" style={{ color: "var(--t4)" }}>
             Ask about the feed, research a company, or explore a signal.
           </p>
         )}
@@ -445,11 +445,11 @@ function CerebroPanel({ articles }: { articles: Article[] }) {
           <div key={i} className={m.role === "user" ? "flex justify-end" : ""}>
             {m.role === "user" ? (
               <span
-                className="inline-block text-[12px] leading-[1.5] px-3 py-1.5 rounded-sm"
+                className="inline-block text-[12.5px] leading-[1.5] px-3.5 py-2 rounded-sm"
                 style={{
                   background: "var(--acc-l)",
                   color: "var(--acc)",
-                  maxWidth: "84%",
+                  maxWidth: "85%",
                   border: "0.5px solid var(--bdr2)",
                 }}
               >
@@ -457,7 +457,7 @@ function CerebroPanel({ articles }: { articles: Article[] }) {
               </span>
             ) : (
               <p
-                className="text-[12.5px] leading-[1.85]"
+                className="text-[13px] leading-[1.85]"
                 style={{ color: "var(--t2)" }}
               >
                 {m.content}
@@ -466,7 +466,7 @@ function CerebroPanel({ articles }: { articles: Article[] }) {
           </div>
         ))}
         {loading && (
-          <p className="text-[10px] font-mono" style={{ color: "var(--t4)" }}>
+          <p className="text-[10.5px] font-mono" style={{ color: "var(--t4)" }}>
             Thinking…
           </p>
         )}
@@ -474,7 +474,7 @@ function CerebroPanel({ articles }: { articles: Article[] }) {
       </div>
 
       {/* Input */}
-      <div className="px-5 py-3 shrink-0" style={{ borderTop: "0.5px solid var(--bdr)" }}>
+      <div className="px-6 py-4 shrink-0" style={{ borderTop: "0.5px solid var(--bdr)" }}>
         <div className="flex items-end gap-3">
           <textarea
             ref={textareaRef}
@@ -488,13 +488,13 @@ function CerebroPanel({ articles }: { articles: Article[] }) {
             }}
             placeholder="Ask anything…"
             rows={1}
-            className="flex-1 resize-none text-[12.5px] leading-[1.5] outline-none bg-transparent"
+            className="flex-1 resize-none text-[13px] leading-[1.5] outline-none bg-transparent"
             style={{ color: "var(--t1)", caretColor: "var(--acc)" }}
           />
           <button
             onClick={() => send(input)}
             disabled={!input.trim() || loading}
-            className="shrink-0 text-[10px] px-3 py-1.5 rounded-sm transition-all duration-150"
+            className="shrink-0 text-[10.5px] px-3 py-1.5 rounded-sm transition-all duration-150"
             style={{
               background: input.trim() && !loading ? "var(--acc)" : "transparent",
               color: input.trim() && !loading ? "#0A0A08" : "var(--t4)",
@@ -568,7 +568,7 @@ export default function Page() {
       {/* Right: brief + cerebro */}
       <aside
         className="flex flex-col shrink-0"
-        style={{ width: 316, background: "var(--surf)" }}
+        style={{ width: 340, background: "var(--surf)" }}
       >
         <SynthesisPanel articles={filtered} />
         <CerebroPanel articles={articles} />
