@@ -363,9 +363,14 @@ function useChiefOfStaff(articles: Article[]) {
 
 const SCAN_STATUSES = ["Scanning feed", "Clustering signals", "Composing brief"]
 
-function ChiefOfStaffBand({ signals, briefLoading }: { signals: Signal[]; briefLoading: boolean }) {
-  const [statusIdx, setStatusIdx] = useState(0)
-  const [revealed, setRevealed] = useState(false)
+function ChiefOfStaffBand({ signals, briefLoading, onDeliberate }: {
+  signals: Signal[]
+  briefLoading: boolean
+  onDeliberate?: (signal: Signal) => void
+}) {
+  const [statusIdx,  setStatusIdx]  = useState(0)
+  const [revealed,   setRevealed]   = useState(false)
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
   const wasLoading = useRef(true)
 
   // Advance status text while fetching (stops at final stage)
@@ -439,32 +444,66 @@ function ChiefOfStaffBand({ signals, briefLoading }: { signals: Signal[]; briefL
       ) : (
         /* ── Revealed state: staggered column entry ── */
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
-          {signals.map((signal, i) => (
-            <div
-              key={i}
-              style={{
-                padding: "16px 20px",
-                borderRight: i < 2 ? "1px solid var(--border)" : "none",
-                animation: `signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${i * 160}ms both`,
-              }}
-            >
-              <div style={{
-                fontSize: 9,
-                fontFamily: "'SF Mono', 'Fira Code', monospace",
-                color: "var(--accent-muted)",
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                marginBottom: 8,
-              }}>
-                {signal.label}
-              </div>
-              {signal.body && (
-                <div style={{ fontSize: 12, color: "var(--text-primary)", lineHeight: 1.6, letterSpacing: "-0.01em" }}>
-                  {signal.body}
+          {signals.map((signal, i) => {
+            const isHovered = hoveredIdx === i
+            return (
+              <div
+                key={i}
+                onMouseEnter={() => setHoveredIdx(i)}
+                onMouseLeave={() => setHoveredIdx(null)}
+                style={{
+                  padding: "16px 20px 14px",
+                  borderRight: i < 2 ? "1px solid var(--border)" : "none",
+                  animation: `signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${i * 160}ms both`,
+                  position: "relative",
+                  transition: "background 0.15s",
+                  background: isHovered ? "var(--bg-elevated)" : "transparent",
+                }}
+              >
+                <div style={{
+                  fontSize: 9,
+                  fontFamily: "'SF Mono', 'Fira Code', monospace",
+                  color: "var(--accent-muted)",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  marginBottom: 8,
+                }}>
+                  {signal.label}
                 </div>
-              )}
-            </div>
-          ))}
+                {signal.body && (
+                  <div style={{ fontSize: 12, color: "var(--text-primary)", lineHeight: 1.6, letterSpacing: "-0.01em" }}>
+                    {signal.body}
+                  </div>
+                )}
+                {/* Deliberate affordance — appears on hover */}
+                {onDeliberate && signal.body && (
+                  <button
+                    onClick={() => onDeliberate(signal)}
+                    style={{
+                      position: "absolute",
+                      bottom: 10,
+                      right: 12,
+                      background: "none",
+                      border: "none",
+                      padding: "2px 0",
+                      cursor: "pointer",
+                      fontSize: 9,
+                      fontFamily: "'SF Mono', 'Fira Code', monospace",
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      color: "var(--accent-secondary)",
+                      opacity: isHovered ? 1 : 0,
+                      transition: "opacity 0.2s",
+                      pointerEvents: isHovered ? "auto" : "none",
+                    }}
+                    aria-label={`Deliberate on: ${signal.label}`}
+                  >
+                    Deliberate →
+                  </button>
+                )}
+              </div>
+            )
+          })}
         </div>
       )}
     </div>
@@ -791,7 +830,10 @@ function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }: { art
 
 // ─── Cerebro ──────────────────────────────────────────────────────────────────
 
-function Cerebro({ articles }: { articles: Article[] }) {
+function Cerebro({ articles, pendingPrompt }: {
+  articles: Article[]
+  pendingPrompt?: { text: string; id: number } | null
+}) {
   const [messages,  setMessages]  = useState<Message[]>([])
   const [input,     setInput]     = useState("")
   const [loading,   setLoading]   = useState(false)
@@ -822,6 +864,8 @@ function Cerebro({ articles }: { articles: Article[] }) {
       el.style.height = Math.min(el.scrollHeight, 96) + "px"
     }
   }, [input])
+
+  const sendRef = useRef<((text: string) => Promise<void>) | undefined>(undefined)
 
   const send = useCallback(
     async (text: string) => {
@@ -873,6 +917,15 @@ function Cerebro({ articles }: { articles: Article[] }) {
     },
     [messages, loading, articles]
   )
+
+  // Keep ref current so the pending-prompt effect never captures a stale send
+  sendRef.current = send
+
+  // Auto-fire a deliberation prompt seeded from ChiefOfStaffBand
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (pendingPrompt?.text) sendRef.current?.(pendingPrompt.text)
+  }, [pendingPrompt?.id])
 
   return (
     <div
@@ -1142,10 +1195,17 @@ export default function Page() {
   const isMobile = useMobile()
   const [articles,    setArticles]    = useState<Article[]>([])
   const [isLive,      setIsLive]      = useState(false)
-  const [feedLoading, setFeedLoading] = useState(true)
-  const [active,      setActive]      = useState("all")
-  const [mobileTab,   setMobileTab]   = useState<"feed" | "analysis" | "cerebro">("feed")
+  const [feedLoading,    setFeedLoading]    = useState(true)
+  const [active,         setActive]         = useState("all")
+  const [mobileTab,      setMobileTab]      = useState<"feed" | "analysis" | "cerebro">("feed")
+  const [cerebroPrompt,  setCerebroPrompt]  = useState<{ text: string; id: number } | null>(null)
   const { signals, briefLoading } = useChiefOfStaff(articles)
+
+  const handleDeliberate = useCallback((signal: Signal) => {
+    const text = `I want to deliberate on this signal from the brief:\n\n"${signal.label}"\n\n${signal.body}\n\nWalk me through the strategic implications. What should I be thinking about, and what questions should I be exploring?`
+    setCerebroPrompt({ text, id: Date.now() })
+    setMobileTab("cerebro")
+  }, [])
 
   // Signal card hover state — desktop only
   const [signal, setSignal] = useState<{ article: Article; x: number; y: number } | null>(null)
@@ -1212,7 +1272,7 @@ export default function Page() {
         minWidth: 0,
       }}
     >
-      {!isMobile && <ChiefOfStaffBand signals={signals} briefLoading={briefLoading} />}
+      {!isMobile && <ChiefOfStaffBand signals={signals} briefLoading={briefLoading} onDeliberate={handleDeliberate} />}
       <div style={{ flex: 1, overflowY: "auto" }}>
         {feedLoading ? (
           <div style={{ padding: "32px 20px" }}>
@@ -1259,7 +1319,7 @@ export default function Page() {
         <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
           {mobileTab === "feed"     && feedContent}
           {mobileTab === "analysis" && <AnalysisPanel signals={signals} briefLoading={briefLoading} />}
-          {mobileTab === "cerebro"  && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} /></div>}
+          {mobileTab === "cerebro"  && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} /></div>}
         </div>
 
         {/* Mobile bottom tab bar */}
@@ -1341,7 +1401,7 @@ export default function Page() {
         {feedContent}
         <Divider onMouseDown={e => startResize("right", e)} />
         <div style={{ width: rightWidth, flexShrink: 0 }}>
-          <Cerebro articles={articles} />
+          <Cerebro articles={articles} pendingPrompt={cerebroPrompt} />
         </div>
       </div>
 
