@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Ticker } from "@/components/ticker"
+import { AnalyticsPanel } from "@/components/analytics-panel"
 
 // ─── Skin + mode system ───────────────────────────────────────────────────────
 
@@ -359,6 +360,8 @@ function LeftRail({
   feedHealth,
   feedLoading,
   width,
+  showAnalytics,
+  onToggleAnalytics,
 }: {
   articles: Article[]
   active: string
@@ -367,6 +370,8 @@ function LeftRail({
   feedHealth: FeedHealth | null
   feedLoading: boolean
   width: number
+  showAnalytics: boolean
+  onToggleAnalytics: () => void
 }) {
   const now  = new Date()
   const date = now.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
@@ -428,7 +433,61 @@ function LeftRail({
 
       {/* Navigation */}
       <nav style={{ flex: 1, overflowY: "auto", padding: "10px 0" }}>
-        {CATEGORY_CONFIG.map(cat => {
+        {/* Left brain / Right brain toggle */}
+        <div style={{ padding: "8px 12px 4px", marginBottom: 2 }}>
+          <div
+            style={{
+              display: "flex",
+              background: "var(--bg-elevated)",
+              borderRadius: 4,
+              padding: 2,
+              gap: 2,
+            }}
+          >
+            {[
+              { id: "feed",      icon: "≡", label: "Feed"     },
+              { id: "analytics", icon: "◎", label: "Analytics" },
+            ].map(tab => {
+              const isTab = tab.id === "analytics" ? showAnalytics : !showAnalytics
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => { if (tab.id === "analytics" && !showAnalytics) onToggleAnalytics(); else if (tab.id === "feed" && showAnalytics) onToggleAnalytics() }}
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 4,
+                    padding: "4px 0",
+                    background: isTab ? "var(--bg-surface)" : "transparent",
+                    border: "none",
+                    borderRadius: 3,
+                    cursor: "pointer",
+                    transition: "background 0.15s",
+                  }}
+                >
+                  <span style={{ fontSize: 11, color: isTab ? "var(--text-primary)" : "var(--text-tertiary)" }}>
+                    {tab.icon}
+                  </span>
+                  <span style={{
+                    fontSize: 9,
+                    fontFamily: "'SF Mono', 'Fira Code', monospace",
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    color: isTab ? "var(--text-primary)" : "var(--text-tertiary)",
+                    fontWeight: isTab ? 500 : 400,
+                  }}>
+                    {tab.label}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Category nav — hidden in analytics view */}
+        {!showAnalytics && CATEGORY_CONFIG.map(cat => {
           const n = countFor(cat.id)
           if (cat.id !== "all" && n === 0 && !feedLoading) return null
           const isActive = active === cat.id
@@ -1276,10 +1335,11 @@ function useMobile() {
 export default function Page() {
   const { skin, isDay, toggleMode, setSkin } = useTheme()
   const isMobile = useMobile()
-  const [articles,    setArticles]    = useState<Article[]>([])
-  const [isLive,      setIsLive]      = useState(false)
-  const [feedHealth,  setFeedHealth]  = useState<FeedHealth | null>(null)
+  const [articles,       setArticles]       = useState<Article[]>([])
+  const [isLive,         setIsLive]         = useState(false)
+  const [feedHealth,     setFeedHealth]     = useState<FeedHealth | null>(null)
   const [feedLoading,    setFeedLoading]    = useState(true)
+  const [showAnalytics,  setShowAnalytics]  = useState(false)
   const [active,         setActive]         = useState("all")
   const [mobileTab,      setMobileTab]      = useState<"feed" | "analysis" | "cerebro">("feed")
   const [cerebroPrompt,  setCerebroPrompt]  = useState<{ text: string; id: number } | null>(null)
@@ -1287,6 +1347,11 @@ export default function Page() {
 
   const handleDeliberate = useCallback((signal: Signal) => {
     const text = `I want to deliberate on this signal from the brief:\n\n"${signal.label}"\n\n${signal.body}\n\nWalk me through the strategic implications. What should I be thinking about, and what questions should I be exploring?`
+    setCerebroPrompt({ text, id: Date.now() })
+    setMobileTab("cerebro")
+  }, [])
+
+  const handleAnalyticsDeliberate = useCallback((text: string) => {
     setCerebroPrompt({ text, id: Date.now() })
     setMobileTab("cerebro")
   }, [])
@@ -1491,9 +1556,13 @@ export default function Page() {
           feedHealth={feedHealth}
           feedLoading={feedLoading}
           width={leftWidth}
+          showAnalytics={showAnalytics}
+          onToggleAnalytics={() => setShowAnalytics(v => !v)}
         />
         <Divider onMouseDown={e => startResize("left", e)} />
-        {feedContent}
+        {showAnalytics
+          ? <AnalyticsPanel articles={articles} onDeliberate={handleAnalyticsDeliberate} />
+          : feedContent}
         <Divider onMouseDown={e => startResize("right", e)} />
         <div style={{ width: rightWidth, flexShrink: 0 }}>
           <Cerebro articles={articles} pendingPrompt={cerebroPrompt} />
