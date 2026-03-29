@@ -1220,7 +1220,14 @@ function Cerebro({ articles, pendingPrompt }: {
 
         {/* Follow-up prompts */}
         {followUps && !loading && (
-          <div style={{ padding: "4px 16px 12px", animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both" }}>
+          <div style={{
+            margin: "8px 14px 12px",
+            padding: "14px 14px 12px",
+            background: "var(--bg-elevated)",
+            borderRadius: 10,
+            borderLeft: "2px solid var(--accent-secondary)",
+            animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
+          }}>
             {/* Inline follow-up question — machine voice */}
             <div style={{
               fontSize: 12,
@@ -1228,14 +1235,14 @@ function Cerebro({ articles, pendingPrompt }: {
               color: "var(--accent-muted)",
               lineHeight: 1.65,
               fontStyle: "italic",
-              marginBottom: followUps.alternatives.length > 0 ? 10 : 0,
               letterSpacing: "-0.01em",
+              marginBottom: followUps.alternatives.length > 0 ? 12 : 0,
             }}>
               {followUps.question}
             </div>
             {/* Alternative direction pills — human-facing affordance */}
             {followUps.alternatives.length > 0 && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {followUps.alternatives.map((alt, i) => (
                   <button
                     key={i}
@@ -1243,21 +1250,24 @@ function Cerebro({ articles, pendingPrompt }: {
                     style={{
                       background: "transparent",
                       border: "1px solid var(--border)",
-                      borderRadius: 20,
-                      padding: "5px 14px",
+                      borderRadius: 8,
+                      padding: "7px 12px",
                       fontSize: 12,
                       color: "var(--text-secondary)",
                       cursor: "pointer",
                       transition: "all 0.15s",
-                      whiteSpace: "nowrap",
+                      textAlign: "left",
+                      lineHeight: 1.4,
                     }}
                     onMouseEnter={e => {
                       e.currentTarget.style.borderColor = "var(--accent-secondary)"
                       e.currentTarget.style.color = "var(--text-primary)"
+                      e.currentTarget.style.background = "var(--bg-surface)"
                     }}
                     onMouseLeave={e => {
                       e.currentTarget.style.borderColor = "var(--border)"
                       e.currentTarget.style.color = "var(--text-secondary)"
+                      e.currentTarget.style.background = "transparent"
                     }}
                   >
                     {alt}
