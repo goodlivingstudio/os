@@ -61,9 +61,9 @@ interface Article {
   summary: string
   category: string
   tag: string
-  imageUrl?: string
   relevance?: string
-  highRelevance?: boolean
+  signalType?: string
+  signalLens?: string
 }
 
 interface Message {
@@ -451,43 +451,27 @@ function AnalysisPanel({ signals, briefLoading }: { signals: Signal[]; briefLoad
   )
 }
 
-// ─── OG image cache + Microlink fallback ─────────────────────────────────────
-// Primary: imageUrl baked into article from RSS media tags
-// Fallback: Microlink metadata API — extracts og:image from any URL, client-side
-// Results cached in module-level Map — no re-fetching on repeat hovers
+// ─── Signal Card — hover intelligence briefing ────────────────────────────────
 
-const ogImageCache = new Map<string, string | null>()
-
-async function fetchOGImage(url: string): Promise<string | null> {
-  if (url === "#") return null
-  if (ogImageCache.has(url)) return ogImageCache.get(url)!
-  try {
-    const controller = new AbortController()
-    const t = setTimeout(() => controller.abort(), 4000)
-    const res = await fetch(
-      `https://api.microlink.io?url=${encodeURIComponent(url)}&meta=true`,
-      { signal: controller.signal }
-    )
-    clearTimeout(t)
-    if (!res.ok) { ogImageCache.set(url, null); return null }
-    const data = await res.json()
-    const imageUrl: string | null = data?.data?.image?.url ?? null
-    ogImageCache.set(url, imageUrl)
-    return imageUrl
-  } catch {
-    ogImageCache.set(url, null)
-    return null
-  }
+const LENS_LABEL: Record<string, string> = {
+  LILLY:      "Lilly Opportunity",
+  HOD:        "Head of Design Path",
+  BOTH:       "Lilly + HoD Path",
 }
 
-// ─── Cursor image preview ─────────────────────────────────────────────────────
+const LENS_COLOR: Record<string, string> = {
+  LILLY:  "var(--accent-secondary)",
+  HOD:    "var(--accent-muted)",
+  BOTH:   "var(--accent-secondary)",
+}
 
-function CursorPreview({ x, y, imageUrl }: { x: number; y: number; imageUrl: string | null }) {
-  if (!imageUrl) return null
+function SignalCard({ x, y, article }: { x: number; y: number; article: Article | null }) {
+  if (!article?.relevance) return null
 
-  // Keep preview within viewport horizontally
-  const left = x + 24
-  const top  = Math.max(8, y - 90)
+  const left = Math.min(x + 20, typeof window !== "undefined" ? window.innerWidth - 300 : x + 20)
+  const top  = Math.max(8, y - 70)
+  const lens = article.signalLens || ""
+  const type = article.signalType || ""
 
   return (
     <div
@@ -495,58 +479,90 @@ function CursorPreview({ x, y, imageUrl }: { x: number; y: number; imageUrl: str
         position: "fixed",
         left,
         top,
-        width: 260,
-        height: 170,
-        borderRadius: 6,
-        overflow: "hidden",
+        width: 280,
         pointerEvents: "none",
         zIndex: 1000,
-        border: "1px solid var(--border)",
-        boxShadow: "0 12px 40px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2)",
-        opacity: 1,
-        transition: "opacity 0.12s",
         background: "var(--bg-elevated)",
+        border: "1px solid var(--border)",
+        borderRadius: 6,
+        boxShadow: "0 8px 32px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.12)",
+        overflow: "hidden",
       }}
     >
-      <img
-        src={imageUrl}
-        alt=""
-        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-        onError={e => { (e.target as HTMLImageElement).style.display = "none" }}
-      />
+      {/* Header row: type + lens */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "9px 12px 8px",
+          borderBottom: "1px solid var(--border)",
+          background: "var(--bg-surface)",
+        }}
+      >
+        {type && (
+          <span style={{
+            fontSize: 8.5,
+            fontFamily: "'SF Mono', 'Fira Code', monospace",
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: "var(--text-tertiary)",
+          }}>
+            {type}
+          </span>
+        )}
+        {lens && (
+          <span style={{
+            fontSize: 8.5,
+            fontFamily: "'SF Mono', 'Fira Code', monospace",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: LENS_COLOR[lens] || "var(--accent-muted)",
+          }}>
+            {LENS_LABEL[lens] || lens}
+          </span>
+        )}
+      </div>
+
+      {/* Hook */}
+      <div style={{ padding: "10px 12px 12px" }}>
+        <div style={{
+          fontSize: 11.5,
+          lineHeight: 1.6,
+          color: "var(--text-primary)",
+          letterSpacing: "-0.01em",
+        }}>
+          {article.relevance}
+        </div>
+      </div>
     </div>
   )
 }
 
 // ─── Feed Card ────────────────────────────────────────────────────────────────
 
-type PreviewCallbacks = {
-  onPreviewShow: (imageUrl: string | null, x: number, y: number) => void
-  onPreviewMove: (x: number, y: number) => void
-  onPreviewHide: () => void
+type SignalCallbacks = {
+  onSignalEnter: (article: Article, x: number, y: number) => void
+  onSignalMove:  (x: number, y: number) => void
+  onSignalLeave: () => void
 }
 
-function FeedCard({ article, onPreviewShow, onPreviewMove, onPreviewHide }: { article: Article } & PreviewCallbacks) {
+function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }: { article: Article } & SignalCallbacks) {
   const isExternal = article.url !== "#"
   const [hovered, setHovered] = useState(false)
-  const isHoveredRef = useRef(false)
 
-  const handleMouseEnter = async (e: React.MouseEvent) => {
+  const handleMouseEnter = (e: React.MouseEvent) => {
     setHovered(true)
-    isHoveredRef.current = true
-    if (!isExternal) return
-    const imageUrl = article.imageUrl ?? await fetchOGImage(article.url)
-    if (isHoveredRef.current) onPreviewShow(imageUrl, e.clientX, e.clientY)
+    if (article.relevance) onSignalEnter(article, e.clientX, e.clientY)
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (isHoveredRef.current) onPreviewMove(e.clientX, e.clientY)
+    onSignalMove(e.clientX, e.clientY)
   }
 
   const handleMouseLeave = () => {
     setHovered(false)
-    isHoveredRef.current = false
-    onPreviewHide()
+    onSignalLeave()
   }
 
   const content = (
@@ -558,7 +574,7 @@ function FeedCard({ article, onPreviewShow, onPreviewMove, onPreviewHide }: { ar
         display: "flex",
         padding: "14px 20px 14px 18px",
         borderBottom: "1px solid var(--border)",
-        borderLeft: `2px solid ${article.highRelevance ? "var(--accent-secondary)" : "transparent"}`,
+        borderLeft: `2px solid ${article.signalLens === "LILLY" || article.signalLens === "BOTH" ? "var(--accent-secondary)" : "transparent"}`,
         background: hovered ? "var(--bg-surface)" : "transparent",
         cursor: isExternal ? "pointer" : "default",
         transition: "background 0.12s",
@@ -605,7 +621,7 @@ function FeedCard({ article, onPreviewShow, onPreviewMove, onPreviewHide }: { ar
           <div
             style={{
               fontSize: 11.5,
-              color: article.highRelevance ? "var(--accent-muted)" : "var(--text-tertiary)",
+              color: article.signalLens === "LILLY" || article.signalLens === "BOTH" ? "var(--accent-muted)" : "var(--text-tertiary)",
               lineHeight: 1.55,
               letterSpacing: "-0.005em",
             }}
@@ -985,11 +1001,11 @@ export default function Page() {
   const [mobileTab,   setMobileTab]   = useState<"feed" | "analysis" | "cerebro">("feed")
   const { signals, briefLoading } = useChiefOfStaff(articles)
 
-  // Cursor image preview state — desktop only
-  const [preview, setPreview] = useState<{ x: number; y: number; imageUrl: string | null } | null>(null)
-  const handlePreviewShow = useCallback((imageUrl: string | null, x: number, y: number) => { setPreview({ x, y, imageUrl }) }, [])
-  const handlePreviewMove = useCallback((x: number, y: number) => { setPreview(p => p ? { ...p, x, y } : p) }, [])
-  const handlePreviewHide = useCallback(() => { setPreview(null) }, [])
+  // Signal card hover state — desktop only
+  const [signal, setSignal] = useState<{ article: Article; x: number; y: number } | null>(null)
+  const handleSignalEnter = useCallback((article: Article, x: number, y: number) => { setSignal({ article, x, y }) }, [])
+  const handleSignalMove  = useCallback((x: number, y: number) => { setSignal(s => s ? { ...s, x, y } : s) }, [])
+  const handleSignalLeave = useCallback(() => { setSignal(null) }, [])
 
   // Resizable column widths
   const [leftWidth,  setLeftWidth]  = useState(220)
@@ -1078,9 +1094,9 @@ export default function Page() {
             <FeedCard
               key={a.id}
               article={a}
-              onPreviewShow={handlePreviewShow}
-              onPreviewMove={handlePreviewMove}
-              onPreviewHide={handlePreviewHide}
+              onSignalEnter={handleSignalEnter}
+              onSignalMove={handleSignalMove}
+              onSignalLeave={handleSignalLeave}
             />
           ))
         )}
@@ -1183,11 +1199,11 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Cursor image preview — follows mouse over feed cards */}
-      <CursorPreview
-        x={preview?.x ?? 0}
-        y={preview?.y ?? 0}
-        imageUrl={preview?.imageUrl ?? null}
+      {/* Signal card — intelligence briefing on hover */}
+      <SignalCard
+        x={signal?.x ?? 0}
+        y={signal?.y ?? 0}
+        article={signal?.article ?? null}
       />
     </div>
   )

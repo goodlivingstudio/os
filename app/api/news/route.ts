@@ -13,7 +13,8 @@ interface Article {
   tag: string
   imageUrl?: string
   relevance?: string
-  highRelevance?: boolean
+  signalType?: string
+  signalLens?: string
 }
 
 interface FeedDef {
@@ -353,13 +354,28 @@ async function addRelevanceAnnotations(articles: Article[]): Promise<Article[]> 
 
   const system = `You annotate news articles for Jeremy Grant, Senior Design Director positioning for Head of Design at Eli Lilly's innovation team.
 
-Two lenses: (1) Lilly opportunity — pharma design, patient experience, AI mandate, LillyDirect, Diogo Rau's strategy. (2) Five-year path — Head of Design at AI/healthcare/sustainability/culture intersection.
+Two lenses:
+LILLY — directly relevant to the Lilly opportunity: pharma design, patient experience, AI mandate, LillyDirect, Diogo Rau's strategy, Alzheimer's access gap, direct-to-patient models.
+HOD — relevant to the five-year Head of Design path: design leadership evolution, AI × design, systems thinking, org influence, talent/compensation, creative practice.
+BOTH — strengthens both simultaneously.
 
-For each numbered headline, return a JSON array with one object per article:
-{"hook": "one sentence: why this matters to Jeremy's position specifically", "high": true if directly relevant to Lilly opportunity or five-year trajectory, false otherwise}
+For each numbered headline, return a JSON array. One object per article, same order:
+{
+  "hook": "one sharp sentence — what Jeremy specifically stands to gain or understand from this article",
+  "type": one of: DATA | CASE | OPINION | TREND | RESEARCH | NEWS | CULTURAL,
+  "lens": one of: LILLY | HOD | BOTH
+}
 
-Be precise. "High relevance" means it genuinely affects his strategy or interview preparation — not just tangentially related.
-Return only valid JSON array. Same length and order as input.`
+type definitions:
+DATA — statistics, benchmarks, or quantitative findings
+CASE — a company, project, or person as a working example
+OPINION — perspective, argument, or editorial stance
+TREND — directional signal about where an industry or practice is heading
+RESEARCH — study, report, or formal analysis
+NEWS — breaking development or announcement
+CULTURAL — creative, cultural, or broader civilizational reference
+
+Return only valid JSON array. No prose.`
 
   const items = articles
     .slice(0, 40)
@@ -396,12 +412,13 @@ Return only valid JSON array. Same length and order as input.`
     const match = text.match(/\[[\s\S]*\]/)
     if (!match) return articles
 
-    const annotations: { hook?: string; high?: boolean }[] = JSON.parse(match[0])
+    const annotations: { hook?: string; type?: string; lens?: string }[] = JSON.parse(match[0])
 
     return articles.map((a, i) => ({
       ...a,
-      relevance: annotations[i]?.hook || "",
-      highRelevance: annotations[i]?.high || false,
+      relevance:   annotations[i]?.hook || "",
+      signalType:  annotations[i]?.type || "",
+      signalLens:  annotations[i]?.lens || "",
     }))
   } catch {
     return articles // graceful fallback — never break the feed
