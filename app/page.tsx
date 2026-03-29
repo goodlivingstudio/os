@@ -1503,7 +1503,7 @@ function Cerebro({ articles, pendingPrompt }: {
                   onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)" }}
                   onMouseLeave={e => { e.currentTarget.style.color = "var(--accent-muted)" }}
                 >
-                  Discuss →
+                  Hit ↗
                 </button>
               ) : <div />}
               <div style={{ display: "flex", gap: 2 }}>
