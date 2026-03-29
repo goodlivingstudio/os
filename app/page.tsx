@@ -61,6 +61,7 @@ interface Article {
   summary: string
   category: string
   tag: string
+  imageUrl?: string
   relevance?: string
   highRelevance?: boolean
 }
@@ -450,16 +451,109 @@ function AnalysisPanel({ signals, briefLoading }: { signals: Signal[]; briefLoad
   )
 }
 
+// ─── OG image cache + Microlink fallback ─────────────────────────────────────
+// Primary: imageUrl baked into article from RSS media tags
+// Fallback: Microlink metadata API — extracts og:image from any URL, client-side
+// Results cached in module-level Map — no re-fetching on repeat hovers
+
+const ogImageCache = new Map<string, string | null>()
+
+async function fetchOGImage(url: string): Promise<string | null> {
+  if (url === "#") return null
+  if (ogImageCache.has(url)) return ogImageCache.get(url)!
+  try {
+    const controller = new AbortController()
+    const t = setTimeout(() => controller.abort(), 4000)
+    const res = await fetch(
+      `https://api.microlink.io?url=${encodeURIComponent(url)}&meta=true`,
+      { signal: controller.signal }
+    )
+    clearTimeout(t)
+    if (!res.ok) { ogImageCache.set(url, null); return null }
+    const data = await res.json()
+    const imageUrl: string | null = data?.data?.image?.url ?? null
+    ogImageCache.set(url, imageUrl)
+    return imageUrl
+  } catch {
+    ogImageCache.set(url, null)
+    return null
+  }
+}
+
+// ─── Cursor image preview ─────────────────────────────────────────────────────
+
+function CursorPreview({ x, y, imageUrl }: { x: number; y: number; imageUrl: string | null }) {
+  if (!imageUrl) return null
+
+  // Keep preview within viewport horizontally
+  const left = x + 24
+  const top  = Math.max(8, y - 90)
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        left,
+        top,
+        width: 260,
+        height: 170,
+        borderRadius: 6,
+        overflow: "hidden",
+        pointerEvents: "none",
+        zIndex: 1000,
+        border: "1px solid var(--border)",
+        boxShadow: "0 12px 40px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2)",
+        opacity: 1,
+        transition: "opacity 0.12s",
+        background: "var(--bg-elevated)",
+      }}
+    >
+      <img
+        src={imageUrl}
+        alt=""
+        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+        onError={e => { (e.target as HTMLImageElement).style.display = "none" }}
+      />
+    </div>
+  )
+}
+
 // ─── Feed Card ────────────────────────────────────────────────────────────────
 
-function FeedCard({ article }: { article: Article }) {
+type PreviewCallbacks = {
+  onPreviewShow: (imageUrl: string | null, x: number, y: number) => void
+  onPreviewMove: (x: number, y: number) => void
+  onPreviewHide: () => void
+}
+
+function FeedCard({ article, onPreviewShow, onPreviewMove, onPreviewHide }: { article: Article } & PreviewCallbacks) {
   const isExternal = article.url !== "#"
   const [hovered, setHovered] = useState(false)
+  const isHoveredRef = useRef(false)
+
+  const handleMouseEnter = async (e: React.MouseEvent) => {
+    setHovered(true)
+    isHoveredRef.current = true
+    if (!isExternal) return
+    const imageUrl = article.imageUrl ?? await fetchOGImage(article.url)
+    if (isHoveredRef.current) onPreviewShow(imageUrl, e.clientX, e.clientY)
+  }
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isHoveredRef.current) onPreviewMove(e.clientX, e.clientY)
+  }
+
+  const handleMouseLeave = () => {
+    setHovered(false)
+    isHoveredRef.current = false
+    onPreviewHide()
+  }
 
   const content = (
     <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       style={{
         display: "flex",
         padding: "14px 20px 14px 18px",
@@ -891,6 +985,12 @@ export default function Page() {
   const [mobileTab,   setMobileTab]   = useState<"feed" | "analysis" | "cerebro">("feed")
   const { signals, briefLoading } = useChiefOfStaff(articles)
 
+  // Cursor image preview state — desktop only
+  const [preview, setPreview] = useState<{ x: number; y: number; imageUrl: string | null } | null>(null)
+  const handlePreviewShow = useCallback((imageUrl: string | null, x: number, y: number) => { setPreview({ x, y, imageUrl }) }, [])
+  const handlePreviewMove = useCallback((x: number, y: number) => { setPreview(p => p ? { ...p, x, y } : p) }, [])
+  const handlePreviewHide = useCallback(() => { setPreview(null) }, [])
+
   // Resizable column widths
   const [leftWidth,  setLeftWidth]  = useState(220)
   const [rightWidth, setRightWidth] = useState(320)
@@ -974,7 +1074,15 @@ export default function Page() {
             no articles
           </div>
         ) : (
-          filtered.map(a => <FeedCard key={a.id} article={a} />)
+          filtered.map(a => (
+            <FeedCard
+              key={a.id}
+              article={a}
+              onPreviewShow={handlePreviewShow}
+              onPreviewMove={handlePreviewMove}
+              onPreviewHide={handlePreviewHide}
+            />
+          ))
         )}
       </div>
     </main>
@@ -1074,6 +1182,13 @@ export default function Page() {
           <Cerebro articles={articles} />
         </div>
       </div>
+
+      {/* Cursor image preview — follows mouse over feed cards */}
+      <CursorPreview
+        x={preview?.x ?? 0}
+        y={preview?.y ?? 0}
+        imageUrl={preview?.imageUrl ?? null}
+      />
     </div>
   )
 }
