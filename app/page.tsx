@@ -885,6 +885,9 @@ function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }: { art
               color: "var(--text-tertiary)",
               lineHeight: 1.55,
               letterSpacing: "-0.005em",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}
           >
             {article.summary}
