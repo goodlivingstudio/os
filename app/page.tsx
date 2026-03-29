@@ -259,21 +259,20 @@ function FeedStatus({ isLive, feedHealth, feedLoading }: {
   const ref = useRef<HTMLDivElement>(null)
   const [tipPos, setTipPos] = useState({ top: 0, left: 0 })
 
-  const hasIssue = !feedLoading && (!isLive || (feedHealth && feedHealth.stubCategories.length > 0))
-  const dotColor = feedLoading
-    ? "var(--text-tertiary)"
-    : hasIssue
-    ? "#ef4444"
-    : "var(--live)"
-  const label = feedLoading ? "Loading" : hasIssue && !isLive ? "Error" : "Live"
+  const isError  = !feedLoading && !isLive
+  const dotColor = feedLoading ? "var(--text-tertiary)" : isError ? "#ef4444" : "var(--live)"
+  const label    = feedLoading ? "Loading" : isError ? "Error" : "Live"
 
   const buildDiagnostic = (): string => {
     if (!feedHealth) return "Fetching feed status…"
-    if (!isLive) return `All ${feedHealth.sourcesTotal} sources failed to respond. Showing curated fallback content only.`
-    const stubs = feedHealth.stubCategories
-    if (stubs.length === 0) return `All ${feedHealth.sourcesTotal} sources connected and healthy.`
-    const stubNames = stubs.map(t => TAG_LABEL[t] || t).join(", ")
-    return `${feedHealth.sourcesFailed} of ${feedHealth.sourcesTotal} sources failed. Fallback content for: ${stubNames}.`
+    if (!isLive) {
+      const stubs = feedHealth.stubCategories
+      const stubNames = stubs.length > 0
+        ? `Fallback content active for: ${stubs.map(t => TAG_LABEL[t] || t).join(", ")}.`
+        : ""
+      return `All ${feedHealth.sourcesTotal} sources failed to respond. ${stubNames} No live data available.`
+    }
+    return ""
   }
 
   const handleMouseEnter = () => {
@@ -292,7 +291,7 @@ function FeedStatus({ isLive, feedHealth, feedLoading }: {
       style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 6, cursor: "default" }}
     >
       <span
-        className={!feedLoading && !hasIssue ? "live-beacon" : undefined}
+        className={!feedLoading && !isError ? "live-beacon" : undefined}
         style={{
           width: 5,
           height: 5,
@@ -311,16 +310,16 @@ function FeedStatus({ isLive, feedHealth, feedLoading }: {
         {label}
       </span>
 
-      {/* Diagnostic tooltip */}
-      {tooltipVisible && !feedLoading && (
+      {/* Diagnostic tooltip — only on error */}
+      {tooltipVisible && isError && (
         <div style={{
           position: "fixed",
           top: tipPos.top,
           left: tipPos.left,
           zIndex: 2000,
-          width: 220,
+          width: 224,
           background: "var(--bg-elevated)",
-          border: `1px solid ${hasIssue ? "#ef4444" : "var(--border)"}`,
+          border: "1px solid #ef4444",
           borderRadius: 3,
           padding: "8px 10px",
           pointerEvents: "none",
@@ -330,10 +329,10 @@ function FeedStatus({ isLive, feedHealth, feedLoading }: {
             fontFamily: "'SF Mono', 'Fira Code', monospace",
             letterSpacing: "0.08em",
             textTransform: "uppercase",
-            color: hasIssue ? "#ef4444" : "var(--live)",
+            color: "#ef4444",
             marginBottom: 5,
           }}>
-            {hasIssue ? "Feed Issue" : "Feed Healthy"}
+            Feed Offline
           </div>
           <div style={{
             fontSize: 11,
