@@ -95,7 +95,7 @@ export function Ticker() {
             whiteSpace: "nowrap",
             willChange: "transform",
             animationName: "ticker-scroll",
-            animationDuration: `${Math.round(HEADLINES.length * 5 / 3)}s`,
+            animationDuration: `${Math.round(HEADLINES.length * 0.6)}s`,
             animationTimingFunction: "linear",
             animationIterationCount: "infinite",
             animationPlayState: paused ? "paused" : "running",
@@ -109,6 +109,7 @@ export function Ticker() {
                 href={h.url}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="ticker-item"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -135,11 +136,11 @@ export function Ticker() {
                   {h.cat}
                 </span>
                 <span
+                  className="ticker-text"
                   style={{
                     fontSize: 11.5,
-                    color: paused ? "var(--text-primary)" : "var(--text-secondary)",
+                    color: "var(--text-secondary)",
                     letterSpacing: "-0.01em",
-                    transition: "color 0.15s",
                   }}
                 >
                   {h.text}
@@ -150,6 +151,10 @@ export function Ticker() {
         </div>
       </div>
 
+      <style>{`
+        .ticker-item .ticker-text { transition: color 0.15s; }
+        .ticker-item:hover .ticker-text { color: var(--text-primary); }
+      `}</style>
     </div>
   )
 }
