@@ -1389,7 +1389,7 @@ function Cerebro({ articles, pendingPrompt }: {
       />
 
       {/* Input */}
-      <div style={{ flexShrink: 0, borderTop: "1px solid var(--border)" }}>
+      <div style={{ flexShrink: 0 }}>
         {/* Attachment previews */}
         {attachments.length > 0 && (
           <div style={{ display: "flex", gap: 6, padding: "8px 14px 0", flexWrap: "wrap" }}>
@@ -1428,31 +1428,74 @@ function Cerebro({ articles, pendingPrompt }: {
           <div
             style={{
               display: "flex",
-              alignItems: "flex-end",
+              alignItems: "flex-start",
               gap: 8,
               background: "var(--bg-elevated)",
               borderRadius: 12,
-              padding: "8px 10px",
+              padding: "10px 10px",
               border: "1px solid var(--border)",
               transition: "border-color 0.15s",
             }}
           >
-            {/* Attach button */}
-            <button
-              onClick={() => fileRef.current?.click()}
-              aria-label="Attach file"
-              style={{
-                flexShrink: 0, width: 28, height: 28, display: "flex",
-                alignItems: "center", justifyContent: "center", borderRadius: 6,
-                border: "none", background: "transparent",
-                color: attachments.length > 0 ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                cursor: "pointer", transition: "color 0.15s", padding: 0,
-              }}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M13.5 7.5L7.5 13.5C6.12 14.88 3.88 14.88 2.5 13.5C1.12 12.12 1.12 9.88 2.5 8.5L9.5 1.5C10.33 0.67 11.67 0.67 12.5 1.5C13.33 2.33 13.33 3.67 12.5 4.5L6.5 10.5C6.22 10.78 5.78 10.78 5.5 10.5C5.22 10.22 5.22 9.78 5.5 9.5L10.5 4.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-              </svg>
-            </button>
+            {/* Attach + Mic side by side */}
+            <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
+              <button
+                onClick={() => fileRef.current?.click()}
+                aria-label="Attach file"
+                style={{
+                  width: 28, height: 28, display: "flex",
+                  alignItems: "center", justifyContent: "center", borderRadius: 6,
+                  border: "none", background: "transparent",
+                  color: attachments.length > 0 ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                  cursor: "pointer", transition: "all 0.15s", padding: 0,
+                }}
+                onMouseEnter={e => { if (!attachments.length) e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.color = "var(--text-secondary)" }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = attachments.length > 0 ? "var(--accent-secondary)" : "var(--text-tertiary)" }}
+              >
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                  <path d="M13.5 7.5L7.5 13.5C6.12 14.88 3.88 14.88 2.5 13.5C1.12 12.12 1.12 9.88 2.5 8.5L9.5 1.5C10.33 0.67 11.67 0.67 12.5 1.5C13.33 2.33 13.33 3.67 12.5 4.5L6.5 10.5C6.22 10.78 5.78 10.78 5.5 10.5C5.22 10.22 5.22 9.78 5.5 9.5L10.5 4.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+                </svg>
+              </button>
+              {speechSupported && (
+                <button
+                  onClick={() => {
+                    if (isRecording) {
+                      recognitionRef.current?.stop()
+                      setIsRecording(false)
+                    } else {
+                      const rec = createSpeechRecognition()
+                      if (!rec) return
+                      recognitionRef.current = rec
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      rec.onresult = (e: any) => {
+                        const text = e.results?.[0]?.[0]?.transcript || ""
+                        setInput(prev => prev ? `${prev} ${text}` : text)
+                      }
+                      rec.onend = () => setIsRecording(false)
+                      rec.onerror = () => setIsRecording(false)
+                      rec.start()
+                      setIsRecording(true)
+                    }
+                  }}
+                  aria-label={isRecording ? "Stop recording" : "Voice input"}
+                  style={{
+                    width: 28, height: 28, display: "flex",
+                    alignItems: "center", justifyContent: "center", borderRadius: 6,
+                    border: "none", background: isRecording ? "rgba(239,68,68,0.15)" : "transparent",
+                    color: isRecording ? "#ef4444" : "var(--text-tertiary)",
+                    cursor: "pointer", transition: "all 0.15s", padding: 0,
+                  }}
+                  onMouseEnter={e => { if (!isRecording) { e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.color = "var(--text-secondary)" } }}
+                  onMouseLeave={e => { if (!isRecording) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" } }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <rect x="5.5" y="1" width="5" height="9" rx="2.5" stroke="currentColor" strokeWidth="1.2"/>
+                    <path d="M3 7.5C3 10.26 5.24 12.5 8 12.5C10.76 12.5 13 10.26 13 7.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+                    <line x1="8" y1="12.5" x2="8" y2="15" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+                  </svg>
+                </button>
+              )}
+            </div>
 
             {/* Textarea */}
             <textarea
@@ -1466,72 +1509,14 @@ function Cerebro({ articles, pendingPrompt }: {
                 }
               }}
               placeholder="Message Cerebro..."
-              rows={1}
+              rows={3}
               style={{
                 flex: 1, resize: "none", background: "transparent", border: "none", outline: "none",
                 fontSize: 13, fontFamily: "inherit", color: "var(--text-primary)",
-                caretColor: "var(--accent-secondary)", lineHeight: "22px", maxHeight: 96,
+                caretColor: "var(--accent-secondary)", lineHeight: "22px", maxHeight: 140,
+                minHeight: 66,
               }}
             />
-
-            {/* Mic button */}
-            {speechSupported && (
-              <button
-                onClick={() => {
-                  if (isRecording) {
-                    recognitionRef.current?.stop()
-                    setIsRecording(false)
-                  } else {
-                    const rec = createSpeechRecognition()
-                    if (!rec) return
-                    recognitionRef.current = rec
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    rec.onresult = (e: any) => {
-                      const text = e.results?.[0]?.[0]?.transcript || ""
-                      setInput(prev => prev ? `${prev} ${text}` : text)
-                    }
-                    rec.onend = () => setIsRecording(false)
-                    rec.onerror = () => setIsRecording(false)
-                    rec.start()
-                    setIsRecording(true)
-                  }
-                }}
-                aria-label={isRecording ? "Stop recording" : "Voice input"}
-                style={{
-                  flexShrink: 0, width: 28, height: 28, display: "flex",
-                  alignItems: "center", justifyContent: "center", borderRadius: 6,
-                  border: "none", background: isRecording ? "rgba(239,68,68,0.15)" : "transparent",
-                  color: isRecording ? "#ef4444" : "var(--text-tertiary)",
-                  cursor: "pointer", transition: "all 0.15s", padding: 0,
-                }}
-              >
-                <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                  <rect x="5.5" y="1" width="5" height="9" rx="2.5" stroke="currentColor" strokeWidth="1.2"/>
-                  <path d="M3 7.5C3 10.26 5.24 12.5 8 12.5C10.76 12.5 13 10.26 13 7.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-                  <line x1="8" y1="12.5" x2="8" y2="15" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-                </svg>
-              </button>
-            )}
-
-            {/* Send button */}
-            <button
-              onClick={() => send(input)}
-              disabled={(!input.trim() && attachments.length === 0) || loading}
-              aria-label="Send message"
-              style={{
-                flexShrink: 0, width: 28, height: 28, display: "flex",
-                alignItems: "center", justifyContent: "center", borderRadius: 8,
-                border: "none",
-                background: (input.trim() || attachments.length > 0) && !loading ? "var(--accent-secondary)" : "transparent",
-                color: (input.trim() || attachments.length > 0) && !loading ? "var(--bg-primary)" : "var(--text-tertiary)",
-                cursor: (input.trim() || attachments.length > 0) && !loading ? "pointer" : "default",
-                transition: "all 0.15s", padding: 0,
-              }}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ display: "block" }}>
-                <path d="M3 13V3L14 8L3 13Z" fill="currentColor" />
-              </svg>
-            </button>
           </div>
         </div>
       </div>
