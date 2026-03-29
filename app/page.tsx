@@ -1428,7 +1428,7 @@ function Cerebro({ articles, pendingPrompt }: {
           <div
             style={{
               display: "flex",
-              alignItems: "flex-start",
+              alignItems: "flex-end",
               gap: 8,
               background: "var(--bg-elevated)",
               borderRadius: 12,
@@ -1437,8 +1437,29 @@ function Cerebro({ articles, pendingPrompt }: {
               transition: "border-color 0.15s",
             }}
           >
-            {/* Attach + Mic side by side */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 2, flexShrink: 0 }}>
+            {/* Textarea */}
+            <textarea
+              ref={inputRef}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault()
+                  send(input)
+                }
+              }}
+              placeholder="Message Cerebro..."
+              rows={3}
+              style={{
+                flex: 1, resize: "none", background: "transparent", border: "none", outline: "none",
+                fontSize: 13, fontFamily: "inherit", color: "var(--text-primary)",
+                caretColor: "var(--accent-secondary)", lineHeight: "22px", maxHeight: 140,
+                minHeight: 66,
+              }}
+            />
+
+            {/* Attach + Mic — bottom right */}
+            <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
               <button
                 onClick={() => fileRef.current?.click()}
                 aria-label="Attach file"
@@ -1496,27 +1517,6 @@ function Cerebro({ articles, pendingPrompt }: {
                 </button>
               )}
             </div>
-
-            {/* Textarea */}
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault()
-                  send(input)
-                }
-              }}
-              placeholder="Message Cerebro..."
-              rows={3}
-              style={{
-                flex: 1, resize: "none", background: "transparent", border: "none", outline: "none",
-                fontSize: 13, fontFamily: "inherit", color: "var(--text-primary)",
-                caretColor: "var(--accent-secondary)", lineHeight: "22px", maxHeight: 140,
-                minHeight: 66,
-              }}
-            />
           </div>
         </div>
       </div>
