@@ -960,6 +960,28 @@ function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }: { art
 
 // ─── Cerebro ──────────────────────────────────────────────────────────────────
 
+// ─── Speech Recognition helper ───────────────────────────────────────────────
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function createSpeechRecognition(): any {
+  if (typeof window === "undefined") return null
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const w = window as any
+  const SR = w.SpeechRecognition || w.webkitSpeechRecognition
+  if (!SR) return null
+  const recognition = new SR()
+  recognition.continuous = false
+  recognition.interimResults = false
+  recognition.lang = "en-US"
+  return recognition
+}
+
+function hasSpeechSupport() {
+  if (typeof window === "undefined") return false
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const w = window as any
+  return !!(w.SpeechRecognition || w.webkitSpeechRecognition)
+}
+
 function Cerebro({ articles, pendingPrompt }: {
   articles: Article[]
   pendingPrompt?: { text: string; id: number } | null
@@ -971,8 +993,14 @@ function Cerebro({ articles, pendingPrompt }: {
   const [memory,    setMemory]    = useState(false)
   const [sessionId, setSessionId] = useState("")
   const [followUps, setFollowUps] = useState<{ question: string; alternatives: string[] } | null>(null)
+  const [cerebroModel, setCerebroModel] = useState<"haiku" | "sonnet" | "opus">("sonnet")
+  const [attachments, setAttachments] = useState<{ data: string; media_type: string; name: string; preview: string }[]>([])
+  const [isRecording, setIsRecording] = useState(false)
   const inputRef  = useRef<HTMLTextAreaElement>(null)
+  const fileRef   = useRef<HTMLInputElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recognitionRef = useRef<any>(null)
 
   // Generate or restore a persistent session ID
   useEffect(() => {
@@ -982,7 +1010,12 @@ function Cerebro({ articles, pendingPrompt }: {
       localStorage.setItem("cerebro-session", id)
     }
     setSessionId(id)
+    const storedModel = localStorage.getItem("cerebro-model") as "haiku" | "sonnet" | "opus" | null
+    if (storedModel) setCerebroModel(storedModel)
   }, [])
+
+  const [speechSupported, setSpeechSupported] = useState(false)
+  useEffect(() => { setSpeechSupported(hasSpeechSupport()) }, [])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -1005,6 +1038,7 @@ function Cerebro({ articles, pendingPrompt }: {
       setMessages(updated)
       setInput("")
       setFollowUps(null)
+      setAttachments([])
       setLoading(true)
 
       const feedContext = articles.length
@@ -1021,7 +1055,13 @@ function Cerebro({ articles, pendingPrompt }: {
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: updated.filter(m => m.role !== "search"), feedContext, sessionId }),
+          body: JSON.stringify({
+            messages: updated.filter(m => m.role !== "search"),
+            feedContext,
+            sessionId,
+            model: cerebroModel,
+            images: attachments.length > 0 ? attachments.map(a => ({ media_type: a.media_type, data: a.data })) : undefined,
+          }),
         })
         const data = await res.json()
         if (!res.ok || data.error) {
@@ -1281,77 +1321,204 @@ function Cerebro({ articles, pendingPrompt }: {
         <div ref={bottomRef} />
       </div>
 
-      {/* Input */}
-      <div
-        style={{
-          flexShrink: 0,
-          padding: "12px 14px",
-          borderTop: "1px solid var(--border)",
+      {/* Hidden file input */}
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*,.pdf"
+        multiple
+        style={{ display: "none" }}
+        onChange={e => {
+          const files = e.target.files
+          if (!files) return
+          Array.from(files).forEach(file => {
+            const reader = new FileReader()
+            reader.onload = () => {
+              const result = reader.result as string
+              const base64 = result.split(",")[1]
+              const media_type = file.type || "image/png"
+              const preview = media_type.startsWith("image/") ? result : ""
+              setAttachments(prev => [...prev, { data: base64, media_type, name: file.name, preview }])
+            }
+            reader.readAsDataURL(file)
+          })
+          e.target.value = ""
         }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-end",
-            gap: 10,
-            background: "var(--bg-elevated)",
-            borderRadius: 12,
-            padding: "10px 14px",
-            border: "1px solid var(--border)",
-            transition: "border-color 0.15s",
-          }}
-        >
-          <textarea
-            ref={inputRef}
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault()
-                send(input)
-              }
-            }}
-            placeholder="Message Cerebro..."
-            rows={1}
+      />
+
+      {/* Input */}
+      <div style={{ flexShrink: 0, borderTop: "1px solid var(--border)" }}>
+        {/* Attachment previews */}
+        {attachments.length > 0 && (
+          <div style={{ display: "flex", gap: 6, padding: "8px 14px 0", flexWrap: "wrap" }}>
+            {attachments.map((att, i) => (
+              <div key={i} style={{ position: "relative" }}>
+                {att.preview ? (
+                  <img src={att.preview} alt={att.name} style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 6, border: "1px solid var(--border)" }} />
+                ) : (
+                  <div style={{
+                    width: 48, height: 48, borderRadius: 6, border: "1px solid var(--border)",
+                    background: "var(--bg-elevated)", display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 9, color: "var(--text-tertiary)", textTransform: "uppercase",
+                  }}>
+                    {att.name.split(".").pop()}
+                  </div>
+                )}
+                <button
+                  onClick={() => setAttachments(prev => prev.filter((_, j) => j !== i))}
+                  aria-label={`Remove ${att.name}`}
+                  style={{
+                    position: "absolute", top: -4, right: -4, width: 16, height: 16,
+                    borderRadius: "50%", background: "var(--text-tertiary)", color: "var(--bg-primary)",
+                    border: "none", cursor: "pointer", fontSize: 10, lineHeight: 1,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Model selector row */}
+        <div style={{ display: "flex", alignItems: "center", padding: "8px 14px 4px", gap: 2 }}>
+          {(["haiku", "sonnet", "opus"] as const).map(m => (
+            <button
+              key={m}
+              onClick={() => { setCerebroModel(m); localStorage.setItem("cerebro-model", m) }}
+              aria-label={`Use Claude ${m}`}
+              aria-pressed={cerebroModel === m}
+              style={{
+                padding: "2px 8px",
+                borderRadius: 4,
+                border: "none",
+                background: cerebroModel === m ? "var(--bg-elevated)" : "transparent",
+                color: cerebroModel === m ? "var(--text-primary)" : "var(--text-tertiary)",
+                fontSize: 10,
+                fontFamily: "'SF Mono', 'Fira Code', monospace",
+                letterSpacing: "0.02em",
+                cursor: "pointer",
+                transition: "all 0.15s",
+                fontWeight: cerebroModel === m ? 600 : 400,
+                textTransform: "capitalize",
+              }}
+            >
+              {m}
+            </button>
+          ))}
+        </div>
+
+        {/* Main input bar */}
+        <div style={{ padding: "0 14px 12px" }}>
+          <div
             style={{
-              flex: 1,
-              resize: "none",
-              background: "transparent",
-              border: "none",
-              outline: "none",
-              fontSize: 13,
-              fontFamily: "inherit",
-              color: "var(--text-primary)",
-              caretColor: "var(--accent-secondary)",
-              lineHeight: "22px",
-              maxHeight: 96,
-            }}
-          />
-          {/* Send button */}
-          <button
-            onClick={() => send(input)}
-            disabled={!input.trim() || loading}
-            aria-label="Send message"
-            style={{
-              flexShrink: 0,
-              width: 28,
-              height: 28,
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 8,
-              border: "none",
-              background: input.trim() && !loading ? "var(--accent-secondary)" : "transparent",
-              color: input.trim() && !loading ? "var(--bg-primary)" : "var(--text-tertiary)",
-              cursor: input.trim() && !loading ? "pointer" : "default",
-              transition: "all 0.15s",
-              padding: 0,
+              alignItems: "flex-end",
+              gap: 8,
+              background: "var(--bg-elevated)",
+              borderRadius: 12,
+              padding: "8px 10px",
+              border: "1px solid var(--border)",
+              transition: "border-color 0.15s",
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ display: "block" }}>
-              <path d="M3 13V3L14 8L3 13Z" fill="currentColor" />
-            </svg>
-          </button>
+            {/* Attach button */}
+            <button
+              onClick={() => fileRef.current?.click()}
+              aria-label="Attach file"
+              style={{
+                flexShrink: 0, width: 28, height: 28, display: "flex",
+                alignItems: "center", justifyContent: "center", borderRadius: 6,
+                border: "none", background: "transparent",
+                color: attachments.length > 0 ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                cursor: "pointer", transition: "color 0.15s", padding: 0,
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M13.5 7.5L7.5 13.5C6.12 14.88 3.88 14.88 2.5 13.5C1.12 12.12 1.12 9.88 2.5 8.5L9.5 1.5C10.33 0.67 11.67 0.67 12.5 1.5C13.33 2.33 13.33 3.67 12.5 4.5L6.5 10.5C6.22 10.78 5.78 10.78 5.5 10.5C5.22 10.22 5.22 9.78 5.5 9.5L10.5 4.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+              </svg>
+            </button>
+
+            {/* Textarea */}
+            <textarea
+              ref={inputRef}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault()
+                  send(input)
+                }
+              }}
+              placeholder="Message Cerebro..."
+              rows={1}
+              style={{
+                flex: 1, resize: "none", background: "transparent", border: "none", outline: "none",
+                fontSize: 13, fontFamily: "inherit", color: "var(--text-primary)",
+                caretColor: "var(--accent-secondary)", lineHeight: "22px", maxHeight: 96,
+              }}
+            />
+
+            {/* Mic button */}
+            {speechSupported && (
+              <button
+                onClick={() => {
+                  if (isRecording) {
+                    recognitionRef.current?.stop()
+                    setIsRecording(false)
+                  } else {
+                    const rec = createSpeechRecognition()
+                    if (!rec) return
+                    recognitionRef.current = rec
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    rec.onresult = (e: any) => {
+                      const text = e.results?.[0]?.[0]?.transcript || ""
+                      setInput(prev => prev ? `${prev} ${text}` : text)
+                    }
+                    rec.onend = () => setIsRecording(false)
+                    rec.onerror = () => setIsRecording(false)
+                    rec.start()
+                    setIsRecording(true)
+                  }
+                }}
+                aria-label={isRecording ? "Stop recording" : "Voice input"}
+                style={{
+                  flexShrink: 0, width: 28, height: 28, display: "flex",
+                  alignItems: "center", justifyContent: "center", borderRadius: 6,
+                  border: "none", background: isRecording ? "rgba(239,68,68,0.15)" : "transparent",
+                  color: isRecording ? "#ef4444" : "var(--text-tertiary)",
+                  cursor: "pointer", transition: "all 0.15s", padding: 0,
+                }}
+              >
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                  <rect x="5.5" y="1" width="5" height="9" rx="2.5" stroke="currentColor" strokeWidth="1.2"/>
+                  <path d="M3 7.5C3 10.26 5.24 12.5 8 12.5C10.76 12.5 13 10.26 13 7.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+                  <line x1="8" y1="12.5" x2="8" y2="15" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+                </svg>
+              </button>
+            )}
+
+            {/* Send button */}
+            <button
+              onClick={() => send(input)}
+              disabled={(!input.trim() && attachments.length === 0) || loading}
+              aria-label="Send message"
+              style={{
+                flexShrink: 0, width: 28, height: 28, display: "flex",
+                alignItems: "center", justifyContent: "center", borderRadius: 8,
+                border: "none",
+                background: (input.trim() || attachments.length > 0) && !loading ? "var(--accent-secondary)" : "transparent",
+                color: (input.trim() || attachments.length > 0) && !loading ? "var(--bg-primary)" : "var(--text-tertiary)",
+                cursor: (input.trim() || attachments.length > 0) && !loading ? "pointer" : "default",
+                transition: "all 0.15s", padding: 0,
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ display: "block" }}>
+                <path d="M3 13V3L14 8L3 13Z" fill="currentColor" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
