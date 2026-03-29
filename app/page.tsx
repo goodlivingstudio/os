@@ -466,12 +466,13 @@ const LENS_COLOR: Record<string, string> = {
 }
 
 function SignalCard({ x, y, article }: { x: number; y: number; article: Article | null }) {
-  if (!article?.relevance) return null
+  if (!article) return null
 
   const left = Math.min(x + 20, typeof window !== "undefined" ? window.innerWidth - 300 : x + 20)
   const top  = Math.max(8, y - 70)
   const lens = article.signalLens || ""
   const type = article.signalType || ""
+  const hook = article.relevance || article.summary || ""
 
   return (
     <div
@@ -532,7 +533,7 @@ function SignalCard({ x, y, article }: { x: number; y: number; article: Article 
           color: "var(--text-primary)",
           letterSpacing: "-0.01em",
         }}>
-          {article.relevance}
+          {hook}
         </div>
       </div>
     </div>
@@ -553,7 +554,7 @@ function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }: { art
 
   const handleMouseEnter = (e: React.MouseEvent) => {
     setHovered(true)
-    if (article.relevance) onSignalEnter(article, e.clientX, e.clientY)
+    if (isExternal) onSignalEnter(article, e.clientX, e.clientY)
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
