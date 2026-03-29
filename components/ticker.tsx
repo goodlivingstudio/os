@@ -2,6 +2,16 @@
 
 import { useState } from "react"
 
+// ─── Day-mode category palette ────────────────────────────────────────────────
+
+const CAT_STYLE_DAY: Record<string, { bg: string; color: string }> = {
+  AI:      { bg: "rgba(74,122,40,0.1)",    color: "#3A6B1A" },
+  DESIGN:  { bg: "rgba(59,130,246,0.08)",  color: "#1A6FAD" },
+  PHARMA:  { bg: "rgba(168,85,247,0.08)",  color: "#7C3AAD" },
+  CAREER:  { bg: "rgba(200,110,40,0.1)",   color: "#8C4A14" },
+  CULTURE: { bg: "rgba(100,90,80,0.08)",   color: "#5C5550" },
+}
+
 // ─── Curated signal set — quintessential content for 5-year positioning ───────
 // Categories: AI · DESIGN · PHARMA · CAREER · CULTURE
 // Updated manually as the landscape shifts. Interleaved — no two same cat in a row.
@@ -49,8 +59,15 @@ const CAT_STYLE: Record<string, { bg: string; color: string }> = {
   CULTURE: { bg: "rgba(160,152,144,0.12)", color: "#A09890" },
 }
 
-export function Ticker() {
+export function Ticker({
+  isDay = false,
+  onToggle,
+}: {
+  isDay?: boolean
+  onToggle?: () => void
+}) {
   const [paused, setPaused] = useState(false)
+  const catStyle = isDay ? CAT_STYLE_DAY : CAT_STYLE
 
   return (
     <div
@@ -102,7 +119,7 @@ export function Ticker() {
           }}
         >
           {[...HEADLINES, ...HEADLINES].map((h, i) => {
-            const style = CAT_STYLE[h.cat] || CAT_STYLE.AI
+            const style = catStyle[h.cat] || catStyle.AI
             return (
               <a
                 key={i}
@@ -139,7 +156,6 @@ export function Ticker() {
                   className="ticker-text"
                   style={{
                     fontSize: 11.5,
-                    color: "var(--text-secondary)",
                     letterSpacing: "-0.01em",
                   }}
                 >
@@ -151,8 +167,35 @@ export function Ticker() {
         </div>
       </div>
 
+      {/* Day / night toggle */}
+      {onToggle && (
+        <button
+          onClick={onToggle}
+          title={isDay ? "Switch to night mode" : "Switch to day mode"}
+          style={{
+            flexShrink: 0,
+            width: 36,
+            height: 36,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "transparent",
+            border: "none",
+            borderLeft: "1px solid var(--border)",
+            cursor: "pointer",
+            fontSize: 13,
+            color: "var(--text-tertiary)",
+            transition: "color 0.15s",
+          }}
+          onMouseEnter={e => (e.currentTarget.style.color = "var(--text-secondary)")}
+          onMouseLeave={e => (e.currentTarget.style.color = "var(--text-tertiary)")}
+        >
+          {isDay ? "☾" : "☀"}
+        </button>
+      )}
+
       <style>{`
-        .ticker-item .ticker-text { transition: color 0.15s; }
+        .ticker-text { color: var(--text-secondary); transition: color 0.15s; }
         .ticker-item:hover .ticker-text { color: var(--text-primary); }
       `}</style>
     </div>

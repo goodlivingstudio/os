@@ -3,6 +3,36 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Ticker } from "@/components/ticker"
 
+// ─── Day / Night parting ──────────────────────────────────────────────────────
+
+function useDayNight() {
+  const [isDay, setIsDay] = useState(false)
+
+  useEffect(() => {
+    const stored = localStorage.getItem("dispatch-theme")
+    let day: boolean
+    if (stored === "day" || stored === "night") {
+      day = stored === "day"
+    } else {
+      const h = new Date().getHours()
+      day = h >= 6 && h < 20
+    }
+    setIsDay(day)
+    document.documentElement.classList.toggle("day", day)
+  }, [])
+
+  const toggle = useCallback(() => {
+    setIsDay(prev => {
+      const next = !prev
+      document.documentElement.classList.toggle("day", next)
+      localStorage.setItem("dispatch-theme", next ? "day" : "night")
+      return next
+    })
+  }, [])
+
+  return { isDay, toggle }
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Article {
@@ -776,7 +806,7 @@ function Divider({ onMouseDown }: { onMouseDown: (e: React.MouseEvent) => void }
           bottom: 0,
           left: 4,
           width: 1,
-          background: hovered ? "var(--accent-muted)" : "var(--border)",
+          background: hovered ? "var(--text-tertiary)" : "var(--border)",
           transition: "background 0.15s",
         }}
       />
@@ -789,6 +819,7 @@ function clamp(val: number, min: number, max: number) {
 }
 
 export default function Page() {
+  const { isDay, toggle: toggleTheme } = useDayNight()
   const [articles,    setArticles]    = useState<Article[]>([])
   const [isLive,      setIsLive]      = useState(false)
   const [feedLoading, setFeedLoading] = useState(true)
@@ -854,7 +885,7 @@ export default function Page() {
       }}
     >
       {/* Signal ticker — full width, pinned top */}
-      <Ticker />
+      <Ticker isDay={isDay} onToggle={toggleTheme} />
 
       {/* Three-column workspace */}
       <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>

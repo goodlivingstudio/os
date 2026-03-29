@@ -60,6 +60,20 @@ html, body {
   animation: pulse-text 1.8s ease-in-out infinite;
 }
 
+/* ─── Day mode (warm light) ─────────────────────────────────────── */
+:root.day {
+  --bg-primary:       #F8F6F2;
+  --bg-surface:       #EFECE6;
+  --bg-elevated:      #E6E3DD;
+  --accent-primary:   #E4F0E8;
+  --accent-secondary: #2E6018;
+  --accent-muted:     #4A7A28;
+  --text-primary:     #1C1A17;
+  --text-secondary:   #4A4640;
+  --text-tertiary:    #8C8880;
+  --border:           #DDD9D2;
+}
+
 /* ─── Ticker scroll ────────────────────────────────────────────── */
 @keyframes ticker-scroll {
   from { transform: translateX(0); }
