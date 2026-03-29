@@ -1423,21 +1423,18 @@ function Cerebro({ articles, pendingPrompt }: {
           </div>
         )}
 
-        {/* Main input bar */}
+        {/* Main input bar — two-zone: textarea above, toolbar below */}
         <div style={{ padding: "0 14px 12px" }}>
           <div
             style={{
-              display: "flex",
-              alignItems: "flex-end",
-              gap: 8,
               background: "var(--bg-elevated)",
               borderRadius: 12,
-              padding: "10px 10px",
               border: "1px solid var(--border)",
               transition: "border-color 0.15s",
+              overflow: "hidden",
             }}
           >
-            {/* Textarea */}
+            {/* Zone 1: Textarea — full width */}
             <textarea
               ref={inputRef}
               value={input}
@@ -1449,31 +1446,34 @@ function Cerebro({ articles, pendingPrompt }: {
                 }
               }}
               placeholder="Message Cerebro..."
-              rows={3}
+              rows={2}
               style={{
-                flex: 1, resize: "none", background: "transparent", border: "none", outline: "none",
+                width: "100%", resize: "none", background: "transparent", border: "none", outline: "none",
                 fontSize: 13, fontFamily: "inherit", color: "var(--text-primary)",
-                caretColor: "var(--accent-secondary)", lineHeight: "22px", maxHeight: 140,
-                minHeight: 66,
+                caretColor: "var(--accent-secondary)", lineHeight: "22px", maxHeight: 120,
+                minHeight: 48, padding: "12px 14px 0",
               }}
             />
 
-            {/* Attach + Mic — bottom right */}
-            <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
+            {/* Zone 2: Toolbar row */}
+            <div style={{
+              display: "flex", alignItems: "center", justifyContent: "flex-end",
+              padding: "4px 10px 8px", gap: 2,
+            }}>
               <button
                 onClick={() => fileRef.current?.click()}
                 aria-label="Attach file"
                 style={{
-                  width: 28, height: 28, display: "flex",
-                  alignItems: "center", justifyContent: "center", borderRadius: 6,
+                  width: 30, height: 30, display: "flex",
+                  alignItems: "center", justifyContent: "center", borderRadius: 7,
                   border: "none", background: "transparent",
                   color: attachments.length > 0 ? "var(--accent-secondary)" : "var(--text-tertiary)",
                   cursor: "pointer", transition: "all 0.15s", padding: 0,
                 }}
-                onMouseEnter={e => { if (!attachments.length) e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.color = "var(--text-secondary)" }}
+                onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)"; if (!attachments.length) e.currentTarget.style.color = "var(--text-secondary)" }}
                 onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = attachments.length > 0 ? "var(--accent-secondary)" : "var(--text-tertiary)" }}
               >
-                <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M13.5 7.5L7.5 13.5C6.12 14.88 3.88 14.88 2.5 13.5C1.12 12.12 1.12 9.88 2.5 8.5L9.5 1.5C10.33 0.67 11.67 0.67 12.5 1.5C13.33 2.33 13.33 3.67 12.5 4.5L6.5 10.5C6.22 10.78 5.78 10.78 5.5 10.5C5.22 10.22 5.22 9.78 5.5 9.5L10.5 4.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
                 </svg>
               </button>
@@ -1500,8 +1500,8 @@ function Cerebro({ articles, pendingPrompt }: {
                   }}
                   aria-label={isRecording ? "Stop recording" : "Voice input"}
                   style={{
-                    width: 28, height: 28, display: "flex",
-                    alignItems: "center", justifyContent: "center", borderRadius: 6,
+                    width: 30, height: 30, display: "flex",
+                    alignItems: "center", justifyContent: "center", borderRadius: 7,
                     border: "none", background: isRecording ? "rgba(239,68,68,0.15)" : "transparent",
                     color: isRecording ? "#ef4444" : "var(--text-tertiary)",
                     cursor: "pointer", transition: "all 0.15s", padding: 0,
@@ -1509,7 +1509,7 @@ function Cerebro({ articles, pendingPrompt }: {
                   onMouseEnter={e => { if (!isRecording) { e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.color = "var(--text-secondary)" } }}
                   onMouseLeave={e => { if (!isRecording) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" } }}
                 >
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
                     <rect x="5.5" y="1" width="5" height="9" rx="2.5" stroke="currentColor" strokeWidth="1.2"/>
                     <path d="M3 7.5C3 10.26 5.24 12.5 8 12.5C10.76 12.5 13 10.26 13 7.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
                     <line x1="8" y1="12.5" x2="8" y2="15" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
