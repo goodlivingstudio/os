@@ -64,6 +64,7 @@ interface Article {
   relevance?: string
   signalType?: string
   signalLens?: string
+  signalScores?: { lilly: number; hod: number; urgency: number }
 }
 
 interface Message {
@@ -453,26 +454,69 @@ function AnalysisPanel({ signals, briefLoading }: { signals: Signal[]; briefLoad
 
 // ─── Signal Card — hover intelligence briefing ────────────────────────────────
 
-const LENS_LABEL: Record<string, string> = {
-  LILLY:      "Lilly Opportunity",
-  HOD:        "Head of Design Path",
-  BOTH:       "Lilly + HoD Path",
+const LENS_COLOR: Record<string, string> = {
+  LILLY: "var(--accent-secondary)",
+  HOD:   "var(--accent-muted)",
+  BOTH:  "var(--accent-secondary)",
 }
 
-const LENS_COLOR: Record<string, string> = {
-  LILLY:  "var(--accent-secondary)",
-  HOD:    "var(--accent-muted)",
-  BOTH:   "var(--accent-secondary)",
+const LENS_LABEL: Record<string, string> = {
+  LILLY: "Lilly",
+  HOD:   "HoD Path",
+  BOTH:  "Lilly · HoD",
+}
+
+function ScoreRow({ label, value, color }: { label: string; value: number; color: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <span style={{
+        fontSize: 7.5,
+        fontFamily: "'SF Mono', 'Fira Code', monospace",
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
+        color: "var(--text-tertiary)",
+        width: 54,
+        flexShrink: 0,
+      }}>
+        {label}
+      </span>
+      <div style={{ flex: 1, height: 2, background: "var(--border)", borderRadius: 1 }}>
+        <div style={{
+          width: `${value * 10}%`,
+          height: "100%",
+          background: color,
+          borderRadius: 1,
+          transition: "width 0.3s ease",
+        }} />
+      </div>
+      <span style={{
+        fontSize: 7.5,
+        fontFamily: "'SF Mono', 'Fira Code', monospace",
+        color: "var(--text-tertiary)",
+        width: 10,
+        textAlign: "right",
+        flexShrink: 0,
+      }}>
+        {value}
+      </span>
+    </div>
+  )
 }
 
 function SignalCard({ x, y, article }: { x: number; y: number; article: Article | null }) {
   if (!article) return null
 
-  const left = Math.min(x + 20, typeof window !== "undefined" ? window.innerWidth - 300 : x + 20)
-  const top  = Math.max(8, y - 70)
-  const lens = article.signalLens || ""
-  const type = article.signalType || ""
-  const hook = article.relevance || article.summary || ""
+  const vw   = typeof window !== "undefined" ? window.innerWidth : 1200
+  const left = Math.min(x + 18, vw - 284)
+  const top  = Math.max(8, y - 52)
+  const lens   = article.signalLens || ""
+  const type   = article.signalType || ""
+  const hook   = article.relevance || ""
+  const scores = article.signalScores
+  const accentColor = LENS_COLOR[lens] || "var(--border)"
+
+  // Need at least a hook or scores to show the card
+  if (!hook && !scores) return null
 
   return (
     <div
@@ -480,62 +524,81 @@ function SignalCard({ x, y, article }: { x: number; y: number; article: Article 
         position: "fixed",
         left,
         top,
-        width: 280,
+        width: 268,
         pointerEvents: "none",
         zIndex: 1000,
-        background: "var(--bg-elevated)",
+        background: "var(--bg-surface)",
+        borderRadius: 4,
         border: "1px solid var(--border)",
-        borderRadius: 6,
-        boxShadow: "0 8px 32px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.12)",
+        borderLeft: `3px solid ${accentColor}`,
+        boxShadow: "0 4px 24px rgba(0,0,0,0.2), 0 1px 4px rgba(0,0,0,0.1)",
         overflow: "hidden",
       }}
     >
-      {/* Header row: type + lens */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "9px 12px 8px",
-          borderBottom: "1px solid var(--border)",
-          background: "var(--bg-surface)",
-        }}
-      >
-        {type && (
+      {/* Meta strip: source · type  →  lens */}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 5,
+        padding: "7px 12px 6px",
+        borderBottom: "1px solid var(--border)",
+      }}>
+        <span style={{
+          fontSize: 8,
+          fontFamily: "'SF Mono', 'Fira Code', monospace",
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          color: "var(--text-tertiary)",
+          flexShrink: 0,
+        }}>{article.source}</span>
+        {type && <>
+          <span style={{ fontSize: 8, color: "var(--text-tertiary)", opacity: 0.35 }}>·</span>
           <span style={{
-            fontSize: 8.5,
+            fontSize: 8,
             fontFamily: "'SF Mono', 'Fira Code', monospace",
             letterSpacing: "0.1em",
             textTransform: "uppercase",
             color: "var(--text-tertiary)",
-          }}>
-            {type}
-          </span>
-        )}
-        {lens && (
-          <span style={{
-            fontSize: 8.5,
-            fontFamily: "'SF Mono', 'Fira Code', monospace",
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: LENS_COLOR[lens] || "var(--accent-muted)",
-          }}>
-            {LENS_LABEL[lens] || lens}
-          </span>
-        )}
+          }}>{type}</span>
+        </>}
+        {lens && <span style={{
+          marginLeft: "auto",
+          fontSize: 8,
+          fontFamily: "'SF Mono', 'Fira Code', monospace",
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: accentColor,
+          flexShrink: 0,
+        }}>{LENS_LABEL[lens]}</span>}
       </div>
 
       {/* Hook */}
-      <div style={{ padding: "10px 12px 12px" }}>
-        <div style={{
-          fontSize: 11.5,
-          lineHeight: 1.6,
-          color: "var(--text-primary)",
-          letterSpacing: "-0.01em",
-        }}>
-          {hook}
+      {hook && (
+        <div style={{ padding: "9px 12px 10px", borderBottom: scores ? "1px solid var(--border)" : "none" }}>
+          <div style={{
+            fontSize: 11,
+            lineHeight: 1.6,
+            color: "var(--text-primary)",
+            letterSpacing: "-0.01em",
+          }}>
+            {hook}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Score bars */}
+      {scores && (
+        <div style={{
+          padding: "9px 12px 10px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 6,
+        }}>
+          <ScoreRow label="Lilly"    value={scores.lilly}   color="var(--accent-secondary)" />
+          <ScoreRow label="HoD Path" value={scores.hod}     color="var(--accent-muted)" />
+          <ScoreRow label="Urgency"  value={scores.urgency} color="var(--text-tertiary)" />
+        </div>
+      )}
     </div>
   )
 }

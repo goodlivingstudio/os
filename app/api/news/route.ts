@@ -15,6 +15,7 @@ interface Article {
   relevance?: string
   signalType?: string
   signalLens?: string
+  signalScores?: { lilly: number; hod: number; urgency: number }
 }
 
 interface FeedDef {
@@ -363,7 +364,8 @@ For each numbered headline, return a JSON array. One object per article, same or
 {
   "hook": "one sharp sentence — what Jeremy specifically stands to gain or understand from this article",
   "type": one of: DATA | CASE | OPINION | TREND | RESEARCH | NEWS | CULTURAL,
-  "lens": one of: LILLY | HOD | BOTH
+  "lens": one of: LILLY | HOD | BOTH,
+  "scores": { "lilly": 0-10, "hod": 0-10, "urgency": 0-10 }
 }
 
 type definitions:
@@ -374,6 +376,11 @@ TREND — directional signal about where an industry or practice is heading
 RESEARCH — study, report, or formal analysis
 NEWS — breaking development or announcement
 CULTURAL — creative, cultural, or broader civilizational reference
+
+score definitions:
+lilly — how directly this strengthens Jeremy's positioning for the Lilly role (0=none, 10=essential reading)
+hod — how directly this builds toward the five-year Head of Design path (0=none, 10=essential)
+urgency — how time-sensitive this signal is; will it matter less in 2 weeks? (0=evergreen, 10=act now)
 
 Return only valid JSON array. No prose.`
 
@@ -412,13 +419,14 @@ Return only valid JSON array. No prose.`
     const match = text.match(/\[[\s\S]*\]/)
     if (!match) return articles
 
-    const annotations: { hook?: string; type?: string; lens?: string }[] = JSON.parse(match[0])
+    const annotations: { hook?: string; type?: string; lens?: string; scores?: { lilly: number; hod: number; urgency: number } }[] = JSON.parse(match[0])
 
     return articles.map((a, i) => ({
       ...a,
-      relevance:   annotations[i]?.hook || "",
-      signalType:  annotations[i]?.type || "",
-      signalLens:  annotations[i]?.lens || "",
+      relevance:    annotations[i]?.hook || "",
+      signalType:   annotations[i]?.type || "",
+      signalLens:   annotations[i]?.lens || "",
+      signalScores: annotations[i]?.scores || undefined,
     }))
   } catch {
     return articles // graceful fallback — never break the feed
