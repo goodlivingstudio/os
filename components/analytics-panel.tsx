@@ -637,6 +637,7 @@ function AnalyticsCard({ card, analytics, onClick }: {
           ? `0 8px 28px rgba(0,0,0,0.28), 0 0 0 1px ${accent}33`
           : "0 1px 4px rgba(0,0,0,0.15)",
         height: "100%",
+        minHeight: 160,
         boxSizing: "border-box",
         overflow: "hidden",
       }}
@@ -686,8 +687,8 @@ export function AnalyticsPanel({ articles, onDeliberate }: {
   const [active, setActive] = useState<CardDef | null>(null)
 
   return (
-    <main style={{ flex: 1, overflowY: "auto", padding: "24px 24px", background: "var(--bg-primary)" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, maxWidth: 700 }}>
+    <main style={{ flex: 1, overflowY: "auto", padding: "24px 28px", background: "var(--bg-primary)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, maxWidth: 960 }}>
         {CARDS.map((card, i) => (
           <div key={card.id} style={{ gridColumn: i === 4 ? "1 / -1" : "auto" }}>
             <AnalyticsCard card={card} analytics={analytics} onClick={() => setActive(card)} />
