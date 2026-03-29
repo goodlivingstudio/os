@@ -389,17 +389,18 @@ function LeftRail({
       >
         {/* Top row: wordmark + clock */}
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
-          <div
+          <h1
             style={{
               fontSize: 20,
               fontWeight: 700,
               letterSpacing: "-0.04em",
               color: "var(--text-primary)",
               lineHeight: 1,
+              margin: 0,
             }}
           >
             Dispatch
-          </div>
+          </h1>
           <LiveClock />
         </div>
 
@@ -487,7 +488,8 @@ function LeftRail({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                padding: "6px 20px",
+                padding: "8px 20px",
+                minHeight: 32,
                 background: isActive ? "var(--bg-elevated)" : "transparent",
                 border: "none",
                 cursor: "pointer",
@@ -1144,7 +1146,8 @@ function Cerebro({ articles, pendingPrompt }: {
   }, [messages])
 
   return (
-    <div
+    <section
+      aria-label="Cerebro strategic advisor"
       style={{
         display: "flex",
         flexDirection: "column",
@@ -1238,6 +1241,9 @@ function Cerebro({ articles, pendingPrompt }: {
 
       {/* Messages */}
       <div
+        role="log"
+        aria-label="Cerebro conversation"
+        aria-live="polite"
         style={{
           flex: 1,
           overflowY: "auto",
@@ -1503,7 +1509,7 @@ function Cerebro({ articles, pendingPrompt }: {
                   onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)" }}
                   onMouseLeave={e => { e.currentTarget.style.color = "var(--accent-muted)" }}
                 >
-                  Hit ↗
+                  BUMP ↗
                 </button>
               ) : <div />}
               <div style={{ display: "flex", gap: 2 }}>
@@ -1568,7 +1574,7 @@ function Cerebro({ articles, pendingPrompt }: {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }
 
@@ -1722,7 +1728,7 @@ export default function Page() {
       }}
     >
       {!isMobile && <ChiefOfStaffBand signals={signals} briefLoading={briefLoading} onDeliberate={handleDeliberate} />}
-      <div style={{ flex: 1, overflowY: "auto" }}>
+      <div id="main-feed" role="feed" aria-label="Intelligence feed" tabIndex={-1} style={{ flex: 1, overflowY: "auto" }}>
         {feedLoading ? (
           <div style={{ padding: "32px 20px" }}>
             {[...Array(8)].map((_, i) => (

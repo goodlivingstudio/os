@@ -27,6 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} h-full`}>
       <body className="h-full antialiased">
+        <a href="#main-feed" className="skip-link">Skip to feed</a>
         {children}
         {process.env.NODE_ENV === "development" && (
           <div style={{

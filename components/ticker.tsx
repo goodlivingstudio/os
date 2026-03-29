@@ -18,11 +18,11 @@ const SKIN_LABEL: Record<Skin, string> = {
 // ─── Day-mode category palette ────────────────────────────────────────────────
 
 const CAT_STYLE_DAY: Record<string, { bg: string; color: string }> = {
-  AI:      { bg: "rgba(74,122,40,0.1)",    color: "#3A6B1A" },
-  DESIGN:  { bg: "rgba(59,130,246,0.08)",  color: "#1A6FAD" },
-  PHARMA:  { bg: "rgba(168,85,247,0.08)",  color: "#7C3AAD" },
-  CAREER:  { bg: "rgba(200,110,40,0.1)",   color: "#8C4A14" },
-  CULTURE: { bg: "rgba(100,90,80,0.08)",   color: "#5C5550" },
+  AI:      { bg: "rgba(34,90,12,0.08)",    color: "#2B5A10" },
+  DESIGN:  { bg: "rgba(30,80,180,0.07)",   color: "#1A4F8C" },
+  PHARMA:  { bg: "rgba(110,40,180,0.07)",  color: "#5C2A96" },
+  CAREER:  { bg: "rgba(160,70,10,0.08)",   color: "#7A3A0A" },
+  CULTURE: { bg: "rgba(70,60,50,0.06)",    color: "#4A4038" },
 }
 
 // ─── Curated signal set — quintessential content for 5-year positioning ───────
@@ -65,11 +65,11 @@ const HEADLINES = [
 // ─── Category palette — tuned for dark terminal bg ───────────────────────────
 
 const CAT_STYLE: Record<string, { bg: string; color: string }> = {
-  AI:      { bg: "rgba(74,122,40,0.18)",   color: "#6B8F4A" },
-  DESIGN:  { bg: "rgba(59,130,246,0.12)",  color: "#7BAADF" },
-  PHARMA:  { bg: "rgba(168,85,247,0.12)",  color: "#C084FC" },
-  CAREER:  { bg: "rgba(251,146,60,0.12)",  color: "#D4956A" },
-  CULTURE: { bg: "rgba(160,152,144,0.12)", color: "#A09890" },
+  AI:      { bg: "rgba(100,160,60,0.14)",  color: "#9BC472" },
+  DESIGN:  { bg: "rgba(100,170,255,0.10)", color: "#8FBBE8" },
+  PHARMA:  { bg: "rgba(190,130,255,0.10)", color: "#CDA0FF" },
+  CAREER:  { bg: "rgba(255,170,80,0.10)",  color: "#E0A870" },
+  CULTURE: { bg: "rgba(180,170,160,0.10)", color: "#B5ADA5" },
 }
 
 export function Ticker({
@@ -205,8 +205,8 @@ export function Ticker({
               aria-label={`${SKIN_LABEL[s]} skin${skin === s ? " (active)" : ""}`}
               aria-pressed={skin === s}
               style={{
-                width: 20,
-                height: 20,
+                width: 28,
+                height: 28,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",

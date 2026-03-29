@@ -43,6 +43,32 @@ html, body {
   font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Cascadia Code', monospace;
 }
 
+/* ─── Skip link ───────────────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  z-index: 10000;
+  text-decoration: none;
+}
+.skip-link:focus {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  width: auto;
+  height: auto;
+  padding: 8px 16px;
+  background: var(--accent-secondary);
+  color: var(--bg-primary);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  overflow: visible;
+}
+
 /* ─── Focus styles ─────────────────────────────────────────────── */
 /* Visible focus ring for keyboard navigation — all interactive elements */
 :focus-visible {
@@ -217,4 +243,16 @@ body::after {
 /* Day mode: lighter grain */
 :root.day body::after {
   opacity: 0.025;
+}
+
+/* ─── Reduced motion ──────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  body::after {
+    animation: none !important;
+  }
 }
