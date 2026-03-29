@@ -616,33 +616,10 @@ function AnalysisPanel({ signals, briefLoading }: { signals: Signal[]; briefLoad
 
 // ─── Signal Card — hover intelligence briefing ────────────────────────────────
 
-const TYPE_LABEL: Record<string, string> = {
-  DATA:     "Data Signal",
-  CASE:     "Case Study",
-  OPINION:  "Perspective",
-  TREND:    "Trend",
-  RESEARCH: "Research",
-  NEWS:     "News",
-  CULTURAL: "Cultural",
-}
-
-const URGENCY_TIER = (score: number | undefined): { label: string; color: string } => {
-  if (score === undefined) return { label: "Pending",  color: "var(--text-tertiary)" }
-  if (score >= 8)          return { label: "Breaking", color: "#c0392b" }
-  if (score >= 5)          return { label: "Timely",   color: "var(--accent-primary)" }
-  return                          { label: "Context",  color: "var(--text-tertiary)" }
-}
-
 const LENS_COLOR: Record<string, string> = {
   LILLY: "var(--accent-secondary)",
   HOD:   "var(--accent-muted)",
   BOTH:  "var(--accent-secondary)",
-}
-
-const LENS_LABEL: Record<string, string> = {
-  LILLY: "Lilly",
-  HOD:   "HoD Path",
-  BOTH:  "Lilly · HoD",
 }
 
 
@@ -653,11 +630,7 @@ function SignalCard({ x, y, article }: { x: number; y: number; article: Article 
   const left        = Math.min(x + 18, vw - 276)
   const top         = Math.max(8, y - 44)
   const lens        = article.signalLens || ""
-  const type        = article.signalType || ""
-  const scores      = article.signalScores
   const accentColor = LENS_COLOR[lens] || "var(--border)"
-  const urgency     = URGENCY_TIER(scores?.urgency)
-  const typeLabel   = TYPE_LABEL[type] || ""
 
   return (
     <div style={{
@@ -673,41 +646,6 @@ function SignalCard({ x, y, article }: { x: number; y: number; article: Article 
       borderLeft: `3px solid ${accentColor}`,
       overflow: "hidden",
     }}>
-      {/* Header: signal type + lens — only render when at least one value is known */}
-      {(typeLabel || lens) && (
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "6px 10px 5px",
-          borderBottom: "1px solid var(--border)",
-        }}>
-          {typeLabel && (
-            <span style={{
-              fontSize: 9,
-              fontFamily: "'SF Mono', 'Fira Code', monospace",
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "var(--text-secondary)",
-            }}>
-              {typeLabel}
-            </span>
-          )}
-          {lens && (
-            <span style={{
-              fontSize: 9,
-              fontFamily: "'SF Mono', 'Fira Code', monospace",
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              color: accentColor,
-              marginLeft: "auto",
-            }}>
-              {LENS_LABEL[lens]}
-            </span>
-          )}
-        </div>
-      )}
-
       {/* Summary — what it is, factual, muted */}
       {article.summary && (
         <div style={{ padding: article.relevance ? "10px 12px 9px" : "10px 12px" }}>
@@ -736,24 +674,6 @@ function SignalCard({ x, y, article }: { x: number; y: number; article: Article 
           }}>
             {article.relevance}
           </div>
-        </div>
-      )}
-
-      {/* Footer: urgency tier — only when scores present */}
-      {scores && (
-        <div style={{
-          padding: "5px 10px 6px",
-          borderTop: "1px solid var(--border)",
-        }}>
-          <span style={{
-            fontSize: 9,
-            fontFamily: "'SF Mono', 'Fira Code', monospace",
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: urgency.color,
-          }}>
-            {urgency.label}
-          </span>
         </div>
       )}
     </div>
