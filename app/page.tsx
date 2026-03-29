@@ -843,7 +843,7 @@ function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }: { art
       }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>
-        {/* Meta line */}
+        {/* Eyebrow: source · category · time */}
         <div
           style={{
             fontSize: 10,
@@ -871,23 +871,23 @@ function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }: { art
             color: hovered ? "var(--text-primary)" : "var(--text-secondary)",
             lineHeight: 1.4,
             letterSpacing: "-0.02em",
-            marginBottom: article.relevance ? 7 : 0,
+            marginBottom: article.summary ? 7 : 0,
           }}
         >
           {article.title}
         </div>
 
-        {/* Relevance hook */}
-        {article.relevance && (
+        {/* Summary — static one-liner, always shown, never swaps to relevancy */}
+        {article.summary && (
           <div
             style={{
               fontSize: 11.5,
-              color: article.signalLens === "LILLY" || article.signalLens === "BOTH" ? "var(--accent-muted)" : "var(--text-tertiary)",
+              color: "var(--text-tertiary)",
               lineHeight: 1.55,
               letterSpacing: "-0.005em",
             }}
           >
-            {article.relevance}
+            {article.summary}
           </div>
         )}
       </div>
