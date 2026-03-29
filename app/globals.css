@@ -1,65 +1,17 @@
 @import "tailwindcss";
 
-/* ─── Light mode (default) ─────────────────────────────────────── */
+/* ─── Terminal Design System ──────────────────────────────────── */
 :root {
-  --bg:      #EEECEA;   /* warm gray page, like macOS desktop */
-  --surf:    #FFFFFF;   /* tile backgrounds */
-  --surf2:   #F5F3EF;   /* secondary surfaces */
-  --bdr:     #E0DDD6;
-  --bdr2:    #CCC9C0;
-  --t1:      #1A1816;
-  --t2:      #4A4640;
-  --t3:      #8A8680;
-  --t4:      #BCB9B0;
-  --acc:     #3D7A1E;
-  --acc-l:   #ECF5E5;
-
-  --radius:  14px;
-  --shadow:  0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-hover: 0 6px 20px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
-
-  /* Category colors — dark enough to read on white tiles */
-  --cat-policy:            #2E6090;
-  --cat-ai:                #1570A6;
-  --cat-design-industry:   #5E4A8A;
-  --cat-creative-practice: #8A5C1A;
-  --cat-market:            #8A4E1A;
-  --cat-health:            #2E6E3A;
-  --cat-company:           #7A3E1A;
-  --cat-design-leadership: #7A2E52;
-  --cat-creative-tech:     #1A6A6A;
-  --cat-culture:           #7A2E2E;
-  --cat-data:              #1A6A4A;
-}
-
-/* ─── Dark mode ────────────────────────────────────────────────── */
-:root.dark {
-  --bg:      #141412;
-  --surf:    #1E1E1B;
-  --surf2:   #252522;
-  --bdr:     #2A2A26;
-  --bdr2:    #363630;
-  --t1:      #EDEBE5;
-  --t2:      #8A8882;
-  --t3:      #524F4A;
-  --t4:      #333028;
-  --acc:     #6CB842;
-  --acc-l:   #0E1E08;
-
-  --shadow:  0 1px 4px rgba(0,0,0,0.3);
-  --shadow-hover: 0 6px 24px rgba(0,0,0,0.4);
-
-  --cat-policy:            #7B9EC8;
-  --cat-ai:                #5BB5E8;
-  --cat-design-industry:   #A892D4;
-  --cat-creative-practice: #D4A76A;
-  --cat-market:            #D4956A;
-  --cat-health:            #7AB87A;
-  --cat-company:           #D4846A;
-  --cat-design-leadership: #CC7A9E;
-  --cat-creative-tech:     #5EC4C4;
-  --cat-culture:           #C47A7A;
-  --cat-data:              #7AC4A8;
+  --bg-primary:       #0F0F0D;
+  --bg-surface:       #161614;
+  --bg-elevated:      #1E1E1B;
+  --accent-primary:   #2A4A14;
+  --accent-secondary: #4A7A28;
+  --accent-muted:     #6B8F4A;
+  --text-primary:     #F0EBE0;
+  --text-secondary:   #A09890;
+  --text-tertiary:    #6B6560;
+  --border:           #2A2A26;
 }
 
 /* ─── Base ─────────────────────────────────────────────────────── */
@@ -67,27 +19,43 @@
 
 html, body {
   height: 100%;
-  background: var(--bg);
-  color: var(--t1);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-::selection { background: var(--acc-l); color: var(--t1); }
+::selection {
+  background: var(--accent-primary);
+  color: var(--text-primary);
+}
 
 ::-webkit-scrollbar { width: 3px; height: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--bdr2); border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-/* Category text colors */
-.cat-policy            { color: var(--cat-policy); }
-.cat-ai                { color: var(--cat-ai); }
-.cat-design-industry   { color: var(--cat-design-industry); }
-.cat-creative-practice { color: var(--cat-creative-practice); }
-.cat-market            { color: var(--cat-market); }
-.cat-health            { color: var(--cat-health); }
-.cat-company           { color: var(--cat-company); }
-.cat-design-leadership { color: var(--cat-design-leadership); }
-.cat-creative-tech     { color: var(--cat-creative-tech); }
-.cat-culture           { color: var(--cat-culture); }
-.cat-data              { color: var(--cat-data); }
+/* ─── Monospace stack ──────────────────────────────────────────── */
+.mono {
+  font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Cascadia Code', monospace;
+}
+
+/* ─── Cursor blink ─────────────────────────────────────────────── */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink 1.1s step-end infinite;
+  color: var(--accent-secondary);
+}
+
+/* ─── Loading pulse ────────────────────────────────────────────── */
+@keyframes pulse-text {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+
+.loading-pulse {
+  animation: pulse-text 1.8s ease-in-out infinite;
+}

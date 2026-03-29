@@ -11,6 +11,9 @@ interface Article {
   summary: string
   category: string
   tag: string
+  imageUrl?: string
+  relevance?: string
+  highRelevance?: boolean
 }
 
 interface FeedDef {
@@ -341,6 +344,70 @@ function interleave(items: Article[]): Article[] {
   return result
 }
 
+// ─── Haiku Relevance Annotation ───────────────────────────────────────────────
+// One Haiku call per 30-min cache window — annotates all articles at ingestion
+
+async function addRelevanceAnnotations(articles: Article[]): Promise<Article[]> {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey || articles.length === 0) return articles
+
+  const system = `You annotate news articles for Jeremy Grant, Senior Design Director positioning for Head of Design at Eli Lilly's innovation team.
+
+Two lenses: (1) Lilly opportunity — pharma design, patient experience, AI mandate, LillyDirect, Diogo Rau's strategy. (2) Five-year path — Head of Design at AI/healthcare/sustainability/culture intersection.
+
+For each numbered headline, return a JSON array with one object per article:
+{"hook": "one sentence: why this matters to Jeremy's position specifically", "high": true if directly relevant to Lilly opportunity or five-year trajectory, false otherwise}
+
+Be precise. "High relevance" means it genuinely affects his strategy or interview preparation — not just tangentially related.
+Return only valid JSON array. Same length and order as input.`
+
+  const items = articles
+    .slice(0, 40)
+    .map((a, i) => `${i + 1}. [${a.category}] ${a.title}`)
+    .join("\n")
+
+  try {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 12000)
+
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      signal: controller.signal,
+      headers: {
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "claude-3-5-haiku-20241022",
+        max_tokens: 3000,
+        system,
+        messages: [{ role: "user", content: items + "\n\nReturn JSON array." }],
+      }),
+    })
+
+    clearTimeout(timeout)
+    if (!res.ok) return articles
+
+    const data = await res.json()
+    const text: string = data.content?.[0]?.text || ""
+
+    // Extract JSON array from response
+    const match = text.match(/\[[\s\S]*\]/)
+    if (!match) return articles
+
+    const annotations: { hook?: string; high?: boolean }[] = JSON.parse(match[0])
+
+    return articles.map((a, i) => ({
+      ...a,
+      relevance: annotations[i]?.hook || "",
+      highRelevance: annotations[i]?.high || false,
+    }))
+  } catch {
+    return articles // graceful fallback — never break the feed
+  }
+}
+
 // ─── GET Handler ──────────────────────────────────────────────────────────────
 
 export async function GET() {
@@ -379,8 +446,11 @@ export async function GET() {
     )
   )
 
+  // Annotate with Haiku relevance hooks (one API call, cached for 30 min)
+  const annotated = await addRelevanceAnnotations(sorted)
+
   return Response.json({
-    articles: sorted,
+    articles: annotated,
     fetchedAt: new Date().toISOString(),
     isLive: liveCount > 0,
   })
