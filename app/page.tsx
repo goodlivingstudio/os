@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
+import { Ticker } from "@/components/ticker"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -515,12 +516,24 @@ function FeedCard({ article }: { article: Article }) {
 // ─── Cerebro ──────────────────────────────────────────────────────────────────
 
 function Cerebro({ articles }: { articles: Article[] }) {
-  const [messages, setMessages] = useState<Message[]>([])
-  const [input, setInput]       = useState("")
-  const [loading, setLoading]   = useState(false)
-  const [tokens, setTokens]     = useState(0)
+  const [messages,  setMessages]  = useState<Message[]>([])
+  const [input,     setInput]     = useState("")
+  const [loading,   setLoading]   = useState(false)
+  const [tokens,    setTokens]    = useState(0)
+  const [memory,    setMemory]    = useState(false)
+  const [sessionId, setSessionId] = useState("")
   const inputRef  = useRef<HTMLTextAreaElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
+
+  // Generate or restore a persistent session ID
+  useEffect(() => {
+    let id = localStorage.getItem("cerebro-session")
+    if (!id) {
+      id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+      localStorage.setItem("cerebro-session", id)
+    }
+    setSessionId(id)
+  }, [])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -556,7 +569,7 @@ function Cerebro({ articles }: { articles: Article[] }) {
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: updated.filter(m => m.role !== "search"), feedContext }),
+          body: JSON.stringify({ messages: updated.filter(m => m.role !== "search"), feedContext, sessionId }),
         })
         const data = await res.json()
         if (!res.ok || data.error) {
@@ -572,6 +585,7 @@ function Cerebro({ articles }: { articles: Article[] }) {
             { role: "assistant", content: data.text || "// empty response" },
           ])
           setTokens(t => t + (data.inputTokens || 0) + (data.outputTokens || 0))
+          if (data.memoryActive) setMemory(true)
         }
       } catch (err) {
         setMessages(prev => [
@@ -618,17 +632,33 @@ function Cerebro({ articles }: { articles: Article[] }) {
         >
           Cerebro
         </span>
-        {tokens > 0 && (
-          <span
-            style={{
-              fontSize: 9,
-              fontFamily: "'SF Mono', 'Fira Code', monospace",
-              color: "var(--text-tertiary)",
-            }}
-          >
-            {tokens.toLocaleString()}t
-          </span>
-        )}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {memory && (
+            <span
+              title="Conversation memory active — Cerebro remembers previous sessions"
+              style={{
+                fontSize: 8,
+                fontFamily: "'SF Mono', 'Fira Code', monospace",
+                color: "var(--accent-muted)",
+                letterSpacing: "0.06em",
+                opacity: 0.7,
+              }}
+            >
+              ◈ mem
+            </span>
+          )}
+          {tokens > 0 && (
+            <span
+              style={{
+                fontSize: 9,
+                fontFamily: "'SF Mono', 'Fira Code', monospace",
+                color: "var(--text-tertiary)",
+              }}
+            >
+              {tokens.toLocaleString()}t
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Messages */}
@@ -807,11 +837,17 @@ export default function Page() {
     <div
       style={{
         display: "flex",
+        flexDirection: "column",
         height: "100vh",
         overflow: "hidden",
         background: "var(--bg-primary)",
       }}
     >
+      {/* Signal ticker — full width, pinned top */}
+      <Ticker />
+
+      {/* Three-column workspace */}
+      <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
       {/* Left Rail */}
       <LeftRail
         articles={articles}
@@ -892,6 +928,7 @@ export default function Page() {
       <div style={{ width: 320, flexShrink: 0 }}>
         <Cerebro articles={articles} />
       </div>
+      </div> {/* end three-column wrapper */}
     </div>
   )
 }

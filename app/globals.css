@@ -59,3 +59,9 @@ html, body {
 .loading-pulse {
   animation: pulse-text 1.8s ease-in-out infinite;
 }
+
+/* ─── Ticker scroll ────────────────────────────────────────────── */
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}

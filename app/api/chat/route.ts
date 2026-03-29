@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk"
+import { loadHistory, saveHistory, KV_AVAILABLE } from "@/lib/memory"
 
 function getClient() {
   const key = process.env.ANTHROPIC_API_KEY
@@ -105,7 +106,7 @@ async function exaSearch(query: string): Promise<string> {
 
 export async function POST(req: Request) {
   try {
-    const { messages, feedContext } = await req.json()
+    const { messages, feedContext, sessionId } = await req.json()
     if (!messages || !Array.isArray(messages)) {
       return Response.json({ error: "Invalid request" }, { status: 400 })
     }
@@ -114,10 +115,25 @@ export async function POST(req: Request) {
     const hasExa   = !!process.env.EXA_API_KEY
     const tools    = hasExa ? [WEB_SEARCH_TOOL] : []
 
+    // ── Load persisted history (if KV configured and sessionId provided) ─────
+    // History gives Cerebro memory across page refreshes.
+    // Client messages take precedence — we only prepend history if the client
+    // is sending fewer messages than we have stored (i.e. fresh page load).
+    let baseMessages: Array<{ role: "user" | "assistant"; content: string }> = messages
+    if (KV_AVAILABLE && sessionId && messages.length <= 2) {
+      const history = await loadHistory(sessionId)
+      if (history.length > 0) {
+        // Merge: history from KV + current messages (deduplicated by content)
+        const historyContents = new Set(history.map(m => m.content))
+        const newOnly = messages.filter((m: { content: string }) => !historyContents.has(m.content))
+        baseMessages = [...history, ...newOnly]
+      }
+    }
+
     // Inject feed context into last user message
-    const initialMessages: Anthropic.MessageParam[] = messages.map(
+    const initialMessages: Anthropic.MessageParam[] = baseMessages.map(
       (m: { role: string; content: string }, i: number) => {
-        if (i === messages.length - 1 && m.role === "user" && feedContext) {
+        if (i === baseMessages.length - 1 && m.role === "user" && feedContext) {
           return {
             role: "user" as const,
             content: `${m.content}\n\n---\nCurrent feed (${feedContext.count} articles):\n${feedContext.articles}`,
@@ -182,11 +198,24 @@ export async function POST(req: Request) {
       }
     }
 
+    // ── Persist updated conversation to KV ───────────────────────────────────
+    if (KV_AVAILABLE && sessionId && finalText) {
+      const toStore = [
+        ...baseMessages.filter(m => typeof m.content === "string").map(m => ({
+          role: m.role as "user" | "assistant",
+          content: m.content as string,
+        })),
+        { role: "assistant" as const, content: finalText },
+      ]
+      await saveHistory(sessionId, toStore)
+    }
+
     return Response.json({
-      text:        finalText,
-      inputTokens: totalInput,
-      outputTokens:totalOutput,
-      searches:    searchesPerformed, // shown in terminal UI
+      text:         finalText,
+      inputTokens:  totalInput,
+      outputTokens: totalOutput,
+      searches:     searchesPerformed,
+      memoryActive: KV_AVAILABLE,
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
