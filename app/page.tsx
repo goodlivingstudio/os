@@ -993,7 +993,6 @@ function Cerebro({ articles, pendingPrompt }: {
   const [memory,    setMemory]    = useState(false)
   const [sessionId, setSessionId] = useState("")
   const [followUps, setFollowUps] = useState<{ question: string; alternatives: string[] } | null>(null)
-  const [cerebroModel, setCerebroModel] = useState<"haiku" | "sonnet" | "opus">("sonnet")
   const [attachments, setAttachments] = useState<{ data: string; media_type: string; name: string; preview: string }[]>([])
   const [isRecording, setIsRecording] = useState(false)
   const inputRef  = useRef<HTMLTextAreaElement>(null)
@@ -1010,8 +1009,6 @@ function Cerebro({ articles, pendingPrompt }: {
       localStorage.setItem("cerebro-session", id)
     }
     setSessionId(id)
-    const storedModel = localStorage.getItem("cerebro-model") as "haiku" | "sonnet" | "opus" | null
-    if (storedModel) setCerebroModel(storedModel)
   }, [])
 
   const [speechSupported, setSpeechSupported] = useState(false)
@@ -1059,7 +1056,6 @@ function Cerebro({ articles, pendingPrompt }: {
             messages: updated.filter(m => m.role !== "search"),
             feedContext,
             sessionId,
-            model: cerebroModel,
             images: attachments.length > 0 ? attachments.map(a => ({ media_type: a.media_type, data: a.data })) : undefined,
           }),
         })
@@ -1099,6 +1095,23 @@ function Cerebro({ articles, pendingPrompt }: {
   useEffect(() => {
     if (pendingPrompt?.text) sendRef.current?.(pendingPrompt.text)
   }, [pendingPrompt?.id])
+
+  const [escalateCopied, setEscalateCopied] = useState(false)
+  const assistantCount = messages.filter(m => m.role === "assistant").length
+  const showEscalate = assistantCount >= 2
+
+  const handleEscalate = useCallback(() => {
+    const header = `Continue this Cerebro conversation in Claude Desktop. Context below.\n\n---\n\nYou are Cerebro — a strategic intelligence agent for Jeremy Grant, Senior Design Director at Code and Theory. Five-year target: Head of Design at a significant product organization (AI, healthcare, sustainability, or culture). Immediate priority: Eli Lilly permalance engagement.\n\nTwo lenses: (1) Does this matter to Lilly? (2) Does this matter to the five-year position?\n\nConversation so far:\n\n`
+    const thread = messages
+      .filter(m => m.role !== "search")
+      .map(m => `${m.role === "user" ? "Jeremy" : "Cerebro"}: ${m.content}`)
+      .join("\n\n")
+    const footer = `\n\n---\n\nContinue from here. Go deeper — this thread has been escalated for extended strategic thinking.`
+    navigator.clipboard.writeText(header + thread + footer).then(() => {
+      setEscalateCopied(true)
+      setTimeout(() => setEscalateCopied(false), 2500)
+    })
+  }, [messages])
 
   return (
     <div
@@ -1160,6 +1173,35 @@ function Cerebro({ articles, pendingPrompt }: {
             >
               {tokens.toLocaleString()}t
             </span>
+          )}
+          {showEscalate && (
+            <button
+              onClick={handleEscalate}
+              title="Copy conversation to clipboard for Claude Desktop"
+              aria-label="Continue in Claude Desktop"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+                padding: "3px 8px",
+                borderRadius: 5,
+                border: "1px solid var(--border)",
+                background: escalateCopied ? "var(--accent-secondary)" : "transparent",
+                color: escalateCopied ? "var(--bg-primary)" : "var(--text-tertiary)",
+                fontSize: 9,
+                fontFamily: "'SF Mono', 'Fira Code', monospace",
+                letterSpacing: "0.02em",
+                cursor: "pointer",
+                transition: "all 0.2s",
+              }}
+            >
+              <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
+                <path d="M5 3L3 3C1.9 3 1 3.9 1 5V13C1 14.1 1.9 15 3 15H11C12.1 15 13 14.1 13 13V11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M8 1H15V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M15 1L7 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+              {escalateCopied ? "Copied" : "Claude"}
+            </button>
           )}
         </div>
       </div>
@@ -1380,34 +1422,6 @@ function Cerebro({ articles, pendingPrompt }: {
             ))}
           </div>
         )}
-
-        {/* Model selector row */}
-        <div style={{ display: "flex", alignItems: "center", padding: "8px 14px 4px", gap: 2 }}>
-          {(["haiku", "sonnet", "opus"] as const).map(m => (
-            <button
-              key={m}
-              onClick={() => { setCerebroModel(m); localStorage.setItem("cerebro-model", m) }}
-              aria-label={`Use Claude ${m}`}
-              aria-pressed={cerebroModel === m}
-              style={{
-                padding: "2px 8px",
-                borderRadius: 4,
-                border: "none",
-                background: cerebroModel === m ? "var(--bg-elevated)" : "transparent",
-                color: cerebroModel === m ? "var(--text-primary)" : "var(--text-tertiary)",
-                fontSize: 10,
-                fontFamily: "'SF Mono', 'Fira Code', monospace",
-                letterSpacing: "0.02em",
-                cursor: "pointer",
-                transition: "all 0.15s",
-                fontWeight: cerebroModel === m ? 600 : 400,
-                textTransform: "capitalize",
-              }}
-            >
-              {m}
-            </button>
-          ))}
-        </div>
 
         {/* Main input bar */}
         <div style={{ padding: "0 14px 12px" }}>

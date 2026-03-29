@@ -145,17 +145,10 @@ async function exaSearch(query: string): Promise<string> {
 
 export async function POST(req: Request) {
   try {
-    const { messages, feedContext, sessionId, model, images } = await req.json()
+    const { messages, feedContext, sessionId, images } = await req.json()
     if (!messages || !Array.isArray(messages)) {
       return Response.json({ error: "Invalid request" }, { status: 400 })
     }
-
-    const MODEL_MAP: Record<string, string> = {
-      haiku:  "claude-haiku-4-5-20251001",
-      sonnet: "claude-sonnet-4-6",
-      opus:   "claude-opus-4-6",
-    }
-    const selectedModel = MODEL_MAP[model] || MODEL_MAP.sonnet
 
     const client   = getClient()
     const hasExa   = !!process.env.EXA_API_KEY
@@ -211,7 +204,7 @@ export async function POST(req: Request) {
 
     for (let iteration = 0; iteration < 5; iteration++) {
       const response = await client.messages.create({
-        model:      selectedModel,
+        model:      "claude-sonnet-4-6",
         max_tokens: 1000,
         system:     SYSTEM_PROMPT,
         tools,
