@@ -1438,7 +1438,7 @@ function Cerebro({ articles, pendingPrompt }: {
             }}
           >
             {/* Attach + Mic side by side */}
-            <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2, flexShrink: 0 }}>
               <button
                 onClick={() => fileRef.current?.click()}
                 aria-label="Attach file"
