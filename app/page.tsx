@@ -124,12 +124,14 @@ function LeftRail({
   onSelect,
   isLive,
   feedLoading,
+  width,
 }: {
   articles: Article[]
   active: string
   onSelect: (id: string) => void
   isLive: boolean
   feedLoading: boolean
+  width: number
 }) {
   const now  = new Date()
   const date = now.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
@@ -141,10 +143,9 @@ function LeftRail({
   return (
     <aside
       style={{
-        width: 220,
+        width,
         flexShrink: 0,
         background: "var(--bg-surface)",
-        borderRight: "1px solid var(--border)",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
@@ -751,11 +752,82 @@ function Cerebro({ articles }: { articles: Article[] }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
+// ─── Column Divider ───────────────────────────────────────────────────────────
+
+function Divider({ onMouseDown }: { onMouseDown: (e: React.MouseEvent) => void }) {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <div
+      onMouseDown={onMouseDown}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        width: 9,
+        flexShrink: 0,
+        position: "relative",
+        cursor: "col-resize",
+        zIndex: 10,
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          bottom: 0,
+          left: 4,
+          width: 1,
+          background: hovered ? "var(--accent-muted)" : "var(--border)",
+          transition: "background 0.15s",
+        }}
+      />
+    </div>
+  )
+}
+
+function clamp(val: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, val))
+}
+
 export default function Page() {
   const [articles,    setArticles]    = useState<Article[]>([])
   const [isLive,      setIsLive]      = useState(false)
   const [feedLoading, setFeedLoading] = useState(true)
   const [active,      setActive]      = useState("all")
+
+  // Resizable column widths
+  const [leftWidth,  setLeftWidth]  = useState(220)
+  const [rightWidth, setRightWidth] = useState(320)
+  const dragRef = useRef<{ side: "left"|"right"; startX: number; startW: number } | null>(null)
+
+  const startResize = useCallback((side: "left"|"right", e: React.MouseEvent) => {
+    e.preventDefault()
+    dragRef.current = {
+      side,
+      startX: e.clientX,
+      startW: side === "left" ? leftWidth : rightWidth,
+    }
+    document.body.style.cursor    = "col-resize"
+    document.body.style.userSelect = "none"
+
+    const onMove = (ev: MouseEvent) => {
+      if (!dragRef.current) return
+      const delta = ev.clientX - dragRef.current.startX
+      if (dragRef.current.side === "left") {
+        setLeftWidth(clamp(dragRef.current.startW + delta, 160, 380))
+      } else {
+        setRightWidth(clamp(dragRef.current.startW - delta, 220, 520))
+      }
+    }
+    const onUp = () => {
+      dragRef.current = null
+      document.body.style.cursor    = ""
+      document.body.style.userSelect = ""
+      document.removeEventListener("mousemove", onMove)
+      document.removeEventListener("mouseup",   onUp)
+    }
+    document.addEventListener("mousemove", onMove)
+    document.addEventListener("mouseup",   onUp)
+  }, [leftWidth, rightWidth])
 
   useEffect(() => {
     fetch("/api/news")
@@ -793,7 +865,11 @@ export default function Page() {
         onSelect={setActive}
         isLive={isLive}
         feedLoading={feedLoading}
+        width={leftWidth}
       />
+
+      {/* Left divider — draggable */}
+      <Divider onMouseDown={e => startResize("left", e)} />
 
       {/* Center Column */}
       <main
@@ -862,8 +938,11 @@ export default function Page() {
         </div>
       </main>
 
+      {/* Right divider — draggable */}
+      <Divider onMouseDown={e => startResize("right", e)} />
+
       {/* Right Rail — Cerebro */}
-      <div style={{ width: 320, flexShrink: 0 }}>
+      <div style={{ width: rightWidth, flexShrink: 0 }}>
         <Cerebro articles={articles} />
       </div>
       </div> {/* end three-column wrapper */}
