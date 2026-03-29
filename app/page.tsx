@@ -445,7 +445,7 @@ function ChiefOfStaffBand({ signals, briefLoading }: { signals: Signal[]; briefL
               style={{
                 padding: "16px 20px",
                 borderRight: i < 2 ? "1px solid var(--border)" : "none",
-                animation: `signal-reveal 0.45s cubic-bezier(0.16, 1, 0.3, 1) ${i * 90}ms both`,
+                animation: `signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${i * 160}ms both`,
               }}
             >
               <div style={{
