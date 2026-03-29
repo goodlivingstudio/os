@@ -454,6 +454,23 @@ function AnalysisPanel({ signals, briefLoading }: { signals: Signal[]; briefLoad
 
 // ─── Signal Card — hover intelligence briefing ────────────────────────────────
 
+const TYPE_LABEL: Record<string, string> = {
+  DATA:     "Data Signal",
+  CASE:     "Case Study",
+  OPINION:  "Perspective",
+  TREND:    "Trend",
+  RESEARCH: "Research",
+  NEWS:     "News",
+  CULTURAL: "Cultural",
+}
+
+const URGENCY_TIER = (score: number | undefined): { label: string; color: string } => {
+  if (score === undefined) return { label: "Pending",  color: "var(--text-tertiary)" }
+  if (score >= 8)          return { label: "Breaking", color: "#c0392b" }
+  if (score >= 5)          return { label: "Timely",   color: "var(--accent-primary)" }
+  return                          { label: "Context",  color: "var(--text-tertiary)" }
+}
+
 const LENS_COLOR: Record<string, string> = {
   LILLY: "var(--accent-secondary)",
   HOD:   "var(--accent-muted)",
@@ -506,108 +523,100 @@ function ScoreRow({ label, value, color }: { label: string; value: number; color
 function SignalCard({ x, y, article }: { x: number; y: number; article: Article | null }) {
   if (!article) return null
 
-  const vw   = typeof window !== "undefined" ? window.innerWidth : 1200
-  const left = Math.min(x + 18, vw - 284)
-  const top  = Math.max(8, y - 52)
+  const vw          = typeof window !== "undefined" ? window.innerWidth : 1200
+  const left        = Math.min(x + 18, vw - 276)
+  const top         = Math.max(8, y - 44)
   const lens        = article.signalLens || ""
   const type        = article.signalType || ""
-  const hook        = article.relevance || ""
+  const hook        = article.relevance || article.summary || ""
   const scores      = article.signalScores
   const accentColor = LENS_COLOR[lens] || "var(--border)"
-  const annotated   = !!hook
+  const urgency     = URGENCY_TIER(scores?.urgency)
+  const typeLabel   = TYPE_LABEL[type] || ""
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        left,
-        top,
-        width: 268,
-        pointerEvents: "none",
-        zIndex: 1000,
-        background: "var(--bg-surface)",
-        borderRadius: 4,
-        border: "1px solid var(--border)",
-        borderLeft: `3px solid ${accentColor}`,
-        boxShadow: "0 4px 24px rgba(0,0,0,0.2), 0 1px 4px rgba(0,0,0,0.1)",
-        overflow: "hidden",
-      }}
-    >
-      {/* Meta strip: source · type  →  lens */}
+    <div style={{
+      position: "fixed",
+      left,
+      top,
+      width: 260,
+      pointerEvents: "none",
+      zIndex: 1000,
+      background: "var(--bg-surface)",
+      borderRadius: 3,
+      border: "1px solid var(--border)",
+      borderLeft: `3px solid ${accentColor}`,
+      overflow: "hidden",
+    }}>
+      {/* Header: signal type + lens — categorical context, NOT the source */}
       <div style={{
         display: "flex",
         alignItems: "center",
-        gap: 5,
-        padding: "7px 12px 6px",
+        justifyContent: "space-between",
+        padding: "6px 10px 5px",
         borderBottom: "1px solid var(--border)",
       }}>
         <span style={{
-          fontSize: 8,
-          fontFamily: "'SF Mono', 'Fira Code', monospace",
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          color: "var(--text-tertiary)",
-          flexShrink: 0,
-        }}>{article.source}</span>
-        {type && <>
-          <span style={{ fontSize: 8, color: "var(--text-tertiary)", opacity: 0.35 }}>·</span>
-          <span style={{
-            fontSize: 8,
-            fontFamily: "'SF Mono', 'Fira Code', monospace",
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            color: "var(--text-tertiary)",
-          }}>{type}</span>
-        </>}
-        {lens && <span style={{
-          marginLeft: "auto",
-          fontSize: 8,
+          fontSize: 9,
           fontFamily: "'SF Mono', 'Fira Code', monospace",
           letterSpacing: "0.08em",
           textTransform: "uppercase",
-          color: accentColor,
-          flexShrink: 0,
-        }}>{LENS_LABEL[lens]}</span>}
+          color: typeLabel ? "var(--text-secondary)" : "var(--text-tertiary)",
+          opacity: typeLabel ? 1 : 0.4,
+        }}>
+          {typeLabel || "Signal"}
+        </span>
+        {lens && (
+          <span style={{
+            fontSize: 9,
+            fontFamily: "'SF Mono', 'Fira Code', monospace",
+            letterSpacing: "0.06em",
+            textTransform: "uppercase",
+            color: accentColor,
+          }}>
+            {LENS_LABEL[lens]}
+          </span>
+        )}
       </div>
 
-      {/* Hook or summary fallback */}
-      <div style={{ padding: "9px 12px 10px", borderBottom: "1px solid var(--border)" }}>
+      {/* Hook — why this matters */}
+      <div style={{ padding: "10px 12px 11px" }}>
         <div style={{
-          fontSize: 11,
-          lineHeight: 1.6,
-          color: annotated ? "var(--text-primary)" : "var(--text-secondary)",
+          fontSize: 12,
+          lineHeight: 1.55,
+          color: hook === article.summary ? "var(--text-secondary)" : "var(--text-primary)",
           letterSpacing: "-0.01em",
         }}>
-          {hook || article.summary}
+          {hook}
         </div>
       </div>
 
-      {/* Score bars — full when annotated, skeleton when pending */}
-      <div style={{ padding: "9px 12px 10px", display: "flex", flexDirection: "column", gap: 6 }}>
-        {scores ? (
-          <>
-            <ScoreRow label="Lilly"    value={scores.lilly}   color="var(--accent-secondary)" />
-            <ScoreRow label="HoD Path" value={scores.hod}     color="var(--accent-muted)" />
-            <ScoreRow label="Urgency"  value={scores.urgency} color="var(--text-tertiary)" />
-          </>
-        ) : (
-          // Skeleton bars — indicate structure before annotation arrives
-          ["Lilly", "HoD Path", "Urgency"].map(label => (
-            <div key={label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{
-                fontSize: 7.5,
-                fontFamily: "'SF Mono', 'Fira Code', monospace",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: "var(--text-tertiary)",
-                opacity: 0.4,
-                width: 54,
-                flexShrink: 0,
-              }}>{label}</span>
-              <div style={{ flex: 1, height: 2, background: "var(--border)", borderRadius: 1, opacity: 0.5 }} />
-            </div>
-          ))
-        )}
+      {/* Footer: urgency tier + source as attribution */}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "5px 10px 6px",
+        borderTop: "1px solid var(--border)",
+      }}>
+        <span style={{
+          fontSize: 9,
+          fontFamily: "'SF Mono', 'Fira Code', monospace",
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: urgency.color,
+        }}>
+          {urgency.label}
+        </span>
+        <span style={{
+          fontSize: 9,
+          fontFamily: "'SF Mono', 'Fira Code', monospace",
+          letterSpacing: "0.04em",
+          color: "var(--text-tertiary)",
+          opacity: 0.7,
+        }}>
+          {article.source}
+        </span>
       </div>
     </div>
   )
@@ -624,14 +633,26 @@ type SignalCallbacks = {
 function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }: { article: Article } & SignalCallbacks) {
   const isExternal = article.url !== "#"
   const [hovered, setHovered] = useState(false)
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  const isLeftHalf = (clientX: number) => {
+    if (!cardRef.current) return true
+    const rect = cardRef.current.getBoundingClientRect()
+    return clientX < rect.left + rect.width * 0.5
+  }
 
   const handleMouseEnter = (e: React.MouseEvent) => {
     setHovered(true)
-    if (isExternal) onSignalEnter(article, e.clientX, e.clientY)
+    if (isExternal && isLeftHalf(e.clientX)) onSignalEnter(article, e.clientX, e.clientY)
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    onSignalMove(e.clientX, e.clientY)
+    if (!isExternal) return
+    if (isLeftHalf(e.clientX)) {
+      onSignalMove(e.clientX, e.clientY)
+    } else {
+      onSignalLeave()
+    }
   }
 
   const handleMouseLeave = () => {
@@ -641,6 +662,7 @@ function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }: { art
 
   const content = (
     <div
+      ref={cardRef}
       onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
