@@ -45,7 +45,6 @@ const CATEGORY_CONFIG = [
   { id: "data",             label: "Data"            },
 ]
 
-const TARGET_COMPANIES = ["Shopify", "Anthropic", "Rivian", "Patagonia", "Lilly"]
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -268,68 +267,7 @@ function LeftRail({
           )
         })}
 
-        <div
-          style={{
-            margin: "12px 20px",
-            borderTop: "1px solid var(--border)",
-          }}
-        />
-
-        <div
-          style={{
-            padding: "0 20px 6px",
-            fontSize: 9,
-            fontFamily: "'SF Mono', 'Fira Code', monospace",
-            color: "var(--text-tertiary)",
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-          }}
-        >
-          Watching
-        </div>
-        {TARGET_COMPANIES.map(co => (
-          <button
-            key={co}
-            onClick={() => onSelect("company")}
-            style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "5px 20px",
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              textAlign: "left",
-            }}
-          >
-            <span
-              style={{
-                width: 3,
-                height: 3,
-                borderRadius: "50%",
-                background: "var(--text-tertiary)",
-                flexShrink: 0,
-              }}
-            />
-            <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>{co}</span>
-          </button>
-        ))}
       </nav>
-
-      {/* Footer */}
-      <div
-        style={{
-          padding: "12px 20px",
-          borderTop: "1px solid var(--border)",
-          fontSize: 10,
-          fontFamily: "'SF Mono', 'Fira Code', monospace",
-          color: "var(--text-tertiary)",
-          letterSpacing: "0.02em",
-        }}
-      >
-        Jeremy Grant
-      </div>
     </aside>
   )
 }
