@@ -443,12 +443,15 @@ export async function GET() {
 
   const allArticles: Article[] = []
   let liveCount = 0
+  let failedCount = 0
 
   for (const result of results) {
     if (result.status === "fulfilled" && result.value.length > 0) {
       allArticles.push(...result.value)
-      // Articles with real URLs count as live
       if (result.value.some(a => a.url !== "#")) liveCount++
+      else failedCount++
+    } else {
+      failedCount++
     }
   }
 
@@ -460,10 +463,11 @@ export async function GET() {
     }
   }
 
-  const CATEGORY_ORDER = [
-    "policy", "ai", "design-industry", "creative-practice", "market",
-    "health", "company", "design-leadership", "creative-tech", "culture", "data"
-  ]
+  // Categories with no live source — on stub fallback
+  const ALL_TAGS = ["policy", "ai", "design-industry", "creative-practice", "market", "health", "company", "design-leadership", "creative-tech", "culture", "data"]
+  const stubCategories = ALL_TAGS.filter(tag => !coveredTags.has(tag))
+
+  const CATEGORY_ORDER = ALL_TAGS
 
   const sorted = interleave(
     allArticles.sort((a, b) =>
@@ -475,5 +479,11 @@ export async function GET() {
     articles: sorted,
     fetchedAt: new Date().toISOString(),
     isLive: liveCount > 0,
+    feedHealth: {
+      sourcesLive:    liveCount,
+      sourcesTotal:   results.length,
+      sourcesFailed:  failedCount,
+      stubCategories,           // categories falling back to curated stubs
+    },
   })
 }

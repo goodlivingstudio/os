@@ -77,6 +77,13 @@ interface Signal {
   body: string
 }
 
+interface FeedHealth {
+  sourcesLive:   number
+  sourcesTotal:  number
+  sourcesFailed: number
+  stubCategories: string[]
+}
+
 // ─── Config ───────────────────────────────────────────────────────────────────
 
 const CATEGORY_CONFIG = [
@@ -227,6 +234,120 @@ function LiveClock() {
   )
 }
 
+// ─── Feed Status indicator with diagnostic tooltip ───────────────────────────
+
+const TAG_LABEL: Record<string, string> = {
+  "policy":           "Policy",
+  "ai":               "AI",
+  "design-industry":  "Design Industry",
+  "creative-practice":"Creative Practice",
+  "market":           "Market",
+  "health":           "Healthcare",
+  "company":          "Company Intel",
+  "design-leadership":"Design Leadership",
+  "creative-tech":    "Creative Tech",
+  "culture":          "Culture",
+  "data":             "Data",
+}
+
+function FeedStatus({ isLive, feedHealth, feedLoading }: {
+  isLive: boolean
+  feedHealth: FeedHealth | null
+  feedLoading: boolean
+}) {
+  const [tooltipVisible, setTooltipVisible] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const [tipPos, setTipPos] = useState({ top: 0, left: 0 })
+
+  const hasIssue = !feedLoading && (!isLive || (feedHealth && feedHealth.stubCategories.length > 0))
+  const dotColor = feedLoading
+    ? "var(--text-tertiary)"
+    : hasIssue
+    ? "#ef4444"
+    : "var(--live)"
+  const label = feedLoading ? "Loading" : hasIssue && !isLive ? "Error" : "Live"
+
+  const buildDiagnostic = (): string => {
+    if (!feedHealth) return "Fetching feed status…"
+    if (!isLive) return `All ${feedHealth.sourcesTotal} sources failed to respond. Showing curated fallback content only.`
+    const stubs = feedHealth.stubCategories
+    if (stubs.length === 0) return `All ${feedHealth.sourcesTotal} sources connected and healthy.`
+    const stubNames = stubs.map(t => TAG_LABEL[t] || t).join(", ")
+    return `${feedHealth.sourcesFailed} of ${feedHealth.sourcesTotal} sources failed. Fallback content for: ${stubNames}.`
+  }
+
+  const handleMouseEnter = () => {
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect()
+      setTipPos({ top: rect.bottom + 6, left: rect.left })
+    }
+    setTooltipVisible(true)
+  }
+
+  return (
+    <div
+      ref={ref}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={() => setTooltipVisible(false)}
+      style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 6, cursor: "default" }}
+    >
+      <span
+        className={!feedLoading && !hasIssue ? "live-beacon" : undefined}
+        style={{
+          width: 5,
+          height: 5,
+          borderRadius: "50%",
+          background: dotColor,
+          flexShrink: 0,
+        }}
+      />
+      <span style={{
+        fontSize: 9,
+        fontFamily: "'SF Mono', 'Fira Code', monospace",
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
+        color: dotColor,
+      }}>
+        {label}
+      </span>
+
+      {/* Diagnostic tooltip */}
+      {tooltipVisible && !feedLoading && (
+        <div style={{
+          position: "fixed",
+          top: tipPos.top,
+          left: tipPos.left,
+          zIndex: 2000,
+          width: 220,
+          background: "var(--bg-elevated)",
+          border: `1px solid ${hasIssue ? "#ef4444" : "var(--border)"}`,
+          borderRadius: 3,
+          padding: "8px 10px",
+          pointerEvents: "none",
+        }}>
+          <div style={{
+            fontSize: 9,
+            fontFamily: "'SF Mono', 'Fira Code', monospace",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: hasIssue ? "#ef4444" : "var(--live)",
+            marginBottom: 5,
+          }}>
+            {hasIssue ? "Feed Issue" : "Feed Healthy"}
+          </div>
+          <div style={{
+            fontSize: 11,
+            lineHeight: 1.55,
+            color: "var(--text-secondary)",
+          }}>
+            {buildDiagnostic()}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ─── Left Rail ────────────────────────────────────────────────────────────────
 
 function LeftRail({
@@ -234,6 +355,7 @@ function LeftRail({
   active,
   onSelect,
   isLive,
+  feedHealth,
   feedLoading,
   width,
 }: {
@@ -241,6 +363,7 @@ function LeftRail({
   active: string
   onSelect: (id: string) => void
   isLive: boolean
+  feedHealth: FeedHealth | null
   feedLoading: boolean
   width: number
 }) {
@@ -299,37 +422,7 @@ function LeftRail({
         </div>
 
         {/* Feed status */}
-        <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 6 }}>
-          <span
-            className={isLive && !feedLoading ? "live-beacon" : undefined}
-            style={{
-              width: 5,
-              height: 5,
-              borderRadius: "50%",
-              background: feedLoading
-                ? "var(--text-tertiary)"
-                : isLive
-                ? "var(--live)"
-                : "var(--text-tertiary)",
-              flexShrink: 0,
-            }}
-          />
-          <span
-            style={{
-              fontSize: 9,
-              fontFamily: "'SF Mono', 'Fira Code', monospace",
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: feedLoading
-                ? "var(--text-tertiary)"
-                : isLive
-                ? "var(--live)"
-                : "var(--text-tertiary)",
-            }}
-          >
-            {feedLoading ? "Loading" : isLive ? "Live" : "Demo"}
-          </span>
-        </div>
+        <FeedStatus isLive={isLive} feedHealth={feedHealth} feedLoading={feedLoading} />
       </div>
 
       {/* Navigation */}
@@ -1179,6 +1272,7 @@ export default function Page() {
   const isMobile = useMobile()
   const [articles,    setArticles]    = useState<Article[]>([])
   const [isLive,      setIsLive]      = useState(false)
+  const [feedHealth,  setFeedHealth]  = useState<FeedHealth | null>(null)
   const [feedLoading,    setFeedLoading]    = useState(true)
   const [active,         setActive]         = useState("all")
   const [mobileTab,      setMobileTab]      = useState<"feed" | "analysis" | "cerebro">("feed")
@@ -1238,6 +1332,7 @@ export default function Page() {
       .then(data => {
         const fresh: Article[] = data.articles || []
         setIsLive(data.isLive || false)
+        if (data.feedHealth) setFeedHealth(data.feedHealth)
 
         // Merge any cached annotations immediately before render
         const cached = loadAnnotationCache()
@@ -1387,6 +1482,7 @@ export default function Page() {
           active={active}
           onSelect={setActive}
           isLive={isLive}
+          feedHealth={feedHealth}
           feedLoading={feedLoading}
           width={leftWidth}
         />
