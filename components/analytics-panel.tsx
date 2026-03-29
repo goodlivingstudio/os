@@ -688,7 +688,7 @@ export function AnalyticsPanel({ articles, onDeliberate }: {
 
   return (
     <main style={{ flex: 1, overflowY: "auto", padding: "24px 28px", background: "var(--bg-primary)" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, maxWidth: 960 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 14 }}>
         {CARDS.map((card, i) => (
           <div key={card.id} style={{ gridColumn: i === 4 ? "1 / -1" : "auto" }}>
             <AnalyticsCard card={card} analytics={analytics} onClick={() => setActive(card)} />
