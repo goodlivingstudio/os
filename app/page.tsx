@@ -615,6 +615,7 @@ function ChiefOfStaffBand({ signals, briefLoading, onDeliberate }: {
       style={{
         flexShrink: 0,
         background: "var(--accent-primary)",
+        backgroundImage: "radial-gradient(ellipse at 15% 60%, rgba(200,149,90,0.10) 0%, transparent 55%), radial-gradient(ellipse at 85% 40%, rgba(200,149,90,0.06) 0%, transparent 50%)",
         borderBottom: "1px solid var(--border)",
         position: "relative",
         overflow: "hidden",

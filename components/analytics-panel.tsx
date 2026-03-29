@@ -37,6 +37,14 @@ const LENS_COLOR: Record<string, string> = {
   BOTH:  "#4ade80",
 }
 
+const CARD_GRADIENT: Record<string, string> = {
+  snapshot: "radial-gradient(ellipse at top left,  rgba(200,149,90,0.14) 0%, transparent 65%)",
+  lens:     "radial-gradient(ellipse at top right, rgba(96,165,250,0.11) 0%, transparent 65%)",
+  category: "radial-gradient(ellipse at bottom left, rgba(74,222,128,0.10) 0%, transparent 65%)",
+  urgency:  "radial-gradient(ellipse at top left,  rgba(248,113,113,0.12) 0%, transparent 65%)",
+  sources:  "radial-gradient(ellipse at bottom right, rgba(167,139,250,0.11) 0%, transparent 65%)",
+}
+
 const TAG_LABEL: Record<string, string> = {
   "policy":            "Policy",
   "ai":                "AI",
@@ -140,7 +148,7 @@ type Analytics = ReturnType<typeof useAnalytics>
 
 // ─── DonutRing — pure SVG ─────────────────────────────────────────────────────
 
-function DonutRing({ segments, size = 88, strokeWidth = 9 }: {
+function DonutRing({ segments, size = 96, strokeWidth = 10 }: {
   segments: { value: number; color: string }[]
   size?: number
   strokeWidth?: number
@@ -186,7 +194,7 @@ function ProportionBar({ segments }: { segments: { flex: number; color: string }
   const total = segments.reduce((s, seg) => s + seg.flex, 0)
   if (total === 0) return null
   return (
-    <div style={{ display: "flex", height: 3, borderRadius: 2, overflow: "hidden", gap: 1 }}>
+    <div style={{ display: "flex", height: 5, borderRadius: 3, overflow: "hidden", gap: 2 }}>
       {segments.filter(s => s.flex > 0).map((s, i) => (
         <div key={i} style={{ flex: s.flex, background: s.color, borderRadius: 2 }} />
       ))}
@@ -539,7 +547,7 @@ function AnalyticsModal({ card, analytics, onClose, onDeliberate }: {
     >
       <div style={{
         background: "var(--bg-surface)",
-        borderRadius: 8,
+        borderRadius: 16,
         border: "1px solid var(--border)",
         borderLeft: `3px solid ${accent}`,
         width: "min(820px, 92vw)",
@@ -580,8 +588,8 @@ function AnalyticsModal({ card, analytics, onClose, onDeliberate }: {
                 background: "var(--accent-secondary)",
                 color: "var(--bg-primary)",
                 border: "none",
-                borderRadius: 3,
-                padding: "9px 14px",
+                borderRadius: 8,
+                padding: "10px 16px",
                 fontSize: 10,
                 fontFamily: "'SF Mono','Fira Code',monospace",
                 letterSpacing: "0.08em",
@@ -608,7 +616,8 @@ function AnalyticsCard({ card, analytics, onClick }: {
   onClick: () => void
 }) {
   const [hovered, setHovered] = useState(false)
-  const accent = CARD_ACCENT[card.id] || "var(--accent-secondary)"
+  const accent   = CARD_ACCENT[card.id]   || "var(--accent-secondary)"
+  const gradient = CARD_GRADIENT[card.id] || ""
 
   return (
     <div
@@ -616,22 +625,49 @@ function AnalyticsCard({ card, analytics, onClick }: {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background: hovered ? "var(--bg-elevated)" : "var(--bg-surface)",
-        borderRadius: 6,
+        position: "relative",
+        background: `${gradient}, var(--bg-surface)`,
+        borderRadius: 14,
         border: "1px solid var(--border)",
-        borderLeft: `3px solid ${accent}`,
-        padding: "16px 18px 18px",
+        padding: "20px 22px 22px",
         cursor: "pointer",
-        transition: "background 0.12s",
+        transition: "transform 0.18s cubic-bezier(0.16,1,0.3,1), box-shadow 0.18s cubic-bezier(0.16,1,0.3,1)",
+        transform: hovered ? "translateY(-2px)" : "translateY(0)",
+        boxShadow: hovered
+          ? `0 8px 28px rgba(0,0,0,0.28), 0 0 0 1px ${accent}33`
+          : "0 1px 4px rgba(0,0,0,0.15)",
         height: "100%",
         boxSizing: "border-box",
+        overflow: "hidden",
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-        <span style={{ fontSize: 9, fontFamily: "'SF Mono','Fira Code',monospace", color: accent, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+      {/* Accent strip — top edge */}
+      <div style={{
+        position: "absolute",
+        top: 0, left: 0, right: 0,
+        height: 2,
+        background: `linear-gradient(90deg, ${accent} 0%, transparent 70%)`,
+        borderRadius: "14px 14px 0 0",
+        opacity: 0.7,
+      }} />
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+        <span style={{
+          fontSize: 9,
+          fontFamily: "'SF Mono','Fira Code',monospace",
+          color: accent,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          opacity: 0.9,
+        }}>
           {card.label}
         </span>
-        <span style={{ color: "var(--text-tertiary)", opacity: hovered ? 1 : 0, transition: "opacity 0.12s", fontSize: 12 }}>
+        <span style={{
+          color: accent,
+          opacity: hovered ? 0.8 : 0,
+          transition: "opacity 0.15s",
+          fontSize: 11,
+        }}>
           ↗
         </span>
       </div>
@@ -650,8 +686,8 @@ export function AnalyticsPanel({ articles, onDeliberate }: {
   const [active, setActive] = useState<CardDef | null>(null)
 
   return (
-    <main style={{ flex: 1, overflowY: "auto", padding: "20px 20px", background: "var(--bg-primary)" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, maxWidth: 680 }}>
+    <main style={{ flex: 1, overflowY: "auto", padding: "24px 24px", background: "var(--bg-primary)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, maxWidth: 700 }}>
         {CARDS.map((card, i) => (
           <div key={card.id} style={{ gridColumn: i === 4 ? "1 / -1" : "auto" }}>
             <AnalyticsCard card={card} analytics={analytics} onClick={() => setActive(card)} />
