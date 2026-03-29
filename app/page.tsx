@@ -361,51 +361,112 @@ function useChiefOfStaff(articles: Article[]) {
 
 // ─── Chief of Staff Band — desktop horizontal grid ────────────────────────────
 
+const SCAN_STATUSES = ["Scanning feed", "Clustering signals", "Composing brief"]
+
 function ChiefOfStaffBand({ signals, briefLoading }: { signals: Signal[]; briefLoading: boolean }) {
+  const [statusIdx, setStatusIdx] = useState(0)
+  const [revealed, setRevealed] = useState(false)
+  const wasLoading = useRef(true)
+
+  // Advance status text while fetching (stops at final stage)
+  useEffect(() => {
+    if (!briefLoading) return
+    setStatusIdx(0)
+    wasLoading.current = true
+    const t = setInterval(() => setStatusIdx(i => Math.min(i + 1, SCAN_STATUSES.length - 1)), 1700)
+    return () => clearInterval(t)
+  }, [briefLoading])
+
+  // When real data arrives, wait one beat then reveal
+  useEffect(() => {
+    const hasRealData = !briefLoading && signals.some(s => !!s.body)
+    if (hasRealData && wasLoading.current) {
+      wasLoading.current = false
+      const t = setTimeout(() => setRevealed(true), 100)
+      return () => clearTimeout(t)
+    }
+  }, [briefLoading, signals])
+
+  const isLoading = !revealed
+
   return (
     <div
       style={{
         flexShrink: 0,
         background: "var(--accent-primary)",
         borderBottom: "1px solid var(--border)",
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr 1fr",
+        position: "relative",
+        overflow: "hidden",
+        minHeight: 80,
       }}
     >
-      {signals.map((signal, i) => (
-        <div
-          key={i}
-          style={{
+      {isLoading ? (
+        /* ── Loading state: status text + horizontal scan bar ── */
+        <>
+          <div style={{
             padding: "16px 20px",
-            borderRight: i < 2 ? "1px solid var(--border)" : "none",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
             minHeight: 80,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 9,
-              fontFamily: "'SF Mono', 'Fira Code', monospace",
-              color: "var(--accent-muted)",
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              marginBottom: 8,
-            }}
-            className={briefLoading && i === 0 ? "loading-pulse" : ""}
-          >
-            {signal.label}
+          }}>
+            <div
+              key={statusIdx}
+              style={{
+                fontSize: 9,
+                fontFamily: "'SF Mono', 'Fira Code', monospace",
+                color: "var(--accent-muted)",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                animation: "status-fade 0.3s ease both",
+              }}
+            >
+              {SCAN_STATUSES[statusIdx]}
+            </div>
           </div>
-          {signal.body && (
-            <div style={{ fontSize: 12, color: "var(--text-primary)", lineHeight: 1.6, letterSpacing: "-0.01em" }}>
-              {signal.body}
+          {/* Scan bar */}
+          <div style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            width: "25%",
+            height: 1,
+            background: "var(--accent-secondary)",
+            opacity: 0.5,
+            animation: "band-scan 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+          }} />
+        </>
+      ) : (
+        /* ── Revealed state: staggered column entry ── */
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+          {signals.map((signal, i) => (
+            <div
+              key={i}
+              style={{
+                padding: "16px 20px",
+                borderRight: i < 2 ? "1px solid var(--border)" : "none",
+                animation: `signal-reveal 0.45s cubic-bezier(0.16, 1, 0.3, 1) ${i * 90}ms both`,
+              }}
+            >
+              <div style={{
+                fontSize: 9,
+                fontFamily: "'SF Mono', 'Fira Code', monospace",
+                color: "var(--accent-muted)",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                marginBottom: 8,
+              }}>
+                {signal.label}
+              </div>
+              {signal.body && (
+                <div style={{ fontSize: 12, color: "var(--text-primary)", lineHeight: 1.6, letterSpacing: "-0.01em" }}>
+                  {signal.body}
+                </div>
+              )}
             </div>
-          )}
-          {briefLoading && !signal.body && i < 2 && (
-            <div className="loading-pulse" style={{ fontSize: 12, color: "var(--accent-muted)", opacity: 0.4, lineHeight: 1.6, fontFamily: "'SF Mono', 'Fira Code', monospace" }}>
-              ▊
-            </div>
-          )}
+          ))}
         </div>
-      ))}
+      )}
     </div>
   )
 }

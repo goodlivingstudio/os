@@ -63,6 +63,24 @@ html, body {
   animation: pulse-text 1.8s ease-in-out infinite;
 }
 
+/* ─── Chief of Staff — scan + reveal ───────────────────────────── */
+@keyframes band-scan {
+  0%   { transform: translateX(-100%); opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { transform: translateX(400%); opacity: 0; }
+}
+
+@keyframes signal-reveal {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes status-fade {
+  0%   { opacity: 0; transform: translateY(3px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
 /* Mineral — light */
 :root.day {
   --bg-primary:       #F7F4EF;
