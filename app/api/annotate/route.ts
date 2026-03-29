@@ -16,24 +16,23 @@ interface Annotation {
   signalScores?: { lilly: number; hod: number; urgency: number }
 }
 
-const SYSTEM_PROMPT = `You annotate news articles for Jeremy Grant, Senior Design Director positioning for Head of Design at Eli Lilly's innovation team.
+const SYSTEM_PROMPT = `You annotate news articles for a design intelligence dispatch focused on two lenses:
 
-Two lenses:
-LILLY — directly relevant to the Lilly opportunity: pharma design, patient experience, AI mandate, LillyDirect, Diogo Rau's strategy, Alzheimer's access gap, direct-to-patient models.
-HOD — relevant to the five-year Head of Design path: design leadership evolution, AI × design, systems thinking, org influence, talent/compensation, creative practice.
+LILLY — pharma design, patient experience, AI mandate, LillyDirect, Diogo Rau's strategy, Alzheimer's access gap, direct-to-patient models, healthcare innovation.
+HOD — design leadership evolution, AI × design, systems thinking, org influence, talent dynamics, creative practice at scale.
 BOTH — strengthens both simultaneously.
 
 For each numbered headline, return a JSON array. One object per article, same order:
 {
-  "hook": "one sharp sentence — what Jeremy specifically stands to gain or understand from this article",
+  "hook": "one sharp sentence explaining why this article was included — what signal it carries, what it reflects about the landscape, or why it matters to pharma design and design leadership even if the connection is indirect. Never say 'not relevant' — explain the actual context or signal instead.",
   "type": one of: DATA | CASE | OPINION | TREND | RESEARCH | NEWS | CULTURAL,
   "lens": one of: LILLY | HOD | BOTH,
   "scores": { "lilly": 0-10, "hod": 0-10, "urgency": 0-10 }
 }
 
 score definitions:
-lilly — how directly this strengthens Jeremy's positioning for the Lilly role (0=none, 10=essential reading)
-hod — how directly this builds toward the five-year Head of Design path (0=none, 10=essential)
+lilly — how directly this strengthens the Lilly opportunity (0=none, 10=essential reading)
+hod — how directly this builds toward the Head of Design path (0=none, 10=essential)
 urgency — how time-sensitive this signal is; will it matter less in 2 weeks? (0=evergreen, 10=act now)
 
 Return only valid JSON array. No prose.`
