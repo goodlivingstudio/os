@@ -306,7 +306,8 @@ function FeedStatus({ isLive, feedHealth, feedLoading }: {
       />
       <span style={{
         fontSize: 11,
-        letterSpacing: "0.04em",
+        fontFamily: "'SF Mono', 'Fira Code', monospace",
+        letterSpacing: "0.06em",
         textTransform: "uppercase",
         color: dotColor,
         fontWeight: 700,
@@ -329,11 +330,11 @@ function FeedStatus({ isLive, feedHealth, feedLoading }: {
           pointerEvents: "none",
         }}>
           <div style={{
-            fontSize: 11,
-            letterSpacing: "0.03em",
+            fontSize: 10,
+            fontFamily: "'SF Mono', 'Fira Code', monospace",
+            letterSpacing: "0.06em",
             textTransform: "uppercase",
             color: "#ef4444",
-            fontWeight: 600,
             marginBottom: 5,
           }}>
             Feed Offline
@@ -634,11 +635,11 @@ function ChiefOfStaffBand({ signals, briefLoading, onDeliberate }: {
             <div
               key={statusIdx}
               style={{
-                fontSize: 11,
+                fontSize: 10,
+                fontFamily: "'SF Mono', 'Fira Code', monospace",
                 color: "var(--accent-muted)",
-                letterSpacing: "0.04em",
+                letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                fontWeight: 500,
                 animation: "status-fade 0.3s ease both",
               }}
             >
@@ -677,9 +678,10 @@ function ChiefOfStaffBand({ signals, briefLoading, onDeliberate }: {
                 }}
               >
                 <div style={{
-                  fontSize: 11,
+                  fontSize: 10,
+                  fontFamily: "'SF Mono', 'Fira Code', monospace",
                   color: "var(--accent-muted)",
-                  letterSpacing: "0.03em",
+                  letterSpacing: "0.08em",
                   textTransform: "uppercase",
                   fontWeight: 600,
                   marginBottom: 8,
@@ -741,11 +743,11 @@ function AnalysisPanel({ signals, briefLoading }: { signals: Signal[]; briefLoad
         >
           <div
             style={{
-              fontSize: 11,
+              fontSize: 10,
+              fontFamily: "'SF Mono', 'Fira Code', monospace",
               color: "var(--accent-muted)",
-              letterSpacing: "0.03em",
+              letterSpacing: "0.08em",
               textTransform: "uppercase",
-              fontWeight: 600,
               marginBottom: 10,
             }}
             className={briefLoading && i === 0 ? "loading-pulse" : ""}
@@ -908,9 +910,10 @@ function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }: { art
         {/* Eyebrow: source · category · time */}
         <div
           style={{
-            fontSize: 12,
+            fontSize: 11,
+            fontFamily: "'SF Mono', 'Fira Code', monospace",
             color: "var(--text-tertiary)",
-            letterSpacing: "0.01em",
+            letterSpacing: "0.02em",
             marginBottom: 6,
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -1092,10 +1095,10 @@ function Cerebro({ articles, pendingPrompt }: {
       >
         <span
           style={{
-            fontSize: 11,
-            letterSpacing: "0.04em",
+            fontSize: 10,
+            fontFamily: "'SF Mono', 'Fira Code', monospace",
+            letterSpacing: "0.08em",
             textTransform: "uppercase",
-            fontWeight: 600,
             color: "var(--accent-muted)",
           }}
         >
@@ -1106,9 +1109,10 @@ function Cerebro({ articles, pendingPrompt }: {
             <span
               title="Conversation memory active — Cerebro remembers previous sessions"
               style={{
-                fontSize: 10,
+                fontSize: 9,
+                fontFamily: "'SF Mono', 'Fira Code', monospace",
                 color: "var(--accent-muted)",
-                letterSpacing: "0.02em",
+                letterSpacing: "0.04em",
                 opacity: 0.7,
               }}
             >
@@ -1119,6 +1123,7 @@ function Cerebro({ articles, pendingPrompt }: {
             <span
               style={{
                 fontSize: 10,
+                fontFamily: "'SF Mono', 'Fira Code', monospace",
                 fontVariantNumeric: "tabular-nums",
                 color: "var(--text-tertiary)",
               }}
