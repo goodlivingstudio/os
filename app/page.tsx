@@ -18,7 +18,7 @@ interface Article {
 }
 
 interface Message {
-  role: "user" | "assistant"
+  role: "user" | "assistant" | "search"
   content: string
 }
 
@@ -556,17 +556,28 @@ function Cerebro({ articles }: { articles: Article[] }) {
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: updated, feedContext }),
+          body: JSON.stringify({ messages: updated.filter(m => m.role !== "search"), feedContext }),
         })
         const data = await res.json()
         if (!res.ok || data.error) {
           setMessages(prev => [...prev, { role: "assistant", content: `// error: ${data.error || res.status}` }])
         } else {
-          setMessages(prev => [...prev, { role: "assistant", content: data.text || "// empty response" }])
+          // Inject search lines into the display thread before the response
+          const searchLines: Message[] = (data.searches || []).map(
+            (q: string) => ({ role: "search" as const, content: q })
+          )
+          setMessages(prev => [
+            ...prev,
+            ...searchLines,
+            { role: "assistant", content: data.text || "// empty response" },
+          ])
           setTokens(t => t + (data.inputTokens || 0) + (data.outputTokens || 0))
         }
       } catch (err) {
-        setMessages(prev => [...prev, { role: "assistant", content: `// network error: ${err instanceof Error ? err.message : String(err)}` }])
+        setMessages(prev => [
+          ...prev,
+          { role: "assistant", content: `// network error: ${err instanceof Error ? err.message : String(err)}` },
+        ])
       }
       setLoading(false)
     },
@@ -648,8 +659,9 @@ function Cerebro({ articles }: { articles: Article[] }) {
         )}
 
         {messages.map((m, i) => (
-          <div key={i} style={{ marginBottom: 16 }}>
+          <div key={i} style={{ marginBottom: m.role === "search" ? 4 : 16 }}>
             {m.role === "user" ? (
+              // User prompt
               <div
                 style={{
                   padding: "0 16px",
@@ -663,7 +675,25 @@ function Cerebro({ articles }: { articles: Article[] }) {
                 <span style={{ color: "var(--accent-secondary)", marginRight: 6 }}>{">"}</span>
                 {m.content}
               </div>
+            ) : m.role === "search" ? (
+              // Web search activity — shown as terminal comment
+              <div
+                style={{
+                  padding: "0 16px",
+                  fontSize: 10,
+                  fontFamily: "'SF Mono', 'Fira Code', monospace",
+                  color: "var(--text-tertiary)",
+                  lineHeight: 1.5,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
+                <span style={{ color: "var(--accent-muted)", opacity: 0.7 }}>↗</span>
+                <span style={{ opacity: 0.6 }}>searched: &ldquo;{m.content}&rdquo;</span>
+              </div>
             ) : (
+              // Assistant response — monospace, full width
               <div
                 style={{
                   padding: "0 16px",
