@@ -983,6 +983,7 @@ function Cerebro({ articles, pendingPrompt }: {
   const [tokens,    setTokens]    = useState(0)
   const [memory,    setMemory]    = useState(false)
   const [sessionId, setSessionId] = useState("")
+  const [followUps, setFollowUps] = useState<{ question: string; alternatives: string[] } | null>(null)
   const inputRef  = useRef<HTMLTextAreaElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
@@ -1016,6 +1017,7 @@ function Cerebro({ articles, pendingPrompt }: {
       const updated = [...messages, { role: "user" as const, content: text.trim() }]
       setMessages(updated)
       setInput("")
+      setFollowUps(null)
       setLoading(true)
 
       const feedContext = articles.length
@@ -1049,6 +1051,7 @@ function Cerebro({ articles, pendingPrompt }: {
           ])
           setTokens(t => t + (data.inputTokens || 0) + (data.outputTokens || 0))
           if (data.memoryActive) setMemory(true)
+          if (data.followUp) setFollowUps(data.followUp)
         }
       } catch (err) {
         setMessages(prev => [
@@ -1214,6 +1217,56 @@ function Cerebro({ articles, pendingPrompt }: {
             )}
           </div>
         ))}
+
+        {/* Follow-up prompts */}
+        {followUps && !loading && (
+          <div style={{ padding: "4px 16px 12px", animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both" }}>
+            {/* Inline follow-up question — machine voice */}
+            <div style={{
+              fontSize: 12,
+              fontFamily: "'SF Mono', 'Fira Code', monospace",
+              color: "var(--accent-muted)",
+              lineHeight: 1.65,
+              fontStyle: "italic",
+              marginBottom: followUps.alternatives.length > 0 ? 10 : 0,
+              letterSpacing: "-0.01em",
+            }}>
+              {followUps.question}
+            </div>
+            {/* Alternative direction pills — human-facing affordance */}
+            {followUps.alternatives.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {followUps.alternatives.map((alt, i) => (
+                  <button
+                    key={i}
+                    onClick={() => send(alt)}
+                    style={{
+                      background: "transparent",
+                      border: "1px solid var(--border)",
+                      borderRadius: 20,
+                      padding: "5px 14px",
+                      fontSize: 12,
+                      color: "var(--text-secondary)",
+                      cursor: "pointer",
+                      transition: "all 0.15s",
+                      whiteSpace: "nowrap",
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.borderColor = "var(--accent-secondary)"
+                      e.currentTarget.style.color = "var(--text-primary)"
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.borderColor = "var(--border)"
+                      e.currentTarget.style.color = "var(--text-secondary)"
+                    }}
+                  >
+                    {alt}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {loading && (
           <div style={{ padding: "0 16px" }}>

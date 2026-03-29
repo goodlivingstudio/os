@@ -43,7 +43,46 @@ Operating mode:
 - No bullet points. Tight paragraphs.
 - No preamble. Lead with substance.
 - No flattery. Clarity over encouragement.
-- If something is directly actionable before the Lilly interview, say so explicitly`
+- If something is directly actionable before the Lilly interview, say so explicitly
+
+After every response, append a follow-up block in exactly this format (no exceptions):
+
+---follow-up---
+question: [A natural follow-up question that pushes Jeremy's thinking forward — strategic, not generic]
+alt: [A short alternative direction, 4-8 words]
+alt: [Another alternative direction, 4-8 words]
+
+The question should feel like what a sharp advisor would ask next. The alts should open genuinely different threads. Never repeat what you just covered. Never use generic prompts like "Tell me more" or "What do you think?"— be specific to the conversation.`
+
+// ─── Follow-up parser ─────────────────────────────────────────────────────────
+
+function parseFollowUp(text: string): {
+  cleanText: string
+  followUp: { question: string; alternatives: string[] } | null
+} {
+  const marker = "---follow-up---"
+  const idx = text.indexOf(marker)
+  if (idx === -1) return { cleanText: text.trim(), followUp: null }
+
+  const cleanText = text.slice(0, idx).trim()
+  const block = text.slice(idx + marker.length).trim()
+
+  let question = ""
+  const alternatives: string[] = []
+
+  for (const line of block.split("\n")) {
+    const trimmed = line.trim()
+    if (trimmed.startsWith("question:")) {
+      question = trimmed.slice("question:".length).trim()
+    } else if (trimmed.startsWith("alt:")) {
+      alternatives.push(trimmed.slice("alt:".length).trim())
+    }
+  }
+
+  if (!question) return { cleanText: text.trim(), followUp: null }
+
+  return { cleanText, followUp: { question, alternatives: alternatives.slice(0, 2) } }
+}
 
 // ─── Web Search Tool ──────────────────────────────────────────────────────────
 
@@ -198,24 +237,28 @@ export async function POST(req: Request) {
       }
     }
 
+    // ── Parse follow-up prompts from response ──────────────────────────────
+    const { cleanText, followUp } = parseFollowUp(finalText)
+
     // ── Persist updated conversation to KV ───────────────────────────────────
-    if (KV_AVAILABLE && sessionId && finalText) {
+    if (KV_AVAILABLE && sessionId && cleanText) {
       const toStore = [
         ...baseMessages.filter(m => typeof m.content === "string").map(m => ({
           role: m.role as "user" | "assistant",
           content: m.content as string,
         })),
-        { role: "assistant" as const, content: finalText },
+        { role: "assistant" as const, content: cleanText },
       ]
       await saveHistory(sessionId, toStore)
     }
 
     return Response.json({
-      text:         finalText,
+      text:         cleanText,
       inputTokens:  totalInput,
       outputTokens: totalOutput,
       searches:     searchesPerformed,
       memoryActive: KV_AVAILABLE,
+      followUp,
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
