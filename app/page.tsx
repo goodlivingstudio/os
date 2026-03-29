@@ -1487,9 +1487,29 @@ function Cerebro({ articles, pendingPrompt }: {
 
             {/* Zone 2: Toolbar row */}
             <div style={{
-              display: "flex", alignItems: "center", justifyContent: "flex-end",
-              padding: "4px 10px 8px", gap: 2,
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              padding: "4px 10px 8px",
             }}>
+              {/* Provocation — click to activate */}
+              {!input.trim() && (
+                <button
+                  onClick={() => send(PROVOCATIONS[placeholderIdx])}
+                  aria-label="Ask this question"
+                  style={{
+                    background: "none", border: "none", cursor: "pointer",
+                    fontSize: 11, color: "var(--accent-muted)", padding: "2px 4px",
+                    borderRadius: 4, transition: "color 0.15s",
+                    maxWidth: "70%", textAlign: "left", lineHeight: 1.3,
+                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)" }}
+                  onMouseLeave={e => { e.currentTarget.style.color = "var(--accent-muted)" }}
+                >
+                  ↗ {PROVOCATIONS[placeholderIdx]}
+                </button>
+              )}
+              {input.trim() && <div />}
+              <div style={{ display: "flex", gap: 2 }}>
               <button
                 onClick={() => fileRef.current?.click()}
                 aria-label="Attach file"
@@ -1546,6 +1566,7 @@ function Cerebro({ articles, pendingPrompt }: {
                   </svg>
                 </button>
               )}
+              </div>
             </div>
           </div>
         </div>
