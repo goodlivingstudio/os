@@ -320,9 +320,9 @@ function LeftRail({
   )
 }
 
-// ─── Chief of Staff Band ──────────────────────────────────────────────────────
+// ─── Chief of Staff — data hook ───────────────────────────────────────────────
 
-function ChiefOfStaffBand({ articles }: { articles: Article[] }) {
+function useChiefOfStaff(articles: Article[]) {
   const [signals, setSignals] = useState<Signal[]>([])
   const [briefLoading, setBriefLoading] = useState(false)
   const fetched = useRef(false)
@@ -345,14 +345,21 @@ function ChiefOfStaffBand({ articles }: { articles: Article[] }) {
     }
   }, [articles.length]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const placeholderSignals: Signal[] = [
+  const placeholder: Signal[] = [
     { label: "ANALYZING FEED", body: "" },
     { label: "—", body: "" },
     { label: "—", body: "" },
   ]
 
-  const displaySignals = briefLoading || signals.length === 0 ? placeholderSignals : signals
+  return {
+    signals: briefLoading || signals.length === 0 ? placeholder : signals,
+    briefLoading,
+  }
+}
 
+// ─── Chief of Staff Band — desktop horizontal grid ────────────────────────────
+
+function ChiefOfStaffBand({ signals, briefLoading }: { signals: Signal[]; briefLoading: boolean }) {
   return (
     <div
       style={{
@@ -363,7 +370,7 @@ function ChiefOfStaffBand({ articles }: { articles: Article[] }) {
         gridTemplateColumns: "1fr 1fr 1fr",
       }}
     >
-      {displaySignals.map((signal, i) => (
+      {signals.map((signal, i) => (
         <div
           key={i}
           style={{
@@ -386,31 +393,57 @@ function ChiefOfStaffBand({ articles }: { articles: Article[] }) {
             {signal.label}
           </div>
           {signal.body && (
-            <div
-              style={{
-                fontSize: 12,
-                color: "var(--text-primary)",
-                lineHeight: 1.6,
-                letterSpacing: "-0.01em",
-              }}
-            >
+            <div style={{ fontSize: 12, color: "var(--text-primary)", lineHeight: 1.6, letterSpacing: "-0.01em" }}>
               {signal.body}
             </div>
           )}
           {briefLoading && !signal.body && i < 2 && (
-            <div
-              className="loading-pulse"
-              style={{
-                fontSize: 12,
-                color: "var(--accent-muted)",
-                opacity: 0.4,
-                lineHeight: 1.6,
-                fontFamily: "'SF Mono', 'Fira Code', monospace",
-              }}
-            >
+            <div className="loading-pulse" style={{ fontSize: 12, color: "var(--accent-muted)", opacity: 0.4, lineHeight: 1.6, fontFamily: "'SF Mono', 'Fira Code', monospace" }}>
               ▊
             </div>
           )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// ─── Analysis Panel — mobile stacked view ─────────────────────────────────────
+
+function AnalysisPanel({ signals, briefLoading }: { signals: Signal[]; briefLoading: boolean }) {
+  return (
+    <div style={{ flex: 1, overflowY: "auto", background: "var(--bg-primary)" }}>
+      {signals.map((signal, i) => (
+        <div
+          key={i}
+          style={{
+            padding: "20px 20px",
+            borderBottom: "1px solid var(--border)",
+            background: "var(--accent-primary)",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 9,
+              fontFamily: "'SF Mono', 'Fira Code', monospace",
+              color: "var(--accent-muted)",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              marginBottom: 10,
+            }}
+            className={briefLoading && i === 0 ? "loading-pulse" : ""}
+          >
+            {signal.label}
+          </div>
+          {signal.body ? (
+            <div style={{ fontSize: 14, color: "var(--text-primary)", lineHeight: 1.65, letterSpacing: "-0.01em" }}>
+              {signal.body}
+            </div>
+          ) : briefLoading ? (
+            <div className="loading-pulse" style={{ fontSize: 13, color: "var(--accent-muted)", opacity: 0.4, fontFamily: "'SF Mono', 'Fira Code', monospace" }}>
+              ▊
+            </div>
+          ) : null}
         </div>
       ))}
     </div>
@@ -855,7 +888,8 @@ export default function Page() {
   const [isLive,      setIsLive]      = useState(false)
   const [feedLoading, setFeedLoading] = useState(true)
   const [active,      setActive]      = useState("all")
-  const [mobileTab,   setMobileTab]   = useState<"feed" | "cerebro">("feed")
+  const [mobileTab,   setMobileTab]   = useState<"feed" | "analysis" | "cerebro">("feed")
+  const { signals, briefLoading } = useChiefOfStaff(articles)
 
   // Resizable column widths
   const [leftWidth,  setLeftWidth]  = useState(220)
@@ -916,7 +950,7 @@ export default function Page() {
         minWidth: 0,
       }}
     >
-      <ChiefOfStaffBand articles={articles} />
+      {!isMobile && <ChiefOfStaffBand signals={signals} briefLoading={briefLoading} />}
       <div style={{ flex: 1, overflowY: "auto" }}>
         {feedLoading ? (
           <div style={{ padding: "32px 20px" }}>
@@ -953,11 +987,9 @@ export default function Page() {
 
         {/* Mobile: show active tab panel */}
         <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
-          {mobileTab === "feed" ? feedContent : (
-            <div style={{ flex: 1, overflow: "hidden" }}>
-              <Cerebro articles={articles} />
-            </div>
-          )}
+          {mobileTab === "feed"     && feedContent}
+          {mobileTab === "analysis" && <AnalysisPanel signals={signals} briefLoading={briefLoading} />}
+          {mobileTab === "cerebro"  && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} /></div>}
         </div>
 
         {/* Mobile bottom tab bar */}
@@ -971,11 +1003,15 @@ export default function Page() {
             background: "var(--bg-surface)",
           }}
         >
-          {(["feed", "cerebro"] as const).map(tab => (
+          {([
+            { id: "feed",     icon: "≡",  label: "Feed"     },
+            { id: "analysis", icon: "◎",  label: "Analysis" },
+            { id: "cerebro",  icon: "◈",  label: "Cerebro"  },
+          ] as const).map(tab => (
             <button
-              key={tab}
-              onClick={() => setMobileTab(tab)}
-              aria-label={tab === "feed" ? "Feed" : "Cerebro"}
+              key={tab.id}
+              onClick={() => setMobileTab(tab.id)}
+              aria-label={tab.label}
               style={{
                 flex: 1,
                 display: "flex",
@@ -986,20 +1022,20 @@ export default function Page() {
                 background: "transparent",
                 border: "none",
                 cursor: "pointer",
-                borderTop: `2px solid ${mobileTab === tab ? "var(--accent-secondary)" : "transparent"}`,
+                borderTop: `2px solid ${mobileTab === tab.id ? "var(--accent-secondary)" : "transparent"}`,
               }}
             >
-              <span style={{ fontSize: 15 }}>{tab === "feed" ? "≡" : "◈"}</span>
+              <span style={{ fontSize: 15 }}>{tab.icon}</span>
               <span
                 style={{
                   fontSize: 9,
                   fontFamily: "'SF Mono', 'Fira Code', monospace",
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
-                  color: mobileTab === tab ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                  color: mobileTab === tab.id ? "var(--accent-secondary)" : "var(--text-tertiary)",
                 }}
               >
-                {tab}
+                {tab.label}
               </span>
             </button>
           ))}
