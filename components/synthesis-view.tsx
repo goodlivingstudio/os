@@ -375,14 +375,8 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
           onClick={() => setActiveModal("briefing")}
         >
           <div style={sectionLabelStyle}>Current Briefing</div>
-          <div style={{ ...bodyStyle, fontSize: 14, marginBottom: 18 }}>
-            Intelligence briefing will appear here when the annotation engine is active. This view synthesizes patterns across all five layers &mdash; Opportunity, Position, Discipline, Landscape, and Culture &mdash; to surface the single most important insight for your mandate right now.
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <LayerScatter layerCounts={layerCounts} size={80} />
-              <LayerLegend layerCounts={layerCounts} />
-            </div>
+          <div style={{ ...bodyStyle, fontSize: 14 }}>
+            Intelligence briefing will appear here when the annotation engine is active. This view synthesizes patterns across all five layers — Opportunity, Position, Discipline, Landscape, and Culture — to surface the single most important insight for your mandate right now.
           </div>
         </div>
 
@@ -471,31 +465,6 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
             {/* Opening */}
             <div style={{ ...bodyStyle, fontSize: 14, lineHeight: 1.7, marginBottom: 28 }}>
               Intelligence briefing will appear here when the annotation engine is active. This view synthesizes patterns across all five layers — Opportunity, Position, Discipline, Landscape, and Culture — to surface the single most important insight for your mandate right now.
-            </div>
-
-            {/* Dataviz — layer distribution */}
-            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 28 }}>
-              <div style={sectionLabelStyle}>Layer Distribution</div>
-              <div style={{ display: "flex", gap: 24, marginTop: 16 }}>
-                {/* Primary Venn */}
-                <LayerScatter layerCounts={layerCounts} size={160} />
-                {/* Legend + counts */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 10, justifyContent: "center" }}>
-                  {ALL_LAYERS.map(l => {
-                    const count = layerCounts[l]
-                    const totalSignals = Math.max(Object.values(layerCounts).reduce((a, b) => a + b, 0), 1)
-                    const pct = Math.round((count / totalSignals) * 100)
-                    return (
-                      <div key={l} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <div style={{ width: 8, height: 8, borderRadius: "50%", background: LAYER_COLORS[l], flexShrink: 0 }} />
-                        <span style={{ fontSize: 13, color: "var(--text-secondary)", width: 90 }}>{LAYER_LABELS[l]}</span>
-                        <span style={{ fontSize: 22, fontWeight: 700, color: "var(--text-primary)", fontVariantNumeric: "tabular-nums", width: 36 }}>{count}</span>
-                        <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>{pct}%</span>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
             </div>
 
             {/* Trending */}
