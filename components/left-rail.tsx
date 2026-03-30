@@ -307,7 +307,7 @@ export function LeftRail({
               overflow: "hidden",
             }}
           >
-            {/* Sliding indicator */}
+            {/* Sliding indicator — same color for all three */}
             <div
               style={{
                 position: "absolute",
@@ -315,9 +315,9 @@ export function LeftRail({
                 left: viewMode === "signal" ? "3px" : viewMode === "audio" ? "calc(33.33% + 1px)" : "calc(66.66% + 1px)",
                 width: "calc(33.33% - 4px)",
                 height: "calc(100% - 6px)",
-                background: viewMode === "synthesis" ? "var(--synth-indicator)" : "var(--bg-surface)",
+                background: "var(--bg-surface)",
                 borderRadius: 6,
-                transition: "left 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+                transition: "left 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
                 zIndex: 0,
               }}
             />
@@ -327,9 +327,6 @@ export function LeftRail({
               { id: "synthesis" as const, Icon: Blend,      title: "Synthesis" },
             ]).map(tab => {
               const isActive = viewMode === tab.id
-              const color = isActive
-                ? (tab.id === "synthesis" ? "var(--accent-secondary)" : "var(--text-primary)")
-                : "var(--text-tertiary)"
               return (
                 <button
                   key={tab.id}
@@ -350,10 +347,10 @@ export function LeftRail({
                     cursor: "pointer",
                     position: "relative",
                     zIndex: 1,
-                    color,
+                    color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
                     transition: "background 0.2s ease, color 0.3s ease",
                   }}
-                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = tab.id === "synthesis" ? "rgba(184,149,106,0.08)" : "rgba(255,255,255,0.04)" }}
+                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "rgba(255,255,255,0.035)" }}
                   onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                 >
                   <tab.Icon size={20} strokeWidth={1.6} />

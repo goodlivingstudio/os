@@ -715,13 +715,15 @@ function Cerebro({ articles, pendingPrompt }: {
                   aria-label="Discuss this prompt"
                   style={{
                     background: "transparent", border: "none", cursor: "pointer",
-                    fontSize: 11, color: "var(--accent-muted)", padding: "6px 10px",
+                    color: "var(--accent-muted)", padding: "6px 10px",
                     borderRadius: 6, transition: "all 0.15s",
+                    display: "inline-flex", alignItems: "center", gap: 4,
                   }}
                   onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)"; e.currentTarget.style.background = "var(--bg-surface)" }}
                   onMouseLeave={e => { e.currentTarget.style.color = "var(--accent-muted)"; e.currentTarget.style.background = "transparent" }}
                 >
-                  BUMP <ArrowUpRight size={11} strokeWidth={2.2} style={{ display: "inline", position: "relative", top: 1, marginLeft: 2 }} />
+                  <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.06em" }}>BUMP</span>
+                  <ArrowUpRight size={13} strokeWidth={2} />
                 </button>
               ) : <div />}
               <div style={{ display: "flex", gap: 2 }}>
