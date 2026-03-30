@@ -34,11 +34,11 @@ const ALL_LAYERS: LayerKey[] = ["opportunity", "position", "discipline", "landsc
 // ─── Shared styles ──────────────────────────────────────────────────────────
 
 const sectionLabelStyle: React.CSSProperties = {
-  fontSize: 10,
-  fontFamily: "'SF Mono', 'Fira Code', monospace",
+  fontSize: 11,
   color: "var(--text-tertiary)",
   textTransform: "uppercase",
-  letterSpacing: "0.04em",
+  letterSpacing: "0.06em",
+  fontWeight: 600,
   marginBottom: 6,
 }
 
@@ -60,12 +60,11 @@ const cardBase: React.CSSProperties = {
   borderRadius: 14,
   padding: 24,
   cursor: "pointer",
-  transition: "transform 0.15s, box-shadow 0.15s",
+  transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
 }
 
 const pillStyle: React.CSSProperties = {
-  fontSize: 9,
-  fontFamily: "'SF Mono', 'Fira Code', monospace",
+  fontSize: 10,
   letterSpacing: "0.04em",
   textTransform: "uppercase",
   padding: "2px 7px",
@@ -84,7 +83,6 @@ const bumpButtonStyle: React.CSSProperties = {
   background: "transparent",
   color: "var(--text-secondary)",
   fontSize: 10,
-  fontFamily: "'SF Mono', 'Fira Code', monospace",
   fontWeight: 600,
   letterSpacing: "0.06em",
   textTransform: "uppercase",
@@ -316,7 +314,7 @@ function ContributingSignalsDrawer({ articles }: { articles: Article[] }) {
               >
                 {/* Eyebrow */}
                 <div style={{
-                  fontSize: 11, fontFamily: "'SF Mono', 'Fira Code', monospace",
+                  fontSize: 11,
                   color: "var(--text-tertiary)", letterSpacing: "-0.01em", marginBottom: 4,
                 }}>
                   {a.source} · {a.category} · {new Date(a.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
@@ -432,7 +430,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
 
   function cardHoverStyle(id: string): React.CSSProperties {
     return hoveredCard === id
-      ? { transform: "translateY(-2px)", boxShadow: "0 8px 24px rgba(0,0,0,0.12)" }
+      ? { transform: "scale(1.015)" }
       : {}
   }
 
@@ -468,7 +466,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                 onClick={() => setActiveModal(`pattern-${i}`)}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 8 }}>
-                  <span style={{ fontSize: 10, color: "var(--text-tertiary)", fontFamily: "'SF Mono', 'Fira Code', monospace" }}>
+                  <span style={{ fontSize: 10, color: "var(--text-tertiary)" }}>
                     {pattern.layers.map(l => LAYER_LABELS[l]).join(" · ")} · {pattern.signalCount} signals
                   </span>
                 </div>
@@ -632,7 +630,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                   <div key={l} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <LayerDot layer={l} />
                     <span style={{ fontSize: 12, color: "var(--text-secondary)", width: 80 }}>{LAYER_LABELS[l]}</span>
-                    <span style={{ fontSize: 11, color: "var(--text-tertiary)", fontFamily: "'SF Mono', 'Fira Code', monospace" }}>{layerCounts[l]} articles</span>
+                    <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>{layerCounts[l]} articles</span>
                   </div>
                 ))}
               </div>

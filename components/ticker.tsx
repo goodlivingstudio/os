@@ -158,7 +158,6 @@ export function Ticker({
                 <span
                   style={{
                     fontSize: 9,
-                    fontFamily: "'SF Mono', 'Fira Code', monospace",
                     letterSpacing: "0.08em",
                     textTransform: "uppercase",
                     padding: "2px 7px",
