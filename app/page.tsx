@@ -197,13 +197,43 @@ function Cerebro({ articles, pendingPrompt }: {
     "What's the organizational layer no one is designing?",
   ]
   const [placeholderIdx, setPlaceholderIdx] = useState(0)
+  const [typedChars, setTypedChars] = useState(0)
+  const [provFading, setProvFading] = useState(false)
+
   useEffect(() => {
     setPlaceholderIdx(Math.floor(Math.random() * PROVOCATIONS.length))
-    const t = setInterval(() => {
-      setPlaceholderIdx(i => (i + 1) % PROVOCATIONS.length)
-    }, 12000)
-    return () => clearInterval(t)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Typewriter: reveal characters one at a time
+  useEffect(() => {
+    setTypedChars(0)
+    setProvFading(false)
+    const target = PROVOCATIONS[placeholderIdx]?.length || 0
+    let frame = 0
+    const interval = setInterval(() => {
+      frame++
+      if (frame <= target) {
+        setTypedChars(frame)
+      } else {
+        clearInterval(interval)
+      }
+    }, 32) // ~30 chars/sec — fast machine typing
+    return () => clearInterval(interval)
+  }, [placeholderIdx]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Cycle to next provocation: fade out, then swap
+  useEffect(() => {
+    const target = PROVOCATIONS[placeholderIdx]?.length || 0
+    if (typedChars < target) return // still typing
+
+    const fadeTimer = setTimeout(() => setProvFading(true), 9000)
+    const swapTimer = setTimeout(() => {
+      setPlaceholderIdx(i => (i + 1) % PROVOCATIONS.length)
+    }, 9600)
+    return () => { clearTimeout(fadeTimer); clearTimeout(swapTimer) }
+  }, [typedChars, placeholderIdx]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const typedText = (PROVOCATIONS[placeholderIdx] || "").slice(0, typedChars)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -629,26 +659,52 @@ function Cerebro({ articles, pendingPrompt }: {
               overflow: "hidden",
             }}
           >
-            {/* Zone 1: Textarea — full width */}
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault()
-                  send(input)
-                }
-              }}
-              placeholder={PROVOCATIONS[placeholderIdx]}
-              rows={2}
-              style={{
-                width: "100%", resize: "none", background: "transparent", border: "none", outline: "none",
-                fontSize: 13, fontFamily: "inherit", color: "var(--text-primary)",
-                caretColor: "var(--accent-secondary)", lineHeight: "22px", maxHeight: 120,
-                minHeight: 48, padding: "12px 14px 0",
-              }}
-            />
+            {/* Zone 1: Textarea with typewriter provocation overlay */}
+            <div style={{ position: "relative" }}>
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault()
+                    send(input)
+                  }
+                }}
+                placeholder=" "
+                rows={2}
+                style={{
+                  width: "100%", resize: "none", background: "transparent", border: "none", outline: "none",
+                  fontSize: 13, fontFamily: "inherit", color: "var(--text-primary)",
+                  caretColor: "var(--accent-secondary)", lineHeight: "22px", maxHeight: 120,
+                  minHeight: 48, padding: "12px 14px 0",
+                  position: "relative", zIndex: 1,
+                }}
+              />
+              {/* Typewriter provocation overlay — hidden when user is typing */}
+              {!input && (
+                <div
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    top: 0, left: 0, right: 0,
+                    padding: "12px 14px 0",
+                    fontSize: 13,
+                    fontFamily: "inherit",
+                    lineHeight: "22px",
+                    color: "var(--text-tertiary)",
+                    pointerEvents: "none",
+                    opacity: provFading ? 0 : 0.6,
+                    transition: "opacity 0.5s ease",
+                  }}
+                >
+                  {typedText}
+                  {typedChars < (PROVOCATIONS[placeholderIdx]?.length || 0) && (
+                    <span style={{ color: "var(--accent-secondary)", opacity: 0.7 }}>|</span>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Zone 2: Toolbar row */}
             <div style={{
