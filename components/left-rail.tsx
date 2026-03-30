@@ -351,10 +351,10 @@ export function LeftRail({
                     position: "relative",
                     zIndex: 1,
                     color,
-                    transition: "color 0.3s ease",
+                    transition: "background 0.2s ease, color 0.3s ease",
                   }}
-                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = "var(--text-secondary)" }}
-                  onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = "var(--text-tertiary)" }}
+                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-surface)" }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                 >
                   <tab.Icon size={20} strokeWidth={1.6} />
                 </button>
