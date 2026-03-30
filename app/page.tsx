@@ -404,11 +404,11 @@ function LeftRail({
             </h1>
             <div
               style={{
-                fontSize: 10,
+                fontSize: 12,
                 color: "var(--text-tertiary)",
-                letterSpacing: "0.01em",
+                letterSpacing: "0.005em",
                 marginTop: 6,
-                lineHeight: 1.4,
+                lineHeight: 1.45,
               }}
             >
               Directed intelligence for strategic positioning across technology, culture &amp; healthcare
@@ -442,14 +442,30 @@ function LeftRail({
             style={{
               display: "flex",
               background: "var(--bg-elevated)",
-              borderRadius: 6,
-              padding: 2,
-              gap: 2,
+              borderRadius: 8,
+              padding: 3,
+              gap: 0,
+              position: "relative",
+              overflow: "hidden",
             }}
           >
+            {/* Sliding indicator */}
+            <div
+              style={{
+                position: "absolute",
+                top: 3,
+                left: showAnalytics ? "calc(50% + 1.5px)" : "3px",
+                width: "calc(50% - 4.5px)",
+                height: "calc(100% - 6px)",
+                background: "var(--bg-surface)",
+                borderRadius: 6,
+                transition: "left 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+                zIndex: 0,
+              }}
+            />
             {[
-              { id: "feed",      icon: "⊡", label: "Signal"    },
-              { id: "analytics", icon: "◐", label: "Synthesis"  },
+              { id: "feed",      label: "Signal"    },
+              { id: "analytics", label: "Synthesis"  },
             ].map(tab => {
               const isTab = tab.id === "analytics" ? showAnalytics : !showAnalytics
               return (
@@ -461,27 +477,22 @@ function LeftRail({
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    gap: 5,
                     padding: "8px 0",
                     minHeight: 36,
-                    background: isTab ? "var(--bg-surface)" : "transparent",
+                    background: "transparent",
                     border: "none",
-                    borderRadius: 5,
+                    borderRadius: 6,
                     cursor: "pointer",
-                    transition: "all 0.15s",
+                    position: "relative",
+                    zIndex: 1,
                   }}
-                  onMouseEnter={e => { if (!isTab) e.currentTarget.style.background = "rgba(255,255,255,0.03)" }}
-                  onMouseLeave={e => { if (!isTab) e.currentTarget.style.background = "transparent" }}
                 >
-                  <span style={{ fontSize: 13, color: isTab ? "var(--text-primary)" : "var(--text-tertiary)", transition: "color 0.15s" }}>
-                    {tab.icon}
-                  </span>
                   <span style={{
                     fontSize: 12,
                     letterSpacing: "0.01em",
                     color: isTab ? "var(--text-primary)" : "var(--text-tertiary)",
                     fontWeight: isTab ? 600 : 400,
-                    transition: "color 0.15s",
+                    transition: "color 0.3s ease",
                   }}>
                     {tab.label}
                   </span>
