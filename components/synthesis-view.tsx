@@ -266,31 +266,69 @@ function LayerDot({ layer, size = 7 }: { layer: LayerKey; size?: number }) {
 
 function LayerPill({ layer }: { layer: LayerKey }) {
   return (
-    <span style={{ ...pillStyle, color: LAYER_COLORS[layer] }}>
+    <span style={{ ...pillStyle, color: "var(--text-secondary)", display: "inline-flex", alignItems: "center", gap: 4 }}>
+      <span style={{ width: 5, height: 5, borderRadius: "50%", background: LAYER_COLORS[layer], flexShrink: 0 }} />
       {LAYER_LABELS[layer]}
     </span>
   )
 }
 
-// ─── Signal Density Bars ────────────────────────────────────────────────────
+// ─── Layer Scatter — Venn-inspired overlap visualization ─────────────────────
 
-function SignalDensityBars({ layerCounts }: { layerCounts: Record<LayerKey, number> }) {
-  const max = Math.max(...Object.values(layerCounts), 1)
+function LayerScatter({ layerCounts, size = 80 }: { layerCounts: Record<LayerKey, number>; size?: number }) {
+  const total = Math.max(Object.values(layerCounts).reduce((a, b) => a + b, 0), 1)
+  // Position each layer in a pentagon arrangement, size by proportion
+  const positions = [
+    { x: 0.5, y: 0.15 },   // opportunity — top center
+    { x: 0.85, y: 0.42 },  // position — right
+    { x: 0.72, y: 0.82 },  // discipline — bottom right
+    { x: 0.28, y: 0.82 },  // landscape — bottom left
+    { x: 0.15, y: 0.42 },  // culture — left
+  ]
   return (
-    <div style={{ display: "flex", gap: 3, alignItems: "flex-end", height: 18 }}>
+    <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}>
+      {ALL_LAYERS.map((l, i) => {
+        const proportion = layerCounts[l] / total
+        const r = Math.max(6, proportion * size * 0.5)
+        const cx = positions[i].x * size - r
+        const cy = positions[i].y * size - r
+        return (
+          <div
+            key={l}
+            title={`${LAYER_LABELS[l]}: ${layerCounts[l]}`}
+            style={{
+              position: "absolute",
+              left: cx,
+              top: cy,
+              width: r * 2,
+              height: r * 2,
+              borderRadius: "50%",
+              background: LAYER_COLORS[l],
+              opacity: layerCounts[l] === 0 ? 0.1 : 0.25,
+              transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+            }}
+          />
+        )
+      })}
+    </div>
+  )
+}
+
+// ─── Layer Legend — dot + label (never colored type) ─────────────────────────
+
+function LayerLegend({ layerCounts }: { layerCounts: Record<LayerKey, number> }) {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
       {ALL_LAYERS.map(l => (
-        <div
-          key={l}
-          title={`${LAYER_LABELS[l]}: ${layerCounts[l]}`}
-          style={{
-            width: 24,
-            height: Math.max(3, (layerCounts[l] / max) * 18),
-            borderRadius: 2,
-            background: LAYER_COLORS[l],
-            opacity: layerCounts[l] === 0 ? 0.2 : 0.7,
-            transition: "height 0.3s",
-          }}
-        />
+        <div key={l} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <div style={{ width: 6, height: 6, borderRadius: "50%", background: LAYER_COLORS[l], flexShrink: 0 }} />
+          <span style={{ fontSize: 11, color: "var(--text-secondary)" }}>
+            {LAYER_LABELS[l]}
+          </span>
+          <span style={{ fontSize: 10, color: "var(--text-tertiary)", fontVariantNumeric: "tabular-nums" }}>
+            {layerCounts[l]}
+          </span>
+        </div>
       ))}
     </div>
   )
@@ -342,9 +380,11 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
           <div style={{ ...bodyStyle, fontSize: 14, marginBottom: 18 }}>
             Intelligence briefing will appear here when the annotation engine is active. This view synthesizes patterns across all five layers &mdash; Opportunity, Position, Discipline, Landscape, and Culture &mdash; to surface the single most important insight for your mandate right now.
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <SignalDensityBars layerCounts={layerCounts} />
-            <span style={{ fontSize: 10, color: "var(--text-tertiary)", fontFamily: "'SF Mono', 'Fira Code', monospace" }}>click to expand</span>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <LayerScatter layerCounts={layerCounts} size={56} />
+              <LayerLegend layerCounts={layerCounts} />
+            </div>
           </div>
         </div>
 
@@ -430,22 +470,17 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
 
             <div>
               <div style={sectionLabelStyle}>Layer Distribution</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 10 }}>
-                {ALL_LAYERS.map(l => {
-                  const count = layerCounts[l]
-                  const max = Math.max(...Object.values(layerCounts), 1)
-                  return (
-                    <div key={l} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <span style={{ width: 80, fontSize: 11, fontFamily: "'SF Mono', 'Fira Code', monospace", color: LAYER_COLORS[l], fontWeight: 600 }}>
-                        {LAYER_LABELS[l]}
-                      </span>
-                      <div style={{ flex: 1, height: 6, borderRadius: 3, background: "var(--bg-elevated)" }}>
-                        <div style={{ width: `${(count / max) * 100}%`, height: "100%", borderRadius: 3, background: LAYER_COLORS[l], opacity: 0.8, transition: "width 0.3s" }} />
-                      </div>
-                      <span style={{ width: 28, textAlign: "right", fontSize: 11, color: "var(--text-tertiary)", fontFamily: "'SF Mono', 'Fira Code', monospace" }}>{count}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 28, marginTop: 14 }}>
+                <LayerScatter layerCounts={layerCounts} size={120} />
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {ALL_LAYERS.map(l => (
+                    <div key={l} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: "50%", background: LAYER_COLORS[l], flexShrink: 0 }} />
+                      <span style={{ fontSize: 12, color: "var(--text-secondary)", width: 80 }}>{LAYER_LABELS[l]}</span>
+                      <span style={{ fontSize: 12, color: "var(--text-tertiary)", fontVariantNumeric: "tabular-nums" }}>{layerCounts[l]} signals</span>
                     </div>
-                  )
-                })}
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -539,7 +574,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
                       <LayerDot layer={s.layer} size={8} />
                       <span style={{ ...headingStyle, fontSize: 14 }}>{LAYER_LABELS[s.layer]}</span>
-                      <span style={{ ...pillStyle, color: LAYER_COLORS[s.layer] }}>{s.count} signals</span>
+                      <span style={{ ...pillStyle, color: "var(--text-tertiary)" }}>{s.count} signals</span>
                     </div>
                     <div style={bodyStyle}>
                       {s.count === 0
