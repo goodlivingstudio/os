@@ -300,7 +300,7 @@ export function LeftRail({
             style={{
               display: "flex",
               background: "var(--bg-elevated)",
-              borderRadius: 8,
+              borderRadius: 10,
               padding: 3,
               gap: 0,
               position: "relative",
@@ -322,43 +322,41 @@ export function LeftRail({
               }}
             />
             {([
-              { id: "signal" as const,    label: "Signal",    Icon: Radio      },
-              { id: "audio" as const,     label: "Audio",     Icon: AudioLines },
-              { id: "synthesis" as const, label: "Synthesis",  Icon: Blend     },
+              { id: "signal" as const,    Icon: Radio,      title: "Signal"    },
+              { id: "audio" as const,     Icon: AudioLines, title: "Audio"     },
+              { id: "synthesis" as const, Icon: Blend,      title: "Synthesis" },
             ]).map(tab => {
               const isActive = viewMode === tab.id
-              const iconColor = isActive
+              const color = isActive
                 ? (tab.id === "synthesis" ? "var(--accent-secondary)" : "var(--text-primary)")
                 : "var(--text-tertiary)"
               return (
                 <button
                   key={tab.id}
                   onClick={() => onViewChange(tab.id)}
+                  title={tab.title}
+                  aria-label={tab.title}
+                  aria-pressed={isActive}
                   style={{
                     flex: 1,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    padding: "8px 0",
-                    minHeight: 36,
+                    padding: "10px 0",
+                    minHeight: 42,
                     background: "transparent",
                     border: "none",
                     borderRadius: 6,
                     cursor: "pointer",
                     position: "relative",
                     zIndex: 1,
-                  }}
-                >
-                  <tab.Icon size={14} strokeWidth={1.8} style={{ marginRight: 4, color: iconColor, transition: "color 0.3s ease" }} />
-                  <span style={{
-                    fontSize: 12,
-                    letterSpacing: "0.01em",
-                    color: iconColor,
-                    fontWeight: isActive ? 600 : 400,
+                    color,
                     transition: "color 0.3s ease",
-                  }}>
-                    {tab.label}
-                  </span>
+                  }}
+                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = "var(--text-secondary)" }}
+                  onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = "var(--text-tertiary)" }}
+                >
+                  <tab.Icon size={20} strokeWidth={1.6} />
                 </button>
               )
             })}
