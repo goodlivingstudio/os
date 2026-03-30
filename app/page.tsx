@@ -9,6 +9,7 @@ import { LeftRail } from "@/components/left-rail"
 import { useChiefOfStaff, ChiefOfStaffBand } from "@/components/chief-of-staff"
 import { FeedCard, SignalCard } from "@/components/feed-card"
 import { SynthesisView } from "@/components/synthesis-view"
+import { AudioView } from "@/components/audio-view"
 import { Divider } from "@/components/divider"
 import type { Article, Message, Signal, FeedHealth, Skin, ViewMode } from "@/lib/types"
 
@@ -790,20 +791,6 @@ function Cerebro({ articles, pendingPrompt }: {
 
 // ─── Audio Placeholder ───────────────────────────────────────────────────────
 
-function AudioPlaceholder() {
-  return (
-    <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-primary)" }}>
-      <div style={{ textAlign: "center", maxWidth: 360 }}>
-        <Radio size={48} strokeWidth={1} style={{ opacity: 0.3, color: "var(--text-tertiary)", marginBottom: 16 }} />
-        <div style={{ fontSize: 16, fontWeight: 600, color: "var(--text-primary)", marginBottom: 8 }}>Audio Intelligence</div>
-        <div style={{ fontSize: 13, color: "var(--text-tertiary)", lineHeight: 1.6 }}>
-          Podcast signal processing. Import your Apple Podcasts subscriptions to populate this channel.
-        </div>
-      </div>
-    </main>
-  )
-}
-
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 function clamp(val: number, min: number, max: number) {
@@ -1013,7 +1000,7 @@ export default function Page() {
         <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
           {mobileTab === "signal" && feedContent}
           {mobileTab === "synthesis" && <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} />}
-          {mobileTab === "audio"     && <AudioPlaceholder />}
+          {mobileTab === "audio"     && <AudioView />}
           {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} /></div>}
         </div>
 
@@ -1115,7 +1102,7 @@ export default function Page() {
         {viewMode === "synthesis"
           ? <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} />
           : viewMode === "audio"
-          ? <AudioPlaceholder />
+          ? <AudioView />
           : feedContent}
         <Divider onMouseDown={e => startResize("right", e)} />
         <div style={{ width: rightWidth, flexShrink: 0 }}>
