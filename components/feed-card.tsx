@@ -141,7 +141,7 @@ export function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }
             fontSize: 11,
             fontFamily: "'SF Mono', 'Fira Code', monospace",
             color: "var(--text-tertiary)",
-            letterSpacing: "0.02em",
+            letterSpacing: "-0.01em",
             marginBottom: 6,
             whiteSpace: "nowrap",
             overflow: "hidden",
