@@ -56,7 +56,7 @@ const headingStyle: React.CSSProperties = {
 
 const cardBase: React.CSSProperties = {
   background: "var(--bg-surface)",
-  border: "1px solid var(--border)",
+  border: "none",
   borderRadius: 14,
   padding: 24,
   cursor: "pointer",
@@ -217,7 +217,7 @@ function SynthesisModal({ title, onClose, children }: { title: string; onClose: 
     >
       <div style={{
         background: "var(--bg-surface)", borderRadius: 16,
-        border: "1px solid var(--border)", width: "80vw", maxWidth: 800,
+        border: "none", width: "80vw", maxWidth: 800,
         maxHeight: "85vh", overflow: "hidden", display: "flex", flexDirection: "column",
         boxShadow: "0 32px 80px rgba(0,0,0,0.3)",
       }}>
@@ -277,19 +277,20 @@ function LayerPill({ layer }: { layer: LayerKey }) {
 
 function LayerScatter({ layerCounts, size = 80 }: { layerCounts: Record<LayerKey, number>; size?: number }) {
   const total = Math.max(Object.values(layerCounts).reduce((a, b) => a + b, 0), 1)
-  // Position each layer in a pentagon arrangement, size by proportion
+  // Tight cluster — circles overlap heavily to create a Venn effect
   const positions = [
-    { x: 0.5, y: 0.15 },   // opportunity — top center
-    { x: 0.85, y: 0.42 },  // position — right
-    { x: 0.72, y: 0.82 },  // discipline — bottom right
-    { x: 0.28, y: 0.82 },  // landscape — bottom left
-    { x: 0.15, y: 0.42 },  // culture — left
+    { x: 0.50, y: 0.30 },  // opportunity — top center
+    { x: 0.72, y: 0.42 },  // position — right
+    { x: 0.64, y: 0.68 },  // discipline — bottom right
+    { x: 0.36, y: 0.68 },  // landscape — bottom left
+    { x: 0.28, y: 0.42 },  // culture — left
   ]
   return (
     <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}>
       {ALL_LAYERS.map((l, i) => {
         const proportion = layerCounts[l] / total
-        const r = Math.max(6, proportion * size * 0.5)
+        // Larger base size + more proportional scaling for bigger, overlapping circles
+        const r = Math.max(size * 0.14, proportion * size * 0.55)
         const cx = positions[i].x * size - r
         const cy = positions[i].y * size - r
         return (
@@ -304,7 +305,7 @@ function LayerScatter({ layerCounts, size = 80 }: { layerCounts: Record<LayerKey
               height: r * 2,
               borderRadius: "50%",
               background: LAYER_COLORS[l],
-              opacity: layerCounts[l] === 0 ? 0.1 : 0.25,
+              opacity: layerCounts[l] === 0 ? 0.08 : 0.2,
               transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           />
@@ -364,7 +365,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
 
   return (
     <main style={{ flex: 1, overflowY: "auto", padding: "24px 28px", background: "var(--bg-primary)" }}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
 
         {/* ── Module 1: Current Briefing ────────────────────────────────── */}
         <div
@@ -374,15 +375,12 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
           onClick={() => setActiveModal("briefing")}
         >
           <div style={sectionLabelStyle}>Current Briefing</div>
-          <div style={{ fontSize: 12, fontFamily: "'SF Mono', 'Fira Code', monospace", color: "var(--text-tertiary)", letterSpacing: "0.01em", marginBottom: 14 }}>
-            {stats.date} &middot; {stats.count} articles &middot; 5 layers
-          </div>
           <div style={{ ...bodyStyle, fontSize: 14, marginBottom: 18 }}>
             Intelligence briefing will appear here when the annotation engine is active. This view synthesizes patterns across all five layers &mdash; Opportunity, Position, Discipline, Landscape, and Culture &mdash; to surface the single most important insight for your mandate right now.
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 12 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <LayerScatter layerCounts={layerCounts} size={56} />
+              <LayerScatter layerCounts={layerCounts} size={80} />
               <LayerLegend layerCounts={layerCounts} />
             </div>
           </div>
@@ -463,37 +461,72 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
 
       {activeModal === "briefing" && (
         <SynthesisModal title="Current Briefing" onClose={() => setActiveModal(null)}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-            <div style={{ ...bodyStyle, fontSize: 14, lineHeight: 1.7 }}>
-              Intelligence briefing will appear here when the annotation engine is active. This view synthesizes patterns across all five layers &mdash; Opportunity, Position, Discipline, Landscape, and Culture &mdash; to surface the single most important insight for your mandate right now.
+          <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+
+            {/* Heading */}
+            <div style={{ ...headingStyle, fontSize: 20, marginBottom: 8 }}>
+              Daily Intelligence Surface
             </div>
 
-            <div>
+            {/* Opening */}
+            <div style={{ ...bodyStyle, fontSize: 14, lineHeight: 1.7, marginBottom: 28 }}>
+              Intelligence briefing will appear here when the annotation engine is active. This view synthesizes patterns across all five layers — Opportunity, Position, Discipline, Landscape, and Culture — to surface the single most important insight for your mandate right now.
+            </div>
+
+            {/* Dataviz — layer distribution */}
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 28 }}>
               <div style={sectionLabelStyle}>Layer Distribution</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 28, marginTop: 14 }}>
-                <LayerScatter layerCounts={layerCounts} size={120} />
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {ALL_LAYERS.map(l => (
-                    <div key={l} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <div style={{ width: 8, height: 8, borderRadius: "50%", background: LAYER_COLORS[l], flexShrink: 0 }} />
-                      <span style={{ fontSize: 12, color: "var(--text-secondary)", width: 80 }}>{LAYER_LABELS[l]}</span>
-                      <span style={{ fontSize: 12, color: "var(--text-tertiary)", fontVariantNumeric: "tabular-nums" }}>{layerCounts[l]} signals</span>
-                    </div>
-                  ))}
+              <div style={{ display: "flex", gap: 24, marginTop: 16 }}>
+                {/* Primary Venn */}
+                <LayerScatter layerCounts={layerCounts} size={160} />
+                {/* Legend + counts */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, justifyContent: "center" }}>
+                  {ALL_LAYERS.map(l => {
+                    const count = layerCounts[l]
+                    const totalSignals = Math.max(Object.values(layerCounts).reduce((a, b) => a + b, 0), 1)
+                    const pct = Math.round((count / totalSignals) * 100)
+                    return (
+                      <div key={l} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <div style={{ width: 8, height: 8, borderRadius: "50%", background: LAYER_COLORS[l], flexShrink: 0 }} />
+                        <span style={{ fontSize: 13, color: "var(--text-secondary)", width: 90 }}>{LAYER_LABELS[l]}</span>
+                        <span style={{ fontSize: 22, fontWeight: 700, color: "var(--text-primary)", fontVariantNumeric: "tabular-nums", width: 36 }}>{count}</span>
+                        <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>{pct}%</span>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             </div>
 
-            <div>
-              <div style={sectionLabelStyle}>What to Watch Today</div>
-              <div style={{ ...bodyStyle, marginTop: 8 }}>
-                {blindSpots.length > 0
-                  ? `${blindSpots.map(s => LAYER_LABELS[s.layer]).join(" and ")} ${blindSpots.length === 1 ? "is" : "are"} running cold. Consider actively seeking signals in ${blindSpots.length === 1 ? "this layer" : "these layers"} to maintain full-spectrum awareness.`
-                  : "All layers show healthy signal density. Focus on the convergence patterns for actionable insight."}
+            {/* Trending */}
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 28 }}>
+              <div style={sectionLabelStyle}>Trending</div>
+              <div style={{ ...bodyStyle, marginTop: 10 }}>
+                {patterns.length > 0
+                  ? `${patterns.length} convergence patterns detected. Strongest: "${patterns[0]?.title}" spanning ${patterns[0]?.layers.length} layers with ${patterns[0]?.signalCount} signals.`
+                  : "No convergence patterns detected yet. Feed more signals to surface cross-layer themes."}
               </div>
             </div>
 
-            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 18 }}>
+            {/* What to Watch */}
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 28 }}>
+              <div style={sectionLabelStyle}>What to Watch</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 10 }}>
+                {blindSpots.length > 0 ? blindSpots.map(s => (
+                  <div key={s.layer} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div style={{ width: 7, height: 7, borderRadius: "50%", background: LAYER_COLORS[s.layer], flexShrink: 0 }} />
+                    <span style={{ ...bodyStyle }}>
+                      <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>{LAYER_LABELS[s.layer]}</strong> — {s.note}
+                    </span>
+                  </div>
+                )) : (
+                  <div style={bodyStyle}>All layers show healthy coverage. Focus on convergence patterns for actionable insight.</div>
+                )}
+              </div>
+            </div>
+
+            {/* Bump */}
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 20 }}>
               <BumpButton onClick={() => { onDeliberate("Briefing: What is the single most important insight across all five layers today?"); setActiveModal(null) }} />
             </div>
           </div>
