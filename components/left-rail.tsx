@@ -1,165 +1,143 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import type { Article, FeedHealth } from "@/lib/types"
 import { CATEGORY_CONFIG } from "@/lib/types"
 
-// ─── Live Clock ──────────────────────────────────────────────────────────────
+// ─── Live Clock — HH:MM only, no seconds ────────────────────────────────────
 
-function LiveClock() {
+function useClock() {
   const [time, setTime] = useState("")
-  const [tzLabel, setTzLabel] = useState("")
 
   useEffect(() => {
-    // Browser-native timezone — same signal as IP lookup, no external service
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
-    // Display city portion: "America/New_York" → "New York"
-    const city = tz.split("/").pop()?.replace(/_/g, " ") ?? tz
-    setTzLabel(city)
-
     const tick = () => {
-      const now = new Date()
       setTime(
-        now.toLocaleTimeString("en-US", {
+        new Date().toLocaleTimeString("en-US", {
           hour: "2-digit",
           minute: "2-digit",
-          second: "2-digit",
           timeZone: tz,
           hour12: false,
         })
       )
     }
     tick()
-    const id = setInterval(tick, 1000)
+    const id = setInterval(tick, 10000) // update every 10s, no seconds to display
     return () => clearInterval(id)
   }, [])
 
-  if (!time) return null
-
-  return (
-    <div
-      style={{
-        fontSize: 11,
-        fontFamily: "'SF Mono', 'Fira Code', monospace",
-        color: "var(--text-tertiary)",
-        letterSpacing: "0.02em",
-        fontVariantNumeric: "tabular-nums",
-        fontWeight: 400,
-      }}
-    >
-      {time}
-    </div>
-  )
+  return time
 }
 
-// ─── Feed Status indicator with diagnostic tooltip ──────────────────────────
+// ─── Source Filter Flyout ─────────────────────────────────────────────────────
 
-const TAG_LABEL: Record<string, string> = {
-  "policy":           "Policy",
-  "ai":               "AI",
-  "design-industry":  "Design Industry",
-  "creative-practice":"Creative Practice",
-  "market":           "Market",
-  "health":           "Healthcare",
-  "company":          "Company Intel",
-  "design-leadership":"Design Leadership",
-  "creative-tech":    "Creative Tech",
-  "culture":          "Culture",
-  "data":             "Data",
-}
-
-function FeedStatus({ isLive, feedHealth, feedLoading }: {
-  isLive: boolean
-  feedHealth: FeedHealth | null
-  feedLoading: boolean
+function SourceFilter({ articles, excludedSources, onToggleSource }: {
+  articles: Article[]
+  excludedSources: Set<string>
+  onToggleSource: (source: string) => void
 }) {
-  const [tooltipVisible, setTooltipVisible] = useState(false)
+  const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
-  const [tipPos, setTipPos] = useState({ top: 0, left: 0 })
 
-  const isError  = !feedLoading && !isLive
-  const dotColor = feedLoading ? "var(--text-tertiary)" : isError ? "#ef4444" : "var(--live)"
-  const label    = feedLoading ? "Loading" : isError ? "Error" : "Live"
+  // Derive unique sources with counts
+  const sources = useMemo(() => {
+    const map: Record<string, number> = {}
+    articles.forEach(a => { if (a.source) map[a.source] = (map[a.source] || 0) + 1 })
+    return Object.entries(map).sort((a, b) => b[1] - a[1]).map(([name, count]) => ({ name, count }))
+  }, [articles])
 
-  const buildDiagnostic = (): string => {
-    if (!feedHealth) return "Fetching feed status…"
-    if (!isLive) {
-      const stubs = feedHealth.stubCategories
-      const stubNames = stubs.length > 0
-        ? `Fallback content active for: ${stubs.map(t => TAG_LABEL[t] || t).join(", ")}.`
-        : ""
-      return `All ${feedHealth.sourcesTotal} sources failed to respond. ${stubNames} No live data available.`
+  // Close on click outside
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
     }
-    return ""
-  }
+    document.addEventListener("mousedown", handler)
+    return () => document.removeEventListener("mousedown", handler)
+  }, [open])
 
-  const handleMouseEnter = () => {
-    if (ref.current) {
-      const rect = ref.current.getBoundingClientRect()
-      setTipPos({ top: rect.bottom + 6, left: rect.left })
-    }
-    setTooltipVisible(true)
-  }
+  const activeCount = sources.length - excludedSources.size
 
   return (
-    <div
-      ref={ref}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={() => setTooltipVisible(false)}
-      style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 6, cursor: "default" }}
-    >
-      <span
-        className={!feedLoading && !isError ? "live-beacon" : undefined}
+    <div ref={ref} style={{ position: "relative", display: "inline-flex" }}>
+      <button
+        onClick={() => setOpen(v => !v)}
         style={{
-          width: 5,
-          height: 5,
-          borderRadius: "50%",
-          background: dotColor,
-          flexShrink: 0,
+          background: "transparent", border: "none", cursor: "pointer",
+          fontSize: 11, color: "var(--text-tertiary)", padding: 0,
+          display: "inline-flex", alignItems: "center", gap: 3,
+          transition: "color 0.15s",
         }}
-      />
-      <span style={{
-        fontSize: 11,
-        fontFamily: "'SF Mono', 'Fira Code', monospace",
-        letterSpacing: "0.06em",
-        textTransform: "uppercase",
-        color: dotColor,
-        fontWeight: 700,
-      }}>
-        {label}
-      </span>
+        onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)" }}
+        onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)" }}
+      >
+        <span style={{ fontVariantNumeric: "tabular-nums" }}>{activeCount}</span>
+        <span>sources</span>
+        <span style={{ fontSize: 8, opacity: 0.6, marginLeft: 1 }}>{open ? "▲" : "▼"}</span>
+      </button>
 
-      {/* Diagnostic tooltip — only on error */}
-      {tooltipVisible && isError && (
+      {open && (
         <div style={{
-          position: "fixed",
-          top: tipPos.top,
-          left: tipPos.left,
+          position: "absolute",
+          top: "calc(100% + 6px)",
+          left: 0,
           zIndex: 2000,
-          width: 224,
+          width: 220,
+          maxHeight: 320,
+          overflowY: "auto",
           background: "var(--bg-elevated)",
-          border: "1px solid #ef4444",
-          borderRadius: 3,
-          padding: "8px 10px",
-          pointerEvents: "none",
+          border: "1px solid var(--border)",
+          borderRadius: 8,
+          padding: "6px 0",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
         }}>
-          <div style={{
-            fontSize: 10,
-            fontFamily: "'SF Mono', 'Fira Code', monospace",
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
-            color: "#ef4444",
-            marginBottom: 5,
-          }}>
-            Feed Offline
+          {/* Select all / none */}
+          <div style={{ display: "flex", gap: 8, padding: "4px 12px 8px", borderBottom: "1px solid var(--border)" }}>
+            <button
+              onClick={() => sources.forEach(s => { if (excludedSources.has(s.name)) onToggleSource(s.name) })}
+              style={{ background: "none", border: "none", fontSize: 10, color: "var(--accent-secondary)", cursor: "pointer", padding: 0 }}
+            >
+              All
+            </button>
+            <button
+              onClick={() => sources.forEach(s => { if (!excludedSources.has(s.name)) onToggleSource(s.name) })}
+              style={{ background: "none", border: "none", fontSize: 10, color: "var(--text-tertiary)", cursor: "pointer", padding: 0 }}
+            >
+              None
+            </button>
           </div>
-          <div style={{
-            fontSize: 12,
-            lineHeight: 1.55,
-            color: "var(--text-secondary)",
-          }}>
-            {buildDiagnostic()}
-          </div>
+          {sources.map(s => {
+            const excluded = excludedSources.has(s.name)
+            return (
+              <button
+                key={s.name}
+                onClick={() => onToggleSource(s.name)}
+                style={{
+                  width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
+                  padding: "6px 12px", background: "transparent", border: "none", cursor: "pointer",
+                  transition: "background 0.1s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+              >
+                <span style={{
+                  fontSize: 12, color: excluded ? "var(--text-tertiary)" : "var(--text-secondary)",
+                  opacity: excluded ? 0.5 : 1, textDecoration: excluded ? "line-through" : "none",
+                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "75%",
+                  textAlign: "left",
+                }}>
+                  {s.name}
+                </span>
+                <span style={{
+                  fontSize: 10, fontVariantNumeric: "tabular-nums",
+                  color: excluded ? "var(--text-tertiary)" : "var(--text-tertiary)",
+                  opacity: excluded ? 0.4 : 0.7,
+                }}>
+                  {s.count}
+                </span>
+              </button>
+            )
+          })}
         </div>
       )}
     </div>
@@ -173,25 +151,34 @@ export function LeftRail({
   active,
   onSelect,
   isLive,
-  feedHealth,
   feedLoading,
   width,
   showAnalytics,
   onToggleAnalytics,
+  excludedSources,
+  onToggleSource,
 }: {
   articles: Article[]
   active: string
   onSelect: (id: string) => void
   isLive: boolean
-  feedHealth: FeedHealth | null
+  feedHealth?: FeedHealth | null
   feedLoading: boolean
   width: number
   showAnalytics: boolean
   onToggleAnalytics: () => void
+  excludedSources: Set<string>
+  onToggleSource: (source: string) => void
 }) {
+  const time = useClock()
   const now  = new Date()
   const date = now.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
   const day  = now.toLocaleDateString("en-US", { weekday: "long" })
+
+  const isError  = !feedLoading && !isLive
+  const dotColor = feedLoading ? "var(--text-tertiary)" : isError ? "#ef4444" : "var(--live)"
+  const statusLabel = feedLoading ? "Loading" : isError ? "Offline" : "Live"
+  const annotatedCount = articles.filter(a => a.synopsis || a.relevance).length
 
   const countFor = (id: string) =>
     id === "all" ? articles.length : articles.filter(a => a.tag === id).length
@@ -207,58 +194,93 @@ export function LeftRail({
         overflow: "hidden",
       }}
     >
-      {/* Wordmark + Clock */}
-      <div
-        style={{
-          padding: "20px 20px 16px",
-          borderBottom: "1px solid var(--border)",
-        }}
-      >
-        {/* Top row: wordmark + clock */}
-        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
-          <div>
-            <h1
-              style={{
-                fontSize: 20,
-                fontWeight: 700,
-                letterSpacing: "-0.04em",
-                color: "var(--text-primary)",
-                lineHeight: 1,
-                margin: 0,
-              }}
-            >
-              Dispatch
-            </h1>
-            <div
-              style={{
-                fontSize: 12,
-                color: "var(--text-tertiary)",
-                letterSpacing: "0.005em",
-                marginTop: 6,
-                lineHeight: 1.45,
-              }}
-            >
-              Directed intelligence for strategic positioning across technology, culture &amp; healthcare
-            </div>
-          </div>
-          <LiveClock />
-        </div>
-
-        {/* Date */}
-        <div
+      {/* ── Identity zone ── */}
+      <div style={{ padding: "24px 20px 16px" }}>
+        <h1
           style={{
-            marginTop: 8,
-            fontSize: 12,
-            color: "var(--text-tertiary)",
-            letterSpacing: "0.01em",
-            fontWeight: 500,
+            fontSize: 22,
+            fontWeight: 700,
+            letterSpacing: "-0.04em",
+            color: "var(--text-primary)",
+            lineHeight: 1,
+            margin: 0,
           }}
         >
+          Dispatch
+        </h1>
+        <div
+          style={{
+            fontSize: 12,
+            color: "var(--text-tertiary)",
+            letterSpacing: "0.005em",
+            marginTop: 8,
+            lineHeight: 1.5,
+          }}
+        >
+          Directed intelligence for strategic positioning across technology, culture &amp; healthcare
+        </div>
+      </div>
+
+      {/* ── Separator ── */}
+      <div style={{ height: 1, background: "var(--border)", margin: "0 20px" }} />
+
+      {/* ── Operational status zone ── */}
+      <div style={{ padding: "14px 20px 16px", borderBottom: "1px solid var(--border)" }}>
+        {/* Date + time — unified line */}
+        <div style={{
+          fontSize: 12,
+          color: "var(--text-secondary)",
+          letterSpacing: "0.01em",
+          fontWeight: 500,
+          marginBottom: 8,
+        }}>
           {day}, {date}
+          <span style={{
+            marginLeft: 8,
+            fontSize: 11,
+            fontFamily: "'SF Mono', 'Fira Code', monospace",
+            color: "var(--text-tertiary)",
+            fontVariantNumeric: "tabular-nums",
+            fontWeight: 400,
+          }}>
+            {time}
+          </span>
         </div>
 
-        {/* Feed status */}
-        <FeedStatus isLive={isLive} feedHealth={feedHealth} feedLoading={feedLoading} />
+        {/* Status line: LIVE · sources · signals */}
+        <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+          <span
+            className={!feedLoading && !isError ? "live-beacon" : undefined}
+            style={{
+              width: 5, height: 5, borderRadius: "50%",
+              background: dotColor, flexShrink: 0,
+            }}
+          />
+          <span style={{
+            fontSize: 11,
+            fontFamily: "'SF Mono', 'Fira Code', monospace",
+            letterSpacing: "0.04em",
+            textTransform: "uppercase",
+            color: dotColor,
+            fontWeight: 700,
+          }}>
+            {statusLabel}
+          </span>
+          <span style={{ color: "var(--border)", fontSize: 11 }}>·</span>
+          <SourceFilter articles={articles} excludedSources={excludedSources} onToggleSource={onToggleSource} />
+          <span style={{ color: "var(--border)", fontSize: 11 }}>·</span>
+          <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>
+            {articles.length} signals
+          </span>
+          {annotatedCount > 0 && (
+            <>
+              <span style={{ color: "var(--border)", fontSize: 11 }}>·</span>
+              <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>
+                {annotatedCount} annotated
+              </span>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Navigation */}

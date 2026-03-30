@@ -820,6 +820,17 @@ export default function Page() {
   const [showAnalytics,  setShowAnalytics]  = useState(false)
   const [active,         setActive]         = useState("all")
   const [mobileTab,      setMobileTab]      = useState<"feed" | "analysis" | "cerebro">("feed")
+  const [excludedSources, setExcludedSources] = useState<Set<string>>(new Set())
+
+  const handleToggleSource = useCallback((source: string) => {
+    setExcludedSources(prev => {
+      const next = new Set(prev)
+      if (next.has(source)) next.delete(source)
+      else next.add(source)
+      try { localStorage.setItem("dispatch-excluded-sources", JSON.stringify([...next])) } catch {}
+      return next
+    })
+  }, [])
 
   // Restore persisted state on mount
   useEffect(() => {
@@ -832,6 +843,9 @@ export default function Page() {
 
       const savedTab = localStorage.getItem("dispatch-mobile-tab")
       if (savedTab === "feed" || savedTab === "analysis" || savedTab === "cerebro") setMobileTab(savedTab)
+
+      const savedExcluded = localStorage.getItem("dispatch-excluded-sources")
+      if (savedExcluded) setExcludedSources(new Set(JSON.parse(savedExcluded)))
     } catch { /* localStorage unavailable — use defaults */ }
   }, [])
 
@@ -925,8 +939,11 @@ export default function Page() {
       .catch(() => setFeedLoading(false))
   }, [])
 
+  const sourceFiltered = excludedSources.size > 0
+    ? articles.filter(a => !excludedSources.has(a.source))
+    : articles
   const filtered =
-    active === "all" ? articles : articles.filter(a => a.tag === active)
+    active === "all" ? sourceFiltered : sourceFiltered.filter(a => a.tag === active)
 
   const feedContent = (
     <main
@@ -1074,11 +1091,12 @@ export default function Page() {
           active={active}
           onSelect={setActive}
           isLive={isLive}
-          feedHealth={feedHealth}
           feedLoading={feedLoading}
           width={leftWidth}
           showAnalytics={showAnalytics}
           onToggleAnalytics={() => setShowAnalytics(v => !v)}
+          excludedSources={excludedSources}
+          onToggleSource={handleToggleSource}
         />
         <Divider onMouseDown={e => startResize("left", e)} />
         {showAnalytics
