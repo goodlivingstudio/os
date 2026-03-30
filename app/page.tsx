@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Paperclip, Mic, MicOff, ExternalLink, Radio, AudioLines, Blend, Brain, ArrowUpRight } from "lucide-react"
+import { Paperclip, Mic, MicOff, ExternalLink, Radio, AudioLines, Blend, Brain, ArrowUpRight, Aperture } from "lucide-react"
 import { Ticker } from "@/components/ticker"
 // AnalyticsPanel stays in codebase but no longer rendered — Synthesis is now a feed mode
 // import { AnalyticsPanel } from "@/components/analytics-panel"
@@ -10,6 +10,7 @@ import { useChiefOfStaff, ChiefOfStaffBand } from "@/components/chief-of-staff"
 import { FeedCard, SignalCard } from "@/components/feed-card"
 import { SynthesisView } from "@/components/synthesis-view"
 import { AudioView } from "@/components/audio-view"
+import { ZenView } from "@/components/zen-view"
 import { Divider } from "@/components/divider"
 import type { Article, Message, Signal, FeedHealth, Skin, ViewMode } from "@/lib/types"
 
@@ -817,7 +818,7 @@ export default function Page() {
   const [feedLoading,    setFeedLoading]    = useState(true)
   const [viewMode,       setViewMode]       = useState<ViewMode>("signal")
   const [active,         setActive]         = useState("all")
-  const [mobileTab,      setMobileTab]      = useState<"signal" | "audio" | "synthesis" | "cerebro">("signal")
+  const [mobileTab,      setMobileTab]      = useState<"signal" | "audio" | "synthesis" | "zen" | "cerebro">("signal")
   const [excludedSources, setExcludedSources] = useState<Set<string>>(new Set())
 
   const handleToggleSource = useCallback((source: string) => {
@@ -1001,6 +1002,7 @@ export default function Page() {
           {mobileTab === "signal" && feedContent}
           {mobileTab === "synthesis" && <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} />}
           {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} />}
+          {mobileTab === "zen"       && <ZenView />}
           {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} /></div>}
         </div>
 
@@ -1019,6 +1021,7 @@ export default function Page() {
             { id: "signal",    Icon: Radio,      label: "Signal"    },
             { id: "audio",     Icon: AudioLines, label: "Audio"     },
             { id: "synthesis", Icon: Blend,      label: "Synthesis" },
+            { id: "zen",       Icon: Aperture,   label: "Zen"       },
             { id: "cerebro",   Icon: Brain,      label: "Cerebro"   },
           ] as const).map(tab => (
             <button
@@ -1103,6 +1106,8 @@ export default function Page() {
           ? <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} />
           : viewMode === "audio"
           ? <AudioView onDeliberate={handleSynthesisDeliberate} />
+          : viewMode === "zen"
+          ? <ZenView />
           : feedContent}
         <Divider onMouseDown={e => startResize("right", e)} />
         <div style={{ width: rightWidth, flexShrink: 0 }}>
