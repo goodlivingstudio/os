@@ -389,18 +389,35 @@ function LeftRail({
       >
         {/* Top row: wordmark + clock */}
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
-          <h1
-            style={{
-              fontSize: 20,
-              fontWeight: 700,
-              letterSpacing: "-0.02em",
-              color: "var(--text-primary)",
-              lineHeight: 1,
-              margin: 0,
-            }}
-          >
-            D.i.s.p.a.t.c.h.
-          </h1>
+          <div>
+            <h1
+              style={{
+                fontSize: 20,
+                fontWeight: 700,
+                letterSpacing: "-0.04em",
+                color: "var(--text-primary)",
+                lineHeight: 1,
+                margin: 0,
+              }}
+            >
+              Dispatch
+            </h1>
+            <div
+              style={{
+                fontSize: 8.5,
+                fontFamily: "'SF Mono', 'Fira Code', monospace",
+                color: "var(--text-tertiary)",
+                letterSpacing: "0.04em",
+                marginTop: 5,
+                lineHeight: 1.3,
+                opacity: 0.7,
+              }}
+            >
+              Directed intelligence for strategic positioning
+              <br />
+              across technology, culture &amp; healthcare
+            </div>
+          </div>
           <LiveClock />
         </div>
 

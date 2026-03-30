@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dispatch.goodliving.studio"),
-  title: "D.i.s.p.a.t.c.h.",
+  title: "Dispatch",
   description: "Directed Intelligence for Strategic Positioning Across Technology, Culture & Healthcare",
   robots: { index: false, follow: false },
   icons: {
