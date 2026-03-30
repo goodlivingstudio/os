@@ -915,9 +915,9 @@ export default function Page() {
           }}
         >
           {([
-            { id: "feed",     icon: "≡",  label: "Feed"     },
-            { id: "analysis", icon: "◎",  label: "Analysis" },
-            { id: "cerebro",  icon: "◈",  label: "Cerebro"  },
+            { id: "feed",     icon: "≡",  label: "Signal"    },
+            { id: "analysis", icon: "◎",  label: "Synthesis" },
+            { id: "cerebro",  icon: "◈",  label: "Cerebro"   },
           ] as const).map(tab => (
             <button
               key={tab.id}
@@ -930,12 +930,26 @@ export default function Page() {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 3,
+                minHeight: 52,
                 background: "transparent",
                 border: "none",
                 cursor: "pointer",
-                borderTop: `2px solid ${mobileTab === tab.id ? "var(--accent-secondary)" : "transparent"}`,
+                position: "relative",
               }}
             >
+              {/* Active pill indicator */}
+              {mobileTab === tab.id && (
+                <div style={{
+                  position: "absolute",
+                  top: 0,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: 20,
+                  height: 4,
+                  borderRadius: 2,
+                  background: "var(--accent-secondary)",
+                }} />
+              )}
               <span style={{ fontSize: 15 }}>{tab.icon}</span>
               <span
                 style={{
