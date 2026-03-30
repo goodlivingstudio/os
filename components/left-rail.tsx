@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import type { Article, FeedHealth } from "@/lib/types"
 import { CATEGORY_CONFIG } from "@/lib/types"
 
-// ─── Live Clock — HH:MM only, no seconds ────────────────────────────────────
+// ─── Live Clock — 24hr with seconds ──────────────────────────────────────────
 
 function useClock() {
   const [time, setTime] = useState("")
@@ -16,13 +16,14 @@ function useClock() {
         new Date().toLocaleTimeString("en-US", {
           hour: "2-digit",
           minute: "2-digit",
+          second: "2-digit",
           timeZone: tz,
           hour12: false,
         })
       )
     }
     tick()
-    const id = setInterval(tick, 10000) // update every 10s, no seconds to display
+    const id = setInterval(tick, 1000)
     return () => clearInterval(id)
   }, [])
 
@@ -64,16 +65,16 @@ function SourceFilter({ articles, excludedSources, onToggleSource }: {
         onClick={() => setOpen(v => !v)}
         style={{
           background: "transparent", border: "none", cursor: "pointer",
-          fontSize: 11, color: "var(--text-tertiary)", padding: 0,
+          fontSize: 11, color: "var(--text-tertiary)",
+          padding: "4px 8px", borderRadius: 6,
           display: "inline-flex", alignItems: "center", gap: 3,
-          transition: "color 0.15s",
+          transition: "all 0.15s",
         }}
-        onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)" }}
-        onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)" }}
+        onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.background = "var(--bg-elevated)" }}
+        onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
       >
         <span style={{ fontVariantNumeric: "tabular-nums" }}>{activeCount}</span>
         <span>sources</span>
-        <span style={{ fontSize: 8, opacity: 0.6, marginLeft: 1 }}>{open ? "▲" : "▼"}</span>
       </button>
 
       {open && (
@@ -107,31 +108,46 @@ function SourceFilter({ articles, excludedSources, onToggleSource }: {
             </button>
           </div>
           {sources.map(s => {
-            const excluded = excludedSources.has(s.name)
+            const active = !excludedSources.has(s.name)
             return (
               <button
                 key={s.name}
                 onClick={() => onToggleSource(s.name)}
                 style={{
-                  width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
+                  width: "100%", display: "flex", alignItems: "center", gap: 8,
                   padding: "6px 12px", background: "transparent", border: "none", cursor: "pointer",
                   transition: "background 0.1s",
                 }}
                 onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                 onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
               >
+                {/* Checkbox */}
                 <span style={{
-                  fontSize: 12, color: excluded ? "var(--text-tertiary)" : "var(--text-secondary)",
-                  opacity: excluded ? 0.5 : 1, textDecoration: excluded ? "line-through" : "none",
-                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "75%",
+                  width: 14, height: 14, borderRadius: 3, flexShrink: 0,
+                  border: active ? "none" : "1.5px solid var(--border)",
+                  background: active ? "var(--accent-secondary)" : "transparent",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  transition: "all 0.15s",
+                }}>
+                  {active && (
+                    <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
+                      <path d="M2 6L5 9L10 3" stroke="var(--bg-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                </span>
+                <span style={{
+                  flex: 1, fontSize: 12,
+                  color: active ? "var(--text-secondary)" : "var(--text-tertiary)",
+                  opacity: active ? 1 : 0.5,
+                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                   textAlign: "left",
                 }}>
                   {s.name}
                 </span>
                 <span style={{
                   fontSize: 10, fontVariantNumeric: "tabular-nums",
-                  color: excluded ? "var(--text-tertiary)" : "var(--text-tertiary)",
-                  opacity: excluded ? 0.4 : 0.7,
+                  color: "var(--text-tertiary)",
+                  opacity: active ? 0.7 : 0.4,
                 }}>
                   {s.count}
                 </span>
@@ -237,8 +253,6 @@ export function LeftRail({
           {day}, {date}
           <span style={{
             marginLeft: 8,
-            fontSize: 11,
-            fontFamily: "'SF Mono', 'Fira Code', monospace",
             color: "var(--text-tertiary)",
             fontVariantNumeric: "tabular-nums",
             fontWeight: 400,
