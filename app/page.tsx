@@ -764,6 +764,35 @@ export default function Page() {
   const [showAnalytics,  setShowAnalytics]  = useState(false)
   const [active,         setActive]         = useState("all")
   const [mobileTab,      setMobileTab]      = useState<"feed" | "analysis" | "cerebro">("feed")
+
+  // Restore persisted state on mount
+  useEffect(() => {
+    try {
+      const savedCategory = localStorage.getItem("dispatch-category")
+      if (savedCategory) setActive(savedCategory)
+
+      const savedView = localStorage.getItem("dispatch-view")
+      if (savedView === "synthesis") setShowAnalytics(true)
+
+      const savedTab = localStorage.getItem("dispatch-mobile-tab")
+      if (savedTab === "feed" || savedTab === "analysis" || savedTab === "cerebro") setMobileTab(savedTab)
+    } catch { /* localStorage unavailable — use defaults */ }
+  }, [])
+
+  // Persist active category
+  useEffect(() => {
+    try { localStorage.setItem("dispatch-category", active) } catch {}
+  }, [active])
+
+  // Persist view mode
+  useEffect(() => {
+    try { localStorage.setItem("dispatch-view", showAnalytics ? "synthesis" : "signal") } catch {}
+  }, [showAnalytics])
+
+  // Persist mobile tab
+  useEffect(() => {
+    try { localStorage.setItem("dispatch-mobile-tab", mobileTab) } catch {}
+  }, [mobileTab])
   const [cerebroPrompt,  setCerebroPrompt]  = useState<{ text: string; id: number } | null>(null)
   const { signals, briefLoading } = useChiefOfStaff(articles)
 
