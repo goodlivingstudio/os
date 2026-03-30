@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ExternalLink } from "lucide-react"
+import { ExternalLink, ArrowUpRight } from "lucide-react"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -45,7 +45,7 @@ const LAYER_LABELS: Record<string, string> = {
 
 // ─── Episode Modal ──────────────────────────────────────────────────────────
 
-function EpisodeModal({ episode, onClose }: { episode: Episode; onClose: () => void }) {
+function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; onClose: () => void; onDeliberate?: (text: string) => void }) {
   return (
     <div
       style={{
@@ -171,9 +171,9 @@ function EpisodeModal({ episode, onClose }: { episode: Episode; onClose: () => v
               </div>
             </div>
 
-            {/* Listen button */}
-            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24 }}>
-              {episode.url && episode.url !== "#" ? (
+            {/* Actions */}
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, display: "flex", alignItems: "center", gap: 12 }}>
+              {episode.url && episode.url !== "#" && (
                 <a
                   href={episode.url}
                   target="_blank"
@@ -191,10 +191,26 @@ function EpisodeModal({ episode, onClose }: { episode: Episode; onClose: () => v
                   Listen
                   <ExternalLink size={13} strokeWidth={2} />
                 </a>
-              ) : (
-                <div style={{ fontSize: 13, color: "var(--text-tertiary)" }}>
-                  No direct link available for this episode.
-                </div>
+              )}
+              {onDeliberate && (
+                <button
+                  onClick={() => {
+                    onDeliberate(`I just came across this podcast episode: "${episode.title}" from ${episode.showName}. ${episode.summary ? `Here's what it covers: ${episode.summary}` : ""} How does this connect to my mandate? What should I listen for?`)
+                    onClose()
+                  }}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: 5,
+                    padding: "10px 16px", borderRadius: 8,
+                    background: "transparent", border: "1px solid var(--border)",
+                    color: "var(--accent-secondary)", fontSize: 12, fontWeight: 600,
+                    cursor: "pointer", transition: "all 0.15s",
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.borderColor = "var(--accent-secondary)" }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "var(--border)" }}
+                >
+                  <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.04em" }}>BUMP</span>
+                  <ArrowUpRight size={12} strokeWidth={2} />
+                </button>
               )}
             </div>
           </div>
@@ -283,11 +299,21 @@ function EpisodeCard({ episode, onClick }: { episode: Episode; onClick: () => vo
 
 // ─── Audio View ──────────────────────────────────────────────────────────────
 
-export function AudioView() {
+const LAYER_FILTERS: { id: string; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "opportunity", label: "Opportunity" },
+  { id: "position", label: "Position" },
+  { id: "discipline", label: "Discipline" },
+  { id: "landscape", label: "Landscape" },
+  { id: "culture", label: "Culture" },
+]
+
+export function AudioView({ onDeliberate }: { onDeliberate?: (text: string) => void }) {
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [loading, setLoading] = useState(true)
   const [showCount, setShowCount] = useState(0)
   const [activeEpisode, setActiveEpisode] = useState<Episode | null>(null)
+  const [activeLayer, setActiveLayer] = useState("all")
 
   useEffect(() => {
     fetch("/api/podcasts")
@@ -300,10 +326,12 @@ export function AudioView() {
       .catch(() => setLoading(false))
   }, [])
 
+  const filtered = activeLayer === "all" ? episodes : episodes.filter(ep => ep.layer === activeLayer)
+
   return (
     <main style={{ flex: 1, overflowY: "auto", padding: "24px 28px", background: "var(--bg-primary)" }}>
       {/* Header */}
-      <div style={{ marginBottom: 20 }}>
+      <div style={{ marginBottom: 16 }}>
         <div style={{
           fontSize: 11, color: "var(--text-tertiary)", textTransform: "uppercase",
           letterSpacing: "0.04em", fontWeight: 600,
@@ -312,10 +340,52 @@ export function AudioView() {
         </div>
         {!loading && (
           <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 4 }}>
-            {episodes.length} episodes from {showCount} shows
+            {filtered.length} episodes from {showCount} shows
           </div>
         )}
       </div>
+
+      {/* Layer pills */}
+      {!loading && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 20 }}>
+          {LAYER_FILTERS.map(layer => {
+            const isActive = activeLayer === layer.id
+            const count = layer.id === "all" ? episodes.length : episodes.filter(ep => ep.layer === layer.id).length
+            if (layer.id !== "all" && count === 0) return null
+            return (
+              <button
+                key={layer.id}
+                onClick={() => setActiveLayer(layer.id)}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 5,
+                  padding: "5px 12px", borderRadius: 16, border: "none",
+                  background: isActive ? "var(--accent-primary)" : "transparent",
+                  cursor: "pointer", transition: "all 0.15s",
+                }}
+                onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
+                onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? "var(--accent-primary)" : "transparent" }}
+              >
+                <span style={{
+                  fontSize: 12,
+                  color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                  fontWeight: isActive ? 600 : 400,
+                  letterSpacing: "-0.01em",
+                  transition: "color 0.15s",
+                }}>
+                  {layer.label}
+                </span>
+                <span style={{
+                  fontSize: 10, fontVariantNumeric: "tabular-nums",
+                  color: isActive ? "var(--accent-muted)" : "var(--text-tertiary)",
+                  opacity: 0.7, transition: "color 0.15s",
+                }}>
+                  {count}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      )}
 
       {/* Loading state */}
       {loading ? (
@@ -343,7 +413,7 @@ export function AudioView() {
         </div>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-          {episodes.map(ep => (
+          {filtered.map(ep => (
             <EpisodeCard key={ep.id} episode={ep} onClick={() => setActiveEpisode(ep)} />
           ))}
         </div>
@@ -351,7 +421,7 @@ export function AudioView() {
 
       {/* Episode modal */}
       {activeEpisode && (
-        <EpisodeModal episode={activeEpisode} onClose={() => setActiveEpisode(null)} />
+        <EpisodeModal episode={activeEpisode} onClose={() => setActiveEpisode(null)} onDeliberate={onDeliberate} />
       )}
     </main>
   )

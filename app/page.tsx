@@ -1000,7 +1000,7 @@ export default function Page() {
         <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
           {mobileTab === "signal" && feedContent}
           {mobileTab === "synthesis" && <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} />}
-          {mobileTab === "audio"     && <AudioView />}
+          {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} />}
           {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} /></div>}
         </div>
 
@@ -1102,7 +1102,7 @@ export default function Page() {
         {viewMode === "synthesis"
           ? <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} />
           : viewMode === "audio"
-          ? <AudioView />
+          ? <AudioView onDeliberate={handleSynthesisDeliberate} />
           : feedContent}
         <Divider onMouseDown={e => startResize("right", e)} />
         <div style={{ width: rightWidth, flexShrink: 0 }}>
