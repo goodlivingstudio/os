@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
+import { Paperclip, Mic, MicOff, ExternalLink, Radio } from "lucide-react"
 import { Ticker } from "@/components/ticker"
 import { AnalyticsPanel } from "@/components/analytics-panel"
 import { LeftRail } from "@/components/left-rail"
@@ -417,11 +418,7 @@ function Cerebro({ articles, pendingPrompt }: {
                 transition: "all 0.2s",
               }}
             >
-              <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
-                <path d="M5 3L3 3C1.9 3 1 3.9 1 5V13C1 14.1 1.9 15 3 15H11C12.1 15 13 14.1 13 13V11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                <path d="M8 1H15V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M15 1L7 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-              </svg>
+              <ExternalLink size={11} strokeWidth={1.8} />
               {escalateCopied ? "Copied" : "Claude"}
             </button>
           )}
@@ -741,9 +738,7 @@ function Cerebro({ articles, pendingPrompt }: {
                 onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)"; if (!attachments.length) e.currentTarget.style.color = "var(--text-secondary)" }}
                 onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = attachments.length > 0 ? "var(--accent-secondary)" : "var(--text-tertiary)" }}
               >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M13.5 7.5L7.5 13.5C6.12 14.88 3.88 14.88 2.5 13.5C1.12 12.12 1.12 9.88 2.5 8.5L9.5 1.5C10.33 0.67 11.67 0.67 12.5 1.5C13.33 2.33 13.33 3.67 12.5 4.5L6.5 10.5C6.22 10.78 5.78 10.78 5.5 10.5C5.22 10.22 5.22 9.78 5.5 9.5L10.5 4.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-                </svg>
+                <Paperclip size={16} strokeWidth={1.5} />
               </button>
               {speechSupported && (
                 <button
@@ -777,11 +772,7 @@ function Cerebro({ articles, pendingPrompt }: {
                   onMouseEnter={e => { if (!isRecording) { e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.color = "var(--text-secondary)" } }}
                   onMouseLeave={e => { if (!isRecording) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" } }}
                 >
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                    <rect x="5.5" y="1" width="5" height="9" rx="2.5" stroke="currentColor" strokeWidth="1.2"/>
-                    <path d="M3 7.5C3 10.26 5.24 12.5 8 12.5C10.76 12.5 13 10.26 13 7.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-                    <line x1="8" y1="12.5" x2="8" y2="15" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-                  </svg>
+                  {isRecording ? <MicOff size={15} strokeWidth={1.5} /> : <Mic size={15} strokeWidth={1.5} />}
                 </button>
               )}
               </div>
@@ -799,7 +790,7 @@ function AudioPlaceholder() {
   return (
     <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-primary)" }}>
       <div style={{ textAlign: "center", maxWidth: 360 }}>
-        <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.3 }}>◉</div>
+        <Radio size={48} strokeWidth={1} style={{ opacity: 0.3, color: "var(--text-tertiary)", marginBottom: 16 }} />
         <div style={{ fontSize: 16, fontWeight: 600, color: "var(--text-primary)", marginBottom: 8 }}>Audio Intelligence</div>
         <div style={{ fontSize: 13, color: "var(--text-tertiary)", lineHeight: 1.6 }}>
           Podcast signal processing. Import your Apple Podcasts subscriptions to populate this channel.

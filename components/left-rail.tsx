@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react"
+import { Newspaper, Radio, Layers } from "lucide-react"
 import type { Article, FeedHealth, ViewMode } from "@/lib/types"
 import { CATEGORY_CONFIG } from "@/lib/types"
 
@@ -321,11 +322,14 @@ export function LeftRail({
               }}
             />
             {([
-              { id: "signal" as const,    label: "Signal"    },
-              { id: "audio" as const,     label: "Audio"     },
-              { id: "synthesis" as const, label: "Synthesis"  },
+              { id: "signal" as const,    label: "Signal",    Icon: Newspaper },
+              { id: "audio" as const,     label: "Audio",     Icon: Radio     },
+              { id: "synthesis" as const, label: "Synthesis",  Icon: Layers    },
             ]).map(tab => {
               const isActive = viewMode === tab.id
+              const iconColor = isActive
+                ? (tab.id === "synthesis" ? "var(--accent-secondary)" : "var(--text-primary)")
+                : "var(--text-tertiary)"
               return (
                 <button
                   key={tab.id}
@@ -345,12 +349,11 @@ export function LeftRail({
                     zIndex: 1,
                   }}
                 >
+                  <tab.Icon size={14} strokeWidth={1.8} style={{ marginRight: 4, color: iconColor, transition: "color 0.3s ease" }} />
                   <span style={{
                     fontSize: 12,
                     letterSpacing: "0.01em",
-                    color: isActive
-                      ? (tab.id === "synthesis" ? "var(--accent-secondary)" : "var(--text-primary)")
-                      : "var(--text-tertiary)",
+                    color: iconColor,
                     fontWeight: isActive ? 600 : 400,
                     transition: "color 0.3s ease",
                   }}>
