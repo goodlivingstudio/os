@@ -426,7 +426,20 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
     }
   }, [articles])
 
-  const provocationText = "What if the strongest signal this week isn\u2019t in your feed at all \u2014 but in what\u2019s conspicuously absent from it?"
+  const provocations = [
+    {
+      label: "Challenge",
+      text: "What if the strongest signal this week isn\u2019t in your feed at all \u2014 but in what\u2019s conspicuously absent from it?",
+    },
+    {
+      label: "Opportunity",
+      text: "Three pharma companies made infrastructure AI bets this week. How do you position design as the connective tissue between molecule, operations, and experience?",
+    },
+    {
+      label: "Blind Spot",
+      text: "Your Culture layer has been quiet for three days. Is that a sourcing gap or are you unconsciously deprioritizing taste while chasing positioning?",
+    },
+  ]
 
   function cardHoverStyle(id: string): React.CSSProperties {
     return hoveredCard === id
@@ -453,7 +466,38 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
           </div>
         </div>
 
-        {/* ── Module 2: Convergence Patterns ────────────────────────────── */}
+        {/* ── Module 2: Cerebro Suggestions — three-column ──────────────── */}
+        <div>
+          <div style={{ ...sectionLabelStyle, marginBottom: 12, paddingLeft: 2 }}>Cerebro Suggests</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+            {provocations.map((p, i) => (
+              <div
+                key={i}
+                style={{
+                  ...cardBase,
+                  display: "flex",
+                  flexDirection: "column",
+                  ...cardHoverStyle(`prov-${i}`),
+                }}
+                onMouseEnter={() => setHoveredCard(`prov-${i}`)}
+                onMouseLeave={() => setHoveredCard(null)}
+                onClick={() => onDeliberate(p.text)}
+              >
+                <div style={{ fontSize: 10, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600, marginBottom: 10 }}>
+                  {p.label}
+                </div>
+                <div style={{ flex: 1, fontSize: 13, fontStyle: "italic", color: "var(--accent-secondary)", lineHeight: 1.6 }}>
+                  {p.text}
+                </div>
+                <div style={{ marginTop: 14 }}>
+                  <BumpButton onClick={() => onDeliberate(p.text)} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Module 3: Convergence Patterns ────────────────────────────── */}
         <div>
           <div style={{ ...sectionLabelStyle, marginBottom: 10, paddingLeft: 2 }}>Convergence Patterns</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
@@ -479,43 +523,26 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
           </div>
         </div>
 
-        {/* ── Module 3: Blind Spots + Cerebro ───────────────────────────── */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-          {/* Blind Spots */}
-          <div
-            style={{ ...cardBase, ...cardHoverStyle("blindspots") }}
-            onMouseEnter={() => setHoveredCard("blindspots")}
-            onMouseLeave={() => setHoveredCard(null)}
-            onClick={() => setActiveModal("blindspots")}
-          >
-            <div style={sectionLabelStyle}>Blind Spots</div>
-            <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginBottom: 14 }}>Layers trending cold</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {blindSpots.length === 0 ? (
-                <div style={bodyStyle}>All layers have healthy coverage.</div>
-              ) : (
-                blindSpots.map(s => (
-                  <div key={s.layer} style={{ ...bodyStyle }}>
-                    <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>{LAYER_LABELS[s.layer]}</strong>
-                    {" "}&mdash; {s.note}
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          {/* Cerebro */}
-          <div
-            style={{ ...cardBase,  display: "flex", flexDirection: "column", ...cardHoverStyle("cerebro") }}
-            onMouseEnter={() => setHoveredCard("cerebro")}
-            onMouseLeave={() => setHoveredCard(null)}
-            onClick={() => setActiveModal("cerebro")}
-          >
-            <div style={sectionLabelStyle}>Cerebro Suggests</div>
-            <div style={{ flex: 1, fontSize: 14, fontStyle: "italic", color: "var(--accent-secondary)", lineHeight: 1.6, letterSpacing: "-0.005em", marginBottom: 16 }}>
-              {provocationText}
-            </div>
-            <BumpButton onClick={() => onDeliberate(provocationText)} />
+        {/* ── Module 5: Blind Spots ─────────────────────────────────────── */}
+        <div
+          style={{ ...cardBase, ...cardHoverStyle("blindspots") }}
+          onMouseEnter={() => setHoveredCard("blindspots")}
+          onMouseLeave={() => setHoveredCard(null)}
+          onClick={() => setActiveModal("blindspots")}
+        >
+          <div style={sectionLabelStyle}>Blind Spots</div>
+          <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginBottom: 14 }}>Layers trending cold</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {blindSpots.length === 0 ? (
+              <div style={bodyStyle}>All layers have healthy coverage.</div>
+            ) : (
+              blindSpots.map(s => (
+                <div key={s.layer} style={{ ...bodyStyle }}>
+                  <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>{LAYER_LABELS[s.layer]}</strong>
+                  {" "}&mdash; {s.note}
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -639,21 +666,6 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
         </SynthesisModal>
       )}
 
-      {activeModal === "cerebro" && (
-        <SynthesisModal title="Cerebro Suggests" onClose={() => setActiveModal(null)}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-            <div style={{ fontSize: 16, fontStyle: "italic", color: "var(--accent-secondary)", lineHeight: 1.7 }}>
-              {provocationText}
-            </div>
-            <div style={bodyStyle}>
-              Cerebro generates provocations designed to push your thinking beyond the signals in your feed. These are not conclusions &mdash; they are deliberate destabilizations meant to surface assumptions and blind spots in your current mental model.
-            </div>
-            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 18 }}>
-              <BumpButton onClick={() => { onDeliberate(provocationText); setActiveModal(null) }} />
-            </div>
-          </div>
-        </SynthesisModal>
-      )}
     </main>
   )
 }

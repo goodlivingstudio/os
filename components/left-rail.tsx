@@ -312,8 +312,8 @@ export function LeftRail({
               style={{
                 position: "absolute",
                 top: 3,
-                left: viewMode === "signal" ? "3px" : viewMode === "audio" ? "calc(25% + 1px)" : viewMode === "synthesis" ? "calc(50% + 1px)" : "calc(75% + 1px)",
-                width: "calc(25% - 4px)",
+                left: viewMode === "signal" ? "3px" : viewMode === "audio" ? "calc(33.33% + 1px)" : "calc(66.66% + 1px)",
+                width: "calc(33.33% - 4px)",
                 height: "calc(100% - 6px)",
                 background: "var(--bg-surface)",
                 borderRadius: 6,
@@ -325,7 +325,6 @@ export function LeftRail({
               { id: "signal" as const,    Icon: Radio,      title: "Signal"    },
               { id: "audio" as const,     Icon: AudioLines, title: "Audio"     },
               { id: "synthesis" as const, Icon: Blend,      title: "Synthesis" },
-              { id: "zen" as const,       Icon: Aperture,   title: "Zen"       },
             ]).map(tab => {
               const isActive = viewMode === tab.id
               return (

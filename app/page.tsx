@@ -1021,7 +1021,6 @@ export default function Page() {
             { id: "signal",    Icon: Radio,      label: "Signal"    },
             { id: "audio",     Icon: AudioLines, label: "Audio"     },
             { id: "synthesis", Icon: Blend,      label: "Synthesis" },
-            { id: "zen",       Icon: Aperture,   label: "Zen"       },
             { id: "cerebro",   Icon: Brain,      label: "Cerebro"   },
           ] as const).map(tab => (
             <button

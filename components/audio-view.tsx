@@ -134,7 +134,7 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
               }}>
                 Details
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
                 <div>
                   <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginBottom: 3 }}>Show</div>
                   <div style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 500 }}>{episode.showName}</div>
