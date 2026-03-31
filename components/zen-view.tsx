@@ -44,7 +44,7 @@ export function ZenView() {
     return (
       <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-primary)" }}>
         <div style={{ textAlign: "center", maxWidth: 360, padding: "0 20px" }}>
-          <div style={{ fontSize: 16, fontWeight: 600, color: "var(--text-primary)", marginBottom: 10 }}>
+          <div style={{ fontSize: 16, fontWeight: 600, color: "var(--text-primary)", marginBottom: 8 }}>
             Zen
           </div>
           <div style={{ fontSize: 13, color: "var(--text-tertiary)", lineHeight: 1.6 }}>
@@ -69,7 +69,7 @@ export function ZenView() {
   return (
     <main style={{ flex: 1, overflowY: "auto", background: "var(--bg-primary)" }}>
       {/* Header */}
-      <div style={{ padding: "20px 24px 12px" }}>
+      <div style={{ padding: "24px 24px 16px" }}>
         <div style={{
           fontSize: 11, color: "var(--text-tertiary)", textTransform: "uppercase",
           letterSpacing: "0.04em", fontWeight: 600,
@@ -85,7 +85,7 @@ export function ZenView() {
       <div
         style={{
           columnCount: 3,
-          columnGap: 10,
+          columnGap: 8,
           padding: "0 24px 24px",
         }}
       >
@@ -112,7 +112,7 @@ function ZenCard({ block }: { block: ZenBlock }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        marginBottom: 10,
+        marginBottom: 8,
         breakInside: "avoid",
         borderRadius: 8,
         overflow: "hidden",
@@ -138,7 +138,7 @@ function ZenCard({ block }: { block: ZenBlock }) {
           style={{
             position: "absolute",
             bottom: 0, left: 0, right: 0,
-            padding: "24px 10px 8px",
+            padding: "24px 8px 8px",
             background: "linear-gradient(transparent, rgba(0,0,0,0.5))",
             opacity: hovered ? 1 : 0,
             transition: "opacity 0.2s",

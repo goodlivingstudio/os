@@ -31,7 +31,7 @@ export function SignalCard({ x, y, article }: { x: number; y: number; article: A
     }}>
       {/* Synopsis — AI: what this article is about, mandate-framed */}
       {article.synopsis && (
-        <div style={{ padding: article.relevance ? "10px 12px 9px" : "10px 12px" }}>
+        <div style={{ padding: article.relevance ? "8px 16px 8px" : "8px 16px" }}>
           <div style={{
             fontSize: 12,
             fontWeight: 400,
@@ -47,7 +47,7 @@ export function SignalCard({ x, y, article }: { x: number; y: number; article: A
       {/* Relevance — AI: why it matters to the mandate */}
       {article.relevance && (
         <div style={{
-          padding: "9px 12px 11px",
+          padding: "8px 16px",
           borderTop: article.synopsis ? "1px solid var(--border)" : "none",
         }}>
           <div style={{
@@ -125,7 +125,7 @@ export function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }
       onMouseLeave={handleMouseLeave}
       style={{
         display: "flex",
-        padding: "14px 20px 14px 18px",
+        padding: "16px 24px 16px 16px",
         borderBottom: "1px solid var(--border)",
         borderLeft: `2px solid ${
           article.signalLens === "OPPORTUNITY" ? "var(--accent-secondary)" : "transparent"
@@ -143,20 +143,20 @@ export function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }
             fontSize: 11,
             color: "var(--text-tertiary)",
             letterSpacing: "0.01em",
-            marginBottom: 6,
+            marginBottom: 4,
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
             display: "flex",
             alignItems: "center",
-            gap: 5,
+            gap: 4,
             transition: "opacity 0.3s ease",
           }}
         >
           {article.source}
-          <span style={{ margin: "0 5px", opacity: 0.4 }}>&middot;</span>
+          <span style={{ margin: "0 4px", opacity: 0.4 }}>&middot;</span>
           {article.category}
-          <span style={{ margin: "0 5px", opacity: 0.4 }}>&middot;</span>
+          <span style={{ margin: "0 4px", opacity: 0.4 }}>&middot;</span>
           {timeAgo(article.publishedAt)}
         </div>
 
@@ -168,7 +168,7 @@ export function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }
             color: hovered ? "var(--text-primary)" : "var(--text-secondary)",
             lineHeight: 1.4,
             letterSpacing: "-0.02em",
-            marginBottom: article.summary ? 7 : 0,
+            marginBottom: article.summary ? 8 : 0,
           }}
         >
           {article.title}
@@ -180,7 +180,7 @@ export function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }
             style={{
               fontSize: 13,
               color: "var(--text-tertiary)",
-              lineHeight: 1.55,
+              lineHeight: 1.6,
               letterSpacing: "-0.005em",
               whiteSpace: "nowrap",
               overflow: "hidden",

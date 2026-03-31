@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Paperclip, Mic, MicOff, ExternalLink, Radio, AudioLines, Blend, Brain, ArrowUpRight, Aperture } from "lucide-react"
+import { Paperclip, Mic, MicOff, ExternalLink, Radio, AudioLines, Blend, Brain, ArrowUpRight } from "lucide-react"
 import { Ticker } from "@/components/ticker"
 // AnalyticsPanel stays in codebase but no longer rendered — Synthesis is now a feed mode
 // import { AnalyticsPanel } from "@/components/analytics-panel"
@@ -516,8 +516,8 @@ function Cerebro({ articles, pendingPrompt }: {
         {/* Follow-up prompts */}
         {followUps && !loading && (
           <div style={{
-            margin: "8px 14px 12px",
-            padding: "14px 14px 12px",
+            margin: "8px 16px 16px",
+            padding: "16px 16px 16px",
             background: "var(--bg-elevated)",
             borderRadius: 10,
             borderLeft: "2px solid var(--accent-secondary)",
@@ -531,7 +531,7 @@ function Cerebro({ articles, pendingPrompt }: {
               lineHeight: 1.65,
               fontStyle: "italic",
               letterSpacing: "-0.01em",
-              marginBottom: followUps.alternatives.length > 0 ? 12 : 0,
+              marginBottom: followUps.alternatives.length > 0 ? 16 : 0,
             }}>
               {followUps.question}
             </div>
@@ -546,7 +546,7 @@ function Cerebro({ articles, pendingPrompt }: {
                       background: "transparent",
                       border: "1px solid var(--border)",
                       borderRadius: 8,
-                      padding: "7px 12px",
+                      padding: "8px 16px",
                       fontSize: 12,
                       color: "var(--text-secondary)",
                       cursor: "pointer",
@@ -618,7 +618,7 @@ function Cerebro({ articles, pendingPrompt }: {
       <div style={{ flexShrink: 0 }}>
         {/* Attachment previews */}
         {attachments.length > 0 && (
-          <div style={{ display: "flex", gap: 6, padding: "8px 14px 0", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 8, padding: "8px 16px 0", flexWrap: "wrap" }}>
             {attachments.map((att, i) => (
               <div key={i} style={{ position: "relative" }}>
                 {att.preview ? (
@@ -650,7 +650,7 @@ function Cerebro({ articles, pendingPrompt }: {
         )}
 
         {/* Main input bar — two-zone: textarea above, toolbar below */}
-        <div style={{ padding: "0 14px 12px" }}>
+        <div style={{ padding: "0 16px 16px" }}>
           <div
             style={{
               background: "var(--bg-elevated)",
@@ -710,7 +710,7 @@ function Cerebro({ articles, pendingPrompt }: {
             {/* Zone 2: Toolbar row */}
             <div style={{
               display: "flex", alignItems: "center", justifyContent: "space-between",
-              padding: "4px 10px 8px",
+              padding: "4px 8px 8px",
             }}>
               {/* Discuss — sends the current provocation to Cerebro */}
               {!input.trim() ? (
@@ -719,7 +719,7 @@ function Cerebro({ articles, pendingPrompt }: {
                   aria-label="Discuss this prompt"
                   style={{
                     background: "transparent", border: "none", cursor: "pointer",
-                    color: "var(--accent-muted)", padding: "6px 10px",
+                    color: "var(--accent-muted)", padding: "8px 8px",
                     borderRadius: 6, transition: "all 0.15s",
                     display: "inline-flex", alignItems: "center", gap: 4,
                   }}
@@ -863,7 +863,7 @@ export default function Page() {
     try { localStorage.setItem("dispatch-mobile-tab", mobileTab) } catch {}
   }, [mobileTab])
   const [cerebroPrompt,  setCerebroPrompt]  = useState<{ text: string; id: number } | null>(null)
-  const { signals, briefLoading } = useChiefOfStaff(articles)
+  const { signals, briefLoading, briefError } = useChiefOfStaff(articles)
 
   const handleDeliberate = useCallback((signal: Signal) => {
     const text = `I want to deliberate on this signal from the brief:\n\n"${signal.label}"\n\n${signal.body}\n\nWalk me through the strategic implications. What should I be thinking about, and what questions should I be exploring?`
@@ -954,16 +954,16 @@ export default function Page() {
         minWidth: 0,
       }}
     >
-      {!isMobile && <ChiefOfStaffBand signals={signals} briefLoading={briefLoading} onDeliberate={handleDeliberate} />}
+      {!isMobile && <ChiefOfStaffBand signals={signals} briefLoading={briefLoading} briefError={briefError} onDeliberate={handleDeliberate} />}
       <div id="main-feed" role="feed" aria-label="Intelligence feed" tabIndex={-1} style={{ flex: 1, overflowY: "auto" }}>
         {feedLoading ? (
-          <div style={{ padding: "32px 20px" }}>
+          <div style={{ padding: "32px 24px" }}>
             {[...Array(8)].map((_, i) => (
               <div
                 key={i}
                 className="loading-pulse"
                 style={{
-                  padding: "14px 20px 14px 18px",
+                  padding: "16px 24px 16px 16px",
                   borderBottom: "1px solid var(--border)",
                   borderLeft: "2px solid transparent",
                 }}

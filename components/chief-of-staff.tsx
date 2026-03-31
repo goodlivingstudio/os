@@ -8,23 +8,31 @@ import type { Article, Signal } from "@/lib/types"
 export function useChiefOfStaff(articles: Article[]) {
   const [signals, setSignals] = useState<Signal[]>([])
   const [briefLoading, setBriefLoading] = useState(false)
+  const [briefError, setBriefError] = useState(false)
   const fetched = useRef(false)
 
   useEffect(() => {
     if (articles.length > 0 && !fetched.current) {
       fetched.current = true
       setBriefLoading(true)
+      setBriefError(false)
       fetch("/api/brief", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ articles: articles.slice(0, 25) }),
       })
-        .then(r => r.json())
+        .then(r => {
+          if (!r.ok) throw new Error(`${r.status}`)
+          return r.json()
+        })
         .then(data => {
           setSignals(data.signals || [])
           setBriefLoading(false)
         })
-        .catch(() => setBriefLoading(false))
+        .catch(() => {
+          setBriefError(true)
+          setBriefLoading(false)
+        })
     }
   }, [articles.length]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -37,6 +45,7 @@ export function useChiefOfStaff(articles: Article[]) {
   return {
     signals: briefLoading || signals.length === 0 ? placeholder : signals,
     briefLoading,
+    briefError,
   }
 }
 
@@ -50,9 +59,10 @@ export const SCAN_STATUSES = [
   "▸ composing brief",
 ]
 
-export function ChiefOfStaffBand({ signals, briefLoading, onDeliberate }: {
+export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDeliberate }: {
   signals: Signal[]
   briefLoading: boolean
+  briefError?: boolean
   onDeliberate?: (signal: Signal) => void
 }) {
   const [statusIdx,  setStatusIdx]  = useState(0)
@@ -93,14 +103,42 @@ export function ChiefOfStaffBand({ signals, briefLoading, onDeliberate }: {
         minHeight: 80,
       }}
     >
-      {isLoading ? (
+      {briefError ? (
+        /* ── Error state: designed API unavailable message ── */
+        <div style={{
+          padding: "16px 24px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+          minHeight: 80,
+          justifyContent: "center",
+        }}>
+          <div style={{
+            fontSize: 10,
+            fontFamily: "'SF Mono', 'Fira Code', monospace",
+            color: "var(--accent-muted)",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            fontWeight: 600,
+          }}>
+            API Unavailable
+          </div>
+          <div style={{
+            fontSize: 13,
+            color: "var(--text-tertiary)",
+            lineHeight: 1.6,
+          }}>
+            Intelligence briefing will resume when the API connection is restored.
+          </div>
+        </div>
+      ) : isLoading ? (
         /* ── Loading state: terminal boot sequence ── */
         <>
           <div style={{
-            padding: "14px 20px",
+            padding: "16px 24px",
             display: "flex",
             flexDirection: "column",
-            gap: 3,
+            gap: 4,
             minHeight: 80,
             justifyContent: "center",
           }}>
@@ -144,7 +182,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, onDeliberate }: {
                 onMouseEnter={() => setHoveredIdx(i)}
                 onMouseLeave={() => setHoveredIdx(null)}
                 style={{
-                  padding: "16px 20px 14px",
+                  padding: "16px 24px 16px",
                   borderRight: i < 2 ? "1px solid var(--border)" : "none",
                   animation: `signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${i * 160}ms both`,
                   position: "relative",
@@ -174,8 +212,8 @@ export function ChiefOfStaffBand({ signals, briefLoading, onDeliberate }: {
                     onClick={() => onDeliberate(signal)}
                     style={{
                       position: "absolute",
-                      bottom: 10,
-                      right: 12,
+                      bottom: 8,
+                      right: 16,
                       background: "none",
                       border: "none",
                       padding: "2px 0",
@@ -211,7 +249,7 @@ export function AnalysisPanelMobile({ signals, briefLoading }: { signals: Signal
         <div
           key={i}
           style={{
-            padding: "20px 20px",
+            padding: "24px 24px",
             borderBottom: "1px solid var(--border)",
             background: "var(--accent-primary)",
           }}
@@ -223,14 +261,14 @@ export function AnalysisPanelMobile({ signals, briefLoading }: { signals: Signal
               color: "var(--accent-muted)",
               letterSpacing: "0.08em",
               textTransform: "uppercase",
-              marginBottom: 10,
+              marginBottom: 8,
             }}
             className={briefLoading && i === 0 ? "loading-pulse" : ""}
           >
             {signal.label}
           </div>
           {signal.body ? (
-            <div style={{ fontSize: 14, color: "var(--text-primary)", lineHeight: 1.65, letterSpacing: "-0.01em" }}>
+            <div style={{ fontSize: 13, color: "var(--text-primary)", lineHeight: 1.6, letterSpacing: "-0.01em" }}>
               {signal.body}
             </div>
           ) : briefLoading ? (

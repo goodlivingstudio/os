@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react"
-import { Radio, AudioLines, Blend, Aperture, Maximize2 } from "lucide-react"
+import { Radio, AudioLines, Blend, Maximize2 } from "lucide-react"
 import type { Article, FeedHealth, ViewMode } from "@/lib/types"
 import { CATEGORY_CONFIG } from "@/lib/types"
 
@@ -90,11 +90,11 @@ function SourceFilter({ articles, excludedSources, onToggleSource }: {
           background: "var(--bg-elevated)",
           border: "1px solid var(--border)",
           borderRadius: 8,
-          padding: "6px 0",
+          padding: "4px 0",
           boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
         }}>
           {/* Reset */}
-          <div style={{ display: "flex", padding: "4px 12px 8px", borderBottom: "1px solid var(--border)" }}>
+          <div style={{ display: "flex", padding: "4px 16px 8px", borderBottom: "1px solid var(--border)" }}>
             <button
               onClick={() => sources.forEach(s => { if (excludedSources.has(s.name)) onToggleSource(s.name) })}
               style={{ background: "none", border: "none", fontSize: 10, color: "var(--accent-secondary)", cursor: "pointer", padding: 0 }}
@@ -110,7 +110,7 @@ function SourceFilter({ articles, excludedSources, onToggleSource }: {
                 onClick={() => onToggleSource(s.name)}
                 style={{
                   width: "100%", display: "flex", alignItems: "center", gap: 8,
-                  padding: "6px 12px", background: "transparent", border: "none", cursor: "pointer",
+                  padding: "6px 16px", background: "transparent", border: "none", cursor: "pointer",
                   transition: "background 0.1s",
                 }}
                 onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
@@ -206,7 +206,7 @@ export function LeftRail({
       }}
     >
       {/* ── Identity zone ── */}
-      <div style={{ padding: "24px 20px 16px" }}>
+      <div style={{ padding: "24px 16px 16px" }}>
         <h1
           style={{
             fontSize: 22,
@@ -233,10 +233,10 @@ export function LeftRail({
       </div>
 
       {/* ── Separator ── */}
-      <div style={{ height: 1, background: "var(--border)", margin: "0 20px" }} />
+      <div style={{ height: 1, background: "var(--border)", margin: "0 16px" }} />
 
       {/* ── Operational status zone ── */}
-      <div style={{ padding: "14px 20px 16px", borderBottom: "1px solid var(--border)" }}>
+      <div style={{ padding: "16px 16px 16px", borderBottom: "1px solid var(--border)" }}>
         {/* Date + time — unified line */}
         <div style={{
           fontSize: 12,
@@ -293,9 +293,9 @@ export function LeftRail({
       </div>
 
       {/* Navigation */}
-      <nav style={{ flex: 1, overflowY: "auto", padding: "10px 0" }}>
+      <nav style={{ flex: 1, overflowY: "auto", padding: "8px 0" }}>
         {/* Signal / Audio / Synthesis — three-state toggle */}
-        <div style={{ padding: "8px 14px 4px", marginBottom: 2 }}>
+        <div style={{ padding: "8px 16px 4px", marginBottom: 4 }}>
           <div
             style={{
               display: "flex",
@@ -362,7 +362,7 @@ export function LeftRail({
 
         {/* Category pills — visible in Signal mode only */}
         {viewMode === "signal" && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, padding: "8px 14px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, padding: "8px 16px" }}>
             {CATEGORY_CONFIG.map(cat => {
               const n = countFor(cat.id)
               if (cat.id !== "all" && n === 0 && !feedLoading) return null
@@ -374,8 +374,8 @@ export function LeftRail({
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
-                    gap: 5,
-                    padding: "5px 12px",
+                    gap: 4,
+                    padding: "4px 12px",
                     borderRadius: 16,
                     border: "none",
                     background: isActive ? "var(--accent-primary)" : "transparent",
@@ -447,7 +447,7 @@ function ZenPreview({ onExpand }: { onExpand: () => void }) {
     <div
       style={{
         flexShrink: 0,
-        padding: "12px 14px",
+        padding: "16px 16px",
         borderTop: "1px solid var(--border)",
       }}
     >

@@ -70,7 +70,7 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
       >
         {/* Header with artwork */}
         <div style={{
-          display: "flex", gap: 20, padding: "28px 32px 24px",
+          display: "flex", gap: 24, padding: "24px 32px 24px",
           borderBottom: "1px solid var(--border)",
           flexShrink: 0,
         }}>
@@ -110,31 +110,31 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
         </div>
 
         {/* Scrollable content */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "28px 32px" }}>
+        <div style={{ flex: 1, overflowY: "auto", padding: "24px 32px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
 
             {/* THE WHAT — Synopsis */}
-            <div style={{ marginBottom: 28 }}>
+            <div style={{ marginBottom: 24 }}>
               <div style={{
                 fontSize: 11, color: "var(--text-tertiary)", textTransform: "uppercase",
-                letterSpacing: "0.04em", fontWeight: 600, marginBottom: 10,
+                letterSpacing: "0.04em", fontWeight: 600, marginBottom: 8,
               }}>
                 Synopsis
               </div>
-              <div style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.7 }}>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6 }}>
                 {episode.summary || "Episode synopsis will be available when the annotation engine is active. This section provides an AI-generated summary of what this episode covers, distilled for relevance to your mandate."}
               </div>
             </div>
 
             {/* THE META — Particulars */}
-            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 28 }}>
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 24 }}>
               <div style={{
                 fontSize: 11, color: "var(--text-tertiary)", textTransform: "uppercase",
-                letterSpacing: "0.04em", fontWeight: 600, marginBottom: 14,
+                letterSpacing: "0.04em", fontWeight: 600, marginBottom: 16,
               }}>
                 Details
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
                 <div>
                   <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginBottom: 3 }}>Show</div>
                   <div style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 500 }}>{episode.showName}</div>
@@ -159,14 +159,14 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
             </div>
 
             {/* THE WHY — Mandate relevance */}
-            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 28 }}>
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 24 }}>
               <div style={{
                 fontSize: 11, color: "var(--text-tertiary)", textTransform: "uppercase",
-                letterSpacing: "0.04em", fontWeight: 600, marginBottom: 10,
+                letterSpacing: "0.04em", fontWeight: 600, marginBottom: 8,
               }}>
                 Why It Matters
               </div>
-              <div style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.7 }}>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6 }}>
                 Mandate relevance analysis will appear here when the annotation engine is active. This section explains how this episode connects to your five intelligence layers and what you should listen for relative to your strategic positioning.
               </div>
             </div>
@@ -180,7 +180,7 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
                   rel="noopener noreferrer"
                   style={{
                     display: "inline-flex", alignItems: "center", gap: 8,
-                    padding: "10px 20px", borderRadius: 8,
+                    padding: "8px 16px", borderRadius: 8,
                     background: "var(--accent-secondary)", color: "var(--bg-primary)",
                     textDecoration: "none", fontSize: 13, fontWeight: 600,
                     transition: "opacity 0.15s",
@@ -200,7 +200,7 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
                   }}
                   style={{
                     display: "inline-flex", alignItems: "center", gap: 8,
-                    padding: "10px 20px", borderRadius: 8,
+                    padding: "8px 16px", borderRadius: 8,
                     background: "var(--bg-elevated)", border: "none",
                     color: "var(--accent-secondary)", fontSize: 13, fontWeight: 600,
                     cursor: "pointer", transition: "all 0.15s",
@@ -232,7 +232,7 @@ function EpisodeCard({ episode, onClick }: { episode: Episode; onClick: () => vo
       onMouseLeave={() => setHovered(false)}
       style={{
         display: "flex",
-        gap: 14,
+        gap: 16,
         padding: 16,
         background: "var(--bg-surface)",
         borderRadius: 12,
@@ -269,21 +269,21 @@ function EpisodeCard({ episode, onClick }: { episode: Episode; onClick: () => vo
         <div
           style={{
             fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.01em",
-            marginBottom: 5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+            marginBottom: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
           }}
         >
           {episode.showName}
           {episode.duration && (
-            <><span style={{ margin: "0 5px", opacity: 0.4 }}>·</span>{episode.duration}</>
+            <><span style={{ margin: "0 4px", opacity: 0.4 }}>·</span>{episode.duration}</>
           )}
-          <span style={{ margin: "0 5px", opacity: 0.4 }}>·</span>
+          <span style={{ margin: "0 4px", opacity: 0.4 }}>·</span>
           {timeAgo(episode.publishedAt)}
         </div>
 
         {/* Episode title */}
         <div
           style={{
-            fontSize: 14, fontWeight: 550,
+            fontSize: 15, fontWeight: 550,
             color: hovered ? "var(--text-primary)" : "var(--text-secondary)",
             lineHeight: 1.4, letterSpacing: "-0.02em", transition: "color 0.15s",
             display: "-webkit-box", WebkitLineClamp: 2,
@@ -329,7 +329,7 @@ export function AudioView({ onDeliberate }: { onDeliberate?: (text: string) => v
   const filtered = activeLayer === "all" ? episodes : episodes.filter(ep => ep.layer === activeLayer)
 
   return (
-    <main style={{ flex: 1, overflowY: "auto", padding: "24px 28px", background: "var(--bg-primary)" }}>
+    <main style={{ flex: 1, overflowY: "auto", padding: "24px 32px", background: "var(--bg-primary)" }}>
       {/* Header */}
       <div style={{ marginBottom: 16 }}>
         <div style={{
@@ -347,7 +347,7 @@ export function AudioView({ onDeliberate }: { onDeliberate?: (text: string) => v
 
       {/* Layer pills */}
       {!loading && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 20 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
           {LAYER_FILTERS.map(layer => {
             const isActive = activeLayer === layer.id
             const count = layer.id === "all" ? episodes.length : episodes.filter(ep => ep.layer === layer.id).length
@@ -357,8 +357,8 @@ export function AudioView({ onDeliberate }: { onDeliberate?: (text: string) => v
                 key={layer.id}
                 onClick={() => setActiveLayer(layer.id)}
                 style={{
-                  display: "inline-flex", alignItems: "center", gap: 5,
-                  padding: "5px 12px", borderRadius: 16, border: "none",
+                  display: "inline-flex", alignItems: "center", gap: 4,
+                  padding: "4px 12px", borderRadius: 16, border: "none",
                   background: isActive ? "var(--accent-primary)" : "transparent",
                   cursor: "pointer", transition: "all 0.15s",
                 }}
@@ -395,7 +395,7 @@ export function AudioView({ onDeliberate }: { onDeliberate?: (text: string) => v
               key={i}
               className="loading-pulse"
               style={{
-                display: "flex", gap: 14, padding: 16,
+                display: "flex", gap: 16, padding: 16,
                 background: "var(--bg-surface)", borderRadius: 12,
               }}
             >
