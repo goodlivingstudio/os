@@ -19,7 +19,6 @@ interface ZenBlock {
 export function ZenView() {
   const [blocks, setBlocks] = useState<ZenBlock[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedBlock, setSelectedBlock] = useState<ZenBlock | null>(null)
 
   useEffect(() => {
     fetch("/api/zen")
@@ -91,56 +90,25 @@ export function ZenView() {
         }}
       >
         {blocks.map(block => (
-          <ZenCard
-            key={block.id}
-            block={block}
-            onClick={() => setSelectedBlock(block)}
-          />
+          <ZenCard key={block.id} block={block} />
         ))}
       </div>
 
-      {/* Lightbox */}
-      {selectedBlock && (
-        <div
-          style={{
-            position: "fixed", inset: 0, zIndex: 2000,
-            background: "rgba(0,0,0,0.85)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer",
-          }}
-          onClick={() => setSelectedBlock(null)}
-        >
-          <img
-            src={selectedBlock.imageUrl}
-            alt={selectedBlock.title || ""}
-            style={{
-              maxWidth: "90vw", maxHeight: "90vh",
-              objectFit: "contain", borderRadius: 4,
-            }}
-          />
-          {selectedBlock.title && (
-            <div style={{
-              position: "absolute", bottom: 32, left: "50%", transform: "translateX(-50%)",
-              fontSize: 12, color: "rgba(255,255,255,0.6)", textAlign: "center",
-              maxWidth: 400,
-            }}>
-              {selectedBlock.title}
-            </div>
-          )}
-        </div>
-      )}
     </main>
   )
 }
 
 // ─── Zen Card — single image in masonry grid ─────────────────────────────────
 
-function ZenCard({ block, onClick }: { block: ZenBlock; onClick: () => void }) {
+function ZenCard({ block }: { block: ZenBlock }) {
   const [hovered, setHovered] = useState(false)
+  const href = block.sourceUrl || block.imageUrl
 
   return (
-    <div
-      onClick={onClick}
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -181,6 +149,6 @@ function ZenCard({ block, onClick }: { block: ZenBlock; onClick: () => void }) {
           </div>
         </div>
       )}
-    </div>
+    </a>
   )
 }
