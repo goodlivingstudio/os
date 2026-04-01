@@ -318,7 +318,7 @@ function CardViz({ id, analytics }: { id: string; analytics: Analytics }) {
     case "urgency": {
       const top3 = analytics.urgencyTop.slice(0, 3)
       if (top3.length === 0)
-        return <div style={{ fontSize: 11, color: "var(--text-tertiary)", fontStyle: "italic" }}>Annotating…</div>
+        return <div style={{ fontSize: 11, fontFamily: "var(--font-geist-mono), monospace", color: "var(--text-tertiary)" }}>Annotating…</div>
       return (
         <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
           {top3.map((article, i) => (

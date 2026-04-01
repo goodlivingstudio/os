@@ -347,7 +347,10 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
 
         {/* ── Module 1: Current Briefing ────────────────────────────────── */}
         <div
-          style={{ ...cardBase, ...cardHoverStyle("briefing") }}
+          style={{
+            ...cardBase, ...cardHoverStyle("briefing"),
+            animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0ms both",
+          }}
           onMouseEnter={() => setHoveredCard("briefing")}
           onMouseLeave={() => setHoveredCard(null)}
           onClick={() => setActiveModal("briefing")}
@@ -359,7 +362,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
         </div>
 
         {/* ── Module 2: COS Suggests — three-column ──────────────────── */}
-        <div>
+        <div style={{ animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 120ms both" }}>
           <div style={{ ...sectionLabelStyle, marginBottom: 16, paddingLeft: 2 }}>COS Suggests</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
             {provocations.map((p, i) => (
@@ -368,6 +371,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                 style={{
                   ...cardBase, display: "flex", flexDirection: "column",
                   ...cardHoverStyle(`prov-${i}`),
+                  animation: `signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${200 + i * 100}ms both`,
                 }}
                 onMouseEnter={() => setHoveredCard(`prov-${i}`)}
                 onMouseLeave={() => setHoveredCard(null)}
@@ -386,13 +390,16 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
         </div>
 
         {/* ── Module 3: Convergence Patterns ────────────────────────────── */}
-        <div>
+        <div style={{ animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 500ms both" }}>
           <div style={{ ...sectionLabelStyle, marginBottom: 16, paddingLeft: 2 }}>Convergence Patterns</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             {patterns.map((pattern, i) => (
               <div
                 key={pattern.id}
-                style={{ ...cardBase, ...cardHoverStyle(`pattern-${i}`) }}
+                style={{
+                  ...cardBase, ...cardHoverStyle(`pattern-${i}`),
+                  animation: `signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${600 + i * 100}ms both`,
+                }}
                 onMouseEnter={() => setHoveredCard(`pattern-${i}`)}
                 onMouseLeave={() => setHoveredCard(null)}
                 onClick={() => setActiveModal(`pattern-${i}`)}
@@ -414,7 +421,10 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
 
         {/* ── Module 4: Blind Spots ─────────────────────────────────────── */}
         <div
-          style={{ ...cardBase, ...cardHoverStyle("blindspots") }}
+          style={{
+            ...cardBase, ...cardHoverStyle("blindspots"),
+            animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 1000ms both",
+          }}
           onMouseEnter={() => setHoveredCard("blindspots")}
           onMouseLeave={() => setHoveredCard(null)}
           onClick={() => setActiveModal("blindspots")}

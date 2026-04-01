@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { ChevronUp } from "lucide-react"
 import type { Article, Signal } from "@/lib/types"
 
 // ─── Chief of Staff — data hook ─────────────────────────────────────────────
@@ -169,13 +170,15 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
             }}>
               COS
             </span>
-            <span style={{
-              fontSize: 10, fontFamily: "var(--font-geist-mono), monospace",
-              color: "var(--text-tertiary)", transition: "transform 0.2s",
-              transform: expanded ? "rotate(0)" : "rotate(180deg)",
-            }}>
-              ▴
-            </span>
+            <ChevronUp
+              size={14}
+              strokeWidth={1.5}
+              style={{
+                color: "var(--text-tertiary)",
+                transition: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                transform: expanded ? "rotate(0)" : "rotate(180deg)",
+              }}
+            />
           </button>
 
           {/* ── Expanded: 3-column signal grid ── */}

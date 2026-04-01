@@ -515,7 +515,6 @@ function Cerebro({ articles, pendingPrompt }: {
             padding: "16px 16px 16px",
             background: "var(--bg-elevated)",
             borderRadius: 8,
-            borderLeft: "2px solid var(--accent-secondary)",
             animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
           }}>
             {/* Inline follow-up question — machine voice */}
@@ -524,7 +523,6 @@ function Cerebro({ articles, pendingPrompt }: {
               fontFamily: "var(--font-geist-mono), monospace",
               color: "var(--accent-muted)",
               lineHeight: 1.65,
-              fontStyle: "italic",
               marginBottom: followUps.alternatives.length > 0 ? 16 : 0,
             }}>
               {followUps.question}
