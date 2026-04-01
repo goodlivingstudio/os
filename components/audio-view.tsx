@@ -388,7 +388,7 @@ export function AudioView({ onDeliberate }: { onDeliberate?: (text: string) => v
 
       {/* Loading state */}
       {loading ? (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        <div className="episode-grid" style={{ gap: 12 }}>
           {[...Array(8)].map((_, i) => (
             <div
               key={i}
@@ -411,7 +411,7 @@ export function AudioView({ onDeliberate }: { onDeliberate?: (text: string) => v
           No episodes loaded. Check podcast feed configuration.
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        <div className="episode-grid" style={{ gap: 12 }}>
           {filtered.map(ep => (
             <EpisodeCard key={ep.id} episode={ep} onClick={() => setActiveEpisode(ep)} />
           ))}

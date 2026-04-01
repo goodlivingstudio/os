@@ -91,7 +91,7 @@ export function Ticker({
     <div
       style={{
         flexShrink: 0,
-        height: 42,
+        height: 52,
         display: "flex",
         alignItems: "center",
         background: "var(--bg-surface)",
@@ -131,7 +131,7 @@ export function Ticker({
             whiteSpace: "nowrap",
             willChange: "transform",
             animationName: "ticker-scroll",
-            animationDuration: `${Math.round(HEADLINES.length * 0.6)}s`,
+            animationDuration: `${Math.max(10, Math.round(HEADLINES.length * 0.45))}s`,
             animationTimingFunction: "linear",
             animationIterationCount: "infinite",
             animationPlayState: paused ? "paused" : "running",
@@ -193,7 +193,7 @@ export function Ticker({
             gap: 8,
             padding: "0 8px",
             borderLeft: "1px solid var(--border)",
-            height: 42,
+            height: 52,
           }}
         >
           {(["mineral", "slate", "forest"] as Skin[]).map((s) => (
@@ -249,7 +249,7 @@ export function Ticker({
           style={{
             flexShrink: 0,
             width: 42,
-            height: 42,
+            height: 52,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

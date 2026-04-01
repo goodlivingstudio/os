@@ -319,7 +319,7 @@ export function LeftRail({
             />
             {([
               { id: "signal" as const,    Icon: Radio,      title: "Signal"    },
-              { id: "audio" as const,     Icon: AudioLines, title: "Audio"     },
+              { id: "audio" as const,     Icon: AudioLines, title: "Sound"     },
               { id: "synthesis" as const, Icon: Blend,      title: "Synthesis" },
             ]).map(tab => {
               const isActive = viewMode === tab.id

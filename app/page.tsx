@@ -1004,7 +1004,7 @@ export default function Page() {
         <div
           style={{
             flexShrink: 0,
-            height: 52,
+            height: 72,
             display: "flex",
             alignItems: "stretch",
             borderTop: "1px solid var(--border)",
@@ -1013,7 +1013,7 @@ export default function Page() {
         >
           {([
             { id: "signal",    Icon: Radio,      label: "Signal"    },
-            { id: "audio",     Icon: AudioLines, label: "Audio"     },
+            { id: "audio",     Icon: AudioLines, label: "Sound"     },
             { id: "synthesis", Icon: Blend,      label: "Synthesis" },
             { id: "cerebro",   Icon: Brain,      label: "Cerebro"   },
           ] as const).map(tab => (
@@ -1027,8 +1027,8 @@ export default function Page() {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 3,
-                minHeight: 52,
+                gap: 4,
+                minHeight: 72,
                 background: "transparent",
                 border: "none",
                 cursor: "pointer",
@@ -1048,7 +1048,7 @@ export default function Page() {
                   background: "var(--accent-secondary)",
                 }} />
               )}
-              <tab.Icon size={18} strokeWidth={1.5} />
+              <tab.Icon size={20} strokeWidth={1.5} />
               <span
                 style={{
                   fontSize: 10,
