@@ -160,7 +160,7 @@ export function Ticker({
                     fontSize: 9,
                     textTransform: "uppercase",
                     padding: "2px 8px",
-                    borderRadius: 3,
+                    borderRadius: 4,
                     background: style.bg,
                     color: style.color,
                     userSelect: "none",
@@ -214,7 +214,7 @@ export function Ticker({
                 cursor: "pointer",
                 padding: 0,
                 flexShrink: 0,
-                borderRadius: 6,
+                borderRadius: 8,
                 transition: "background 0.15s",
               }}
               onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}

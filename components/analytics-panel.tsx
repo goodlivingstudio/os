@@ -210,7 +210,7 @@ function ProportionBar({ segments }: { segments: { flex: number; color: string }
   return (
     <div style={{ display: "flex", height: 8, borderRadius: 4, overflow: "hidden", gap: 2 }}>
       {segments.filter(s => s.flex > 0).map((s, i) => (
-        <div key={i} style={{ flex: s.flex, background: s.color, borderRadius: 2 }} />
+        <div key={i} style={{ flex: s.flex, background: s.color, borderRadius: 4 }} />
       ))}
     </div>
   )
@@ -335,12 +335,12 @@ function CardViz({ id, analytics }: { id: string; analytics: Analytics }) {
               }}>
                 {article.title}
               </div>
-              <div style={{ height: 5, borderRadius: 3, background: "var(--border)" }}>
+              <div style={{ height: 5, borderRadius: 4, background: "var(--border)" }}>
                 <div style={{
                   height: "100%",
                   width: `${((article.signalScores?.urgency || 0) / 10) * 100}%`,
                   background: CARD_ACCENT.urgency,
-                  borderRadius: 3,
+                  borderRadius: 4,
                 }} />
               </div>
             </div>
@@ -364,8 +364,8 @@ function CardViz({ id, analytics }: { id: string; analytics: Analytics }) {
                   {item.count}
                 </span>
               </div>
-              <div style={{ height: 5, borderRadius: 3, background: "var(--border)" }}>
-                <div style={{ height: "100%", width: `${(item.count / max) * 100}%`, background: CARD_ACCENT.sources, borderRadius: 3 }} />
+              <div style={{ height: 5, borderRadius: 4, background: "var(--border)" }}>
+                <div style={{ height: "100%", width: `${(item.count / max) * 100}%`, background: CARD_ACCENT.sources, borderRadius: 4 }} />
               </div>
             </div>
           ))}
@@ -383,7 +383,7 @@ const tooltipStyle = {
   contentStyle: {
     background: "var(--bg-elevated)",
     border: "1px solid var(--border)",
-    borderRadius: 3,
+    borderRadius: 4,
     fontSize: 11,
     color: "var(--text-primary)",
   },
@@ -584,7 +584,7 @@ function AnalyticsModal({ card, analytics, onClose, onDeliberate }: {
     >
       <div style={{
         background: "var(--bg-surface)",
-        borderRadius: 16,
+        borderRadius: 14,
         border: "1px solid var(--border)",
         width: "80vw",
         height: "88vh",

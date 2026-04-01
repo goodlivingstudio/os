@@ -67,7 +67,7 @@ function SourceFilter({ articles, excludedSources, onToggleSource }: {
         style={{
           background: "transparent", border: "none", cursor: "pointer",
           fontSize: 11, color: "var(--text-tertiary)",
-          padding: "4px 8px", borderRadius: 6,
+          padding: "4px 8px", borderRadius: 8,
           display: "inline-flex", alignItems: "center", gap: 3,
           transition: "all 0.15s",
         }}
@@ -118,7 +118,7 @@ function SourceFilter({ articles, excludedSources, onToggleSource }: {
               >
                 {/* Checkbox */}
                 <span style={{
-                  width: 14, height: 14, borderRadius: 3, flexShrink: 0,
+                  width: 14, height: 14, borderRadius: 4, flexShrink: 0,
                   border: active ? "none" : "1.5px solid var(--border)",
                   background: active ? "var(--accent-secondary)" : "transparent",
                   display: "flex", alignItems: "center", justifyContent: "center",
@@ -296,7 +296,7 @@ export function LeftRail({
             style={{
               display: "flex",
               background: "var(--bg-elevated)",
-              borderRadius: 10,
+              borderRadius: 8,
               padding: 3,
               gap: 0,
               position: "relative",
@@ -312,7 +312,7 @@ export function LeftRail({
                 width: "calc(33.33% - 4px)",
                 height: "calc(100% - 6px)",
                 background: "var(--bg-surface)",
-                borderRadius: 6,
+                borderRadius: 8,
                 transition: "left 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
                 zIndex: 0,
               }}
@@ -339,7 +339,7 @@ export function LeftRail({
                     minHeight: 42,
                     background: "transparent",
                     border: "none",
-                    borderRadius: 6,
+                    borderRadius: 8,
                     cursor: "pointer",
                     position: "relative",
                     zIndex: 1,
@@ -372,7 +372,7 @@ export function LeftRail({
                     alignItems: "center",
                     gap: 4,
                     padding: "4px 12px",
-                    borderRadius: 16,
+                    borderRadius: 9999,
                     border: "none",
                     background: isActive ? "var(--accent-primary)" : "transparent",
                     cursor: "pointer",
@@ -452,7 +452,7 @@ function ZenPreview({ onExpand }: { onExpand: () => void }) {
         onMouseLeave={() => setHovered(false)}
         style={{
           position: "relative",
-          borderRadius: 10,
+          borderRadius: 8,
           overflow: "hidden",
           cursor: "pointer",
           aspectRatio: "16/10",

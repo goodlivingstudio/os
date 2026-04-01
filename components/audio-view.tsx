@@ -58,7 +58,7 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
       <div
         style={{
           background: "var(--bg-surface)",
-          borderRadius: 16,
+          borderRadius: 14,
           width: "80vw",
           maxWidth: 720,
           maxHeight: "85vh",
@@ -78,11 +78,11 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
             <img
               src={episode.artworkUrl}
               alt={episode.showName}
-              style={{ width: 96, height: 96, borderRadius: 12, objectFit: "cover", flexShrink: 0, background: "var(--bg-elevated)" }}
+              style={{ width: 96, height: 96, borderRadius: 14, objectFit: "cover", flexShrink: 0, background: "var(--bg-elevated)" }}
             />
           ) : (
             <div style={{
-              width: 96, height: 96, borderRadius: 12, background: "var(--bg-elevated)",
+              width: 96, height: 96, borderRadius: 14, background: "var(--bg-elevated)",
               flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
               fontSize: 28, color: "var(--text-tertiary)",
             }}>
@@ -235,7 +235,7 @@ function EpisodeCard({ episode, onClick }: { episode: Episode; onClick: () => vo
         gap: 16,
         padding: 16,
         background: "var(--bg-surface)",
-        borderRadius: 12,
+        borderRadius: 14,
         cursor: "pointer",
         transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
         transform: hovered ? "scale(1.015)" : "scale(1)",
@@ -358,7 +358,7 @@ export function AudioView({ onDeliberate }: { onDeliberate?: (text: string) => v
                 onClick={() => setActiveLayer(layer.id)}
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 4,
-                  padding: "4px 12px", borderRadius: 16, border: "none",
+                  padding: "4px 12px", borderRadius: 9999, border: "none",
                   background: isActive ? "var(--accent-primary)" : "transparent",
                   cursor: "pointer", transition: "all 0.15s",
                 }}
@@ -395,13 +395,13 @@ export function AudioView({ onDeliberate }: { onDeliberate?: (text: string) => v
               className="loading-pulse"
               style={{
                 display: "flex", gap: 16, padding: 16,
-                background: "var(--bg-surface)", borderRadius: 12,
+                background: "var(--bg-surface)", borderRadius: 14,
               }}
             >
               <div style={{ width: 64, height: 64, borderRadius: 8, background: "var(--bg-elevated)", flexShrink: 0 }} />
               <div style={{ flex: 1 }}>
-                <div style={{ height: 10, width: "60%", background: "var(--bg-elevated)", borderRadius: 2, marginBottom: 8 }} />
-                <div style={{ height: 14, width: "90%", background: "var(--bg-elevated)", borderRadius: 2 }} />
+                <div style={{ height: 10, width: "60%", background: "var(--bg-elevated)", borderRadius: 4, marginBottom: 8 }} />
+                <div style={{ height: 14, width: "90%", background: "var(--bg-elevated)", borderRadius: 4 }} />
               </div>
             </div>
           ))}

@@ -66,7 +66,7 @@ const pillStyle: React.CSSProperties = {
   fontSize: 10,
   textTransform: "uppercase",
   padding: "2px 8px",
-  borderRadius: 3,
+  borderRadius: 4,
   background: "var(--bg-elevated)",
   fontWeight: 600,
 }
@@ -211,7 +211,7 @@ function SynthesisModal({ title, onClose, children }: { title: string; onClose: 
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       <div style={{
-        background: "var(--bg-surface)", borderRadius: 16,
+        background: "var(--bg-surface)", borderRadius: 14,
         border: "none", width: "80vw", maxWidth: 800,
         maxHeight: "85vh", overflow: "hidden", display: "flex", flexDirection: "column",
         boxShadow: "0 32px 80px rgba(0,0,0,0.3)",
@@ -286,7 +286,7 @@ function ContributingSignalsDrawer({ articles }: { articles: Article[] }) {
           ...sectionLabelStyle,
           background: "transparent", border: "none", cursor: "pointer",
           display: "flex", alignItems: "center", gap: 4,
-          padding: "4px 8px", borderRadius: 6,
+          padding: "4px 8px", borderRadius: 8,
           marginBottom: open ? 16 : 0, transition: "all 0.15s",
         }}
         onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" }}

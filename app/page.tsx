@@ -409,7 +409,7 @@ function Cerebro({ articles, pendingPrompt }: {
                 alignItems: "center",
                 gap: 4,
                 padding: "3px 8px",
-                borderRadius: 5,
+                borderRadius: 4,
                 border: "1px solid var(--border)",
                 background: escalateCopied ? "var(--accent-secondary)" : "transparent",
                 color: escalateCopied ? "var(--bg-primary)" : "var(--text-tertiary)",
@@ -514,7 +514,7 @@ function Cerebro({ articles, pendingPrompt }: {
             margin: "8px 16px 16px",
             padding: "16px 16px 16px",
             background: "var(--bg-elevated)",
-            borderRadius: 10,
+            borderRadius: 8,
             borderLeft: "2px solid var(--accent-secondary)",
             animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
           }}>
@@ -616,10 +616,10 @@ function Cerebro({ articles, pendingPrompt }: {
             {attachments.map((att, i) => (
               <div key={i} style={{ position: "relative" }}>
                 {att.preview ? (
-                  <img src={att.preview} alt={att.name} style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 6, border: "1px solid var(--border)" }} />
+                  <img src={att.preview} alt={att.name} style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 8, border: "1px solid var(--border)" }} />
                 ) : (
                   <div style={{
-                    width: 48, height: 48, borderRadius: 6, border: "1px solid var(--border)",
+                    width: 48, height: 48, borderRadius: 8, border: "1px solid var(--border)",
                     background: "var(--bg-elevated)", display: "flex", alignItems: "center", justifyContent: "center",
                     fontSize: 9, color: "var(--text-tertiary)", textTransform: "uppercase",
                   }}>
@@ -648,7 +648,7 @@ function Cerebro({ articles, pendingPrompt }: {
           <div
             style={{
               background: "var(--bg-elevated)",
-              borderRadius: 12,
+              borderRadius: 14,
               border: "1px solid var(--border)",
               transition: "border-color 0.15s",
               overflow: "hidden",
@@ -714,7 +714,7 @@ function Cerebro({ articles, pendingPrompt }: {
                   style={{
                     background: "transparent", border: "none", cursor: "pointer",
                     color: "var(--accent-muted)", padding: "8px 8px",
-                    borderRadius: 6, transition: "all 0.15s",
+                    borderRadius: 8, transition: "all 0.15s",
                     display: "inline-flex", alignItems: "center", gap: 4,
                   }}
                   onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)"; e.currentTarget.style.background = "var(--bg-surface)" }}
@@ -730,7 +730,7 @@ function Cerebro({ articles, pendingPrompt }: {
                 aria-label="Attach file"
                 style={{
                   width: 30, height: 30, display: "flex",
-                  alignItems: "center", justifyContent: "center", borderRadius: 7,
+                  alignItems: "center", justifyContent: "center", borderRadius: 8,
                   border: "none", background: "transparent",
                   color: attachments.length > 0 ? "var(--accent-secondary)" : "var(--text-tertiary)",
                   cursor: "pointer", transition: "all 0.15s", padding: 0,
@@ -764,7 +764,7 @@ function Cerebro({ articles, pendingPrompt }: {
                   aria-label={isRecording ? "Stop recording" : "Voice input"}
                   style={{
                     width: 30, height: 30, display: "flex",
-                    alignItems: "center", justifyContent: "center", borderRadius: 7,
+                    alignItems: "center", justifyContent: "center", borderRadius: 8,
                     border: "none", background: isRecording ? "rgba(239,68,68,0.15)" : "transparent",
                     color: isRecording ? "#ef4444" : "var(--text-tertiary)",
                     cursor: "pointer", transition: "all 0.15s", padding: 0,
@@ -962,8 +962,8 @@ export default function Page() {
                   borderLeft: "2px solid transparent",
                 }}
               >
-                <div style={{ height: 10, width: `${60 + (i % 3) * 15}%`, background: "var(--border)", borderRadius: 2, marginBottom: 8 }} />
-                <div style={{ height: 13, width: `${70 + (i % 4) * 8}%`, background: "var(--bg-elevated)", borderRadius: 2 }} />
+                <div style={{ height: 10, width: `${60 + (i % 3) * 15}%`, background: "var(--border)", borderRadius: 4, marginBottom: 8 }} />
+                <div style={{ height: 13, width: `${70 + (i % 4) * 8}%`, background: "var(--bg-elevated)", borderRadius: 4 }} />
               </div>
             ))}
           </div>
@@ -1044,7 +1044,7 @@ export default function Page() {
                   transform: "translateX(-50%)",
                   width: 20,
                   height: 4,
-                  borderRadius: 2,
+                  borderRadius: 4,
                   background: "var(--accent-secondary)",
                 }} />
               )}

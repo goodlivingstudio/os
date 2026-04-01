@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div style={{
             position: "fixed", bottom: 8, left: 8, zIndex: 9999, pointerEvents: "none",
             background: "#1a6cf0", color: "#fff", fontSize: 10, fontFamily: "monospace",
-            padding: "3px 8px", borderRadius: 3, opacity: 0.85,
+            padding: "3px 8px", borderRadius: 4, opacity: 0.85,
           }}>
             DISPATCH · :3001
           </div>

@@ -24,7 +24,7 @@ export function SignalCard({ x, y, article }: { x: number; y: number; article: A
       pointerEvents: "none",
       zIndex: 1000,
       background: "var(--bg-surface)",
-      borderRadius: 3,
+      borderRadius: 4,
       border: "1px solid var(--border)",
       borderLeft: `3px solid ${accentColor}`,
       overflow: "hidden",
