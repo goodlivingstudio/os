@@ -70,7 +70,7 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
       >
         {/* Header with artwork */}
         <div style={{
-          display: "flex", gap: 24, padding: "24px 32px 24px",
+          display: "flex", gap: 24, padding: "24px 24px 24px",
           borderBottom: "1px solid var(--border)",
           flexShrink: 0,
         }}>
@@ -329,7 +329,7 @@ export function AudioView({ onDeliberate }: { onDeliberate?: (text: string) => v
   const filtered = activeLayer === "all" ? episodes : episodes.filter(ep => ep.layer === activeLayer)
 
   return (
-    <main style={{ flex: 1, overflowY: "auto", padding: "24px 32px", background: "var(--bg-primary)" }}>
+    <main className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", background: "var(--bg-primary)" }}>
       {/* Header */}
       <div style={{ marginBottom: 16 }}>
         <div style={{

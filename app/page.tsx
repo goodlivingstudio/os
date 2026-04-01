@@ -988,16 +988,18 @@ export default function Page() {
 
   if (isMobile) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", height: "100dvh", overflow: "hidden", background: "var(--bg-primary)" }}>
+      <div style={{ display: "flex", flexDirection: "column", height: "100dvh", overflow: "hidden", background: "var(--bg-primary)", position: "fixed", inset: 0 }}>
         <Ticker isDay={isDay} onToggle={toggleMode} skin={skin} onSkinChange={setSkin} />
 
-        {/* Mobile: show active tab panel */}
+        {/* Mobile: show active tab panel with transition */}
         <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
-          {mobileTab === "signal" && feedContent}
-          {mobileTab === "synthesis" && <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} />}
-          {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} />}
-          {mobileTab === "zen"       && <ZenView />}
-          {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} /></div>}
+          <div key={mobileTab} className="mobile-tab-content" style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+            {mobileTab === "signal" && feedContent}
+            {mobileTab === "synthesis" && <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} />}
+            {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} />}
+            {mobileTab === "zen"       && <ZenView />}
+            {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} /></div>}
+          </div>
         </div>
 
         {/* Mobile bottom tab bar */}

@@ -222,7 +222,7 @@ function SynthesisModal({ title, onClose, children }: { title: string; onClose: 
           <span style={{ ...sectionLabelStyle, marginBottom: 0 }}>{title}</span>
           <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--text-tertiary)", cursor: "pointer", fontSize: 20, lineHeight: 1, padding: "4px 8px", borderRadius: 4 }}>&times;</button>
         </div>
-        <div style={{ flex: 1, overflowY: "auto", padding: "24px 32px" }}>
+        <div style={{ flex: 1, overflowY: "auto", padding: 0 }}>
           {children}
         </div>
       </div>
@@ -384,7 +384,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
   // ─── Render ─────────────────────────────────────────────────────────────
 
   return (
-    <main style={{ flex: 1, overflowY: "auto", padding: "24px 32px", background: "var(--bg-primary)" }}>
+    <main className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", background: "var(--bg-primary)" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
 
         {/* ── Module 1: Current Briefing ────────────────────────────────── */}

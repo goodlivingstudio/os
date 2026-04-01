@@ -28,6 +28,18 @@ html, body {
   color: var(--text-primary);
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+}
+
+/* ─── Mobile containment ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  html, body {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 ::selection {
@@ -76,6 +88,25 @@ html, body {
   outline: 2px solid var(--accent-secondary);
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* ─── View padding — responsive ────────────────────────────────── */
+.view-padding {
+  padding: 24px 32px;
+}
+@media (max-width: 768px) {
+  .view-padding {
+    padding: 16px;
+  }
+}
+
+/* ─── Mobile tab transition ───────────────────────────────────── */
+.mobile-tab-content {
+  animation: tab-enter 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes tab-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ─── Episode grid — responsive ────────────────────────────────── */
