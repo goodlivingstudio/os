@@ -49,7 +49,7 @@ export function useChiefOfStaff(articles: Article[]) {
   }
 }
 
-// ─── Chief of Staff Band — desktop horizontal grid ──────────────────────────
+// ─── Chief of Staff Band — COS drawer with Bump overlay ────────────────────
 
 export const SCAN_STATUSES = [
   "$ dispatch --init",
@@ -67,10 +67,11 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
 }) {
   const [statusIdx,  setStatusIdx]  = useState(0)
   const [revealed,   setRevealed]   = useState(false)
+  const [expanded,   setExpanded]   = useState(true)
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
   const wasLoading = useRef(true)
 
-  // Advance status text while fetching (stops at final stage)
+  // Advance status text while fetching
   useEffect(() => {
     if (!briefLoading) return
     setStatusIdx(0)
@@ -79,7 +80,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
     return () => clearInterval(t)
   }, [briefLoading])
 
-  // When real data arrives, wait one beat then reveal
+  // When real data arrives, reveal
   useEffect(() => {
     const hasRealData = !briefLoading && signals.some(s => !!s.body)
     if (hasRealData && wasLoading.current) {
@@ -100,53 +101,38 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
         borderBottom: "1px solid var(--border)",
         position: "relative",
         overflow: "hidden",
-        minHeight: 80,
       }}
     >
       {briefError ? (
-        /* ── Error state: designed API unavailable message ── */
+        /* ── Error state ── */
         <div style={{
           padding: "16px 24px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-          minHeight: 80,
-          justifyContent: "center",
+          display: "flex", flexDirection: "column", gap: 8,
+          minHeight: 80, justifyContent: "center",
         }}>
           <div style={{
-            fontSize: 10,
-            fontFamily: "var(--font-geist-mono), monospace",
-            color: "var(--accent-muted)",
-            textTransform: "uppercase",
-            fontWeight: 600,
+            fontSize: 10, fontFamily: "var(--font-geist-mono), monospace",
+            color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 600,
           }}>
             API Unavailable
           </div>
-          <div style={{
-            fontSize: 13,
-            color: "var(--text-tertiary)",
-            lineHeight: 1.6,
-          }}>
+          <div style={{ fontSize: 12, fontFamily: "var(--font-geist-mono), monospace", color: "var(--text-tertiary)", lineHeight: 1.6 }}>
             Intelligence briefing will resume when the API connection is restored.
           </div>
         </div>
       ) : isLoading ? (
-        /* ── Loading state: terminal boot sequence ── */
+        /* ── Loading state: terminal boot ── */
         <>
           <div style={{
             padding: "16px 24px",
-            display: "flex",
-            flexDirection: "column",
-            gap: 4,
-            minHeight: 80,
-            justifyContent: "center",
+            display: "flex", flexDirection: "column", gap: 4,
+            minHeight: 80, justifyContent: "center",
           }}>
             {SCAN_STATUSES.slice(0, statusIdx + 1).map((line, i) => (
               <div
                 key={i}
                 style={{
-                  fontSize: 10,
-                  fontFamily: "var(--font-geist-mono), monospace",
+                  fontSize: 10, fontFamily: "var(--font-geist-mono), monospace",
                   color: i === statusIdx ? "var(--accent-muted)" : "var(--text-tertiary)",
                   opacity: i === statusIdx ? 1 : 0.5,
                   animation: i === statusIdx ? "status-fade 0.2s ease both" : "none",
@@ -157,80 +143,121 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
               </div>
             ))}
           </div>
-          {/* Scan bar */}
           <div style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            width: "25%",
-            height: 1,
-            background: "var(--accent-secondary)",
-            opacity: 0.4,
+            position: "absolute", bottom: 0, left: 0, width: "25%", height: 1,
+            background: "var(--accent-secondary)", opacity: 0.4,
             animation: "band-scan 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
           }} />
         </>
       ) : (
-        /* ── Revealed state: staggered column entry ── */
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
-          {signals.map((signal, i) => {
-            const isHovered = hoveredIdx === i
-            return (
-              <div
-                key={i}
-                onMouseEnter={() => setHoveredIdx(i)}
-                onMouseLeave={() => setHoveredIdx(null)}
-                style={{
-                  padding: "16px 24px 16px",
-                  borderRight: i < 2 ? "1px solid var(--border)" : "none",
-                  animation: `signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${i * 160}ms both`,
-                  position: "relative",
-                  transition: "background 0.15s",
-                  background: isHovered ? "var(--bg-elevated)" : "transparent",
-                }}
-              >
-                <div style={{
-                  fontSize: 10,
-                  fontFamily: "var(--font-geist-mono), monospace",
-                  color: "var(--accent-secondary)",
-                  textTransform: "uppercase",
-                  fontWeight: 600,
-                  marginBottom: 8,
-                }}>
-                  {signal.label}
-                </div>
-                {signal.body && (
-                  <div style={{ fontSize: 12, fontFamily: "var(--font-geist-mono), monospace", color: "var(--text-primary)", lineHeight: 1.6 }}>
-                    {signal.body}
-                  </div>
-                )}
-                {/* Deliberate affordance — appears on hover */}
-                {onDeliberate && signal.body && (
-                  <button
-                    onClick={() => onDeliberate(signal)}
+        <>
+          {/* ── COS drawer handle ── */}
+          <button
+            onClick={() => setExpanded(e => !e)}
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              width: "100%", padding: "0 20px", height: 32,
+              background: "none", border: "none", borderBottom: expanded ? "1px solid var(--border)" : "none",
+              cursor: "pointer", transition: "background 0.15s",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+            onMouseLeave={e => { e.currentTarget.style.background = "none" }}
+          >
+            <span style={{
+              fontSize: 10, fontFamily: "var(--font-geist-mono), monospace",
+              color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 600,
+            }}>
+              COS
+            </span>
+            <span style={{
+              fontSize: 10, fontFamily: "var(--font-geist-mono), monospace",
+              color: "var(--text-tertiary)", transition: "transform 0.2s",
+              transform: expanded ? "rotate(0)" : "rotate(180deg)",
+            }}>
+              ▴
+            </span>
+          </button>
+
+          {/* ── Expanded: 3-column signal grid ── */}
+          <div style={{
+            maxHeight: expanded ? 300 : 0,
+            overflow: "hidden",
+            transition: "max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+              {signals.map((signal, i) => {
+                const isHovered = hoveredIdx === i
+                return (
+                  <div
+                    key={i}
+                    onMouseEnter={() => setHoveredIdx(i)}
+                    onMouseLeave={() => setHoveredIdx(null)}
+                    onClick={() => { if (onDeliberate && signal.body) onDeliberate(signal) }}
                     style={{
-                      position: "absolute",
-                      bottom: 8,
-                      right: 16,
-                      background: "none",
-                      border: "none",
-                      padding: "2px 0",
-                      cursor: "pointer",
-                      fontSize: 11,
-                      fontWeight: 500,
-                      color: "var(--accent-secondary)",
-                      opacity: isHovered ? 1 : 0,
-                      transition: "opacity 0.2s",
-                      pointerEvents: isHovered ? "auto" : "none",
+                      padding: "16px 20px",
+                      borderRight: i < 2 ? "1px solid var(--border)" : "none",
+                      animation: `signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${i * 160}ms both`,
+                      position: "relative",
+                      cursor: signal.body ? "pointer" : "default",
+                      overflow: "hidden",
                     }}
-                    aria-label={`Deliberate on: ${signal.label}`}
                   >
-                    Deliberate →
-                  </button>
-                )}
-              </div>
-            )
-          })}
-        </div>
+                    {/* Signal content — dims on hover */}
+                    <div style={{
+                      transition: "opacity 0.2s, filter 0.2s",
+                      opacity: isHovered ? 0.12 : 1,
+                      filter: isHovered ? "blur(3px)" : "none",
+                    }}>
+                      <div style={{
+                        fontSize: 10, fontFamily: "var(--font-geist-mono), monospace",
+                        color: "var(--accent-secondary)", textTransform: "uppercase",
+                        fontWeight: 600, marginBottom: 8,
+                      }}>
+                        {signal.label}
+                      </div>
+                      {signal.body && (
+                        <div style={{
+                          fontSize: 12, fontFamily: "var(--font-geist-mono), monospace",
+                          color: "var(--text-primary)", lineHeight: 1.6,
+                        }}>
+                          {signal.body}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Bump overlay — centered, appears on hover */}
+                    {signal.body && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          opacity: isHovered ? 1 : 0,
+                          transition: "opacity 0.2s",
+                          pointerEvents: isHovered ? "auto" : "none",
+                          backdropFilter: "blur(2px)",
+                        }}
+                      >
+                        <span style={{
+                          display: "inline-flex", alignItems: "center", gap: 6,
+                          padding: "10px 20px",
+                          background: "var(--bg-elevated)",
+                          borderRadius: 8,
+                          fontSize: 13, fontWeight: 500,
+                          color: "var(--accent-secondary)",
+                        }}>
+                          Bump ↗
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </>
       )}
     </div>
   )
@@ -252,11 +279,8 @@ export function AnalysisPanelMobile({ signals, briefLoading }: { signals: Signal
         >
           <div
             style={{
-              fontSize: 10,
-              fontFamily: "var(--font-geist-mono), monospace",
-              color: "var(--accent-secondary)",
-              textTransform: "uppercase",
-              marginBottom: 8,
+              fontSize: 10, fontFamily: "var(--font-geist-mono), monospace",
+              color: "var(--accent-secondary)", textTransform: "uppercase", marginBottom: 8,
             }}
             className={briefLoading && i === 0 ? "loading-pulse" : ""}
           >
