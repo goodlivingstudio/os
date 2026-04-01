@@ -159,6 +159,8 @@ function Cerebro({ articles, pendingPrompt }: {
   const [memory,    setMemory]    = useState(false)
   const [sessionId, setSessionId] = useState("")
   const [followUps, setFollowUps] = useState<{ question: string; alternatives: string[] } | null>(null)
+  const [lastSources, setLastSources] = useState<Array<{ title: string; url: string }>>([])
+  const [sourcesByMsgIdx, setSourcesByMsgIdx] = useState<Record<number, Array<{ title: string; url: string }>>>({})
   const [attachments, setAttachments] = useState<{ data: string; media_type: string; name: string; preview: string }[]>([])
   const [isRecording, setIsRecording] = useState(false)
   const inputRef  = useRef<HTMLTextAreaElement>(null)
@@ -293,11 +295,16 @@ function Cerebro({ articles, pendingPrompt }: {
           const searchLines: Message[] = (data.searches || []).map(
             (q: string) => ({ role: "search" as const, content: q })
           )
-          setMessages(prev => [
-            ...prev,
-            ...searchLines,
-            { role: "assistant", content: data.text || "// empty response" },
-          ])
+          setMessages(prev => {
+            const newMsgs = [...prev, ...searchLines, { role: "assistant" as const, content: data.text || "// empty response" }]
+            // Store sources keyed to the assistant message index
+            if (data.sources?.length > 0) {
+              const assistantIdx = newMsgs.length - 1
+              setSourcesByMsgIdx(prev => ({ ...prev, [assistantIdx]: data.sources }))
+              setLastSources(data.sources)
+            }
+            return newMsgs
+          })
           setTokens(t => t + (data.inputTokens || 0) + (data.outputTokens || 0))
           if (data.memoryActive) setMemory(true)
           if (data.followUp) setFollowUps(data.followUp)
@@ -491,18 +498,40 @@ function Cerebro({ articles, pendingPrompt }: {
               </div>
             ) : (
               // Assistant response — mono for machine voice
-              <div
-                style={{
-                  padding: "0 16px",
-                  fontSize: 12.5,
-                  fontFamily: "var(--font-geist-mono), monospace",
-                  color: "var(--text-secondary)",
-                  lineHeight: 1.75,
-                  whiteSpace: "pre-wrap",
-                  wordBreak: "break-word",
-                }}
-              >
-                {m.content}
+              <div style={{ padding: "0 16px" }}>
+                <div
+                  style={{
+                    fontSize: 12.5,
+                    fontFamily: "var(--font-geist-mono), monospace",
+                    color: "var(--text-secondary)",
+                    lineHeight: 1.75,
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {m.content}
+                </div>
+                {/* Source attribution */}
+                {sourcesByMsgIdx[mi] && sourcesByMsgIdx[mi].length > 0 && (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 8, paddingBottom: 4 }}>
+                    {sourcesByMsgIdx[mi].slice(0, 5).map((src, si) => (
+                      <a
+                        key={si}
+                        href={src.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          fontSize: 10, color: "var(--text-tertiary)",
+                          textDecoration: "none", transition: "color 0.15s",
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)" }}
+                        onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)" }}
+                      >
+                        {new URL(src.url).hostname.replace("www.", "")}{si < Math.min(sourcesByMsgIdx[mi].length, 5) - 1 ? " ·" : ""}
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>

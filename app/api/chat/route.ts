@@ -124,9 +124,11 @@ const WEB_SEARCH_TOOL: OpenAI.ChatCompletionTool = {
   },
 }
 
-async function exaSearch(query: string): Promise<string> {
+interface SearchSource { title: string; url: string }
+
+async function exaSearch(query: string): Promise<{ text: string; sources: SearchSource[] }> {
   const key = process.env.EXA_API_KEY
-  if (!key) return "[web search unavailable — EXA_API_KEY not configured]"
+  if (!key) return { text: "[web search unavailable — EXA_API_KEY not configured]", sources: [] }
 
   try {
     const res = await fetch("https://api.exa.ai/search", {
@@ -140,12 +142,16 @@ async function exaSearch(query: string): Promise<string> {
       signal: AbortSignal.timeout(10000),
     })
 
-    if (!res.ok) return `[search error: ${res.status}]`
+    if (!res.ok) return { text: `[search error: ${res.status}]`, sources: [] }
     const data = await res.json()
     const results = (data.results || []).slice(0, 5)
-    if (!results.length) return "[no results found]"
+    if (!results.length) return { text: "[no results found]", sources: [] }
 
-    return results
+    const sources: SearchSource[] = results.map(
+      (r: { title: string; url: string }) => ({ title: r.title, url: r.url })
+    )
+
+    const text = results
       .map(
         (r: { title: string; url: string; text?: string; publishedDate?: string }) =>
           [
@@ -158,8 +164,10 @@ async function exaSearch(query: string): Promise<string> {
             .join("\n")
       )
       .join("\n\n---\n\n")
+
+    return { text, sources }
   } catch (err) {
-    return `[search exception: ${err instanceof Error ? err.message : String(err)}]`
+    return { text: `[search exception: ${err instanceof Error ? err.message : String(err)}]`, sources: [] }
   }
 }
 
@@ -223,6 +231,7 @@ export async function POST(req: Request) {
     // ── Agentic loop — handles tool calls ────────────────────────────────────
     let currentMessages = [...openaiMessages]
     const searchesPerformed: string[] = []
+    const searchSources: SearchSource[] = []
     let totalInput  = 0
     let totalOutput = 0
     let finalText   = ""
@@ -258,11 +267,12 @@ export async function POST(req: Request) {
             const args = JSON.parse(toolCall.function.arguments)
             const query = args.query as string
             searchesPerformed.push(query)
-            const result = await exaSearch(query)
+            const { text: searchText, sources } = await exaSearch(query)
+            searchSources.push(...sources)
             currentMessages.push({
               role: "tool",
               tool_call_id: toolCall.id,
-              content: result,
+              content: searchText,
             })
           }
         }
@@ -294,6 +304,7 @@ export async function POST(req: Request) {
       inputTokens:  totalInput,
       outputTokens: totalOutput,
       searches:     searchesPerformed,
+      sources:      searchSources,
       memoryActive: KV_AVAILABLE,
       followUp,
     })

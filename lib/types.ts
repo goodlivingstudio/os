@@ -21,9 +21,16 @@ export interface Message {
   content: string
 }
 
+export interface SignalSource {
+  title: string
+  url: string
+  source: string
+}
+
 export interface Signal {
   label: string
   body: string
+  sources?: SignalSource[]
 }
 
 export interface FeedHealth {

@@ -24,28 +24,32 @@ Jeremy's context:
 
 Read the feed and surface the three signals that matter most to Jeremy right now. One may be Lilly-specific. One may be broader market/career positioning. One should be something he might miss.
 
+CRITICAL — cite your sources. Reference specific articles by their number in brackets, e.g. [3], [7], [15]. Every claim must trace to at least one article. This is how credibility works.
+
 FORMAT — return exactly three signals separated by the literal string |||
 
 Each signal must be:
 LINE 1: The label (2-4 words, uppercase — what kind of signal this is)
-LINE 2: One to two sentences of substance. Direct. No hedging. Lead with the implication, not the event.
+LINE 2: One to two sentences of substance with article citations in brackets. Direct. No hedging. Lead with the implication, not the event.
 
 Example format:
 OPPORTUNITY SIGNAL
-NVIDIA-Lilly $1B AI lab signals pharma is moving from pilot to infrastructure. This is the context your interview needs to acknowledge.
+NVIDIA-Lilly $1B AI lab signals pharma is moving from pilot to infrastructure [3]. This is the context your interview needs to acknowledge.
 |||
 MARKET PRESSURE
-Agency-to-in-house design migration is accelerating at the companies most likely to hire at director level. Execution credentials matter less than ever.
+Agency-to-in-house design migration is accelerating at the companies most likely to hire at director level [7][12]. Execution credentials matter less than judgment.
 |||
 WATCH CLOSELY
-[Third signal]
+[Third signal with citations]
 
 Nothing else. No preamble. No sign-off. Three signals, one ||| between each.`
 
 interface ArticleInput {
+  id?: string
   title: string
   category: string
   source: string
+  url?: string
   summary?: string
   relevance?: string
 }
@@ -64,14 +68,15 @@ export async function POST(req: Request) {
       })
     }
 
-    const context = articles
-      .slice(0, 25)
+    const inputArticles = articles.slice(0, 25)
+
+    const context = inputArticles
       .map((a, i) => `${i + 1}. [${a.category}] ${a.source}: ${a.title}${a.summary ? ` — ${a.summary.slice(0, 120)}` : ""}`)
       .join("\n")
 
     const response = await getClient().chat.completions.create({
       model: "gpt-4o-mini",
-      max_tokens: 500,
+      max_tokens: 600,
       messages: [
         { role: "system", content: BRIEF_SYSTEM },
         {
@@ -88,8 +93,24 @@ export async function POST(req: Request) {
     const signals = parts.slice(0, 3).map(part => {
       const lines = part.split("\n").map(l => l.trim()).filter(Boolean)
       const label = lines[0] || "SIGNAL"
-      const body = lines.slice(1).join(" ").trim() || ""
-      return { label, body }
+      const rawBody = lines.slice(1).join(" ").trim() || ""
+
+      // Extract citation indices [1], [3], [15] from body text
+      const citationMatches = rawBody.match(/\[(\d+)\]/g) || []
+      const citedIndices = [...new Set(citationMatches.map(m => parseInt(m.replace(/[\[\]]/g, ""), 10) - 1))]
+
+      // Map to actual articles
+      const sources = citedIndices
+        .filter(idx => idx >= 0 && idx < inputArticles.length)
+        .map(idx => {
+          const a = inputArticles[idx]
+          return { title: a.title, url: a.url || "#", source: a.source }
+        })
+
+      // Clean citation brackets from display text
+      const body = rawBody.replace(/\s*\[\d+\]/g, "")
+
+      return { label, body, sources }
     })
 
     // Pad to exactly 3

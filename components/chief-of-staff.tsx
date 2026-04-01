@@ -225,6 +225,27 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
                           {signal.body}
                         </div>
                       )}
+                      {signal.sources && signal.sources.length > 0 && (
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 8 }}>
+                          {signal.sources.map((src, si) => (
+                            <a
+                              key={si}
+                              href={src.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={e => e.stopPropagation()}
+                              style={{
+                                fontSize: 10, color: "var(--text-tertiary)",
+                                textDecoration: "none", transition: "color 0.15s",
+                              }}
+                              onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)" }}
+                              onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)" }}
+                            >
+                              {src.source}{si < signal.sources!.length - 1 ? " ·" : ""}
+                            </a>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     {/* Bump overlay — centered, appears on hover */}
