@@ -547,12 +547,10 @@ function Cerebro({ articles, pendingPrompt }: {
                       lineHeight: 1.4,
                     }}
                     onMouseEnter={e => {
-                      e.currentTarget.style.borderColor = "var(--accent-secondary)"
                       e.currentTarget.style.color = "var(--text-primary)"
                       e.currentTarget.style.background = "var(--bg-surface)"
                     }}
                     onMouseLeave={e => {
-                      e.currentTarget.style.borderColor = "var(--border)"
                       e.currentTarget.style.color = "var(--text-secondary)"
                       e.currentTarget.style.background = "transparent"
                     }}
@@ -718,7 +716,7 @@ function Cerebro({ articles, pendingPrompt }: {
                   onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)"; e.currentTarget.style.background = "var(--bg-surface)" }}
                   onMouseLeave={e => { e.currentTarget.style.color = "var(--accent-muted)"; e.currentTarget.style.background = "transparent" }}
                 >
-                  <span style={{ fontSize: 10, fontWeight: 600 }}>BUMP</span>
+                  <span style={{ fontSize: 12 }}>Bump</span>
                   <ArrowUpRight size={13} strokeWidth={2} />
                 </button>
               ) : <div />}

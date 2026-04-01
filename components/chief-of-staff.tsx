@@ -157,7 +157,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
             onClick={() => setExpanded(e => !e)}
             style={{
               display: "flex", alignItems: "center", justifyContent: "space-between",
-              width: "100%", padding: "0 20px", height: 32,
+              width: "100%", padding: "0 20px", height: 40,
               background: "none", border: "none", borderBottom: expanded ? "1px solid var(--border)" : "none",
               cursor: "pointer", transition: "background 0.15s",
             }}
@@ -166,7 +166,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
           >
             <span style={{
               fontSize: 10, fontFamily: "var(--font-geist-mono), monospace",
-              color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 600,
+              color: "var(--accent-secondary)", textTransform: "uppercase",
             }}>
               COS
             </span>
@@ -214,7 +214,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
                       <div style={{
                         fontSize: 10, fontFamily: "var(--font-geist-mono), monospace",
                         color: "var(--accent-secondary)", textTransform: "uppercase",
-                        fontWeight: 600, marginBottom: 8,
+                        marginBottom: 8,
                       }}>
                         {signal.label}
                       </div>
@@ -245,11 +245,11 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
                       >
                         <span style={{
                           display: "inline-flex", alignItems: "center", gap: 6,
-                          padding: "10px 20px",
-                          background: "var(--bg-elevated)",
+                          padding: "10px 24px",
+                          background: "var(--accent-secondary)",
                           borderRadius: 8,
                           fontSize: 13, fontWeight: 500,
-                          color: "var(--accent-secondary)",
+                          color: "var(--bg-primary)",
                         }}>
                           Bump ↗
                         </span>
