@@ -13,12 +13,13 @@ interface SynthesisViewProps {
 
 type LayerKey = "opportunity" | "position" | "discipline" | "landscape" | "culture"
 
+// Option E — Considered Contrast
 const LAYER_COLORS: Record<LayerKey, string> = {
-  opportunity: "#C8955A",
-  position: "#60A5FA",
-  discipline: "#4ade80",
-  landscape: "#A78BFA",
-  culture: "#f87171",
+  opportunity: "#D4A05A",
+  position: "#5A9EB0",
+  discipline: "#7BAF6A",
+  landscape: "#9A85B8",
+  culture: "#C87A6A",
 }
 
 const LAYER_LABELS: Record<LayerKey, string> = {
@@ -31,16 +32,19 @@ const LAYER_LABELS: Record<LayerKey, string> = {
 
 const ALL_LAYERS: LayerKey[] = ["opportunity", "position", "discipline", "landscape", "culture"]
 
-// ─── Shared styles ──────────────────────────────────────────────────────────
+// ─── Shared styles — aligned to Dispatch DS ────────────────────────────────
 
+// Cerebro label: Geist Mono, accent color, uppercase
 const sectionLabelStyle: React.CSSProperties = {
   fontSize: 10,
+  fontFamily: "var(--font-geist-mono), monospace",
   color: "var(--accent-secondary)",
   textTransform: "uppercase",
-  fontWeight: 600,
+  fontWeight: 500,
   marginBottom: 8,
 }
 
+// Synthesis body: Geist Mono 12px
 const bodyStyle: React.CSSProperties = {
   fontSize: 12,
   fontFamily: "var(--font-geist-mono), monospace",
@@ -48,11 +52,12 @@ const bodyStyle: React.CSSProperties = {
   lineHeight: 1.6,
 }
 
+// Heading: Geist Mono 15px, weight 500 (not 550 or 600 — synthesis voice is precise, not heavy)
 const headingStyle: React.CSSProperties = {
   fontSize: 15,
   fontFamily: "var(--font-geist-mono), monospace",
   color: "var(--text-primary)",
-  fontWeight: 550,
+  fontWeight: 500,
 }
 
 const cardBase: React.CSSProperties = {
@@ -66,27 +71,12 @@ const cardBase: React.CSSProperties = {
 
 const pillStyle: React.CSSProperties = {
   fontSize: 10,
+  fontFamily: "var(--font-geist-mono), monospace",
   textTransform: "uppercase",
   padding: "2px 8px",
   borderRadius: 4,
   background: "var(--bg-elevated)",
-  fontWeight: 600,
-}
-
-const bumpButtonStyle: React.CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  gap: 4,
-  padding: "8px 16px",
-  borderRadius: 8,
-  border: "1px solid var(--border)",
-  background: "transparent",
-  color: "var(--text-secondary)",
-  fontSize: 10,
-  fontWeight: 600,
-  textTransform: "uppercase",
-  cursor: "pointer",
-  transition: "all 0.15s",
+  fontWeight: 500,
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -110,14 +100,6 @@ interface DerivedPattern {
 }
 
 function derivePatterns(articles: Article[]): DerivedPattern[] {
-  // Group articles by source
-  const bySource: Record<string, Article[]> = {}
-  for (const a of articles) {
-    if (!bySource[a.source]) bySource[a.source] = []
-    bySource[a.source].push(a)
-  }
-
-  // Group articles by tag
   const byTag: Record<string, Article[]> = {}
   for (const a of articles) {
     const tag = a.tag?.toLowerCase()
@@ -127,9 +109,8 @@ function derivePatterns(articles: Article[]): DerivedPattern[] {
     }
   }
 
-  // Find tag combinations that have articles from multiple sources
-  const tagPairs: [LayerKey, LayerKey][] = []
   const layerKeys = ALL_LAYERS.filter(k => (byTag[k]?.length || 0) > 0)
+  const tagPairs: [LayerKey, LayerKey][] = []
   for (let i = 0; i < layerKeys.length; i++) {
     for (let j = i + 1; j < layerKeys.length; j++) {
       tagPairs.push([layerKeys[i], layerKeys[j]])
@@ -138,7 +119,6 @@ function derivePatterns(articles: Article[]): DerivedPattern[] {
 
   const patterns: DerivedPattern[] = []
 
-  // Create patterns from tag intersections
   const patternTemplates = [
     { layers: ["opportunity", "discipline"] as LayerKey[], title: "Strategic Craft Intersection", desc: "Opportunity signals overlap with discipline evolution, suggesting new roles require both strategic vision and technical depth." },
     { layers: ["position", "landscape"] as LayerKey[], title: "Market Position Shift", desc: "Leadership positioning intersects with industry landscape changes, indicating the terrain for career moves is shifting." },
@@ -152,8 +132,6 @@ function derivePatterns(articles: Article[]): DerivedPattern[] {
       return tmpl.layers.includes(tag)
     })
     if (matchingArticles.length > 0) {
-      // Check if multiple sources contribute
-      const sources = new Set(matchingArticles.map(a => a.source))
       patterns.push({
         id: tmpl.title.toLowerCase().replace(/\s+/g, "-"),
         layers: tmpl.layers.filter(l => (byTag[l]?.length || 0) > 0),
@@ -165,7 +143,6 @@ function derivePatterns(articles: Article[]): DerivedPattern[] {
     }
   }
 
-  // Ensure at least 4 patterns, fill from remaining layer combos
   if (patterns.length < 4) {
     for (const pair of tagPairs) {
       if (patterns.length >= 4) break
@@ -222,7 +199,7 @@ function SynthesisModal({ title, onClose, children }: { title: string; onClose: 
           <span style={{ ...sectionLabelStyle, marginBottom: 0 }}>{title}</span>
           <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--text-tertiary)", cursor: "pointer", fontSize: 20, lineHeight: 1, padding: "4px 8px", borderRadius: 4 }}>&times;</button>
         </div>
-        <div style={{ flex: 1, overflowY: "auto", padding: 0 }}>
+        <div className="view-padding" style={{ flex: 1, overflowY: "auto" }}>
           {children}
         </div>
       </div>
@@ -230,25 +207,29 @@ function SynthesisModal({ title, onClose, children }: { title: string; onClose: 
   )
 }
 
-// ─── BUMP Button ────────────────────────────────────────────────────────────
+// ─── Bump Button — matches Buttons board ───────────────────────────────────
 
 function BumpButton({ onClick }: { onClick: () => void }) {
   return (
     <button
       onClick={e => { e.stopPropagation(); onClick() }}
-      style={bumpButtonStyle}
+      style={{
+        display: "inline-flex", alignItems: "center", gap: 6,
+        padding: "8px 14px", borderRadius: 8,
+        border: "1px solid var(--border)", background: "transparent",
+        color: "var(--text-secondary)", fontSize: 12,
+        fontWeight: 500, cursor: "pointer", transition: "all 0.15s",
+      }}
       onMouseEnter={e => {
-        e.currentTarget.style.borderColor = "var(--accent-secondary)"
-        e.currentTarget.style.color = "var(--accent-secondary)"
         e.currentTarget.style.background = "var(--bg-elevated)"
+        e.currentTarget.style.color = "var(--accent-secondary)"
       }}
       onMouseLeave={e => {
-        e.currentTarget.style.borderColor = "var(--border)"
-        e.currentTarget.style.color = "var(--text-secondary)"
         e.currentTarget.style.background = "transparent"
+        e.currentTarget.style.color = "var(--text-secondary)"
       }}
     >
-      BUMP to Cerebro <ArrowUpRight size={11} />
+      Bump <ArrowUpRight size={11} />
     </button>
   )
 }
@@ -275,9 +256,7 @@ function ContributingSignalsDrawer({ articles }: { articles: Article[] }) {
   const [open, setOpen] = useState(false)
 
   if (articles.length === 0) {
-    return (
-      <div style={bodyStyle}>No specific articles mapped yet.</div>
-    )
+    return <div style={bodyStyle}>No specific articles mapped yet.</div>
   }
 
   return (
@@ -291,8 +270,8 @@ function ContributingSignalsDrawer({ articles }: { articles: Article[] }) {
           padding: "4px 8px", borderRadius: 8,
           marginBottom: open ? 16 : 0, transition: "all 0.15s",
         }}
-        onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" }}
-        onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
+        onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+        onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
       >
         Contributing Signals ({articles.length})
       </button>
@@ -305,24 +284,15 @@ function ContributingSignalsDrawer({ articles }: { articles: Article[] }) {
                 key={a.id}
                 style={{
                   padding: "8px 16px", background: "var(--bg-elevated)", borderRadius: 8,
-                  cursor: isExternal ? "pointer" : "default",
-                  transition: "background 0.12s",
+                  cursor: isExternal ? "pointer" : "default", transition: "background 0.12s",
                 }}
                 onMouseEnter={e => { if (isExternal) e.currentTarget.style.background = "var(--bg-surface)" }}
                 onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
               >
-                {/* Eyebrow */}
-                <div style={{
-                  fontSize: 10,
-                  color: "var(--text-tertiary)", marginBottom: 4,
-                }}>
+                <div style={{ fontSize: 10, color: "var(--text-tertiary)", marginBottom: 4 }}>
                   {a.source} · {a.category} · {new Date(a.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                 </div>
-                {/* Headline */}
-                <div style={{
-                  fontSize: 13, fontWeight: 550, color: "var(--text-primary)",
-                  lineHeight: 1.4,
-                }}>
+                <div style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", lineHeight: 1.4 }}>
                   {a.title}
                 </div>
               </div>
@@ -352,14 +322,6 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
   const patterns = useMemo(() => derivePatterns(articles), [articles])
   const blindSpots = useMemo(() => findBlindSpots(layerCounts), [layerCounts])
 
-  const stats = useMemo(() => {
-    const today = new Date()
-    return {
-      date: today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }),
-      count: articles.length,
-    }
-  }, [articles])
-
   const provocations = [
     {
       label: "Challenge",
@@ -376,12 +338,8 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
   ]
 
   function cardHoverStyle(id: string): React.CSSProperties {
-    return hoveredCard === id
-      ? { transform: "scale(1.015)" }
-      : {}
+    return hoveredCard === id ? { transform: "scale(1.015)" } : {}
   }
-
-  // ─── Render ─────────────────────────────────────────────────────────────
 
   return (
     <main className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", background: "var(--bg-primary)" }}>
@@ -389,38 +347,34 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
 
         {/* ── Module 1: Current Briefing ────────────────────────────────── */}
         <div
-          style={{ ...cardBase,  ...cardHoverStyle("briefing") }}
+          style={{ ...cardBase, ...cardHoverStyle("briefing") }}
           onMouseEnter={() => setHoveredCard("briefing")}
           onMouseLeave={() => setHoveredCard(null)}
           onClick={() => setActiveModal("briefing")}
         >
           <div style={sectionLabelStyle}>Current Briefing</div>
           <div style={bodyStyle}>
-            Intelligence briefing will appear here when the annotation engine is active. This view synthesizes patterns across all five layers — Opportunity, Position, Discipline, Landscape, and Culture — to surface the single most important insight for your mandate right now.
+            Intelligence briefing will appear here when the annotation engine is active. This view synthesizes patterns across all five layers to surface the single most important insight for your mandate right now.
           </div>
         </div>
 
-        {/* ── Module 2: Cerebro Suggestions — three-column ──────────────── */}
+        {/* ── Module 2: COS Suggests — three-column ──────────────────── */}
         <div>
-          <div style={{ ...sectionLabelStyle, marginBottom: 16, paddingLeft: 2 }}>Cerebro Suggests</div>
+          <div style={{ ...sectionLabelStyle, marginBottom: 16, paddingLeft: 2 }}>COS Suggests</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
             {provocations.map((p, i) => (
               <div
                 key={i}
                 style={{
-                  ...cardBase,
-                  display: "flex",
-                  flexDirection: "column",
+                  ...cardBase, display: "flex", flexDirection: "column",
                   ...cardHoverStyle(`prov-${i}`),
                 }}
                 onMouseEnter={() => setHoveredCard(`prov-${i}`)}
                 onMouseLeave={() => setHoveredCard(null)}
                 onClick={() => onDeliberate(p.text)}
               >
-                <div style={{ fontSize: 10, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 600, marginBottom: 8 }}>
-                  {p.label}
-                </div>
-                <div style={{ flex: 1, fontSize: 12, fontFamily: "var(--font-geist-mono), monospace", fontStyle: "italic", color: "var(--accent-secondary)", lineHeight: 1.6 }}>
+                <div style={sectionLabelStyle}>{p.label}</div>
+                <div style={{ flex: 1, ...bodyStyle }}>
                   {p.text}
                 </div>
                 <div style={{ marginTop: 16 }}>
@@ -443,9 +397,10 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                 onMouseLeave={() => setHoveredCard(null)}
                 onClick={() => setActiveModal(`pattern-${i}`)}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+                  {pattern.layers.map(l => <LayerPill key={l} layer={l} />)}
                   <span style={{ fontSize: 10, color: "var(--text-tertiary)" }}>
-                    {pattern.layers.map(l => LAYER_LABELS[l]).join(" · ")} · {pattern.signalCount} signals
+                    {pattern.signalCount} signals
                   </span>
                 </div>
                 <div style={{ ...headingStyle, marginBottom: 6 }}>{pattern.title}</div>
@@ -457,7 +412,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
           </div>
         </div>
 
-        {/* ── Module 5: Blind Spots ─────────────────────────────────────── */}
+        {/* ── Module 4: Blind Spots ─────────────────────────────────────── */}
         <div
           style={{ ...cardBase, ...cardHoverStyle("blindspots") }}
           onMouseEnter={() => setHoveredCard("blindspots")}
@@ -465,14 +420,16 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
           onClick={() => setActiveModal("blindspots")}
         >
           <div style={sectionLabelStyle}>Blind Spots</div>
-          <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginBottom: 16 }}>Layers trending cold</div>
+          <div style={{ fontSize: 12, fontFamily: "var(--font-geist-mono), monospace", color: "var(--text-tertiary)", marginBottom: 16 }}>
+            Layers trending cold
+          </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {blindSpots.length === 0 ? (
               <div style={bodyStyle}>All layers have healthy coverage.</div>
             ) : (
               blindSpots.map(s => (
-                <div key={s.layer} style={{ ...bodyStyle }}>
-                  <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>{LAYER_LABELS[s.layer]}</strong>
+                <div key={s.layer} style={bodyStyle}>
+                  <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{LAYER_LABELS[s.layer]}</span>
                   {" "}&mdash; {s.note}
                 </div>
               ))
@@ -486,18 +443,13 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
       {activeModal === "briefing" && (
         <SynthesisModal title="Current Briefing" onClose={() => setActiveModal(null)}>
           <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-
-            {/* Heading */}
-            <div style={{ ...headingStyle, fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
+            <div style={{ ...headingStyle, fontSize: 18, marginBottom: 8 }}>
               Daily Intelligence Surface
             </div>
-
-            {/* Opening */}
             <div style={{ ...bodyStyle, lineHeight: 1.6, marginBottom: 24 }}>
-              Intelligence briefing will appear here when the annotation engine is active. This view synthesizes patterns across all five layers — Opportunity, Position, Discipline, Landscape, and Culture — to surface the single most important insight for your mandate right now.
+              Intelligence briefing will appear here when the annotation engine is active. This view synthesizes patterns across all five layers to surface the single most important insight for your mandate right now.
             </div>
 
-            {/* Trending */}
             <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 24 }}>
               <div style={sectionLabelStyle}>Trending</div>
               <div style={{ ...bodyStyle, marginTop: 8 }}>
@@ -507,13 +459,12 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
               </div>
             </div>
 
-            {/* What to Watch */}
             <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 24 }}>
               <div style={sectionLabelStyle}>What to Watch</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
                 {blindSpots.length > 0 ? blindSpots.map(s => (
-                  <div key={s.layer} style={{ ...bodyStyle }}>
-                    <strong style={{ color: "var(--text-primary)", fontWeight: 600 }}>{LAYER_LABELS[s.layer]}</strong> — {s.note}
+                  <div key={s.layer} style={bodyStyle}>
+                    <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{LAYER_LABELS[s.layer]}</span> &mdash; {s.note}
                   </div>
                 )) : (
                   <div style={bodyStyle}>All layers show healthy coverage. Focus on convergence patterns for actionable insight.</div>
@@ -521,7 +472,6 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
               </div>
             </div>
 
-            {/* Bump */}
             <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24 }}>
               <BumpButton onClick={() => { onDeliberate("Briefing: What is the single most important insight across all five layers today?"); setActiveModal(null) }} />
             </div>
@@ -543,8 +493,8 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
 
               <div>
                 <div style={sectionLabelStyle}>Strategic Implication</div>
-                <div style={{ ...bodyStyle, marginTop: 8, fontStyle: "italic" }}>
-                  This convergence pattern suggests a developing theme that crosses traditional boundaries. When AI synthesis is active, this section will contain a strategic interpretation of how these signals relate to your mandate and what action they might warrant.
+                <div style={{ ...bodyStyle, marginTop: 8 }}>
+                  This convergence pattern suggests a developing theme that crosses traditional boundaries. When synthesis is active, this section will contain a strategic interpretation of how these signals relate to your mandate.
                 </div>
               </div>
 
@@ -562,22 +512,22 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
         <SynthesisModal title="Blind Spots" onClose={() => setActiveModal(null)}>
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             <div style={bodyStyle}>
-              Layers with low or no signal coverage may represent gaps in your intelligence feed. These blind spots could mean your sources aren&apos;t covering these areas, or that genuine silence exists in the market.
+              Layers with low or no signal coverage may represent gaps in your intelligence feed.
             </div>
             {blindSpots.length === 0 ? (
-              <div style={{ ...bodyStyle, fontStyle: "italic" }}>All layers show adequate signal density. No blind spots detected.</div>
+              <div style={bodyStyle}>All layers show adequate signal density. No blind spots detected.</div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 {blindSpots.map(s => (
-                  <div key={s.layer} style={{ padding: "16px 16px", background: "var(--bg-elevated)", borderRadius: 8 }}>
+                  <div key={s.layer} style={{ padding: 16, background: "var(--bg-elevated)", borderRadius: 8 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                      <span style={{ ...headingStyle, fontSize: 15 }}>{LAYER_LABELS[s.layer]}</span>
+                      <span style={headingStyle}>{LAYER_LABELS[s.layer]}</span>
                       <span style={{ ...pillStyle, color: "var(--text-tertiary)" }}>{s.count} signals</span>
                     </div>
                     <div style={bodyStyle}>
                       {s.count === 0
-                        ? `No signals detected in the ${LAYER_LABELS[s.layer].toLowerCase()} layer. This could indicate a sourcing gap or genuine market silence. Consider adding sources that cover this domain.`
-                        : `Only ${s.count} signal${s.count === 1 ? "" : "s"} detected. The ${LAYER_LABELS[s.layer].toLowerCase()} layer may be under-represented in your current feed configuration.`
+                        ? `No signals detected in the ${LAYER_LABELS[s.layer].toLowerCase()} layer. Consider adding sources that cover this domain.`
+                        : `Only ${s.count} signal${s.count === 1 ? "" : "s"} detected. The ${LAYER_LABELS[s.layer].toLowerCase()} layer may be under-represented.`
                       }
                     </div>
                   </div>
@@ -590,8 +540,8 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                 {ALL_LAYERS.map(l => (
                   <div key={l} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <LayerDot layer={l} />
-                    <span style={{ fontSize: 12, color: "var(--text-secondary)", width: 80 }}>{LAYER_LABELS[l]}</span>
-                    <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>{layerCounts[l]} articles</span>
+                    <span style={{ fontSize: 12, fontFamily: "var(--font-geist-mono), monospace", color: "var(--text-secondary)", width: 80 }}>{LAYER_LABELS[l]}</span>
+                    <span style={{ fontSize: 11, fontFamily: "var(--font-geist-mono), monospace", color: "var(--text-tertiary)" }}>{layerCounts[l]} articles</span>
                   </div>
                 ))}
               </div>
