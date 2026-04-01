@@ -142,20 +142,20 @@ export function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }
           style={{
             fontSize: 10,
             color: "var(--text-tertiary)",
-            marginBottom: 4,
+            marginBottom: 6,
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
             display: "flex",
             alignItems: "center",
-            gap: 4,
+            gap: 6,
             transition: "opacity 0.3s ease",
           }}
         >
           {article.source}
-          <span style={{ margin: "0 4px", opacity: 0.4 }}>&middot;</span>
+          <span style={{ opacity: 0.4 }}>&middot;</span>
           {article.category}
-          <span style={{ margin: "0 4px", opacity: 0.4 }}>&middot;</span>
+          <span style={{ opacity: 0.4 }}>&middot;</span>
           {timeAgo(article.publishedAt)}
         </div>
 
@@ -166,7 +166,7 @@ export function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }
             fontWeight: 600,
             color: hovered ? "var(--text-primary)" : "var(--text-secondary)",
             lineHeight: 1.4,
-            marginBottom: article.summary ? 8 : 0,
+            marginBottom: article.summary ? 6 : 0,
           }}
         >
           {article.title}
@@ -176,7 +176,7 @@ export function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }
         {article.summary && (
           <div
             style={{
-              fontSize: 13,
+              fontSize: 12,
               color: "var(--text-tertiary)",
               lineHeight: 1.6,
               whiteSpace: "nowrap",
