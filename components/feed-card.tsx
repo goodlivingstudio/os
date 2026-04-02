@@ -24,41 +24,65 @@ export function SignalCard({ x, y, article }: { x: number; y: number; article: A
       pointerEvents: "none",
       zIndex: 1000,
       background: "var(--bg-surface)",
-      borderRadius: 4,
+      borderRadius: 8,
       border: "1px solid var(--border)",
-      borderLeft: `3px solid ${accentColor}`,
       overflow: "hidden",
     }}>
-      {/* Synopsis — AI: what this article is about, mandate-framed */}
+      {/* Synopsis — Cerebro: what this article is about */}
       {article.synopsis && (
-        <div style={{ padding: article.relevance ? "8px 16px 8px" : "8px 16px" }}>
+        <div style={{ padding: "12px 14px", paddingBottom: article.relevance ? 8 : 12 }}>
           <div style={{
-            fontSize: 12,
-            fontFamily: "var(--font-geist-mono), monospace",
-            fontWeight: 400,
-            lineHeight: 1.55,
-            color: "var(--text-tertiary)",
+            fontSize: 10, fontFamily: "var(--font-geist-mono), monospace",
+            color: "var(--accent-secondary)", textTransform: "uppercase",
+            marginBottom: 6,
+          }}>
+            Synopsis
+          </div>
+          <div style={{
+            fontSize: 12, fontFamily: "var(--font-geist-mono), monospace",
+            lineHeight: 1.55, color: "var(--text-secondary)",
           }}>
             {article.synopsis}
           </div>
         </div>
       )}
 
-      {/* Relevance — AI: why it matters to the mandate */}
+      {/* Relevance — Cerebro: why it matters */}
       {article.relevance && (
         <div style={{
-          padding: "8px 16px",
+          padding: "12px 14px",
           borderTop: article.synopsis ? "1px solid var(--border)" : "none",
         }}>
           <div style={{
-            fontSize: 12,
-            fontFamily: "var(--font-geist-mono), monospace",
-            fontWeight: 400,
-            lineHeight: 1.55,
-            color: "var(--text-primary)",
+            fontSize: 10, fontFamily: "var(--font-geist-mono), monospace",
+            color: "var(--accent-secondary)", textTransform: "uppercase",
+            marginBottom: 6,
+          }}>
+            Relevance
+          </div>
+          <div style={{
+            fontSize: 12, fontFamily: "var(--font-geist-mono), monospace",
+            lineHeight: 1.55, color: "var(--text-primary)",
           }}>
             {article.relevance}
           </div>
+        </div>
+      )}
+
+      {/* Source attribution */}
+      {(article.synopsis || article.relevance) && (
+        <div style={{ padding: "8px 14px", borderTop: "1px solid var(--border)" }}>
+          <a
+            href={article.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontSize: 10, color: "var(--text-tertiary)",
+              textDecoration: "none", transition: "color 0.15s",
+            }}
+          >
+            {article.source}
+          </a>
         </div>
       )}
     </div>
