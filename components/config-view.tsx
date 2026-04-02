@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { Copy, Check, RefreshCw, Trash2, Download, Plus } from "lucide-react"
+import { Copy, Check, RefreshCw, Trash2, Download } from "lucide-react"
 import { FEEDS } from "@/lib/feeds"
 import { PODCAST_FEEDS } from "@/lib/podcasts"
 import { MONO, TYPE, labelStyle, metaStyle } from "@/lib/styles"
@@ -408,65 +408,6 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
             </div>
           )
         })}
-      </div>
-
-      <div style={separator} />
-
-      {/* ── Social Intelligence ── */}
-      <div style={{ marginBottom: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <div style={sectionLabel}>
-            Social Intelligence
-            <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
-              editorial · newsletters · threads
-            </span>
-          </div>
-        </div>
-
-        <div style={{ ...TYPE.body, color: "var(--text-tertiary)", marginBottom: 16, lineHeight: 1.6 }}>
-          The informal layer — where thinking happens before it becomes a headline. Medium essays, Substack newsletters, X threads from tracked voices.
-        </div>
-
-        {/* Placeholder sources — to be populated */}
-        {[
-          { platform: "Substack", sources: ["Lenny Rachitsky", "Julie Zhuo", "John Cutler", "Brian Lovin"], icon: "◎" },
-          { platform: "Medium", sources: ["IBM Design", "Google Design", "Figma", "UX Collective"], icon: "◉" },
-          { platform: "X / Twitter", sources: ["@joulee", "@laborjawn", "@jmspool", "@iA"], icon: "✕" },
-        ].map(group => (
-          <div key={group.platform} style={{ marginBottom: 16 }}>
-            <div style={{ ...TYPE.sm, fontWeight: 500, color: "var(--accent-muted)", textTransform: "uppercase", marginBottom: 6, paddingLeft: 12 }}>
-              <span style={{ marginRight: 6, opacity: 0.6 }}>{group.icon}</span>
-              {group.platform}
-            </div>
-            {group.sources.map(name => (
-              <div
-                key={name}
-                style={{ ...rowStyle, opacity: 0.4, cursor: "default" }}
-              >
-                <div style={{ width: 14, height: 14, borderRadius: 3, border: "1.5px dashed var(--text-tertiary)", flexShrink: 0 }} />
-                <span style={{ ...TYPE.body, color: "var(--text-tertiary)" }}>{name}</span>
-                <span style={{ ...metaStyle, marginLeft: "auto", fontStyle: "italic" }}>coming soon</span>
-              </div>
-            ))}
-          </div>
-        ))}
-
-        <button
-          style={{
-            display: "inline-flex", alignItems: "center", gap: 6,
-            padding: "6px 14px", borderRadius: 6,
-            border: "1px dashed var(--border)",
-            background: "transparent",
-            color: "var(--text-tertiary)",
-            ...TYPE.sm, cursor: "pointer",
-            transition: "all 0.15s",
-          }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent-secondary)"; e.currentTarget.style.color = "var(--accent-secondary)" }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--text-tertiary)" }}
-        >
-          <Plus size={12} />
-          Suggest a source
-        </button>
       </div>
 
       <div style={separator} />

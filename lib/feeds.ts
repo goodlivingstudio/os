@@ -63,4 +63,21 @@ export const FEEDS: FeedDef[] = [
   { url: "https://news.google.com/rss/search?q=site:linear.app/blog&hl=en-US&gl=US", source: "Linear", category: "Product Engineering", tag: "discipline", layer: "discipline" },
   { url: "https://news.google.com/rss/search?q=site:reuters.com&hl=en-US&gl=US", source: "Reuters", category: "Global Wire", tag: "landscape", layer: "landscape" },
   { url: "https://news.google.com/rss/search?q=site:economist.com&hl=en-US&gl=US", source: "The Economist", category: "Global Analysis", tag: "landscape", layer: "landscape" },
+
+  // ── SOCIAL INTELLIGENCE — Substack, Medium, editorial voices ──────────
+  // Same pipeline as news — fetched, annotated, scored, filtered.
+
+  // Substack — Position & Discipline
+  { url: "https://www.lennysnewsletter.com/feed",                 source: "Lenny Rachitsky",   category: "Product & Design",     tag: "position",     layer: "position" },
+  { url: "https://lg.substack.com/feed",                           source: "Julie Zhuo",        category: "Design Leadership",    tag: "position",     layer: "position" },
+  { url: "https://cutlefish.substack.com/feed",                    source: "John Cutler",       category: "Product Strategy",     tag: "discipline",   layer: "discipline" },
+  { url: "https://www.proofofconcept.pub/feed",                    source: "Brian Lovin",       category: "Design Engineering",   tag: "discipline",   layer: "discipline" },
+  { url: "https://www.digitalnative.tech/feed",                    source: "Digital Native",    category: "Tech & Culture",       tag: "landscape",    layer: "landscape" },
+  { url: "https://stratechery.com/feed/",                          source: "Stratechery",       category: "Tech Strategy",        tag: "landscape",    layer: "landscape" },
+
+  // Medium — Discipline & Culture
+  { url: "https://medium.com/feed/@joulee",                        source: "Julie Zhuo (Medium)", category: "Design Leadership", tag: "position",     layer: "position" },
+  { url: "https://medium.com/feed/google-design",                  source: "Google Design",     category: "Design Practice",      tag: "discipline",   layer: "discipline" },
+  { url: "https://medium.com/feed/ux-collective",                  source: "UX Collective",     category: "Design Discourse",     tag: "discipline",   layer: "discipline" },
+  { url: "https://medium.com/feed/mule-design",                    source: "Mule Design",       category: "Design Ethics",        tag: "discipline",   layer: "discipline" },
 ]
