@@ -171,12 +171,12 @@ export function GalleryOverlay({ onClose }: { onClose: () => void }) {
         </div>
       </div>
 
-      {/* Masonry grid */}
+      {/* Masonry grid — flows down columns, scrolls vertically */}
       <div style={{
         flex: 1, overflowY: "auto",
-        padding: 16,
+        padding: 32,
         columnCount: 4,
-        columnGap: 12,
+        columnGap: 14,
       }}>
         {loading ? (
           <div style={{ ...TYPE.body, color: "var(--text-tertiary)", padding: 32 }}>
@@ -193,7 +193,7 @@ export function GalleryOverlay({ onClose }: { onClose: () => void }) {
               onClick={() => setLightboxIdx(i)}
               style={{
                 breakInside: "avoid",
-                marginBottom: 12,
+                marginBottom: 14,
                 borderRadius: 8,
                 overflow: "hidden",
                 cursor: "zoom-in",
