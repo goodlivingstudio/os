@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Radio, AudioLines, Blend, Brain } from "lucide-react"
+import { Radio, AudioLines, Blend, Brain, Settings } from "lucide-react"
 import { Ticker } from "@/components/ticker"
 import { LeftRail } from "@/components/left-rail"
 import { useChiefOfStaff, ChiefOfStaffBand } from "@/components/chief-of-staff"
@@ -9,6 +9,7 @@ import { FeedCard, SignalCard } from "@/components/feed-card"
 import { Cerebro } from "@/components/cerebro"
 import { SynthesisView } from "@/components/synthesis-view"
 import { AudioView } from "@/components/audio-view"
+import { ConfigView } from "@/components/config-view"
 import { Divider } from "@/components/divider"
 import type { Article, Signal, FeedHealth, Skin, ViewMode } from "@/lib/types"
 
@@ -151,7 +152,7 @@ export default function Page() {
   const [feedLoading,    setFeedLoading]    = useState(true)
   const [viewMode,       setViewMode]       = useState<ViewMode>("signal")
   const [active,         setActive]         = useState("all")
-  const [mobileTab,      setMobileTab]      = useState<"signal" | "audio" | "synthesis" | "cerebro">("signal")
+  const [mobileTab,      setMobileTab]      = useState<"signal" | "audio" | "synthesis" | "cerebro" | "config">("signal")
   const [excludedSources, setExcludedSources] = useState<Set<string>>(new Set())
 
   const handleToggleSource = useCallback((source: string) => {
@@ -171,10 +172,10 @@ export default function Page() {
       if (savedCategory) setActive(savedCategory)
 
       const savedView = localStorage.getItem("dispatch-view-mode")
-      if (savedView === "signal" || savedView === "audio" || savedView === "synthesis") setViewMode(savedView)
+      if (savedView === "signal" || savedView === "audio" || savedView === "synthesis" || savedView === "config") setViewMode(savedView)
 
       const savedTab = localStorage.getItem("dispatch-mobile-tab")
-      if (savedTab === "signal" || savedTab === "audio" || savedTab === "synthesis" || savedTab === "cerebro") setMobileTab(savedTab)
+      if (savedTab === "signal" || savedTab === "audio" || savedTab === "synthesis" || savedTab === "cerebro" || savedTab === "config") setMobileTab(savedTab)
 
       const savedExcluded = localStorage.getItem("dispatch-excluded-sources")
       if (savedExcluded) setExcludedSources(new Set(JSON.parse(savedExcluded)))
@@ -335,8 +336,9 @@ export default function Page() {
           <div key={mobileTab} className="mobile-tab-content" style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
             {mobileTab === "signal" && feedContent}
             {mobileTab === "synthesis" && <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} />}
-            {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} />}
+            {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} />}
             {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} /></div>}
+            {mobileTab === "config"    && <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} feedHealth={feedHealth} skin={skin} onSkinChange={setSkin} isDay={isDay} onToggleMode={toggleMode} />}
           </div>
         </div>
 
@@ -347,6 +349,7 @@ export default function Page() {
             { id: "audio" as const,     Icon: AudioLines, label: "Sound"     },
             { id: "synthesis" as const, Icon: Blend,      label: "Synthesis" },
             { id: "cerebro" as const,   Icon: Brain,      label: "Cerebro"   },
+            { id: "config" as const,    Icon: Settings,   label: "Config"    },
           ]
           const activeIdx = tabs.findIndex(t => t.id === mobileTab)
           return (
@@ -367,8 +370,8 @@ export default function Page() {
                 style={{
                   position: "absolute",
                   top: 4,
-                  left: `calc(${activeIdx * 25}% + 4px)`,
-                  width: "calc(25% - 8px)",
+                  left: `calc(${activeIdx * 20}% + 4px)`,
+                  width: "calc(20% - 8px)",
                   height: "calc(100% - 8px)",
                   background: "var(--bg-elevated)",
                   borderRadius: 14,
@@ -455,10 +458,12 @@ export default function Page() {
           onToggleSource={handleToggleSource}
         />
         <Divider onMouseDown={e => startResize("left", e)} />
-        {viewMode === "synthesis"
+        {viewMode === "config"
+          ? <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} feedHealth={feedHealth} skin={skin} onSkinChange={setSkin} isDay={isDay} onToggleMode={toggleMode} />
+          : viewMode === "synthesis"
           ? <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} />
           : viewMode === "audio"
-          ? <AudioView onDeliberate={handleSynthesisDeliberate} />
+          ? <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} />
           : feedContent}
         <Divider onMouseDown={e => startResize("right", e)} />
         <div style={{ width: rightWidth, flexShrink: 0 }}>

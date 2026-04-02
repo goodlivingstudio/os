@@ -308,7 +308,7 @@ const LAYER_FILTERS: { id: string; label: string }[] = [
   { id: "culture", label: "Culture" },
 ]
 
-export function AudioView({ onDeliberate }: { onDeliberate?: (text: string) => void }) {
+export function AudioView({ onDeliberate, excludedSources }: { onDeliberate?: (text: string) => void; excludedSources?: Set<string> }) {
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [loading, setLoading] = useState(true)
   const [showCount, setShowCount] = useState(0)
@@ -326,7 +326,8 @@ export function AudioView({ onDeliberate }: { onDeliberate?: (text: string) => v
       .catch(() => setLoading(false))
   }, [])
 
-  const filtered = activeLayer === "all" ? episodes : episodes.filter(ep => ep.layer === activeLayer)
+  const sourceFiltered = excludedSources?.size ? episodes.filter(ep => !excludedSources.has(ep.showName)) : episodes
+  const filtered = activeLayer === "all" ? sourceFiltered : sourceFiltered.filter(ep => ep.layer === activeLayer)
 
   return (
     <main className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", background: "var(--bg-primary)" }}>

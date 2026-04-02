@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react"
-import { Radio, AudioLines, Blend } from "lucide-react"
+import { Radio, AudioLines, Blend, Settings } from "lucide-react"
 import type { Article, FeedHealth, ViewMode } from "@/lib/types"
 import { CATEGORY_CONFIG } from "@/lib/types"
 
@@ -303,18 +303,19 @@ export function LeftRail({
               overflow: "hidden",
             }}
           >
-            {/* Sliding indicator — same color for all three */}
+            {/* Sliding indicator — hidden when config is active */}
             <div
               style={{
                 position: "absolute",
                 top: 3,
-                left: viewMode === "signal" ? "3px" : viewMode === "audio" ? "calc(33.33% + 1px)" : "calc(66.66% + 1px)",
+                left: viewMode === "signal" ? "3px" : viewMode === "audio" ? "calc(33.33% + 1px)" : viewMode === "synthesis" ? "calc(66.66% + 1px)" : "3px",
                 width: "calc(33.33% - 4px)",
                 height: "calc(100% - 6px)",
                 background: "var(--bg-surface)",
                 borderRadius: 8,
-                transition: "left 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+                transition: "left 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s",
                 zIndex: 0,
+                opacity: viewMode === "config" ? 0 : 1,
               }}
             />
             {([
@@ -354,6 +355,26 @@ export function LeftRail({
               )
             })}
           </div>
+        </div>
+
+        {/* Settings gear */}
+        <div style={{ padding: "0 16px 4px", display: "flex", justifyContent: "flex-end" }}>
+          <button
+            onClick={() => onViewChange("config")}
+            title="Configuration"
+            aria-label="Configuration"
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "center",
+              width: 28, height: 28, borderRadius: 6,
+              border: "none", background: "transparent",
+              color: viewMode === "config" ? "var(--accent-secondary)" : "var(--text-tertiary)",
+              cursor: "pointer", transition: "all 0.15s", padding: 0,
+            }}
+            onMouseEnter={e => { if (viewMode !== "config") { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" } }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = viewMode === "config" ? "var(--accent-secondary)" : "var(--text-tertiary)" }}
+          >
+            <Settings size={15} strokeWidth={1.5} />
+          </button>
         </div>
 
         {/* Category pills — visible in Signal mode only */}
