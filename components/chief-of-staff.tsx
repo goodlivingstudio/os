@@ -101,7 +101,6 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
         flexShrink: 0,
         position: "relative",
         overflow: "hidden",
-        borderBottom: "1px solid var(--border)",
       }}
     >
       {briefError ? (
@@ -228,6 +227,8 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
           </div>
         </>
       )}
+      {/* Dotted separator — indented to card padding */}
+      <div style={{ height: 1, borderBottom: "1px dotted var(--border)", margin: "0 16px" }} />
     </div>
   )
 }
