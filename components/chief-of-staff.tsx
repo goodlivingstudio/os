@@ -99,6 +99,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
     <div
       style={{
         flexShrink: 0,
+        borderTop: "1px solid var(--border)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -185,7 +186,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
             overflow: "hidden",
             transition: "max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
           }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, padding: "0 16px 8px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, padding: "0 16px" }}>
               {signals.map((signal, i) => (
                   <div
                     key={i}
