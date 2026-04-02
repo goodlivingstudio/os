@@ -4,53 +4,59 @@ import { useState, useEffect, useRef } from "react"
 import { ChevronUp } from "lucide-react"
 import type { Article, Signal, SignalSource } from "@/lib/types"
 
-// ─── Citation chip — hover popover with source details ──────────────────────
+// ─── Citation chip — fixed popover with source details ──────────────────────
 
 function CitationChip({ num, src }: { num: string; src: SignalSource }) {
   const [show, setShow] = useState(false)
-  const ref = useRef<HTMLSpanElement>(null)
+  const [pos, setPos] = useState({ x: 0, y: 0 })
+  const chipRef = useRef<HTMLSpanElement>(null)
+
+  const handleEnter = () => {
+    if (chipRef.current) {
+      const rect = chipRef.current.getBoundingClientRect()
+      setPos({ x: rect.left + rect.width / 2, y: rect.top })
+    }
+    setShow(true)
+  }
 
   return (
-    <span
-      ref={ref}
-      style={{ position: "relative", display: "inline" }}
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
-    >
-      <a
-        href={src.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={e => e.stopPropagation()}
+    <>
+      <span
+        ref={chipRef}
+        onMouseEnter={handleEnter}
+        onMouseLeave={() => setShow(false)}
+        onClick={e => {
+          e.stopPropagation()
+          window.open(src.url, "_blank", "noopener,noreferrer")
+        }}
         style={{
           fontSize: "0.8em",
           color: "var(--accent-secondary)",
-          textDecoration: "none",
+          cursor: "pointer",
           transition: "color 0.15s",
           verticalAlign: "super",
           lineHeight: 0,
           padding: "0 1px",
         }}
-        onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-muted)" }}
-        onMouseLeave={e => { e.currentTarget.style.color = "var(--accent-secondary)" }}
       >
         {num}
-      </a>
+      </span>
       {show && (
         <div
+          onMouseEnter={() => setShow(true)}
+          onMouseLeave={() => setShow(false)}
           onClick={e => e.stopPropagation()}
           style={{
-            position: "absolute",
-            bottom: "calc(100% + 6px)",
-            left: "50%",
-            transform: "translateX(-50%)",
+            position: "fixed",
+            left: Math.min(pos.x, (typeof window !== "undefined" ? window.innerWidth : 1200) - 240),
+            top: Math.max(8, pos.y - 8),
+            transform: "translateY(-100%)",
             width: 220,
             background: "var(--bg-surface)",
             border: "1px solid var(--border)",
             borderRadius: 8,
             padding: "10px 12px",
             zIndex: 1000,
-            pointerEvents: "auto",
             animation: "status-fade 0.15s ease both",
           }}
         >
@@ -79,7 +85,7 @@ function CitationChip({ num, src }: { num: string; src: SignalSource }) {
           </a>
         </div>
       )}
-    </span>
+    </>
   )
 }
 
