@@ -250,6 +250,7 @@ export function LeftRail({
             textTransform: "uppercase",
             color: dotColor,
             fontWeight: 700,
+            letterSpacing: "0.12em",
           }}>
             {statusLabel}
           </span>
