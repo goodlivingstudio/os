@@ -137,10 +137,9 @@ export const FeedCard = memo(function FeedCard({ article, onSignalEnter, onSigna
         borderLeft: `2px solid ${
           article.signalLens === "OPPORTUNITY" ? "var(--accent-secondary)" : "transparent"
         }`,
-        background: hovered ? "var(--bg-elevated)" : "var(--bg-surface)",
+        background: hovered ? "var(--card-tint)" : "var(--bg-surface)",
         cursor: isExternal ? "pointer" : "default",
-        transition: "background 0.15s, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-        transform: hovered ? "scale(1.008)" : "scale(1)",
+        transition: "background 0.15s",
         gap: 0,
       }}
     >

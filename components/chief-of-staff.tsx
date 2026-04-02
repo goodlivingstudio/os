@@ -99,7 +99,6 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
     <div
       style={{
         flexShrink: 0,
-        borderBottom: "1px solid var(--border)",
         position: "relative",
         overflow: "hidden",
       }}
