@@ -289,9 +289,24 @@ export function LeftRail({
 
       {/* Navigation */}
       <nav style={{ flex: 1, overflowY: "auto", padding: "8px 0" }}>
-        {/* Signal / Audio / Synthesis — three-state toggle */}
+        {/* Signal / Audio / Synthesis — three-state toggle (arrow keys to cycle) */}
         <div style={{ padding: "8px 16px 4px", marginBottom: 4 }}>
           <div
+            tabIndex={0}
+            role="tablist"
+            aria-label="View mode"
+            onKeyDown={e => {
+              const modes: ViewMode[] = ["signal", "audio", "synthesis"]
+              const current = modes.indexOf(viewMode as typeof modes[number])
+              if (current === -1) return
+              if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+                e.preventDefault()
+                onViewChange(modes[(current + 1) % modes.length])
+              } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+                e.preventDefault()
+                onViewChange(modes[(current - 1 + modes.length) % modes.length])
+              }
+            }}
             style={{
               display: "flex",
               background: "var(--bg-elevated)",
@@ -300,6 +315,7 @@ export function LeftRail({
               gap: 0,
               position: "relative",
               overflow: "hidden",
+              outline: "none",
             }}
           >
             {/* Sliding indicator — hidden when config is active */}
@@ -354,26 +370,6 @@ export function LeftRail({
               )
             })}
           </div>
-        </div>
-
-        {/* Settings gear */}
-        <div style={{ padding: "0 16px 4px", display: "flex", justifyContent: "flex-end" }}>
-          <button
-            onClick={() => onViewChange("config")}
-            title="Configuration"
-            aria-label="Configuration"
-            style={{
-              display: "flex", alignItems: "center", justifyContent: "center",
-              width: 28, height: 28, borderRadius: 6,
-              border: "none", background: "transparent",
-              color: viewMode === "config" ? "var(--accent-secondary)" : "var(--text-tertiary)",
-              cursor: "pointer", transition: "all 0.15s", padding: 0,
-            }}
-            onMouseEnter={e => { if (viewMode !== "config") { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" } }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = viewMode === "config" ? "var(--accent-secondary)" : "var(--text-tertiary)" }}
-          >
-            <Settings size={15} strokeWidth={1.5} />
-          </button>
         </div>
 
         {/* Category pills — visible in Signal mode only */}
@@ -432,6 +428,26 @@ export function LeftRail({
 
       </nav>
 
+      {/* Settings — bottom left */}
+      <div style={{ flexShrink: 0, padding: "12px 16px", borderTop: "1px solid var(--border)" }}>
+        <button
+          onClick={() => onViewChange("config")}
+          title="Configuration"
+          aria-label="Configuration"
+          style={{
+            display: "flex", alignItems: "center", justifyContent: "center",
+            width: 36, height: 36, borderRadius: 8,
+            border: "none",
+            background: viewMode === "config" ? "var(--accent-primary)" : "transparent",
+            color: viewMode === "config" ? "var(--accent-secondary)" : "var(--text-tertiary)",
+            cursor: "pointer", transition: "all 0.15s", padding: 0,
+          }}
+          onMouseEnter={e => { if (viewMode !== "config") { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" } }}
+          onMouseLeave={e => { e.currentTarget.style.background = viewMode === "config" ? "var(--accent-primary)" : "transparent"; e.currentTarget.style.color = viewMode === "config" ? "var(--accent-secondary)" : "var(--text-tertiary)" }}
+        >
+          <Settings size={18} strokeWidth={1.5} />
+        </button>
+      </div>
     </aside>
   )
 }

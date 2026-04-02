@@ -164,9 +164,10 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
             onMouseLeave={e => { e.currentTarget.style.background = "none" }}
           >
             <span style={{
-              fontSize: 11,               color: "var(--accent-secondary)", textTransform: "uppercase",
+              fontSize: 11, fontFamily: "var(--font-geist-mono), monospace",
+              color: "var(--accent-secondary)", textTransform: "uppercase",
             }}>
-              COS
+              DCOS
             </span>
             <ChevronUp
               size={14}
