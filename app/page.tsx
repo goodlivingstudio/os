@@ -3,8 +3,6 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Paperclip, Mic, MicOff, ExternalLink, Radio, AudioLines, Blend, Brain, ArrowUpRight } from "lucide-react"
 import { Ticker } from "@/components/ticker"
-// AnalyticsPanel stays in codebase but no longer rendered — Synthesis is now a feed mode
-// import { AnalyticsPanel } from "@/components/analytics-panel"
 import { LeftRail } from "@/components/left-rail"
 import { useChiefOfStaff, ChiefOfStaffBand } from "@/components/chief-of-staff"
 import { FeedCard, SignalCard } from "@/components/feed-card"
@@ -312,7 +310,7 @@ function Cerebro({ articles, pendingPrompt }: {
       }
       setLoading(false)
     },
-    [messages, loading, articles]
+    [messages, loading, articles, sessionId, attachments]
   )
 
   // Keep ref current so the pending-prompt effect never captures a stale send
