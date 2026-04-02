@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { createPortal } from "react-dom"
 import { ChevronUp } from "lucide-react"
 import type { Article, Signal, SignalSource } from "@/lib/types"
+import { MONO, labelStyle } from "@/lib/styles"
 
 // ─── Citation chip — fixed popover with source details ──────────────────────
 

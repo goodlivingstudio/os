@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, memo } from "react"
 import type { Article } from "@/lib/types"
 import { timeAgo, LENS_COLOR } from "@/lib/types"
 
@@ -81,7 +81,7 @@ export type SignalCallbacks = {
   onSignalLeave: () => void
 }
 
-export function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }: { article: Article } & SignalCallbacks) {
+export const FeedCard = memo(function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }: { article: Article } & SignalCallbacks) {
   const isExternal   = article.url !== "#"
   const hasSignal    = !!(article.synopsis || article.relevance)
   const [hovered, setHovered] = useState(false)
@@ -208,4 +208,4 @@ export function FeedCard({ article, onSignalEnter, onSignalMove, onSignalLeave }
     )
   }
   return content
-}
+})
