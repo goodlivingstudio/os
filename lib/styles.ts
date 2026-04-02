@@ -22,7 +22,7 @@ export const TYPE = {
   sm:      { fontSize: 11 } as CSSProperties,
   body:    { fontSize: 12, lineHeight: 1.6 } as CSSProperties,
   reading: { fontSize: 13, lineHeight: 1.6 } as CSSProperties,
-  heading: { fontSize: 15, fontWeight: 600, lineHeight: 1.4 } as CSSProperties,
+  heading: { fontSize: 15, fontWeight: 500, lineHeight: 1.4 } as CSSProperties,
 }
 
 // ─── Semantic composites ────────────────────────────────────────────────────

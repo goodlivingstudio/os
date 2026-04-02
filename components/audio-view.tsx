@@ -284,7 +284,7 @@ function EpisodeCard({ episode, onClick }: { episode: Episode; onClick: () => vo
         {/* Episode title */}
         <div
           style={{
-            ...TYPE.heading, fontWeight: 550,
+            ...TYPE.heading,
             color: hovered ? "var(--text-primary)" : "var(--text-secondary)",
             lineHeight: 1.4, transition: "color 0.15s",
             display: "-webkit-box", WebkitLineClamp: 2,
