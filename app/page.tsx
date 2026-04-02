@@ -152,6 +152,7 @@ export default function Page() {
   const [feedHealth,     setFeedHealth]     = useState<FeedHealth | null>(null)
   const [feedLoading,    setFeedLoading]    = useState(true)
   const [viewMode,       setViewMode]       = useState<ViewMode>("signal")
+  const [cerebroCollapsed, setCerebroCollapsed] = useState(false)
   const [active,         setActive]         = useState("all")
   const [mobileTab,      setMobileTab]      = useState<"signal" | "audio" | "synthesis" | "dispatch" | "cerebro" | "config">("signal")
   const [excludedSources, setExcludedSources] = useState<Set<string>>(new Set())
@@ -495,8 +496,55 @@ export default function Page() {
           ? <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} />
           : feedContent}
         <Divider onMouseDown={e => startResize("right", e)} />
-        <div style={{ width: rightWidth, flexShrink: 0 }}>
-          <Cerebro articles={articles} pendingPrompt={cerebroPrompt} />
+        <div
+          style={{
+            width: cerebroCollapsed ? 40 : rightWidth,
+            flexShrink: 0,
+            transition: "width 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {cerebroCollapsed ? (
+            <button
+              onClick={() => setCerebroCollapsed(false)}
+              title="Expand Cerebro"
+              style={{
+                width: 40, height: "100%",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: "var(--bg-surface)",
+                borderLeft: "1px solid var(--border)",
+                border: "none", borderLeftStyle: "solid", borderLeftWidth: 1, borderLeftColor: "var(--border)",
+                cursor: "pointer", writingMode: "vertical-rl",
+                ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase",
+                letterSpacing: "0.08em", fontWeight: 500,
+                transition: "color 0.15s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)" }}
+              onMouseLeave={e => { e.currentTarget.style.color = "var(--accent-muted)" }}
+            >
+              Cerebro
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => setCerebroCollapsed(true)}
+                title="Collapse Cerebro"
+                style={{
+                  position: "absolute", top: 12, right: 12, zIndex: 2,
+                  width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center",
+                  background: "transparent", border: "none",
+                  color: "var(--text-tertiary)", cursor: "pointer",
+                  ...TYPE.sm, transition: "color 0.15s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)" }}
+                onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)" }}
+              >
+                ›
+              </button>
+              <Cerebro articles={articles} pendingPrompt={cerebroPrompt} />
+            </>
+          )}
         </div>
       </div>
 
