@@ -567,6 +567,7 @@ export default function Page() {
                 excludedSources={excludedSources}
                 onToggleSource={handleToggleSource}
                 onGalleryOpen={() => setGalleryOpen(true)}
+                onHotkeysOpen={() => setHotkeysOpen(true)}
               />
             </>
           )}

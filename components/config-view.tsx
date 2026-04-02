@@ -192,6 +192,7 @@ function CerebroStation() {
   const [cleared, setCleared] = useState(false)
   const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([])
   const [loading, setLoading] = useState(true)
+  const [logExpanded, setLogExpanded] = useState(false)
 
   const sessionId = typeof window !== "undefined" ? localStorage.getItem("cerebro-session") : null
 
@@ -276,10 +277,24 @@ function CerebroStation() {
         </div>
       </div>
 
-      {/* Thread list */}
+      {/* Thread list — collapsible */}
       {threads.length > 0 && (
         <div style={{ marginBottom: 16 }}>
-          <div style={{ ...metaStyle, textTransform: "uppercase", marginBottom: 10 }}>Conversation Log</div>
+          <button
+            onClick={() => setLogExpanded(v => !v)}
+            style={{
+              display: "flex", alignItems: "center", gap: 6, width: "100%",
+              background: "transparent", border: "none", cursor: "pointer",
+              ...metaStyle, textTransform: "uppercase", marginBottom: logExpanded ? 10 : 0,
+              padding: 0, transition: "color 0.15s",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)" }}
+            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)" }}
+          >
+            <span style={{ transition: "transform 0.2s", transform: logExpanded ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>›</span>
+            Conversation Log ({threads.length})
+          </button>
+          <div style={{ maxHeight: logExpanded ? 2000 : 0, overflow: "hidden", transition: "max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1)" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {threads.map((thread, i) => (
               <div
@@ -329,6 +344,7 @@ function CerebroStation() {
                 </div>
               </div>
             ))}
+          </div>
           </div>
         </div>
       )}

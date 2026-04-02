@@ -170,6 +170,7 @@ export function LeftRail({
   excludedSources,
   onToggleSource,
   onGalleryOpen,
+  onHotkeysOpen,
 }: {
   articles: Article[]
   active: string
@@ -183,6 +184,7 @@ export function LeftRail({
   excludedSources: Set<string>
   onToggleSource: (source: string) => void
   onGalleryOpen?: () => void
+  onHotkeysOpen?: () => void
 }) {
   const time = useClock()
   const now  = new Date()
@@ -438,6 +440,25 @@ export function LeftRail({
             onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
           >
             <Image size={18} strokeWidth={1.5} />
+          </button>
+        )}
+        {onHotkeysOpen && (
+          <button
+            onClick={onHotkeysOpen}
+            title="Keyboard shortcuts"
+            aria-label="Keyboard shortcuts"
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "center",
+              width: 36, height: 36, borderRadius: 8,
+              border: "none", background: "transparent",
+              color: "var(--text-tertiary)",
+              cursor: "pointer", transition: "all 0.15s", padding: 0,
+              ...TYPE.sm, fontWeight: 500,
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
+          >
+            ?
           </button>
         )}
       </div>
