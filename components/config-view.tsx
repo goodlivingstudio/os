@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { Copy, Check, RefreshCw } from "lucide-react"
+import { Copy, Check, RefreshCw, Trash2, Download, Plus } from "lucide-react"
 import { FEEDS } from "@/lib/feeds"
 import { PODCAST_FEEDS } from "@/lib/podcasts"
 import { MONO, TYPE, labelStyle, metaStyle } from "@/lib/styles"
@@ -156,6 +156,132 @@ function Toggle({ active, onToggle }: { active: boolean; onToggle: () => void })
   )
 }
 
+// ─── Cerebro Station — memory management & export ───────────────────────
+
+function CerebroStation() {
+  const [messageCount, setMessageCount] = useState<number | null>(null)
+  const [exported, setExported] = useState(false)
+  const [cleared, setCleared] = useState(false)
+  const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([])
+
+  const sessionId = typeof window !== "undefined" ? localStorage.getItem("cerebro-session") : null
+
+  useEffect(() => {
+    if (!sessionId) return
+    fetch(`/api/memory?sessionId=${sessionId}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.messages) {
+          setMessages(data.messages)
+          setMessageCount(data.messages.length)
+        }
+      })
+      .catch(() => {})
+  }, [sessionId])
+
+  const handleExport = () => {
+    if (messages.length === 0) return
+    const header = `# Cerebro Conversation Export\nSession: ${sessionId}\nExported: ${new Date().toISOString()}\nMessages: ${messages.length}\n\n---\n\n`
+    const thread = messages
+      .map(m => `**${m.role === "user" ? "Jeremy" : "Cerebro"}:**\n${m.content}`)
+      .join("\n\n---\n\n")
+    const footer = `\n\n---\n\n*Exported from Dispatch for continued analysis in Claude.*`
+    navigator.clipboard.writeText(header + thread + footer).then(() => {
+      setExported(true)
+      setTimeout(() => setExported(false), 2500)
+    })
+  }
+
+  const handleClear = () => {
+    if (!sessionId) return
+    fetch(`/api/memory?sessionId=${sessionId}`, { method: "DELETE" })
+      .then(() => {
+        setMessages([])
+        setMessageCount(0)
+        setCleared(true)
+        setTimeout(() => setCleared(false), 2500)
+      })
+      .catch(() => {})
+  }
+
+  return (
+    <div style={{ marginBottom: 8 }}>
+      <div style={sectionLabel}>
+        Cerebro Station
+        <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
+          memory · export · session
+        </span>
+      </div>
+
+      <div style={{ ...TYPE.body, color: "var(--text-tertiary)", marginBottom: 16, lineHeight: 1.6 }}>
+        Cerebro is your station chief. Export conversation threads for deeper analysis in Claude Desktop, or clear memory to start fresh.
+      </div>
+
+      {/* Session info */}
+      <div style={{
+        background: "var(--bg-surface)", borderRadius: 8, padding: "14px 16px",
+        marginBottom: 12,
+      }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+          <span style={{ ...metaStyle, textTransform: "uppercase" }}>Active Session</span>
+          <span style={{
+            ...TYPE.xs,
+            color: messageCount && messageCount > 0 ? "var(--live)" : "var(--text-tertiary)",
+          }}>
+            ● {messageCount === null ? "loading" : `${messageCount} messages`}
+          </span>
+        </div>
+        <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", fontFamily: MONO }}>
+          {sessionId || "no session"}
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <button
+          onClick={handleExport}
+          disabled={messages.length === 0}
+          style={{
+            display: "inline-flex", alignItems: "center", gap: 6,
+            padding: "6px 14px", borderRadius: 6,
+            border: "1px solid var(--border)",
+            background: exported ? "var(--accent-secondary)" : "transparent",
+            color: exported ? "var(--bg-primary)" : messages.length > 0 ? "var(--text-secondary)" : "var(--text-tertiary)",
+            ...TYPE.sm, cursor: messages.length > 0 ? "pointer" : "default",
+            transition: "all 0.2s",
+            opacity: messages.length === 0 ? 0.5 : 1,
+          }}
+        >
+          {exported ? <Check size={12} /> : <Download size={12} />}
+          {exported ? "Copied to clipboard" : "Export thread (Markdown)"}
+        </button>
+
+        <button
+          onClick={handleClear}
+          disabled={messages.length === 0}
+          style={{
+            display: "inline-flex", alignItems: "center", gap: 6,
+            padding: "6px 14px", borderRadius: 6,
+            border: "1px solid var(--border)",
+            background: cleared ? "var(--bg-elevated)" : "transparent",
+            color: cleared ? "var(--text-secondary)" : messages.length > 0 ? "var(--text-tertiary)" : "var(--text-tertiary)",
+            ...TYPE.sm, cursor: messages.length > 0 ? "pointer" : "default",
+            transition: "all 0.2s",
+            opacity: messages.length === 0 ? 0.5 : 1,
+          }}
+        >
+          {cleared ? <Check size={12} /> : <Trash2 size={12} />}
+          {cleared ? "Memory cleared" : "Clear memory"}
+        </button>
+      </div>
+
+      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginTop: 10, lineHeight: 1.6 }}>
+        Export copies the full thread as Markdown — paste into Claude Desktop for extended strategic thinking. Clear memory resets Cerebro to a blank slate.
+      </div>
+    </div>
+  )
+}
+
 // ─── ConfigView ─────────────────────────────────────────────────────────────
 
 export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, onSkinChange, isDay, onToggleMode }: ConfigViewProps) {
@@ -286,7 +412,66 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
 
       <div style={separator} />
 
-      {/* ── Copy Full Inventory ── */}
+      {/* ── Social Intelligence ── */}
+      <div style={{ marginBottom: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+          <div style={sectionLabel}>
+            Social Intelligence
+            <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
+              editorial · newsletters · threads
+            </span>
+          </div>
+        </div>
+
+        <div style={{ ...TYPE.body, color: "var(--text-tertiary)", marginBottom: 16, lineHeight: 1.6 }}>
+          The informal layer — where thinking happens before it becomes a headline. Medium essays, Substack newsletters, X threads from tracked voices.
+        </div>
+
+        {/* Placeholder sources — to be populated */}
+        {[
+          { platform: "Substack", sources: ["Lenny Rachitsky", "Julie Zhuo", "John Cutler", "Brian Lovin"], icon: "◎" },
+          { platform: "Medium", sources: ["IBM Design", "Google Design", "Figma", "UX Collective"], icon: "◉" },
+          { platform: "X / Twitter", sources: ["@joulee", "@laborjawn", "@jmspool", "@iA"], icon: "✕" },
+        ].map(group => (
+          <div key={group.platform} style={{ marginBottom: 16 }}>
+            <div style={{ ...TYPE.sm, fontWeight: 500, color: "var(--accent-muted)", textTransform: "uppercase", marginBottom: 6, paddingLeft: 12 }}>
+              <span style={{ marginRight: 6, opacity: 0.6 }}>{group.icon}</span>
+              {group.platform}
+            </div>
+            {group.sources.map(name => (
+              <div
+                key={name}
+                style={{ ...rowStyle, opacity: 0.4, cursor: "default" }}
+              >
+                <div style={{ width: 14, height: 14, borderRadius: 3, border: "1.5px dashed var(--text-tertiary)", flexShrink: 0 }} />
+                <span style={{ ...TYPE.body, color: "var(--text-tertiary)" }}>{name}</span>
+                <span style={{ ...metaStyle, marginLeft: "auto", fontStyle: "italic" }}>coming soon</span>
+              </div>
+            ))}
+          </div>
+        ))}
+
+        <button
+          style={{
+            display: "inline-flex", alignItems: "center", gap: 6,
+            padding: "6px 14px", borderRadius: 6,
+            border: "1px dashed var(--border)",
+            background: "transparent",
+            color: "var(--text-tertiary)",
+            ...TYPE.sm, cursor: "pointer",
+            transition: "all 0.15s",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent-secondary)"; e.currentTarget.style.color = "var(--accent-secondary)" }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--text-tertiary)" }}
+        >
+          <Plus size={12} />
+          Suggest a source
+        </button>
+      </div>
+
+      <div style={separator} />
+
+      {/* ── Export Inventory ── */}
       <div style={{ marginBottom: 8 }}>
         <div style={sectionLabel}>Export Inventory</div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -296,6 +481,11 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
           Paste into Claude for analysis of your signal bundle structure.
         </div>
       </div>
+
+      <div style={separator} />
+
+      {/* ── Cerebro Station ── */}
+      <CerebroStation />
 
       <div style={separator} />
 
