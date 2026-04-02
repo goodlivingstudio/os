@@ -24,7 +24,7 @@ export function SignalCard({ x, y, article }: { x: number; y: number; article: A
       width: 260,
       pointerEvents: "none",
       zIndex: 1000,
-      background: "var(--card-tint)",
+      background: "var(--bg-elevated)",
       borderRadius: 8,
       border: "1px solid var(--border)",
       overflow: "hidden",
@@ -137,7 +137,7 @@ export const FeedCard = memo(function FeedCard({ article, onSignalEnter, onSigna
         borderLeft: `2px solid ${
           article.signalLens === "OPPORTUNITY" ? "var(--accent-secondary)" : "transparent"
         }`,
-        background: hovered ? "var(--card-tint)" : "var(--bg-surface)",
+        background: hovered ? "var(--bg-elevated)" : "var(--bg-surface)",
         cursor: isExternal ? "pointer" : "default",
         transition: "background 0.15s",
         gap: 0,
