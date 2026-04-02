@@ -210,12 +210,22 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
   }, [])
 
   return (
-    <main className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", background: "var(--bg-primary)" }}>
+    <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}>
+      {/* Header bar — matches DCOS and Cerebro */}
+      <div style={{
+        flexShrink: 0, height: 40, display: "flex", alignItems: "center",
+        padding: "0 20px", borderBottom: "1px solid var(--border)",
+      }}>
+        <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase" }}>
+          Dispatch
+        </span>
+      </div>
+
+      <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
 
-        {/* Header */}
+        {/* Summary */}
         <div style={{ animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both" }}>
-          <div style={{ ...sectionLabel, fontFamily: MONO }}>Dispatch</div>
           <div style={{ ...bodyStyle, color: "var(--text-tertiary)", lineHeight: 1.6 }}>
             {loading ? (
               <span className="loading-pulse">Analyzing the week&apos;s signal to generate content pitches...</span>
@@ -252,6 +262,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             />
           </div>
         )}
+      </div>
       </div>
     </main>
   )

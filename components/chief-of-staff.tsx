@@ -157,6 +157,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
               display: "flex", alignItems: "center", justifyContent: "space-between",
               width: "100%", padding: "0 20px", height: 40,
               background: "none", border: "none",
+              borderBottom: "1px solid var(--border)",
               cursor: "pointer", transition: "background 0.15s",
             }}
             onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}

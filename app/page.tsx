@@ -490,17 +490,15 @@ export default function Page() {
               title="Expand panel"
               style={{
                 width: 42, height: "100%",
-                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12,
+                display: "flex", alignItems: "center", justifyContent: "center",
                 background: "var(--bg-primary)",
-                borderRight: "1px solid var(--border)",
-                border: "none", borderRightStyle: "solid", borderRightWidth: 1, borderRightColor: "var(--border)",
+                border: "none", borderRight: "1px solid var(--border)",
                 cursor: "pointer",
                 transition: "background 0.15s",
               }}
               onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
               onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-primary)" }}
             >
-              <ChevronRight size={14} strokeWidth={1.5} style={{ color: "var(--text-tertiary)" }} />
               <span style={{ writingMode: "vertical-rl", ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 500 }}>
                 Dispatch
               </span>
@@ -563,17 +561,15 @@ export default function Page() {
               title="Expand Cerebro"
               style={{
                 width: 42, height: "100%",
-                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12,
+                display: "flex", alignItems: "center", justifyContent: "center",
                 background: "var(--bg-surface)",
-                borderLeft: "1px solid var(--border)",
-                border: "none", borderLeftStyle: "solid", borderLeftWidth: 1, borderLeftColor: "var(--border)",
+                border: "none", borderLeft: "1px solid var(--border)",
                 cursor: "pointer",
                 transition: "background 0.15s",
               }}
               onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
               onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
             >
-              <ChevronLeft size={14} strokeWidth={1.5} style={{ color: "var(--text-tertiary)" }} />
               <span style={{ writingMode: "vertical-rl", ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 500 }}>
                 Cerebro
               </span>
