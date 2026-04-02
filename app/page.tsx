@@ -11,6 +11,7 @@ import { SynthesisView } from "@/components/synthesis-view"
 import { AudioView } from "@/components/audio-view"
 import { ConfigView } from "@/components/config-view"
 import { DispatchView } from "@/components/dispatch-view"
+import { GalleryOverlay } from "@/components/gallery"
 import { Divider } from "@/components/divider"
 import type { Article, Signal, FeedHealth, Skin, ViewMode } from "@/lib/types"
 import { TYPE } from "@/lib/styles"
@@ -155,6 +156,7 @@ export default function Page() {
   const [viewMode,       setViewMode]       = useState<ViewMode>("signal")
   const [cerebroCollapsed, setCerebroCollapsed] = useState(false)
   const [leftRailCollapsed, setLeftRailCollapsed] = useState(false)
+  const [galleryOpen, setGalleryOpen] = useState(false)
   const [active,         setActive]         = useState("all")
   const [mobileTab,      setMobileTab]      = useState<"signal" | "audio" | "synthesis" | "dispatch" | "cerebro" | "config">("signal")
   const [excludedSources, setExcludedSources] = useState<Set<string>>(new Set())
@@ -482,6 +484,7 @@ export default function Page() {
             transition: "width 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
             overflow: "hidden",
             position: "relative",
+            height: "100%",
           }}
         >
           {leftRailCollapsed ? (
@@ -531,6 +534,7 @@ export default function Page() {
                 onViewChange={setViewMode}
                 excludedSources={excludedSources}
                 onToggleSource={handleToggleSource}
+                onGalleryOpen={() => setGalleryOpen(true)}
               />
             </>
           )}
@@ -603,6 +607,9 @@ export default function Page() {
         y={signal?.y ?? 0}
         article={signal?.article ?? null}
       />
+
+      {/* Gallery overlay */}
+      {galleryOpen && <GalleryOverlay onClose={() => setGalleryOpen(false)} />}
     </div>
   )
 }

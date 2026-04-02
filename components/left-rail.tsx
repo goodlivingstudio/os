@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react"
-import { Radio, AudioLines, Blend, Send, Settings } from "lucide-react"
+import { Radio, AudioLines, Blend, Send, Settings, Image } from "lucide-react"
 import type { Article, FeedHealth, ViewMode } from "@/lib/types"
 import { CATEGORY_CONFIG } from "@/lib/types"
 import { TYPE, metaStyle } from "@/lib/styles"
@@ -169,6 +169,7 @@ export function LeftRail({
   onViewChange,
   excludedSources,
   onToggleSource,
+  onGalleryOpen,
 }: {
   articles: Article[]
   active: string
@@ -181,6 +182,7 @@ export function LeftRail({
   onViewChange: (mode: ViewMode) => void
   excludedSources: Set<string>
   onToggleSource: (source: string) => void
+  onGalleryOpen?: () => void
 }) {
   const time = useClock()
   const now  = new Date()
@@ -400,8 +402,8 @@ export function LeftRail({
 
       </nav>
 
-      {/* Settings — bottom left */}
-      <div style={{ flexShrink: 0, padding: "12px 16px", borderTop: "1px solid var(--border)" }}>
+      {/* Bottom bar — gallery + settings */}
+      <div style={{ flexShrink: 0, padding: "12px 16px", borderTop: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 6 }}>
         <button
           onClick={() => onViewChange("config")}
           title="Configuration"
@@ -419,6 +421,24 @@ export function LeftRail({
         >
           <Settings size={18} strokeWidth={1.5} />
         </button>
+        {onGalleryOpen && (
+          <button
+            onClick={onGalleryOpen}
+            title="Gallery"
+            aria-label="Gallery"
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "center",
+              width: 36, height: 36, borderRadius: 8,
+              border: "none", background: "transparent",
+              color: "var(--text-tertiary)",
+              cursor: "pointer", transition: "all 0.15s", padding: 0,
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
+          >
+            <Image size={18} strokeWidth={1.5} />
+          </button>
+        )}
       </div>
     </aside>
   )
