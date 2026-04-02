@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react"
 import { createPortal } from "react-dom"
+import { TYPE, labelStyle } from "@/lib/styles"
 
 // ─── Citation types ─────────────────────────────────────────────────────────
 
@@ -69,8 +70,7 @@ function CitationChip({ num, src }: { num: string; src: CitationSource }) {
           }}
         >
           <div style={{
-            fontSize: 11,             color: "var(--accent-secondary)", textTransform: "uppercase",
-            marginBottom: 4,
+            ...labelStyle, marginBottom: 4,
           }}>
             {displayName}
           </div>
@@ -80,7 +80,7 @@ function CitationChip({ num, src }: { num: string; src: CitationSource }) {
             rel="noopener noreferrer"
             onClick={e => e.stopPropagation()}
             style={{
-              fontSize: 11,               color: "var(--text-primary)", lineHeight: 1.5,
+              ...TYPE.sm, color: "var(--text-primary)", lineHeight: 1.5,
               textDecoration: "none", display: "block",
               transition: "color 0.15s",
             }}

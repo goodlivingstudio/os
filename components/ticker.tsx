@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { SunMedium, MoonStar } from "lucide-react"
 import type { Skin } from "@/app/page"
+import { TYPE } from "@/lib/styles"
 
 // ─── Skin dot colours (fixed identifiers, not theme-relative) ──────────────
 const SKIN_DOT: Record<Skin, string> = {
@@ -157,7 +158,7 @@ export function Ticker({
               >
                 <span
                   style={{
-                    fontSize: 10,
+                    ...TYPE.xs,
                     textTransform: "uppercase",
                     padding: "2px 8px",
                     borderRadius: 4,

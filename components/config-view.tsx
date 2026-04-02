@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react"
 import { Copy, Check, RefreshCw } from "lucide-react"
 import { FEEDS } from "@/lib/feeds"
 import { PODCAST_FEEDS } from "@/lib/podcasts"
-import { MONO } from "@/lib/styles"
+import { MONO, TYPE, labelStyle, metaStyle } from "@/lib/styles"
 import type { FeedHealth, Skin } from "@/lib/types"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -82,9 +82,7 @@ function generateInventoryMarkdown(excludedSources: Set<string>): string {
 // ─── Shared styles ──────────────────────────────────────────────────────────
 
 const sectionLabel: React.CSSProperties = {
-  fontSize: 11, color: "var(--accent-secondary)",
-  textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 12,
-  fontWeight: 500,
+  ...labelStyle, letterSpacing: "0.04em", marginBottom: 12,
 }
 const rowStyle: React.CSSProperties = {
   display: "flex", alignItems: "center", gap: 10,
@@ -92,14 +90,14 @@ const rowStyle: React.CSSProperties = {
   transition: "background 0.12s", cursor: "pointer",
 }
 const badgeStyle = (color: string): React.CSSProperties => ({
-  fontSize: 10, color,
+  ...TYPE.xs, color,
   textTransform: "uppercase", letterSpacing: "0.03em",
   padding: "1px 6px", borderRadius: 4,
   background: "var(--bg-elevated)", whiteSpace: "nowrap",
   fontWeight: 500,
 })
 const categoryStyle: React.CSSProperties = {
-  fontSize: 11, color: "var(--text-tertiary)",
+  ...metaStyle,
   marginLeft: "auto", whiteSpace: "nowrap",
 }
 const separator: React.CSSProperties = {
@@ -125,7 +123,7 @@ function CopyButton({ text, label }: { text: string; label: string }) {
         border: "1px solid var(--border)",
         background: copied ? "var(--accent-secondary)" : "transparent",
         color: copied ? "var(--bg-primary)" : "var(--text-tertiary)",
-        fontSize: 11, cursor: "pointer",
+        ...TYPE.sm, cursor: "pointer",
         transition: "all 0.2s",
       }}
     >
@@ -187,7 +185,7 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
         <div style={sectionLabel}>Configuration</div>
-        <div style={{ fontSize: 12, color: "var(--text-tertiary)", lineHeight: 1.6 }}>
+        <div style={{ ...TYPE.body, color: "var(--text-tertiary)" }}>
           Source inventory, diagnostics, and preferences.
         </div>
       </div>
@@ -211,7 +209,7 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
           if (!items?.length) return null
           return (
             <div key={layer} style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 11, fontWeight: 500, color: LAYER_DOT[layer], textTransform: "uppercase", marginBottom: 6, paddingLeft: 12 }}>
+              <div style={{ ...TYPE.sm, fontWeight: 500, color: LAYER_DOT[layer], textTransform: "uppercase", marginBottom: 6, paddingLeft: 12 }}>
                 {LAYER_LABELS[layer]}
                 <span style={{ color: "var(--text-tertiary)", marginLeft: 6 }}>({items.filter(f => !excludedSources.has(f.source)).length})</span>
               </div>
@@ -226,7 +224,7 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
                     <Toggle active={active} onToggle={() => onToggleSource(feed.source)} />
-                    <span style={{ fontSize: 12, color: active ? "var(--text-primary)" : "var(--text-tertiary)" }}>
+                    <span style={{ ...TYPE.body, color: active ? "var(--text-primary)" : "var(--text-tertiary)" }}>
                       {feed.source}
                     </span>
                     <span style={badgeStyle(LAYER_DOT[layer])}>{layer.slice(0, 3)}</span>
@@ -258,7 +256,7 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
           if (!items?.length) return null
           return (
             <div key={layer} style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 11, fontWeight: 500, color: LAYER_DOT[layer], textTransform: "uppercase", marginBottom: 6, paddingLeft: 12 }}>
+              <div style={{ ...TYPE.sm, fontWeight: 500, color: LAYER_DOT[layer], textTransform: "uppercase", marginBottom: 6, paddingLeft: 12 }}>
                 {LAYER_LABELS[layer]}
                 <span style={{ color: "var(--text-tertiary)", marginLeft: 6 }}>({items.filter(f => !excludedSources.has(f.show)).length})</span>
               </div>
@@ -273,7 +271,7 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
                     <Toggle active={active} onToggle={() => onToggleSource(feed.show)} />
-                    <span style={{ fontSize: 12, color: active ? "var(--text-primary)" : "var(--text-tertiary)" }}>
+                    <span style={{ ...TYPE.body, color: active ? "var(--text-primary)" : "var(--text-tertiary)" }}>
                       {feed.show}
                     </span>
                     <span style={badgeStyle(LAYER_DOT[layer])}>{layer.slice(0, 3)}</span>
@@ -294,7 +292,7 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <CopyButton text={inventoryMd} label="Copy full inventory (Markdown)" />
         </div>
-        <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 8, lineHeight: 1.6 }}>
+        <div style={{ ...metaStyle, marginTop: 8, lineHeight: 1.6 }}>
           Paste into Claude for analysis of your signal bundle structure.
         </div>
       </div>
@@ -311,7 +309,7 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
               display: "inline-flex", alignItems: "center", gap: 4,
               padding: "4px 10px", borderRadius: 6,
               border: "1px solid var(--border)", background: "transparent",
-              color: "var(--text-tertiary)", fontSize: 11,
+              ...metaStyle,
               cursor: "pointer", transition: "all 0.15s",
             }}
             onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
@@ -322,7 +320,7 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
           </button>
         </div>
 
-        <div style={{ background: "var(--bg-elevated)", borderRadius: 8, padding: "16px", fontFamily: MONO, fontSize: 11, lineHeight: 2 }}>
+        <div style={{ background: "var(--bg-elevated)", borderRadius: 8, padding: "16px", fontFamily: MONO, ...TYPE.sm, lineHeight: 2 }}>
           {/* API Status */}
           <div style={{ color: "var(--text-tertiary)", marginBottom: 4 }}>API STATUS</div>
           <div>
@@ -374,7 +372,7 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
             style={{
               marginTop: 4, padding: "3px 8px", borderRadius: 4,
               border: "1px solid var(--border)", background: "transparent",
-              color: "var(--text-tertiary)", fontSize: 10,
+              ...TYPE.xs, color: "var(--text-tertiary)",
               cursor: "pointer",
             }}
           >
@@ -391,7 +389,7 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
 
         {/* Skin */}
         <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginBottom: 8 }}>Skin</div>
+          <div style={{ ...metaStyle, marginBottom: 8 }}>Skin</div>
           <div style={{ display: "flex", gap: 8 }}>
             {(["mineral", "slate", "forest"] as Skin[]).map(s => (
               <button
@@ -402,7 +400,7 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
                   border: skin === s ? "1px solid var(--accent-secondary)" : "1px solid var(--border)",
                   background: skin === s ? "var(--accent-primary)" : "transparent",
                   color: skin === s ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                  fontSize: 11, cursor: "pointer",
+                  ...TYPE.sm, cursor: "pointer",
                   textTransform: "capitalize", transition: "all 0.15s",
                 }}
               >
@@ -414,13 +412,13 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
 
         {/* Theme */}
         <div>
-          <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginBottom: 8 }}>Theme</div>
+          <div style={{ ...metaStyle, marginBottom: 8 }}>Theme</div>
           <button
             onClick={onToggleMode}
             style={{
               padding: "6px 16px", borderRadius: 6,
               border: "1px solid var(--border)", background: "transparent",
-              color: "var(--text-tertiary)", fontSize: 11,
+              ...metaStyle,
               cursor: "pointer", transition: "all 0.15s",
             }}
           >

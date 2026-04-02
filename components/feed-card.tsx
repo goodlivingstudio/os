@@ -3,6 +3,7 @@
 import { useState, useRef, memo } from "react"
 import type { Article } from "@/lib/types"
 import { timeAgo, LENS_COLOR } from "@/lib/types"
+import { TYPE, labelStyle, bodyStyle, metaStyle } from "@/lib/styles"
 
 // ─── Signal Card — hover intelligence briefing ──────────────────────────────
 
@@ -32,13 +33,14 @@ export function SignalCard({ x, y, article }: { x: number; y: number; article: A
       {article.synopsis && (
         <div style={{ padding: "12px 14px", paddingBottom: article.relevance ? 8 : 12 }}>
           <div style={{
-            fontSize: 11,             color: "var(--accent-secondary)", textTransform: "uppercase",
+            ...labelStyle,
             marginBottom: 6,
           }}>
             Synopsis
           </div>
           <div style={{
-            fontSize: 12,             lineHeight: 1.55, color: "var(--text-secondary)",
+            ...bodyStyle,
+            lineHeight: 1.55,
           }}>
             {article.synopsis}
           </div>
@@ -52,13 +54,14 @@ export function SignalCard({ x, y, article }: { x: number; y: number; article: A
           borderTop: article.synopsis ? "1px solid var(--border)" : "none",
         }}>
           <div style={{
-            fontSize: 11,             color: "var(--accent-secondary)", textTransform: "uppercase",
+            ...labelStyle,
             marginBottom: 6,
           }}>
             Relevance
           </div>
           <div style={{
-            fontSize: 12,             lineHeight: 1.55, color: "var(--text-primary)",
+            ...TYPE.body,
+            lineHeight: 1.55, color: "var(--text-primary)",
           }}>
             {article.relevance}
           </div>
@@ -144,8 +147,7 @@ export const FeedCard = memo(function FeedCard({ article, onSignalEnter, onSigna
         {/* Eyebrow */}
         <div
           style={{
-            fontSize: 11,
-            color: "var(--text-tertiary)",
+            ...metaStyle,
             marginBottom: 6,
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -166,10 +168,8 @@ export const FeedCard = memo(function FeedCard({ article, onSignalEnter, onSigna
         {/* Headline */}
         <div
           style={{
-            fontSize: 15,
-            fontWeight: 600,
+            ...TYPE.heading,
             color: hovered ? "var(--text-primary)" : "var(--text-secondary)",
-            lineHeight: 1.4,
             marginBottom: article.summary ? 6 : 0,
           }}
         >
@@ -180,9 +180,8 @@ export const FeedCard = memo(function FeedCard({ article, onSignalEnter, onSigna
         {article.summary && (
           <div
             style={{
-              fontSize: 12,
+              ...TYPE.body,
               color: "var(--text-tertiary)",
-              lineHeight: 1.6,
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",

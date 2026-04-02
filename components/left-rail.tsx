@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import { Radio, AudioLines, Blend, Settings } from "lucide-react"
 import type { Article, FeedHealth, ViewMode } from "@/lib/types"
 import { CATEGORY_CONFIG } from "@/lib/types"
+import { TYPE, metaStyle } from "@/lib/styles"
 
 // ─── Live Clock — 24hr with seconds ──────────────────────────────────────────
 
@@ -66,7 +67,7 @@ function SourceFilter({ articles, excludedSources, onToggleSource }: {
         onClick={() => setOpen(v => !v)}
         style={{
           background: "transparent", border: "none", cursor: "pointer",
-          fontSize: 11, color: "var(--text-tertiary)",
+          ...metaStyle,
           padding: "4px 8px", borderRadius: 8,
           display: "inline-flex", alignItems: "center", gap: 3,
           transition: "all 0.15s",
@@ -97,7 +98,7 @@ function SourceFilter({ articles, excludedSources, onToggleSource }: {
           <div style={{ display: "flex", padding: "4px 16px 8px", borderBottom: "1px solid var(--border)" }}>
             <button
               onClick={() => sources.forEach(s => { if (excludedSources.has(s.name)) onToggleSource(s.name) })}
-              style={{ background: "none", border: "none", fontSize: 11, color: "var(--accent-secondary)", cursor: "pointer", padding: 0 }}
+              style={{ background: "none", border: "none", ...TYPE.sm, color: "var(--accent-secondary)", cursor: "pointer", padding: 0 }}
             >
               Reset
             </button>
@@ -131,7 +132,7 @@ function SourceFilter({ articles, excludedSources, onToggleSource }: {
                   )}
                 </span>
                 <span style={{
-                  flex: 1, fontSize: 12,
+                  flex: 1, ...TYPE.body,
                   color: active ? "var(--text-secondary)" : "var(--text-tertiary)",
                   opacity: active ? 1 : 0.5,
                   overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
@@ -140,7 +141,7 @@ function SourceFilter({ articles, excludedSources, onToggleSource }: {
                   {s.name}
                 </span>
                 <span style={{
-                  fontSize: 11, fontVariantNumeric: "tabular-nums",
+                  ...TYPE.sm, fontVariantNumeric: "tabular-nums",
                   color: "var(--text-tertiary)",
                   opacity: active ? 0.7 : 0.4,
                 }}>
@@ -220,7 +221,7 @@ export function LeftRail({
         </h1>
         <div
           style={{
-            fontSize: 12,
+            ...TYPE.body,
             color: "var(--text-tertiary)",
             marginTop: 8,
             lineHeight: 1.5,
@@ -237,7 +238,7 @@ export function LeftRail({
       <div style={{ padding: "16px 16px 16px", borderBottom: "1px solid var(--border)" }}>
         {/* Date + time — unified line */}
         <div style={{
-          fontSize: 12,
+          ...TYPE.body,
           color: "var(--text-secondary)",
           fontWeight: 500,
           marginBottom: 8,
@@ -263,23 +264,23 @@ export function LeftRail({
             }}
           />
           <span style={{
-            fontSize: 11,
-                        textTransform: "uppercase",
+            ...TYPE.sm,
+            textTransform: "uppercase",
             color: dotColor,
             fontWeight: 700,
           }}>
             {statusLabel}
           </span>
-          <span style={{ color: "var(--border)", fontSize: 11 }}>·</span>
+          <span style={{ color: "var(--border)", ...TYPE.sm }}>·</span>
           <SourceFilter articles={articles} excludedSources={excludedSources} onToggleSource={onToggleSource} />
-          <span style={{ color: "var(--border)", fontSize: 11 }}>·</span>
-          <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>
+          <span style={{ color: "var(--border)", ...TYPE.sm }}>·</span>
+          <span style={{ ...metaStyle }}>
             {articles.length} signals
           </span>
           {annotatedCount > 0 && (
             <>
-              <span style={{ color: "var(--border)", fontSize: 11 }}>·</span>
-              <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>
+              <span style={{ color: "var(--border)", ...TYPE.sm }}>·</span>
+              <span style={{ ...metaStyle }}>
                 {annotatedCount} annotated
               </span>
             </>
@@ -383,7 +384,7 @@ export function LeftRail({
                 >
                   <span
                     style={{
-                      fontSize: 12,
+                      ...TYPE.body,
                       color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
                       fontWeight: isActive ? 600 : 400,
                       transition: "color 0.15s",
@@ -394,7 +395,7 @@ export function LeftRail({
                   {n > 0 && (
                     <span
                       style={{
-                        fontSize: 11,
+                        ...TYPE.sm,
                         fontVariantNumeric: "tabular-nums",
                         color: isActive ? "var(--accent-muted)" : "var(--text-tertiary)",
                         opacity: 0.7,

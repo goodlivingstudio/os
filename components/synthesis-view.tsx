@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react"
 import { ArrowUpRight } from "lucide-react"
 import type { Article } from "@/lib/types"
+import { TYPE, labelStyle, bodyStyle as sharedBodyStyle, metaStyle } from "@/lib/styles"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -34,25 +35,20 @@ const ALL_LAYERS: LayerKey[] = ["opportunity", "position", "discipline", "landsc
 
 // ─── Shared styles — aligned to Dispatch DS ────────────────────────────────
 
-// Section label: Geist Sans, accent color, uppercase
+// Section label: shared labelStyle + marginBottom
 const sectionLabelStyle: React.CSSProperties = {
-  fontSize: 11,
-  color: "var(--accent-secondary)",
-  textTransform: "uppercase",
-  fontWeight: 500,
+  ...labelStyle,
   marginBottom: 8,
 }
 
-// Synthesis body: Geist Sans 12px
+// Synthesis body: shared bodyStyle
 const bodyStyle: React.CSSProperties = {
-  fontSize: 12,
-  color: "var(--text-secondary)",
-  lineHeight: 1.6,
+  ...sharedBodyStyle,
 }
 
-// Heading: Geist Sans 15px, weight 500
+// Heading: TYPE.heading, weight 500 (override 600)
 const headingStyle: React.CSSProperties = {
-  fontSize: 15,
+  ...TYPE.heading,
   color: "var(--text-primary)",
   fontWeight: 500,
 }
@@ -67,7 +63,7 @@ const cardBase: React.CSSProperties = {
 }
 
 const pillStyle: React.CSSProperties = {
-  fontSize: 11,
+  ...TYPE.sm,
   textTransform: "uppercase",
   padding: "2px 8px",
   borderRadius: 4,
@@ -213,7 +209,7 @@ function BumpButton({ onClick }: { onClick: () => void }) {
         display: "inline-flex", alignItems: "center", gap: 6,
         padding: "8px 14px", borderRadius: 8,
         border: "1px solid var(--border)", background: "transparent",
-        color: "var(--text-secondary)", fontSize: 12,
+        color: "var(--text-secondary)", ...TYPE.body,
         fontWeight: 500, cursor: "pointer", transition: "all 0.15s",
       }}
       onMouseEnter={e => {
@@ -285,10 +281,10 @@ function ContributingSignalsDrawer({ articles }: { articles: Article[] }) {
                 onMouseEnter={e => { if (isExternal) e.currentTarget.style.background = "var(--bg-surface)" }}
                 onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
               >
-                <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginBottom: 4 }}>
+                <div style={{ ...metaStyle, marginBottom: 4 }}>
                   {a.source} · {a.category} · {new Date(a.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", lineHeight: 1.4 }}>
+                <div style={{ ...TYPE.reading, fontWeight: 500, color: "var(--text-primary)", lineHeight: 1.4 }}>
                   {a.title}
                 </div>
               </div>
@@ -402,7 +398,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
                   {pattern.layers.map(l => <LayerPill key={l} layer={l} />)}
-                  <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>
+                  <span style={{ ...metaStyle }}>
                     {pattern.signalCount} signals
                   </span>
                 </div>
@@ -426,7 +422,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
           onClick={() => setActiveModal("blindspots")}
         >
           <div style={sectionLabelStyle}>Blind Spots</div>
-          <div style={{ fontSize: 12,  color: "var(--text-tertiary)", marginBottom: 16 }}>
+          <div style={{ ...TYPE.body, color: "var(--text-tertiary)", marginBottom: 16 }}>
             Layers trending cold
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -546,8 +542,8 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                 {ALL_LAYERS.map(l => (
                   <div key={l} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <LayerDot layer={l} />
-                    <span style={{ fontSize: 12,  color: "var(--text-secondary)", width: 80 }}>{LAYER_LABELS[l]}</span>
-                    <span style={{ fontSize: 11,  color: "var(--text-tertiary)" }}>{layerCounts[l]} articles</span>
+                    <span style={{ ...TYPE.body, color: "var(--text-secondary)", width: 80 }}>{LAYER_LABELS[l]}</span>
+                    <span style={{ ...metaStyle }}>{layerCounts[l]} articles</span>
                   </div>
                 ))}
               </div>

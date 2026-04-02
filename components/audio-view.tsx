@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { ExternalLink, ArrowUpRight } from "lucide-react"
+import { TYPE, metaStyle } from "@/lib/styles"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -90,7 +91,7 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
             </div>
           )}
           <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginBottom: 6 }}>
+            <div style={{ ...TYPE.body, color: "var(--text-tertiary)", marginBottom: 6 }}>
               {episode.showName}
             </div>
             <div style={{ fontSize: 18, fontWeight: 650, color: "var(--text-primary)", lineHeight: 1.35 }}>
@@ -116,12 +117,12 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
             {/* THE WHAT — Synopsis */}
             <div style={{ marginBottom: 24 }}>
               <div style={{
-                fontSize: 11, color: "var(--text-tertiary)", textTransform: "uppercase",
+                ...metaStyle, textTransform: "uppercase",
                 fontWeight: 600, marginBottom: 8,
               }}>
                 Synopsis
               </div>
-              <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6 }}>
+              <div style={{ ...TYPE.reading, color: "var(--text-secondary)" }}>
                 {episode.summary || "Episode synopsis will be available when the annotation engine is active. This section provides an AI-generated summary of what this episode covers, distilled for relevance to your mandate."}
               </div>
             </div>
@@ -129,31 +130,31 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
             {/* THE META — Particulars */}
             <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 24 }}>
               <div style={{
-                fontSize: 11, color: "var(--text-tertiary)", textTransform: "uppercase",
+                ...metaStyle, textTransform: "uppercase",
                 fontWeight: 600, marginBottom: 16,
               }}>
                 Details
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
                 <div>
-                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginBottom: 3 }}>Show</div>
-                  <div style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 500 }}>{episode.showName}</div>
+                  <div style={{ ...metaStyle, marginBottom: 3 }}>Show</div>
+                  <div style={{ ...TYPE.reading, color: "var(--text-primary)", fontWeight: 500 }}>{episode.showName}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginBottom: 3 }}>Duration</div>
-                  <div style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 500 }}>{episode.duration || "—"}</div>
+                  <div style={{ ...metaStyle, marginBottom: 3 }}>Duration</div>
+                  <div style={{ ...TYPE.reading, color: "var(--text-primary)", fontWeight: 500 }}>{episode.duration || "—"}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginBottom: 3 }}>Published</div>
-                  <div style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 500 }}>{formatDate(episode.publishedAt)}</div>
+                  <div style={{ ...metaStyle, marginBottom: 3 }}>Published</div>
+                  <div style={{ ...TYPE.reading, color: "var(--text-primary)", fontWeight: 500 }}>{formatDate(episode.publishedAt)}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginBottom: 3 }}>Category</div>
-                  <div style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 500 }}>{episode.category}</div>
+                  <div style={{ ...metaStyle, marginBottom: 3 }}>Category</div>
+                  <div style={{ ...TYPE.reading, color: "var(--text-primary)", fontWeight: 500 }}>{episode.category}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginBottom: 3 }}>Layer</div>
-                  <div style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 500 }}>{LAYER_LABELS[episode.layer] || episode.layer}</div>
+                  <div style={{ ...metaStyle, marginBottom: 3 }}>Layer</div>
+                  <div style={{ ...TYPE.reading, color: "var(--text-primary)", fontWeight: 500 }}>{LAYER_LABELS[episode.layer] || episode.layer}</div>
                 </div>
               </div>
             </div>
@@ -161,12 +162,12 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
             {/* THE WHY — Mandate relevance */}
             <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 24 }}>
               <div style={{
-                fontSize: 11, color: "var(--text-tertiary)", textTransform: "uppercase",
+                ...metaStyle, textTransform: "uppercase",
                 fontWeight: 600, marginBottom: 8,
               }}>
                 Why It Matters
               </div>
-              <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6 }}>
+              <div style={{ ...TYPE.reading, color: "var(--text-secondary)" }}>
                 Mandate relevance analysis will appear here when the annotation engine is active. This section explains how this episode connects to your five intelligence layers and what you should listen for relative to your strategic positioning.
               </div>
             </div>
@@ -182,7 +183,7 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
                     display: "inline-flex", alignItems: "center", gap: 8,
                     padding: "8px 16px", borderRadius: 8,
                     background: "var(--accent-secondary)", color: "var(--bg-primary)",
-                    textDecoration: "none", fontSize: 13, fontWeight: 600,
+                    textDecoration: "none", ...TYPE.reading, fontWeight: 600,
                     transition: "opacity 0.15s",
                   }}
                   onMouseEnter={e => { e.currentTarget.style.opacity = "0.85" }}
@@ -202,7 +203,7 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
                     display: "inline-flex", alignItems: "center", gap: 8,
                     padding: "8px 16px", borderRadius: 8,
                     background: "var(--bg-elevated)", border: "none",
-                    color: "var(--accent-secondary)", fontSize: 13, fontWeight: 600,
+                    color: "var(--accent-secondary)", ...TYPE.reading, fontWeight: 600,
                     cursor: "pointer", transition: "all 0.15s",
                   }}
                   onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
@@ -268,7 +269,7 @@ function EpisodeCard({ episode, onClick }: { episode: Episode; onClick: () => vo
         {/* Eyebrow */}
         <div
           style={{
-            fontSize: 11, color: "var(--text-tertiary)",
+            ...metaStyle,
             marginBottom: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
           }}
         >
@@ -283,7 +284,7 @@ function EpisodeCard({ episode, onClick }: { episode: Episode; onClick: () => vo
         {/* Episode title */}
         <div
           style={{
-            fontSize: 15, fontWeight: 550,
+            ...TYPE.heading, fontWeight: 550,
             color: hovered ? "var(--text-primary)" : "var(--text-secondary)",
             lineHeight: 1.4, transition: "color 0.15s",
             display: "-webkit-box", WebkitLineClamp: 2,
@@ -334,13 +335,13 @@ export function AudioView({ onDeliberate, excludedSources }: { onDeliberate?: (t
       {/* Header */}
       <div style={{ marginBottom: 16 }}>
         <div style={{
-          fontSize: 11, color: "var(--text-tertiary)", textTransform: "uppercase",
+          ...metaStyle, textTransform: "uppercase",
           fontWeight: 600,
         }}>
           Audio Intelligence
         </div>
         {!loading && (
-          <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 4 }}>
+          <div style={{ ...TYPE.body, color: "var(--text-tertiary)", marginTop: 4 }}>
             {filtered.length} episodes from {showCount} shows
           </div>
         )}
@@ -367,7 +368,7 @@ export function AudioView({ onDeliberate, excludedSources }: { onDeliberate?: (t
                 onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? "var(--accent-primary)" : "transparent" }}
               >
                 <span style={{
-                  fontSize: 12,
+                  ...TYPE.body,
                   color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
                   fontWeight: isActive ? 600 : 400,
                   transition: "color 0.15s",
@@ -375,7 +376,7 @@ export function AudioView({ onDeliberate, excludedSources }: { onDeliberate?: (t
                   {layer.label}
                 </span>
                 <span style={{
-                  fontSize: 11, fontVariantNumeric: "tabular-nums",
+                  ...TYPE.sm, fontVariantNumeric: "tabular-nums",
                   color: isActive ? "var(--accent-muted)" : "var(--text-tertiary)",
                   opacity: 0.7, transition: "color 0.15s",
                 }}>
@@ -408,7 +409,7 @@ export function AudioView({ onDeliberate, excludedSources }: { onDeliberate?: (t
           ))}
         </div>
       ) : episodes.length === 0 ? (
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 200, fontSize: 13, color: "var(--text-tertiary)" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 200, ...TYPE.reading, color: "var(--text-tertiary)" }}>
           No episodes loaded. Check podcast feed configuration.
         </div>
       ) : (
