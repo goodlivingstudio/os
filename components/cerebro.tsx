@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Paperclip, Mic, MicOff, ExternalLink, ArrowUpRight } from "lucide-react"
 import type { Article, Message } from "@/lib/types"
+import { renderCitedBody, CitationSource } from "@/components/citation"
 
 // ─── Speech Recognition helpers ─────────────────────────────────────────────
 
@@ -64,6 +65,7 @@ export function Cerebro({ articles, pendingPrompt }: {
   const [sessionId, setSessionId] = useState("")
   const [followUps, setFollowUps] = useState<{ question: string; alternatives: string[] } | null>(null)
   const [lastSources, setLastSources] = useState<Array<{ title: string; url: string }>>([])
+  const [sourcesByMsg, setSourcesByMsg] = useState<Record<number, CitationSource[]>>({})
   const [attachments, setAttachments] = useState<{ data: string; media_type: string; name: string; preview: string }[]>([])
   const [isRecording, setIsRecording] = useState(false)
   const inputRef  = useRef<HTMLTextAreaElement>(null)
@@ -178,6 +180,8 @@ export function Cerebro({ articles, pendingPrompt }: {
             const newMsgs = [...prev, ...searchLines, { role: "assistant" as const, content: data.text || "// empty response" }]
             if (data.sources?.length > 0) {
               setLastSources(data.sources)
+              const assistantIdx = newMsgs.length - 1
+              setSourcesByMsg(prev => ({ ...prev, [assistantIdx]: data.sources }))
             }
             return newMsgs
           })
@@ -351,7 +355,7 @@ export function Cerebro({ articles, pendingPrompt }: {
             ) : (
               <div style={{ padding: "0 16px" }}>
                 <div style={{ fontSize: 12.5, fontFamily: "var(--font-geist-mono), monospace", color: "var(--text-secondary)", lineHeight: 1.75, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                  {m.content}
+                  {sourcesByMsg[i] ? renderCitedBody(m.content, sourcesByMsg[i]) : m.content}
                 </div>
               </div>
             )}
