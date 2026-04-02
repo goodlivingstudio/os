@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Radio, AudioLines, Blend, Brain, Settings } from "lucide-react"
+import { Radio, AudioLines, Blend, Send, Brain, Settings } from "lucide-react"
 import { Ticker } from "@/components/ticker"
 import { LeftRail } from "@/components/left-rail"
 import { useChiefOfStaff, ChiefOfStaffBand } from "@/components/chief-of-staff"
@@ -10,6 +10,7 @@ import { Cerebro } from "@/components/cerebro"
 import { SynthesisView } from "@/components/synthesis-view"
 import { AudioView } from "@/components/audio-view"
 import { ConfigView } from "@/components/config-view"
+import { DispatchView } from "@/components/dispatch-view"
 import { Divider } from "@/components/divider"
 import type { Article, Signal, FeedHealth, Skin, ViewMode } from "@/lib/types"
 
@@ -152,12 +153,12 @@ export default function Page() {
   const [feedLoading,    setFeedLoading]    = useState(true)
   const [viewMode,       setViewMode]       = useState<ViewMode>("signal")
   const [active,         setActive]         = useState("all")
-  const [mobileTab,      setMobileTab]      = useState<"signal" | "audio" | "synthesis" | "cerebro" | "config">("signal")
+  const [mobileTab,      setMobileTab]      = useState<"signal" | "audio" | "synthesis" | "dispatch" | "cerebro" | "config">("signal")
   const [excludedSources, setExcludedSources] = useState<Set<string>>(new Set())
 
   // Global arrow key navigation — cycle views without needing focus
   useEffect(() => {
-    const modes: ViewMode[] = ["signal", "audio", "synthesis"]
+    const modes: ViewMode[] = ["signal", "audio", "synthesis", "dispatch"]
     const handler = (e: KeyboardEvent) => {
       // Don't intercept when typing in an input/textarea
       const tag = (e.target as HTMLElement)?.tagName
@@ -195,10 +196,10 @@ export default function Page() {
       if (savedCategory) setActive(savedCategory)
 
       const savedView = localStorage.getItem("dispatch-view-mode")
-      if (savedView === "signal" || savedView === "audio" || savedView === "synthesis" || savedView === "config") setViewMode(savedView)
+      if (savedView === "signal" || savedView === "audio" || savedView === "synthesis" || savedView === "dispatch" || savedView === "config") setViewMode(savedView)
 
       const savedTab = localStorage.getItem("dispatch-mobile-tab")
-      if (savedTab === "signal" || savedTab === "audio" || savedTab === "synthesis" || savedTab === "cerebro" || savedTab === "config") setMobileTab(savedTab)
+      if (savedTab === "signal" || savedTab === "audio" || savedTab === "synthesis" || savedTab === "dispatch" || savedTab === "cerebro" || savedTab === "config") setMobileTab(savedTab)
 
       const savedExcluded = localStorage.getItem("dispatch-excluded-sources")
       if (savedExcluded) setExcludedSources(new Set(JSON.parse(savedExcluded)))
@@ -361,6 +362,7 @@ export default function Page() {
             {mobileTab === "signal" && feedContent}
             {mobileTab === "synthesis" && <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} />}
             {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} />}
+            {mobileTab === "dispatch"  && <DispatchView onDeliberate={handleSynthesisDeliberate} />}
             {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} /></div>}
             {mobileTab === "config"    && <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} feedHealth={feedHealth} skin={skin} onSkinChange={setSkin} isDay={isDay} onToggleMode={toggleMode} />}
           </div>
@@ -372,6 +374,7 @@ export default function Page() {
             { id: "signal" as const,    Icon: Radio,      label: "Signal"    },
             { id: "audio" as const,     Icon: AudioLines, label: "Sound"     },
             { id: "synthesis" as const, Icon: Blend,      label: "Synthesis" },
+            { id: "dispatch" as const,  Icon: Send,       label: "Dispatch"  },
             { id: "cerebro" as const,   Icon: Brain,      label: "Cerebro"   },
             { id: "config" as const,    Icon: Settings,   label: "Config"    },
           ]
@@ -394,8 +397,8 @@ export default function Page() {
                 style={{
                   position: "absolute",
                   top: 4,
-                  left: `calc(${activeIdx * 20}% + 4px)`,
-                  width: "calc(20% - 8px)",
+                  left: `calc(${activeIdx * (100 / tabs.length)}% + 4px)`,
+                  width: `calc(${100 / tabs.length}% - 8px)`,
                   height: "calc(100% - 8px)",
                   background: "var(--bg-elevated)",
                   borderRadius: 14,
@@ -484,6 +487,8 @@ export default function Page() {
         <Divider onMouseDown={e => startResize("left", e)} />
         {viewMode === "config"
           ? <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} feedHealth={feedHealth} skin={skin} onSkinChange={setSkin} isDay={isDay} onToggleMode={toggleMode} />
+          : viewMode === "dispatch"
+          ? <DispatchView onDeliberate={handleSynthesisDeliberate} />
           : viewMode === "synthesis"
           ? <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} />
           : viewMode === "audio"

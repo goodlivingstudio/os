@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react"
-import { Radio, AudioLines, Blend, Settings } from "lucide-react"
+import { Radio, AudioLines, Blend, Send, Settings } from "lucide-react"
 import type { Article, FeedHealth, ViewMode } from "@/lib/types"
 import { CATEGORY_CONFIG } from "@/lib/types"
 import { TYPE, metaStyle } from "@/lib/styles"
@@ -304,24 +304,31 @@ export function LeftRail({
             }}
           >
             {/* Sliding indicator — hidden when config is active */}
-            <div
-              style={{
-                position: "absolute",
-                top: 3,
-                left: viewMode === "signal" ? "3px" : viewMode === "audio" ? "calc(33.33% + 1px)" : viewMode === "synthesis" ? "calc(66.66% + 1px)" : "3px",
-                width: "calc(33.33% - 4px)",
-                height: "calc(100% - 6px)",
-                background: "var(--bg-surface)",
-                borderRadius: 8,
-                transition: "left 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s",
-                zIndex: 0,
-                opacity: viewMode === "config" ? 0 : 1,
-              }}
-            />
+            {(() => {
+              const modes = ["signal", "audio", "synthesis", "dispatch"]
+              const idx = modes.indexOf(viewMode)
+              return (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 3,
+                    left: idx >= 0 ? `calc(${idx * 25}% + 3px)` : "3px",
+                    width: "calc(25% - 4px)",
+                    height: "calc(100% - 6px)",
+                    background: "var(--bg-surface)",
+                    borderRadius: 8,
+                    transition: "left 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s",
+                    zIndex: 0,
+                    opacity: viewMode === "config" ? 0 : 1,
+                  }}
+                />
+              )
+            })()}
             {([
               { id: "signal" as const,    Icon: Radio,      title: "Signal"    },
               { id: "audio" as const,     Icon: AudioLines, title: "Sound"     },
               { id: "synthesis" as const, Icon: Blend,      title: "Synthesis" },
+              { id: "dispatch" as const,  Icon: Send,       title: "Dispatch"  },
             ]).map(tab => {
               const isActive = viewMode === tab.id
               return (
