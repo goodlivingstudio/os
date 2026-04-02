@@ -512,9 +512,9 @@ function Cerebro({ articles, pendingPrompt }: {
                   {m.content}
                 </div>
                 {/* Source attribution */}
-                {sourcesByMsgIdx[mi] && sourcesByMsgIdx[mi].length > 0 && (
+                {sourcesByMsgIdx[i] && sourcesByMsgIdx[i].length > 0 && (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 8, paddingBottom: 4 }}>
-                    {sourcesByMsgIdx[mi].slice(0, 5).map((src, si) => (
+                    {sourcesByMsgIdx[i].slice(0, 5).map((src, si) => (
                       <a
                         key={si}
                         href={src.url}
@@ -527,7 +527,7 @@ function Cerebro({ articles, pendingPrompt }: {
                         onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)" }}
                         onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)" }}
                       >
-                        {new URL(src.url).hostname.replace("www.", "")}{si < Math.min(sourcesByMsgIdx[mi].length, 5) - 1 ? " ·" : ""}
+                        {new URL(src.url).hostname.replace("www.", "")}{si < Math.min(sourcesByMsgIdx[i].length, 5) - 1 ? " ·" : ""}
                       </a>
                     ))}
                   </div>

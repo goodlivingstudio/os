@@ -130,7 +130,7 @@ export async function POST(req: Request) {
 
     // Pad to exactly 3
     while (signals.length < 3) {
-      signals.push({ label: "—", body: "" })
+      signals.push({ label: "—", body: "", sources: [] })
     }
 
     return Response.json({ signals })
