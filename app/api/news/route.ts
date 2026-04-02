@@ -3,6 +3,7 @@ export const revalidate = 1800 // 30 min cache
 
 import Anthropic from "@anthropic-ai/sdk"
 import { FEEDS, type FeedDef } from "@/lib/feeds"
+import { storeArticles } from "@/lib/article-store"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -309,6 +310,9 @@ export async function GET() {
 
   // Annotate top articles server-side (runs within ISR cache window)
   const annotated = await annotateArticles(sorted)
+
+  // Persist to KV for 7-day historical analysis (Synthesis, Dispatch tab)
+  storeArticles(annotated).catch(() => {}) // fire-and-forget, don't block response
 
   return Response.json({
     articles: annotated,
