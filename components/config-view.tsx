@@ -288,10 +288,14 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
   const [health, setHealth] = useState<Record<string, unknown> | null>(null)
   const [healthLoading, setHealthLoading] = useState(false)
 
-  const newsGroups = useMemo(() => groupByLayer(FEEDS, "source"), [])
+  const newsFeedsOnly = useMemo(() => FEEDS.filter(f => f.type !== "social"), [])
+  const socialFeeds = useMemo(() => FEEDS.filter(f => f.type === "social"), [])
+  const newsGroups = useMemo(() => groupByLayer(newsFeedsOnly, "source"), [newsFeedsOnly])
+  const socialGroups = useMemo(() => groupByLayer(socialFeeds, "source"), [socialFeeds])
   const podGroups = useMemo(() => groupByLayer(PODCAST_FEEDS, "show"), [])
 
-  const activeNewsCount = FEEDS.filter(f => !excludedSources.has(f.source)).length
+  const activeNewsCount = newsFeedsOnly.filter(f => !excludedSources.has(f.source)).length
+  const activeSocialCount = socialFeeds.filter(f => !excludedSources.has(f.source)).length
   const activePodCount = PODCAST_FEEDS.filter(f => !excludedSources.has(f.show)).length
 
   const fetchHealth = () => {
@@ -324,7 +328,7 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
           <div style={sectionLabel}>
             News Sources
             <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
-              {activeNewsCount}/{FEEDS.length} active
+              {activeNewsCount}/{newsFeedsOnly.length} active
             </span>
           </div>
           <CopyButton text={inventoryMd.split("## Podcast")[0]} label="Copy news" />
@@ -332,6 +336,56 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, skin, 
 
         {LAYERS.map(layer => {
           const items = newsGroups[layer]
+          if (!items?.length) return null
+          return (
+            <div key={layer} style={{ marginBottom: 16 }}>
+              <div style={{ ...TYPE.sm, fontWeight: 500, color: LAYER_DOT[layer], textTransform: "uppercase", marginBottom: 6, paddingLeft: 12 }}>
+                {LAYER_LABELS[layer]}
+                <span style={{ color: "var(--text-tertiary)", marginLeft: 6 }}>({items.filter(f => !excludedSources.has(f.source)).length})</span>
+              </div>
+              {items.map(feed => {
+                const active = !excludedSources.has(feed.source)
+                return (
+                  <div
+                    key={feed.url}
+                    onClick={() => onToggleSource(feed.source)}
+                    style={{ ...rowStyle, opacity: active ? 1 : 0.5 }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+                  >
+                    <Toggle active={active} onToggle={() => onToggleSource(feed.source)} />
+                    <span style={{ ...TYPE.body, color: active ? "var(--text-primary)" : "var(--text-tertiary)" }}>
+                      {feed.source}
+                    </span>
+                    <span style={badgeStyle(LAYER_DOT[layer])}>{layer.slice(0, 3)}</span>
+                    <span style={categoryStyle}>{feed.category}</span>
+                  </div>
+                )
+              })}
+            </div>
+          )
+        })}
+      </div>
+
+      <div style={separator} />
+
+      {/* ── Social Sources ── */}
+      <div style={{ marginBottom: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+          <div style={sectionLabel}>
+            Social Sources
+            <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
+              {activeSocialCount}/{socialFeeds.length} active
+            </span>
+          </div>
+        </div>
+
+        <div style={{ ...TYPE.body, color: "var(--text-tertiary)", marginBottom: 12, lineHeight: 1.6 }}>
+          Newsletters, essays, editorial voices. Different nutrient than news — same feed.
+        </div>
+
+        {LAYERS.map(layer => {
+          const items = socialGroups[layer]
           if (!items?.length) return null
           return (
             <div key={layer} style={{ marginBottom: 16 }}>

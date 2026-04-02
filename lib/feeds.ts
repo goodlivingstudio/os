@@ -9,6 +9,7 @@ export interface FeedDef {
   category: string
   tag: string
   layer: string
+  type?: "news" | "social"
 }
 
 export const FEEDS: FeedDef[] = [
@@ -68,16 +69,16 @@ export const FEEDS: FeedDef[] = [
   // Same pipeline as news — fetched, annotated, scored, filtered.
 
   // Substack — Position & Discipline
-  { url: "https://www.lennysnewsletter.com/feed",                 source: "Lenny Rachitsky",   category: "Product & Design",     tag: "position",     layer: "position" },
-  { url: "https://lg.substack.com/feed",                           source: "Julie Zhuo",        category: "Design Leadership",    tag: "position",     layer: "position" },
-  { url: "https://cutlefish.substack.com/feed",                    source: "John Cutler",       category: "Product Strategy",     tag: "discipline",   layer: "discipline" },
-  { url: "https://www.proofofconcept.pub/feed",                    source: "Brian Lovin",       category: "Design Engineering",   tag: "discipline",   layer: "discipline" },
-  { url: "https://www.digitalnative.tech/feed",                    source: "Digital Native",    category: "Tech & Culture",       tag: "landscape",    layer: "landscape" },
-  { url: "https://stratechery.com/feed/",                          source: "Stratechery",       category: "Tech Strategy",        tag: "landscape",    layer: "landscape" },
+  { url: "https://www.lennysnewsletter.com/feed",                 source: "Lenny Rachitsky",   category: "Product & Design",     tag: "position",     layer: "position",   type: "social" },
+  { url: "https://lg.substack.com/feed",                           source: "Julie Zhuo",        category: "Design Leadership",    tag: "position",     layer: "position",   type: "social" },
+  { url: "https://cutlefish.substack.com/feed",                    source: "John Cutler",       category: "Product Strategy",     tag: "discipline",   layer: "discipline", type: "social" },
+  { url: "https://www.proofofconcept.pub/feed",                    source: "Brian Lovin",       category: "Design Engineering",   tag: "discipline",   layer: "discipline", type: "social" },
+  { url: "https://www.digitalnative.tech/feed",                    source: "Digital Native",    category: "Tech & Culture",       tag: "landscape",    layer: "landscape",  type: "social" },
+  { url: "https://stratechery.com/feed/",                          source: "Stratechery",       category: "Tech Strategy",        tag: "landscape",    layer: "landscape",  type: "social" },
 
   // Medium — Discipline & Culture
-  { url: "https://medium.com/feed/@joulee",                        source: "Julie Zhuo (Medium)", category: "Design Leadership", tag: "position",     layer: "position" },
-  { url: "https://medium.com/feed/google-design",                  source: "Google Design",     category: "Design Practice",      tag: "discipline",   layer: "discipline" },
-  { url: "https://medium.com/feed/ux-collective",                  source: "UX Collective",     category: "Design Discourse",     tag: "discipline",   layer: "discipline" },
-  { url: "https://medium.com/feed/mule-design",                    source: "Mule Design",       category: "Design Ethics",        tag: "discipline",   layer: "discipline" },
+  { url: "https://medium.com/feed/@joulee",                        source: "Julie Zhuo (Medium)", category: "Design Leadership", tag: "position",     layer: "position",   type: "social" },
+  { url: "https://medium.com/feed/google-design",                  source: "Google Design",     category: "Design Practice",      tag: "discipline",   layer: "discipline", type: "social" },
+  { url: "https://medium.com/feed/ux-collective",                  source: "UX Collective",     category: "Design Discourse",     tag: "discipline",   layer: "discipline", type: "social" },
+  { url: "https://medium.com/feed/mule-design",                    source: "Mule Design",       category: "Design Ethics",        tag: "discipline",   layer: "discipline", type: "social" },
 ]
