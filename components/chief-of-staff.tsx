@@ -2,7 +2,44 @@
 
 import { useState, useEffect, useRef } from "react"
 import { ChevronUp } from "lucide-react"
-import type { Article, Signal } from "@/lib/types"
+import type { Article, Signal, SignalSource } from "@/lib/types"
+
+// ─── Citation renderer — parses [1][2] into clickable links ─────────────────
+
+function renderCitedBody(body: string, sources?: SignalSource[]) {
+  if (!sources || sources.length === 0) return body
+  const parts = body.split(/(\[\d+\])/)
+  return parts.map((part, i) => {
+    const match = part.match(/^\[(\d+)\]$/)
+    if (!match) return part
+    const idx = parseInt(match[1], 10) - 1
+    const src = sources[idx]
+    if (!src) return part
+    return (
+      <a
+        key={i}
+        href={src.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={e => e.stopPropagation()}
+        title={`${src.source}: ${src.title}`}
+        style={{
+          fontSize: "0.8em",
+          color: "var(--accent-secondary)",
+          textDecoration: "none",
+          transition: "color 0.15s",
+          verticalAlign: "super",
+          lineHeight: 0,
+          padding: "0 1px",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-muted)" }}
+        onMouseLeave={e => { e.currentTarget.style.color = "var(--accent-secondary)" }}
+      >
+        {part}
+      </a>
+    )
+  })
+}
 
 // ─── Chief of Staff — data hook ─────────────────────────────────────────────
 
@@ -219,7 +256,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
                         flex: 1,
                         transition: "color 0.12s",
                       }}>
-                        {signal.body}
+                        {renderCitedBody(signal.body, signal.sources)}
                       </div>
                     )}
                   </div>

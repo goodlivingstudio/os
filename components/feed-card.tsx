@@ -69,22 +69,6 @@ export function SignalCard({ x, y, article }: { x: number; y: number; article: A
         </div>
       )}
 
-      {/* Source attribution */}
-      {(article.synopsis || article.relevance) && (
-        <div style={{ padding: "8px 14px", borderTop: "1px solid var(--border)" }}>
-          <a
-            href={article.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              fontSize: 10, color: "var(--text-tertiary)",
-              textDecoration: "none", transition: "color 0.15s",
-            }}
-          >
-            {article.source}
-          </a>
-        </div>
-      )}
     </div>
   )
 }
