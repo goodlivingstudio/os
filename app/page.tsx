@@ -13,6 +13,7 @@ import { ConfigView } from "@/components/config-view"
 import { DispatchView } from "@/components/dispatch-view"
 import { Divider } from "@/components/divider"
 import type { Article, Signal, FeedHealth, Skin, ViewMode } from "@/lib/types"
+import { TYPE } from "@/lib/styles"
 
 // ─── Skin + mode system ───────────────────────────────────────────────────────
 
