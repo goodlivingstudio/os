@@ -69,7 +69,6 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
   const [statusIdx,  setStatusIdx]  = useState(0)
   const [revealed,   setRevealed]   = useState(false)
   const [expanded,   setExpanded]   = useState(true)
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
   const wasLoading = useRef(true)
 
   // Advance status text while fetching
@@ -187,9 +186,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
             transition: "max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
           }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
-              {signals.map((signal, i) => {
-                const isHovered = hoveredIdx === i
-                return (
+              {signals.map((signal, i) => (
                   <div
                     key={i}
                     style={{
@@ -257,8 +254,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
                       </button>
                     )}
                   </div>
-                )
-              })}
+              ))}
             </div>
           </div>
         </>
