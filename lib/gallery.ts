@@ -26,6 +26,14 @@ export const GALLERY_SOURCES: GallerySource[] = [
   { url: "https://www.thisiscolossal.com/feed/", name: "Colossal", type: "rss" },
   { url: "https://www.booooooom.com/feed/", name: "Booooooom", type: "rss" },
   { url: "https://minimalissimo.com/feed/", name: "Minimalissimo", type: "rss" },
+
+  // Web design, interactive, digital craft
+  { url: "https://www.awwwards.com/feed", name: "Awwwards", type: "rss" },
+  { url: "https://www.minimal.gallery/feed", name: "Minimal Gallery", type: "rss" },
+  { url: "https://tympanus.net/codrops/feed/", name: "Codrops", type: "rss" },
+
+  // Agency portfolios
+  { url: "https://www.tendril.ca/feed", name: "Tendril", type: "rss" },
 ]
 
 export interface GalleryImage {
