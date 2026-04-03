@@ -54,15 +54,23 @@ Regardless of direction, the artifact must evidence these capabilities:
 
 ---
 
+## THE CORE FRAMING
+
+**The design leader's job is not to use AI. It's to direct AI toward outcomes that require judgment the machine doesn't have.**
+
+The artifact demonstrates this distinction — not by showing prompts, but by showing the gap between what AI produces when directed by someone with fifteen years of design authority versus what it produces without that direction. The prompt is not the interesting part. The practitioner is.
+
+Avoid the "prompt is the prototype" framing (IBM Design, Medium 2026). It's reductive — it flatters the tool, not the practitioner. Anyone with basic computer literacy can spin up something with AI. The hard part is the hundreds of micro-decisions: what to ask for, what to reject, what to refine, when the output is good enough, when it's wrong. Those decisions come from taste, experience, and a formed perspective on what the work is trying to do.
+
+Where the IBM piece IS useful: as market evidence. IBM is telling enterprise clients that structured AI direction is a design capability. That validates the space without being the thesis you'd adopt.
+
 ## REFERENCE MATERIAL
 
-**IBM Design: "The Prompt is the Prototype"** (Medium, 2026)
-- Thesis: structured AI prompting is reshaping enterprise design — the prompt itself is the design artifact, not just the tool that generates one
-- Directly relevant framing: the Lilly artifact could demonstrate the *prompting architecture* that produced it, arguing this is how design leadership works now
-- IBM iX (ibm.com/consulting/ibmix) is the organizational model — design embedded in enterprise consulting at scale
-- IBM prompt engineering techniques (ibm.com/think/topics/prompt-engineering-techniques) as pipeline reference
-
-**Implication for Lilly artifact:** Don't just show a prototype. Show the prompt architecture that produced it. The artifact demonstrates both the output (the thing) and the method (how design leaders direct AI at the system level). This is the "AI direction" capability made visible.
+- IBM Design: "The Prompt is the Prototype" (medium.com/design-ibm) — useful as market signal, not as framing to adopt
+- IBM iX (ibm.com/consulting/ibmix) — organizational model for design embedded in enterprise at scale
+- IBM prompt engineering techniques (ibm.com/think/topics/prompt-engineering-techniques) — pipeline reference
+- Shopify Editions (shopify.com/editions) — model for how product launches can be designed as narrative, not changelog
+- Carl Rivera (Shopify CDO) on decision velocity — the operational mechanics of design leadership
 
 ---
 
@@ -75,7 +83,7 @@ Regardless of direction, the artifact must evidence these capabilities:
 - [ ] Alzheimer's caregiver communication gap — what information caregivers need that the clinical system doesn't provide
 - [ ] The "AI daily" mandate — what would it actually look like if every Lilly employee engaged with AI daily? What's the design infrastructure for that?
 - [ ] Dispatch itself as a demo — "Here's what I built for myself. Here's what I'd build for you."
-- [ ] "The Prompt is the Prototype" angle — show the prompting architecture, not just the output. The artifact IS the method, demonstrated live.
+- [ ] ~~"The Prompt is the Prototype" angle~~ — reframed: show the *judgment gap*, not the prompting architecture. What does AI-directed design produce when the director has fifteen years of design authority vs. when they don't? The artifact should make that gap visible and undeniable.
 
 ---
 
