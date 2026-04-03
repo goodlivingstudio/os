@@ -398,21 +398,21 @@ export function Cerebro({ articles, pendingPrompt }: {
 
         {/* Follow-up prompts */}
         {followUps && !loading && (
-          <div style={{ margin: "8px 16px 16px", padding: "16px 16px 16px", background: "var(--bg-elevated)", borderRadius: 8, animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both" }}>
-            <div style={{ fontSize: 12, fontFamily: "var(--font-geist-mono), monospace", color: "var(--accent-muted)", lineHeight: 1.65, marginBottom: followUps.alternatives.length > 0 ? 16 : 0 }}>
+          <div style={{ margin: "8px 16px 16px", animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both" }}>
+            <div style={{ fontSize: 12, fontFamily: "var(--font-geist-mono), monospace", color: "var(--accent-muted)", lineHeight: 1.65, marginBottom: followUps.alternatives.length > 0 ? 12 : 0 }}>
               {followUps.question}
             </div>
             {followUps.alternatives.length > 0 && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {followUps.alternatives.map((alt, i) => (
                   <button
                     key={i}
                     onClick={() => send(alt)}
-                    style={{ background: "transparent", border: "1px solid var(--border)", borderRadius: 8, padding: "8px 16px", fontSize: 12, color: "var(--text-secondary)", cursor: "pointer", transition: "all 0.15s", textAlign: "left", lineHeight: 1.4 }}
-                    onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-surface)" }}
-                    onMouseLeave={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.background = "transparent" }}
+                    style={{ background: "transparent", border: "none", padding: "4px 0", fontSize: 12, color: "var(--text-tertiary)", cursor: "pointer", transition: "color 0.15s", textAlign: "left", lineHeight: 1.4 }}
+                    onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)" }}
+                    onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)" }}
                   >
-                    {alt}
+                    → {alt}
                   </button>
                 ))}
               </div>

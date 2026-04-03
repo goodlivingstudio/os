@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Copy, Check, ArrowUpRight } from "lucide-react"
+import { Copy, Check, ArrowUpRight, X } from "lucide-react"
 import { TYPE, MONO, labelStyle, bodyStyle, metaStyle } from "@/lib/styles"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -81,11 +81,92 @@ function CopyButton({ text, label }: { text: string; label: string }) {
 
 // ─── Pitch Card ─────────────────────────────────────────────────────────────
 
-function PitchCard({ pitch, index, onDeliberate }: { pitch: Pitch; index: number; onDeliberate: (text: string) => void }) {
-  const [expanded, setExpanded] = useState(false)
-  const [hovered, setHovered] = useState(false)
+// ─── Pitch Overlay ──────────────────────────────────────────────────────────
 
+function PitchOverlay({ pitch, onClose, onDeliberate }: { pitch: Pitch; onClose: () => void; onDeliberate: (text: string) => void }) {
   const pitchMarkdown = `# ${pitch.title}\n\n**Thesis:** ${pitch.thesis}\n\n**Brief:** ${pitch.brief}\n\n**Platform:** ${pitch.platforms.primary}\n**Adaptations:**\n${pitch.platforms.adaptations.map(a => `- ${a}`).join("\n")}\n\n**Evidence:**\n${pitch.evidence.map(e => `- ${e}`).join("\n")}\n\n**Urgency:** ${pitch.urgency}`
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose() }
+    window.addEventListener("keydown", handler)
+    return () => window.removeEventListener("keydown", handler)
+  }, [onClose])
+
+  return (
+    <div
+      onClick={onClose}
+      style={{ position: "fixed", inset: 0, zIndex: 6000, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", animation: "status-fade 0.15s ease both" }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "32px 36px", width: 600, maxHeight: "85vh", overflowY: "auto" }}
+      >
+        {/* Header */}
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <span style={{ ...TYPE.xs, textTransform: "uppercase", padding: "2px 8px", borderRadius: 4, background: pitch.mode === "thought_leadership" ? "rgba(90, 158, 176, 0.15)" : "rgba(200, 122, 106, 0.15)", color: pitch.mode === "thought_leadership" ? "#5A9EB0" : "#C87A6A", fontWeight: 500 }}>
+              {pitch.mode === "thought_leadership" ? "Thought Leadership" : "Creative"}
+            </span>
+            {pitch.layers.map(l => (
+              <span key={l} style={{ ...TYPE.xs, color: LAYER_DOT[l] || "var(--text-tertiary)", textTransform: "uppercase" }}>{l.slice(0, 3)}</span>
+            ))}
+          </div>
+          <button onClick={onClose} style={{ background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", transition: "color 0.15s", padding: 0 }} onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)" }} onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)" }}>
+            <X size={18} strokeWidth={1.5} />
+          </button>
+        </div>
+
+        <div style={{ ...TYPE.heading, color: "var(--text-primary)", marginBottom: 8, fontSize: 18 }}>{pitch.title}</div>
+        <div style={{ ...bodyStyle, marginBottom: 24 }}>{pitch.thesis}</div>
+
+        <div style={{ height: 1, background: "var(--border)", marginBottom: 24 }} />
+
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ ...metaStyle, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Brief</div>
+          <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>{pitch.brief}</div>
+        </div>
+
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ ...metaStyle, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Platform</div>
+          <div style={{ ...TYPE.body, color: "var(--text-primary)", fontWeight: 500, marginBottom: 6 }}>{pitch.platforms.primary}</div>
+          {pitch.platforms.adaptations.map((a, i) => (
+            <div key={i} style={{ ...TYPE.body, color: "var(--text-tertiary)", marginBottom: 4 }}>{a}</div>
+          ))}
+        </div>
+
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ ...metaStyle, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Supporting Signals</div>
+          {pitch.evidence.map((e, i) => (
+            <div key={i} style={{ ...TYPE.body, color: "var(--text-secondary)", marginBottom: 6 }}>{e}</div>
+          ))}
+        </div>
+
+        <div style={{ marginBottom: 28 }}>
+          <div style={{ ...metaStyle, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Why Now</div>
+          <div style={{ ...TYPE.body, color: "var(--accent-muted)", lineHeight: 1.7 }}>{pitch.urgency}</div>
+        </div>
+
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <CopyButton text={pitchMarkdown} label="Copy brief" />
+          <button
+            onClick={() => { onDeliberate(`I want to develop this content pitch:\n\n"${pitch.title}"\n\nThesis: ${pitch.thesis}\n\nHelp me think through the argument structure, key points, and how to make it distinctive.`); onClose() }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "var(--text-secondary)", ...TYPE.sm, cursor: "pointer", transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+          >
+            <ArrowUpRight size={12} />
+            Develop in Cerebro
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Pitch Card (opens overlay) ─────────────────────────────────────────────
+
+function PitchCard({ pitch, index, onClick }: { pitch: Pitch; index: number; onClick: () => void }) {
+  const [hovered, setHovered] = useState(false)
 
   return (
     <div
@@ -97,101 +178,18 @@ function PitchCard({ pitch, index, onDeliberate }: { pitch: Pitch; index: number
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={() => setExpanded(!expanded)}
+      onClick={onClick}
     >
-      {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-        <span style={{
-          ...TYPE.xs,
-          textTransform: "uppercase",
-          padding: "2px 8px",
-          borderRadius: 4,
-          background: pitch.mode === "thought_leadership" ? "rgba(90, 158, 176, 0.15)" : "rgba(200, 122, 106, 0.15)",
-          color: pitch.mode === "thought_leadership" ? "#5A9EB0" : "#C87A6A",
-          fontWeight: 500,
-        }}>
+        <span style={{ ...TYPE.xs, textTransform: "uppercase", padding: "2px 8px", borderRadius: 4, background: pitch.mode === "thought_leadership" ? "rgba(90, 158, 176, 0.15)" : "rgba(200, 122, 106, 0.15)", color: pitch.mode === "thought_leadership" ? "#5A9EB0" : "#C87A6A", fontWeight: 500 }}>
           {pitch.mode === "thought_leadership" ? "Thought Leadership" : "Creative"}
         </span>
         {pitch.layers.map(l => (
-          <span key={l} style={{
-            ...TYPE.xs,
-            color: LAYER_DOT[l] || "var(--text-tertiary)",
-            textTransform: "uppercase",
-          }}>
-            {l.slice(0, 3)}
-          </span>
+          <span key={l} style={{ ...TYPE.xs, color: LAYER_DOT[l] || "var(--text-tertiary)", textTransform: "uppercase" }}>{l.slice(0, 3)}</span>
         ))}
       </div>
-
-      {/* Title */}
-      <div style={{ ...TYPE.heading, color: "var(--text-primary)", marginBottom: 6 }}>
-        {pitch.title}
-      </div>
-
-      {/* Thesis */}
-      <div style={{ ...bodyStyle, marginBottom: expanded ? 16 : 0 }}>
-        {pitch.thesis}
-      </div>
-
-      {/* Expanded details */}
-      {expanded && (
-        <div style={{ animation: "signal-reveal 0.3s cubic-bezier(0.16, 1, 0.3, 1) both" }}>
-          {/* Brief */}
-          <div style={{ borderTop: "1px solid var(--border)", paddingTop: 16, marginBottom: 16 }}>
-            <div style={{ ...metaStyle, textTransform: "uppercase", marginBottom: 6 }}>Brief</div>
-            <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>{pitch.brief}</div>
-          </div>
-
-          {/* Platform */}
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ ...metaStyle, textTransform: "uppercase", marginBottom: 6 }}>Platform</div>
-            <div style={{ ...TYPE.body, color: "var(--text-primary)", fontWeight: 500, marginBottom: 4 }}>{pitch.platforms.primary}</div>
-            {pitch.platforms.adaptations.map((a, i) => (
-              <div key={i} style={{ ...TYPE.body, color: "var(--text-tertiary)", paddingLeft: 12 }}>
-                {a}
-              </div>
-            ))}
-          </div>
-
-          {/* Evidence */}
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ ...metaStyle, textTransform: "uppercase", marginBottom: 6 }}>Supporting Signals</div>
-            {pitch.evidence.map((e, i) => (
-              <div key={i} style={{ ...TYPE.body, color: "var(--text-secondary)", marginBottom: 4, paddingLeft: 12 }}>
-                {e}
-              </div>
-            ))}
-          </div>
-
-          {/* Urgency */}
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ ...metaStyle, textTransform: "uppercase", marginBottom: 6 }}>Why Now</div>
-            <div style={{ ...TYPE.body, color: "var(--accent-muted)" }}>{pitch.urgency}</div>
-          </div>
-
-          {/* Actions */}
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <CopyButton text={pitchMarkdown} label="Copy brief" />
-            <button
-              onClick={e => {
-                e.stopPropagation()
-                onDeliberate(`I want to develop this content pitch:\n\n"${pitch.title}"\n\nThesis: ${pitch.thesis}\n\nHelp me think through the argument structure, key points, and how to make it distinctive. What angle would make this piece stand out?`)
-              }}
-              style={{
-                display: "inline-flex", alignItems: "center", gap: 6,
-                padding: "6px 12px", borderRadius: 6,
-                border: "1px solid var(--border)",
-                background: "transparent",
-                color: "var(--accent-secondary)",
-                ...TYPE.sm, cursor: "pointer", transition: "all 0.15s",
-              }}
-            >
-              <ArrowUpRight size={12} />
-              Develop in Cerebro
-            </button>
-          </div>
-        </div>
-      )}
+      <div style={{ ...TYPE.heading, color: "var(--text-primary)", marginBottom: 6 }}>{pitch.title}</div>
+      <div style={{ ...bodyStyle }}>{pitch.thesis}</div>
     </div>
   )
 }
@@ -213,6 +211,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
   const [data, setData] = useState<DispatchData | null>(_cachedDispatch)
   const [loading, setLoading] = useState(!_cachedDispatch)
   const [statusIdx, setStatusIdx] = useState(0)
+  const [activePitch, setActivePitch] = useState<Pitch | null>(null)
 
   useEffect(() => {
     if (_cachedDispatch) return
@@ -279,7 +278,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
         {data?.pitches && data.pitches.length > 0 && (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {data.pitches.map((pitch, i) => (
-              <PitchCard key={i} pitch={pitch} index={i} onDeliberate={onDeliberate} />
+              <PitchCard key={i} pitch={pitch} index={i} onClick={() => setActivePitch(pitch)} />
             ))}
           </div>
         )}
@@ -295,6 +294,11 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
         )}
       </div>
       </div>
+
+      {/* Pitch overlay */}
+      {activePitch && (
+        <PitchOverlay pitch={activePitch} onClose={() => setActivePitch(null)} onDeliberate={onDeliberate} />
+      )}
     </main>
   )
 }

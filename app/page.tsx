@@ -425,7 +425,6 @@ export default function Page() {
             { id: "synthesis" as const, Icon: Blend,      label: "Synthesis" },
             { id: "dispatch" as const,  Icon: Send,       label: "Dispatch"  },
             { id: "cerebro" as const,   Icon: Brain,      label: "Cerebro"   },
-            { id: "config" as const,    Icon: Settings,   label: "Config"    },
           ]
           const activeIdx = tabs.findIndex(t => t.id === mobileTab)
           return (
