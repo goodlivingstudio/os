@@ -29,7 +29,9 @@ Key intelligence:
 - Zepbound and Mounjaro driving $80–83B revenue projection
 - Strategic argument: Lilly's science has outpaced the experience of receiving it
 
-Active engagement context: Jeremy is in conversations with Laree Ross at Lilly's innovation team for a permalance design leadership engagement. This is a strategic inflection point — a potential bridge between agency experience and in-house credibility at a significant healthcare organization.`
+Active engagement context: Jeremy is in conversations with Laree Ross at Lilly's innovation team for a permalance design leadership engagement. This is a strategic inflection point — a potential bridge between agency experience and in-house credibility at a significant healthcare organization.
+
+Key feedback from Laree (April 2026): Do not tell Lilly about Lilly. They know their business. The engagement pitch must lead with Jeremy's capabilities — what he builds, how he thinks, what becomes possible when someone with his AI-direction skill and design authority operates inside their organization. The next artifact should include a working prototype, not a strategy deck. Frame the value as additive: what Lilly gains that they cannot build internally.`
 
 // ─── Five Intelligence Layers ───────────────────────────────────────────────
 
