@@ -36,6 +36,8 @@ export const FEEDS: FeedDef[] = [
   { url: "https://linear.app/changelog.xml",                     source: "Linear",            category: "Product Engineering",  tag: "discipline",   layer: "discipline" },
   { url: "https://medium.com/feed/design-ibm",                   source: "IBM Design",        category: "Enterprise Design",    tag: "discipline",   layer: "discipline" },
   { url: "https://news.google.com/rss/search?q=site:research.ibm.com/blog&hl=en-US&gl=US", source: "IBM Research", category: "AI & Enterprise Research", tag: "discipline", layer: "discipline" },
+  { url: "https://news.google.com/rss/search?q=site:ibm.com/blog&hl=en-US&gl=US", source: "IBM Blog", category: "Enterprise & AI", tag: "landscape", layer: "landscape" },
+  { url: "https://news.google.com/rss/search?q=site:ibm.com/think&hl=en-US&gl=US", source: "IBM Think", category: "Enterprise Strategy", tag: "landscape", layer: "landscape" },
   { url: "https://www.dezeen.com/design/feed/",                  source: "Dezeen",            category: "Design Practice",      tag: "discipline",   layer: "discipline" },
 
   // ── LANDSCAPE — Technology, policy, economics, AI capability ──────────────
