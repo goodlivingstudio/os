@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Paperclip, Mic, MicOff, ExternalLink, ArrowUpRight } from "lucide-react"
+import { Paperclip, Mic, MicOff, ExternalLink, ArrowUpRight, Copy, Check, Flag } from "lucide-react"
 import type { Article, Message } from "@/lib/types"
 import { renderCitedBody, CitationSource } from "@/components/citation"
 
@@ -228,6 +228,28 @@ export function Cerebro({ articles, pendingPrompt }: {
   // Suppress unused var warning — lastSources reserved for future citation UI
   void lastSources
 
+  const [threadCopied, setThreadCopied] = useState(false)
+  const [copiedMsgIdx, setCopiedMsgIdx] = useState<number | null>(null)
+
+  const handleCopyThread = useCallback(() => {
+    const thread = messages.filter(m => m.role !== "search").map(m => `${m.role === "user" ? "Jeremy" : "Cerebro"}: ${m.content}`).join("\n\n")
+    navigator.clipboard.writeText(thread).then(() => { setThreadCopied(true); setTimeout(() => setThreadCopied(false), 2000) })
+  }, [messages])
+
+  const handleCopyMessage = (idx: number) => {
+    const m = messages[idx]
+    if (!m) return
+    navigator.clipboard.writeText(m.content).then(() => { setCopiedMsgIdx(idx); setTimeout(() => setCopiedMsgIdx(null), 2000) })
+  }
+
+  const handleFlagMessage = (idx: number) => {
+    const m = messages[idx]
+    if (!m) return
+    const context = messages.slice(Math.max(0, idx - 2), idx + 1).map(msg => `${msg.role}: ${msg.content}`).join("\n\n")
+    const report = `# Cerebro Response Flag\n\nFlagged message:\n${m.content}\n\n---\n\nContext:\n${context}\n\n---\n\nIssue: [describe the problem — hallucination, wrong source, bad reasoning, etc.]`
+    navigator.clipboard.writeText(report)
+  }
+
   return (
     <section
       aria-label="Cerebro strategic advisor"
@@ -263,6 +285,17 @@ export function Cerebro({ articles, pendingPrompt }: {
           Cerebro
         </span>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {messages.length > 0 && (
+            <button
+              onClick={handleCopyThread}
+              title="Copy entire conversation"
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 24, height: 24, background: "transparent", border: "none", color: threadCopied ? "var(--accent-secondary)" : "var(--text-tertiary)", cursor: "pointer", transition: "color 0.15s", padding: 0 }}
+              onMouseEnter={e => { if (!threadCopied) e.currentTarget.style.color = "var(--text-secondary)" }}
+              onMouseLeave={e => { if (!threadCopied) e.currentTarget.style.color = "var(--text-tertiary)" }}
+            >
+              {threadCopied ? <Check size={13} strokeWidth={1.5} /> : <Copy size={13} strokeWidth={1.5} />}
+            </button>
+          )}
           {memory && (
             <span
               title="Conversation memory active — Cerebro remembers previous sessions"
@@ -342,7 +375,36 @@ export function Cerebro({ articles, pendingPrompt }: {
         )}
 
         {messages.map((m, i) => (
-          <div key={i} style={{ marginBottom: m.role === "search" ? 4 : 16 }}>
+          <div
+            key={i}
+            className="cerebro-msg"
+            style={{ marginBottom: m.role === "search" ? 4 : 16, position: "relative" }}
+            onMouseEnter={e => { const actions = e.currentTarget.querySelector('.msg-actions') as HTMLElement; if (actions) actions.style.opacity = "1" }}
+            onMouseLeave={e => { const actions = e.currentTarget.querySelector('.msg-actions') as HTMLElement; if (actions) actions.style.opacity = "0" }}
+          >
+            {/* Per-message actions — visible on hover */}
+            {m.role !== "search" && (
+              <div className="msg-actions" style={{ position: "absolute", top: 0, right: 16, display: "flex", gap: 2, opacity: 0, transition: "opacity 0.15s" }}>
+                <button
+                  onClick={() => handleCopyMessage(i)}
+                  title="Copy this message"
+                  style={{ width: 22, height: 22, borderRadius: 4, border: "none", background: "var(--bg-elevated)", color: copiedMsgIdx === i ? "var(--accent-secondary)" : "var(--text-tertiary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, transition: "color 0.15s" }}
+                >
+                  {copiedMsgIdx === i ? <Check size={11} /> : <Copy size={11} />}
+                </button>
+                {m.role === "assistant" && (
+                  <button
+                    onClick={() => handleFlagMessage(i)}
+                    title="Flag this response — copies report to clipboard"
+                    style={{ width: 22, height: 22, borderRadius: 4, border: "none", background: "var(--bg-elevated)", color: "var(--text-tertiary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, transition: "color 0.15s" }}
+                    onMouseEnter={e => { e.currentTarget.style.color = "#ef4444" }}
+                    onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)" }}
+                  >
+                    <Flag size={11} />
+                  </button>
+                )}
+              </div>
+            )}
             {m.role === "user" ? (
               <div style={{ padding: "0 16px", fontSize: 13, color: "var(--text-primary)", lineHeight: 1.6, wordBreak: "break-word", fontWeight: 500 }}>
                 {m.content}
@@ -473,12 +535,11 @@ export function Cerebro({ articles, pendingPrompt }: {
                 <button
                   onClick={() => send(PROVOCATIONS[placeholderIdx])}
                   aria-label="Discuss this prompt"
-                  style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--accent-muted)", padding: "8px 8px", borderRadius: 8, transition: "all 0.15s", display: "inline-flex", alignItems: "center", gap: 4 }}
+                  style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--accent-muted)", width: 30, height: 30, borderRadius: 8, transition: "all 0.15s", display: "flex", alignItems: "center", justifyContent: "center", padding: 0 }}
                   onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)"; e.currentTarget.style.background = "var(--bg-surface)" }}
                   onMouseLeave={e => { e.currentTarget.style.color = "var(--accent-muted)"; e.currentTarget.style.background = "transparent" }}
                 >
-                  <span style={{ fontSize: 12 }}>Bump</span>
-                  <ArrowUpRight size={13} strokeWidth={2} />
+                  <ArrowUpRight size={16} strokeWidth={1.5} />
                 </button>
               ) : <div />}
               <div style={{ display: "flex", gap: 2 }}>

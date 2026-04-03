@@ -358,6 +358,9 @@ export default function Page() {
         <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 500 }}>
           Signal
         </span>
+        <span style={{ ...TYPE.sm, color: "var(--text-primary)", marginLeft: 8 }}>
+          {filtered.length}/{articles.length} active
+        </span>
       </div>
       <div id="main-feed" role="feed" aria-label="Intelligence feed" tabIndex={-1} style={{ flex: 1, overflowY: "auto", padding: "8px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
         {feedLoading ? (
