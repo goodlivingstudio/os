@@ -220,7 +220,7 @@ export function GalleryOverlay({ onClose }: { onClose: () => void }) {
 
       {/* Masonry grid — flows down columns, scrolls vertically */}
       <div style={{
-        flex: 1, overflowY: "auto",
+        flex: 1, overflowY: "auto", overflowX: "hidden",
         padding: 32,
         columnCount: 4,
         columnGap: 14,
