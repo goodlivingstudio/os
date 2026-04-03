@@ -91,5 +91,51 @@ export async function loadArticleHistory(days: number = 7): Promise<StoredArticl
   }
 }
 
+// ─── Source Failure Tracking ─────────────────────────────────────────────────
+// Tracks consecutive failures per source. Incremented on failure, reset on success.
+// Keyed as a single KV entry: { "STAT News": 0, "Axios": 3, ... }
+
+const FAILURE_KEY = "source:failures"
+const FAILURE_TTL = 30 * 24 * 60 * 60 // 30 days
+
+export interface SourceFailures {
+  [sourceName: string]: number
+}
+
+/**
+ * Record which sources succeeded and which failed in this cycle.
+ * Increment consecutive count for failures, reset to 0 for successes.
+ */
+export async function recordSourceHealth(
+  succeeded: string[],
+  failed: string[],
+): Promise<void> {
+  if (!KV_AVAILABLE) return
+  try {
+    const current = await kv.get<SourceFailures>(FAILURE_KEY) || {}
+    for (const name of succeeded) {
+      current[name] = 0
+    }
+    for (const name of failed) {
+      current[name] = (current[name] || 0) + 1
+    }
+    await kv.set(FAILURE_KEY, current, { ex: FAILURE_TTL })
+  } catch {
+    // never break the feed on tracking failure
+  }
+}
+
+/**
+ * Load the current failure counts for all sources.
+ */
+export async function loadSourceFailures(): Promise<SourceFailures> {
+  if (!KV_AVAILABLE) return {}
+  try {
+    return await kv.get<SourceFailures>(FAILURE_KEY) || {}
+  } catch {
+    return {}
+  }
+}
+
 export { KV_AVAILABLE as ARTICLE_STORE_AVAILABLE }
 export type { StoredArticle }

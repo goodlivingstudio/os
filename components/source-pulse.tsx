@@ -15,6 +15,7 @@ interface SourceStat {
   tag: string
   avgUrgency: number
   highestUrgency: number
+  consecutiveFailures: number
 }
 
 interface LayerHealth {
@@ -138,8 +139,18 @@ function LayerBar({ layer, health, maxArticles }: { layer: LayerHealth; health: 
 // ─── Source Row ──────────────────────────────────────────────────────────────
 
 function SourceRow({ source }: { source: SourceStat }) {
+  const isPersistentFailure = source.consecutiveFailures >= 5
+  const isWarning = source.consecutiveFailures >= 2
+
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 0" }}>
+    <div style={{
+      display: "flex", alignItems: "center", gap: 8, padding: "4px 0",
+      background: isPersistentFailure ? "rgba(239, 68, 68, 0.06)" : "transparent",
+      borderRadius: isPersistentFailure ? 4 : 0,
+      margin: isPersistentFailure ? "0 -4px" : 0,
+      paddingLeft: isPersistentFailure ? 4 : 0,
+      paddingRight: isPersistentFailure ? 4 : 0,
+    }}>
       <span style={{
         width: 6, height: 6, borderRadius: "50%", flexShrink: 0,
         background: source.live ? "var(--live)" : "#ef4444",
@@ -147,11 +158,20 @@ function SourceRow({ source }: { source: SourceStat }) {
       }} />
       <span style={{
         flex: 1, ...TYPE.sm, fontFamily: MONO,
-        color: source.live ? "var(--text-secondary)" : "var(--text-tertiary)",
-        opacity: source.live ? 1 : 0.5,
+        color: isPersistentFailure ? "#ef4444" : source.live ? "var(--text-secondary)" : "var(--text-tertiary)",
+        opacity: source.live && !isPersistentFailure ? 1 : isPersistentFailure ? 0.9 : 0.5,
         overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
       }}>
         {source.name}
+        {isWarning && (
+          <span style={{
+            ...TYPE.xs, fontFamily: MONO, marginLeft: 6,
+            color: isPersistentFailure ? "#ef4444" : "#D4A05A",
+            fontWeight: 600,
+          }}>
+            {source.consecutiveFailures}x
+          </span>
+        )}
       </span>
       <span style={{
         ...TYPE.xs, fontFamily: MONO, color: LAYER_COLOR[source.tag] || "var(--text-tertiary)",
@@ -209,16 +229,22 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
 
   // ── Derived metrics ─────────────────────────────────────────────────────
 
+  const failures = feedHealth?.sourceFailures || {}
+
   const sourceStats = useMemo((): SourceStat[] => {
     const map: Record<string, SourceStat> = {}
     articles.forEach(a => {
-      if (!map[a.source]) map[a.source] = { name: a.source, count: 0, annotated: 0, live: a.url !== "#", tag: a.tag, avgUrgency: 0, highestUrgency: 0 }
+      if (!map[a.source]) map[a.source] = { name: a.source, count: 0, annotated: 0, live: a.url !== "#", tag: a.tag, avgUrgency: 0, highestUrgency: 0, consecutiveFailures: 0 }
       map[a.source].count++
       if (a.synopsis || a.relevance) map[a.source].annotated++
       const u = a.signalScores?.urgency ?? 0
       map[a.source].avgUrgency += u
       if (u > map[a.source].highestUrgency) map[a.source].highestUrgency = u
     })
+    // Merge failure counts from KV
+    for (const [name, count] of Object.entries(failures)) {
+      if (map[name]) map[name].consecutiveFailures = count
+    }
     return Object.values(map)
       .map(s => ({ ...s, avgUrgency: s.count > 0 ? s.avgUrgency / s.count : 0 }))
       .sort((a, b) => {
@@ -227,7 +253,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
         // Secondary: article count
         return b.count - a.count
       })
-  }, [articles])
+  }, [articles, failures])
 
   const layerHealth = useMemo((): LayerHealth[] => {
     const layers = ["opportunity", "position", "discipline", "landscape", "culture"]

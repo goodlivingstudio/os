@@ -3,7 +3,7 @@ export const revalidate = 1800 // 30 min cache
 
 import Anthropic from "@anthropic-ai/sdk"
 import { FEEDS, type FeedDef } from "@/lib/feeds"
-import { storeArticles } from "@/lib/article-store"
+import { storeArticles, recordSourceHealth, loadSourceFailures } from "@/lib/article-store"
 import { OPERATOR, FIVE_LAYERS } from "@/lib/prompts"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -319,15 +319,29 @@ export async function GET() {
   let liveCount = 0
   let failedCount = 0
 
-  for (const result of results) {
+  const succeededSources: string[] = []
+  const failedSources: string[] = []
+
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i]
+    const feed = FEEDS[i]
     if (result.status === "fulfilled" && result.value.length > 0) {
       allArticles.push(...result.value)
-      if (result.value.some(a => a.url !== "#")) liveCount++
-      else failedCount++
+      if (result.value.some(a => a.url !== "#")) {
+        liveCount++
+        succeededSources.push(feed.source)
+      } else {
+        failedCount++
+        failedSources.push(feed.source)
+      }
     } else {
       failedCount++
+      failedSources.push(feed.source)
     }
   }
+
+  // Track consecutive failures per source (fire-and-forget)
+  recordSourceHealth(succeededSources, failedSources).catch(() => {})
 
   // Fill in stubs for any category with no live articles
   const coveredTags = new Set(allArticles.filter(a => a.url !== "#").map(a => a.tag))
@@ -377,6 +391,9 @@ export async function GET() {
   // Persist to KV for 7-day historical analysis (Synthesis, Dispatch tab)
   storeArticles(annotated).catch(() => {}) // fire-and-forget, don't block response
 
+  // Load failure history for Source Pulse
+  const sourceFailures = await loadSourceFailures().catch(() => ({}))
+
   return Response.json({
     articles: annotated,
     fetchedAt: new Date().toISOString(),
@@ -385,7 +402,8 @@ export async function GET() {
       sourcesLive:    liveCount,
       sourcesTotal:   results.length,
       sourcesFailed:  failedCount,
-      stubCategories,           // categories falling back to curated stubs
+      stubCategories,
+      sourceFailures, // { "Source Name": consecutiveFailureCount }
     },
   })
 }

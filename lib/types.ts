@@ -38,6 +38,7 @@ export interface FeedHealth {
   sourcesTotal:  number
   sourcesFailed: number
   stubCategories: string[]
+  sourceFailures?: Record<string, number> // { "Source Name": consecutiveFailureCount }
 }
 
 export type Skin = "mineral" | "slate" | "forest"
