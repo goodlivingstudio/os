@@ -1,4 +1,6 @@
 // ─── Podcast Feed Definitions — Five-Layer Mandate ─────────────────────────
+// Curation principle: top shelf only. Every show should be worth the time
+// investment. Cut anything that's generic news or entertainment filler.
 
 export interface PodcastFeed {
   url: string
@@ -24,7 +26,6 @@ export const PODCAST_FEEDS: PodcastFeed[] = [
   // ── DISCIPLINE ────────────────────────────────────────────────────────────
   { url: "https://feeds.simplecast.com/JGE3yC0V",                           show: "The a16z Show",          category: "Tech & Venture",    tag: "discipline",  layer: "discipline" },
   { url: "https://feeds.simplecast.com/6HKOhNgS",                           show: "Hard Fork",              category: "Technology",         tag: "discipline",  layer: "discipline" },
-  { url: "https://anchor.fm/s/f7cac464/podcast/rss",                        show: "AI Daily Brief",         category: "AI",                tag: "discipline",  layer: "discipline" },
   { url: "https://feeds.transistor.fm/acquired",                             show: "Acquired",               category: "Tech & Business",   tag: "discipline",  layer: "discipline" },
   { url: "https://rss.art19.com/latent-space-ai",                           show: "Latent Space",           category: "AI Engineering",    tag: "discipline",  layer: "discipline" },
   { url: "https://rss.art19.com/no-priors-ai",                              show: "No Priors",              category: "AI & Venture",      tag: "discipline",  layer: "discipline" },
@@ -32,16 +33,12 @@ export const PODCAST_FEEDS: PodcastFeed[] = [
   // ── LANDSCAPE ─────────────────────────────────────────────────────────────
   { url: "https://feeds.simplecast.com/Sl5CSM3S",                           show: "The Daily",              category: "News",              tag: "landscape",   layer: "landscape" },
   { url: "https://feeds.simplecast.com/kEKXbjuJ",                           show: "Ezra Klein Show",        category: "Policy & Ideas",    tag: "landscape",   layer: "landscape" },
-  { url: "https://feeds.npr.org/510318/podcast.xml",                        show: "Up First",               category: "News",              tag: "landscape",   layer: "landscape" },
-  { url: "https://feeds.megaphone.fm/VMP5705694065",                        show: "Today, Explained",       category: "News & Policy",     tag: "landscape",   layer: "landscape" },
-  { url: "https://feeds.npr.org/510355/podcast.xml",                        show: "Consider This",          category: "News",              tag: "landscape",   layer: "landscape" },
   { url: "https://www.omnycontent.com/d/playlist/e73c998e-6e60-432f-8610-ae210140c5b1/41764a4f-fc64-4e11-89ba-ae7c0030ab5e/9caafc41-289c-4115-995d-ae7c0030ab75/podcast.rss", show: "Bloomberg Tech", category: "Technology", tag: "landscape", layer: "landscape" },
   { url: "https://www.omnycontent.com/d/playlist/e73c998e-6e60-432f-8610-ae210140c5b1/825d4e29-b616-46f4-afd7-ae2b0013005c/8b1dd624-a026-43e9-8b57-ae2b00130066/podcast.rss", show: "Big Take", category: "Business", tag: "landscape", layer: "landscape" },
   { url: "https://www.omnycontent.com/d/playlist/e73c998e-6e60-432f-8610-ae210140c5b1/3b082bbf-691d-443b-bc59-ae2b0012ff93/9222076a-d22a-4a9f-9d26-ae2b0012ffb4/podcast.rss", show: "Bloomberg Businessweek", category: "Business", tag: "landscape", layer: "landscape" },
   { url: "https://access.acast.com/rss/ec380acc-fe13-46a0-991f-a1e508d126f8", show: "Economist Podcasts", category: "Global Analysis",  tag: "landscape",   layer: "landscape" },
   { url: "https://feeds.megaphone.fm/VMP1684715893",                        show: "On with Kara Swisher",   category: "Tech & Media",      tag: "landscape",   layer: "landscape" },
   { url: "http://feeds.feedburner.com/tnypoliticalscene",                    show: "The Political Scene",    category: "Politics",          tag: "landscape",   layer: "landscape" },
-  { url: "https://my.slate.com/podcasts/feeds/political-gabfest/",           show: "Political Gabfest",      category: "Politics",          tag: "landscape",   layer: "landscape" },
 
   // ── CULTURE ───────────────────────────────────────────────────────────────
   { url: "https://feeds.simplecast.com/EmVW7VGp",                           show: "Radiolab",               category: "Science & Ideas",   tag: "culture",     layer: "culture" },
@@ -53,6 +50,4 @@ export const PODCAST_FEEDS: PodcastFeed[] = [
   { url: "https://feeds.simplecast.com/TRuO_SRo",                           show: "New Yorker Radio Hour",  category: "Culture & Ideas",   tag: "culture",     layer: "culture" },
   { url: "https://feeds.simplecast.com/BqbsxVfO",                           show: "99% Invisible",          category: "Design & Architecture", tag: "culture", layer: "culture" },
   { url: "https://feeds.npr.org/510312/podcast.xml",                        show: "Code Switch",            category: "Culture",           tag: "culture",     layer: "culture" },
-  { url: "https://feeds.npr.org/510364/podcast.xml",                        show: "Book of the Day",        category: "Books",             tag: "culture",     layer: "culture" },
-  { url: "https://feeds.megaphone.fm/the-rewatchables",                     show: "The Rewatchables",       category: "Film",              tag: "culture",     layer: "culture" },
 ]
