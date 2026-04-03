@@ -36,10 +36,13 @@ export const GALLERY_SOURCES: GallerySource[] = [
   { url: "https://www.tendril.ca/feed", name: "Tendril", type: "rss" },
 ]
 
+export type ColorMood = "warm" | "cool" | "mono" | "earth" | "vivid" | "muted"
+
 export interface GalleryImage {
   id: string
   url: string
   title?: string
   source: string
   linkUrl?: string
+  mood?: ColorMood
 }

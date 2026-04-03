@@ -1,5 +1,6 @@
 // Gallery API — aggregates images from Are.na and RSS feeds
-import { GALLERY_SOURCES, type GalleryImage } from "@/lib/gallery"
+import { GALLERY_SOURCES, type GalleryImage, type ColorMood } from "@/lib/gallery"
+import sharp from "sharp"
 
 export const revalidate = 1800 // 30 min cache
 
@@ -124,6 +125,76 @@ async function fetchRSS(url: string, sourceName: string): Promise<GalleryImage[]
   }
 }
 
+// ─── Server-side color mood classification ─────────────────────────────────
+
+function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
+  r /= 255; g /= 255; b /= 255
+  const max = Math.max(r, g, b), min = Math.min(r, g, b)
+  const l = (max + min) / 2
+  if (max === min) return [0, 0, l]
+  const d = max - min
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+  let h = 0
+  if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6
+  else if (max === g) h = ((b - r) / d + 2) / 6
+  else h = ((r - g) / d + 4) / 6
+  return [h * 360, s, l]
+}
+
+function classifyMood(r: number, g: number, b: number): ColorMood {
+  const [h, s, l] = rgbToHsl(r, g, b)
+  if (s < 0.12) return "mono"
+  if (s < 0.3) return "muted"
+  if (s > 0.7) return "vivid"
+  if (s < 0.55 && ((h >= 30 && h <= 160)) && l < 0.65) return "earth"
+  if (h <= 60 || h >= 330) return "warm"
+  if (h >= 180 && h <= 300) return "cool"
+  if (h > 60 && h < 180) return s < 0.5 ? "earth" : "cool"
+  return "warm"
+}
+
+async function getImageMood(url: string): Promise<ColorMood | undefined> {
+  try {
+    const res = await fetch(url, {
+      signal: AbortSignal.timeout(4000),
+      headers: { "User-Agent": "Dispatch/1.0 (gallery color analysis)" },
+    })
+    if (!res.ok) return undefined
+    const buffer = Buffer.from(await res.arrayBuffer())
+    // Resize to 1x1 pixel to get average color
+    const { data, info } = await sharp(buffer)
+      .resize(1, 1, { fit: "cover" })
+      .raw()
+      .toBuffer({ resolveWithObject: true })
+    if (info.channels >= 3) {
+      return classifyMood(data[0], data[1], data[2])
+    }
+    return undefined
+  } catch {
+    return undefined
+  }
+}
+
+// Classify moods for a batch of images (parallel, with concurrency limit)
+async function classifyBatch(images: GalleryImage[]): Promise<GalleryImage[]> {
+  const CONCURRENCY = 10
+  const results = [...images]
+
+  for (let i = 0; i < results.length; i += CONCURRENCY) {
+    const batch = results.slice(i, i + CONCURRENCY)
+    const moods = await Promise.allSettled(
+      batch.map(img => getImageMood(img.url))
+    )
+    moods.forEach((result, j) => {
+      if (result.status === "fulfilled" && result.value) {
+        results[i + j] = { ...results[i + j], mood: result.value }
+      }
+    })
+  }
+
+  return results
+}
+
 export async function GET() {
   const results = await Promise.allSettled(
     GALLERY_SOURCES.map(src =>
@@ -140,15 +211,18 @@ export async function GET() {
     }
   }
 
+  // Classify color moods server-side (parallel, 10 at a time)
+  const classified = await classifyBatch(allImages)
+
   // Shuffle for variety
-  for (let i = allImages.length - 1; i > 0; i--) {
+  for (let i = classified.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
-    ;[allImages[i], allImages[j]] = [allImages[j], allImages[i]]
+    ;[classified[i], classified[j]] = [classified[j], classified[i]]
   }
 
   return Response.json({
-    images: allImages,
-    count: allImages.length,
+    images: classified,
+    count: classified.length,
     sources: GALLERY_SOURCES.length,
   })
 }
