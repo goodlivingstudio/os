@@ -223,7 +223,12 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
     })
     return Object.values(map)
       .map(s => ({ ...s, avgUrgency: s.count > 0 ? s.avgUrgency / s.count : 0 }))
-      .sort((a, b) => b.count - a.count)
+      .sort((a, b) => {
+        // Primary: highest urgency first (10 → 1 → 0/unannotated)
+        if (b.highestUrgency !== a.highestUrgency) return b.highestUrgency - a.highestUrgency
+        // Secondary: article count
+        return b.count - a.count
+      })
   }, [articles])
 
   const layerHealth = useMemo((): LayerHealth[] => {
