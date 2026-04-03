@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useEffect, useMemo, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 import { ArrowUpRight } from "lucide-react"
 import type { Article } from "@/lib/types"
-import { TYPE, labelStyle, bodyStyle as sharedBodyStyle, metaStyle } from "@/lib/styles"
+import { TYPE, MONO, labelStyle, metaStyle } from "@/lib/styles"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -14,7 +14,6 @@ interface SynthesisViewProps {
 
 type LayerKey = "opportunity" | "position" | "discipline" | "landscape" | "culture"
 
-// Option E — Considered Contrast
 const LAYER_COLORS: Record<LayerKey, string> = {
   opportunity: "#D4A05A",
   position: "#5A9EB0",
@@ -31,572 +30,230 @@ const LAYER_LABELS: Record<LayerKey, string> = {
   culture: "Culture",
 }
 
-const ALL_LAYERS: LayerKey[] = ["opportunity", "position", "discipline", "landscape", "culture"]
+// ─── AI Synthesis Data ─────────────────────────────────────────────────────
 
-// ─── Shared styles — aligned to Dispatch DS ────────────────────────────────
-
-// Section label: shared labelStyle + marginBottom
-const sectionLabelStyle: React.CSSProperties = {
-  ...labelStyle,
-  marginBottom: 8,
-}
-
-// Synthesis body: shared bodyStyle
-const bodyStyle: React.CSSProperties = {
-  ...sharedBodyStyle,
-}
-
-// Heading: TYPE.heading, weight 500 (override 600)
-const headingStyle: React.CSSProperties = {
-  ...TYPE.heading,
-  color: "var(--text-primary)",
-  fontWeight: 500,
-}
-
-const cardBase: React.CSSProperties = {
-  background: "var(--bg-surface)",
-  border: "none",
-  borderRadius: 14,
-  padding: 24,
-  cursor: "pointer",
-  transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-}
-
-const pillStyle: React.CSSProperties = {
-  ...TYPE.sm,
-  textTransform: "uppercase",
-  padding: "2px 8px",
-  borderRadius: 4,
-  background: "var(--bg-elevated)",
-  fontWeight: 500,
-}
-
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
-function countByLayer(articles: Article[]): Record<LayerKey, number> {
-  const counts: Record<LayerKey, number> = { opportunity: 0, position: 0, discipline: 0, landscape: 0, culture: 0 }
-  for (const a of articles) {
-    const tag = a.tag?.toLowerCase() as LayerKey
-    if (tag && tag in counts) counts[tag]++
-  }
-  return counts
-}
-
-interface DerivedPattern {
-  id: string
-  layers: LayerKey[]
+interface AIPattern {
   title: string
   description: string
-  articles: Article[]
+  layers: string[]
   signalCount: number
 }
 
-function derivePatterns(articles: Article[]): DerivedPattern[] {
-  const byTag: Record<string, Article[]> = {}
-  for (const a of articles) {
-    const tag = a.tag?.toLowerCase()
-    if (tag) {
-      if (!byTag[tag]) byTag[tag] = []
-      byTag[tag].push(a)
-    }
-  }
-
-  const layerKeys = ALL_LAYERS.filter(k => (byTag[k]?.length || 0) > 0)
-  const tagPairs: [LayerKey, LayerKey][] = []
-  for (let i = 0; i < layerKeys.length; i++) {
-    for (let j = i + 1; j < layerKeys.length; j++) {
-      tagPairs.push([layerKeys[i], layerKeys[j]])
-    }
-  }
-
-  const patterns: DerivedPattern[] = []
-
-  const patternTemplates = [
-    { layers: ["opportunity", "discipline"] as LayerKey[], title: "Strategic Craft Intersection", desc: "Opportunity signals overlap with discipline evolution, suggesting new roles require both strategic vision and technical depth." },
-    { layers: ["position", "landscape"] as LayerKey[], title: "Market Position Shift", desc: "Leadership positioning intersects with industry landscape changes, indicating the terrain for career moves is shifting." },
-    { layers: ["discipline", "culture"] as LayerKey[], title: "Craft Meets Culture", desc: "How teams work is changing alongside what they build. Cultural shifts are reshaping what design leadership means in practice." },
-    { layers: ["opportunity", "landscape"] as LayerKey[], title: "Emerging Terrain", desc: "New opportunities are emerging from landscape-level shifts. Early movers who read these signals will have positioning advantage." },
-  ]
-
-  for (const tmpl of patternTemplates) {
-    const matchingArticles = articles.filter(a => {
-      const tag = a.tag?.toLowerCase() as LayerKey
-      return tmpl.layers.includes(tag)
-    })
-    if (matchingArticles.length > 0) {
-      patterns.push({
-        id: tmpl.title.toLowerCase().replace(/\s+/g, "-"),
-        layers: tmpl.layers.filter(l => (byTag[l]?.length || 0) > 0),
-        title: tmpl.title,
-        description: tmpl.desc,
-        articles: matchingArticles.slice(0, 8),
-        signalCount: matchingArticles.length,
-      })
-    }
-  }
-
-  if (patterns.length < 4) {
-    for (const pair of tagPairs) {
-      if (patterns.length >= 4) break
-      if (patterns.some(p => p.layers[0] === pair[0] && p.layers[1] === pair[1])) continue
-      const matchingArticles = articles.filter(a => {
-        const tag = a.tag?.toLowerCase() as LayerKey
-        return pair.includes(tag)
-      })
-      if (matchingArticles.length > 0) {
-        patterns.push({
-          id: `${pair[0]}-${pair[1]}`,
-          layers: pair,
-          title: `${LAYER_LABELS[pair[0]]} \u00d7 ${LAYER_LABELS[pair[1]]}`,
-          description: `Signals across ${LAYER_LABELS[pair[0]].toLowerCase()} and ${LAYER_LABELS[pair[1]].toLowerCase()} suggest an emerging pattern worth monitoring.`,
-          articles: matchingArticles.slice(0, 8),
-          signalCount: matchingArticles.length,
-        })
-      }
-    }
-  }
-
-  return patterns.slice(0, 4)
+interface SynthesisData {
+  briefing: string
+  patterns: AIPattern[]
+  blindSpotNote: string
+  cerebroProvocation?: string
 }
 
-function findBlindSpots(layerCounts: Record<LayerKey, number>): { layer: LayerKey; count: number; note: string }[] {
-  const sorted = ALL_LAYERS.map(l => ({ layer: l, count: layerCounts[l] })).sort((a, b) => a.count - b.count)
-  const spots: { layer: LayerKey; count: number; note: string }[] = []
-  for (const s of sorted) {
-    if (s.count === 0) {
-      spots.push({ ...s, note: "No signals detected" })
-    } else if (s.count <= 2) {
-      spots.push({ ...s, note: `Only ${s.count} signal${s.count === 1 ? "" : "s"} \u2014 may be under-covered` })
-    }
-    if (spots.length >= 3) break
-  }
-  return spots
-}
+// ─── Loading Animation ─────────────────────────────────────────────────────
 
-// ─── Modal ──────────────────────────────────────────────────────────────────
+const SYNTHESIS_STATUSES = [
+  "$ synthesis --analyze",
+  "▸ reading annotated feed",
+  "▸ loading 7-day history",
+  "▸ detecting convergences",
+  "▸ composing briefing",
+]
 
-function SynthesisModal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
-  return (
-    <div
-      style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center" }}
-      onClick={e => { if (e.target === e.currentTarget) onClose() }}
-    >
-      <div style={{
-        background: "var(--bg-surface)", borderRadius: 14,
-        border: "none", width: "80vw", maxWidth: 800,
-        maxHeight: "85vh", overflow: "hidden", display: "flex", flexDirection: "column",
-        boxShadow: "0 32px 80px rgba(0,0,0,0.3)",
-      }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 24px", borderBottom: "1px solid var(--border)", flexShrink: 0 }}>
-          <span style={{ ...sectionLabelStyle, marginBottom: 0 }}>{title}</span>
-          <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--text-tertiary)", cursor: "pointer", fontSize: 20, lineHeight: 1, padding: "4px 8px", borderRadius: 4 }}>&times;</button>
-        </div>
-        <div className="view-padding" style={{ flex: 1, overflowY: "auto" }}>
-          {children}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ─── Bump Button — matches Buttons board ───────────────────────────────────
-
-function BumpButton({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      onClick={e => { e.stopPropagation(); onClick() }}
-      style={{
-        display: "inline-flex", alignItems: "center", gap: 6,
-        padding: "8px 14px", borderRadius: 8,
-        border: "1px solid var(--border)", background: "transparent",
-        color: "var(--text-secondary)", ...TYPE.body,
-        fontWeight: 500, cursor: "pointer", transition: "all 0.15s",
-      }}
-      onMouseEnter={e => {
-        e.currentTarget.style.background = "var(--bg-elevated)"
-        e.currentTarget.style.color = "var(--accent-secondary)"
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.background = "transparent"
-        e.currentTarget.style.color = "var(--text-secondary)"
-      }}
-    >
-      Bump <ArrowUpRight size={11} />
-    </button>
-  )
-}
-
-// ─── Layer Dot ──────────────────────────────────────────────────────────────
-
-function LayerDot({ layer, size = 7 }: { layer: LayerKey; size?: number }) {
-  return <span style={{ width: size, height: size, borderRadius: "50%", background: LAYER_COLORS[layer], flexShrink: 0, display: "inline-block" }} />
-}
-
-// ─── Layer Badge Pill ───────────────────────────────────────────────────────
-
-function LayerPill({ layer }: { layer: LayerKey }) {
-  return (
-    <span style={{ ...pillStyle, color: "var(--text-secondary)" }}>
-      {LAYER_LABELS[layer]}
-    </span>
-  )
-}
-
-// ─── Contributing Signals Drawer ─────────────────────────────────────────────
-
-function ContributingSignalsDrawer({ articles }: { articles: Article[] }) {
-  const [open, setOpen] = useState(false)
-
-  if (articles.length === 0) {
-    return <div style={bodyStyle}>No specific articles mapped yet.</div>
-  }
-
-  return (
-    <div>
-      <button
-        onClick={e => { e.stopPropagation(); setOpen(v => !v) }}
-        style={{
-          ...sectionLabelStyle,
-          background: "transparent", border: "none", cursor: "pointer",
-          display: "flex", alignItems: "center", gap: 4,
-          padding: "4px 8px", borderRadius: 8,
-          marginBottom: open ? 16 : 0, transition: "all 0.15s",
-        }}
-        onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-        onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
-      >
-        Contributing Signals ({articles.length})
-      </button>
-      {open && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {articles.map(a => {
-            const isExternal = a.url && a.url !== "#"
-            const inner = (
-              <div
-                key={a.id}
-                style={{
-                  padding: "8px 16px", background: "var(--bg-elevated)", borderRadius: 8,
-                  cursor: isExternal ? "pointer" : "default", transition: "background 0.12s",
-                }}
-                onMouseEnter={e => { if (isExternal) e.currentTarget.style.background = "var(--bg-surface)" }}
-                onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-              >
-                <div style={{ ...metaStyle, marginBottom: 4 }}>
-                  {a.source} · {a.category} · {new Date(a.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                </div>
-                <div style={{ ...TYPE.reading, fontWeight: 500, color: "var(--text-primary)", lineHeight: 1.4 }}>
-                  {a.title}
-                </div>
-              </div>
-            )
-            if (isExternal) {
-              return (
-                <a key={a.id} href={a.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }} onClick={e => e.stopPropagation()}>
-                  {inner}
-                </a>
-              )
-            }
-            return inner
-          })}
-        </div>
-      )}
-    </div>
-  )
-}
-
-// ─── Synthesis View ─────────────────────────────────────────────────────────
+// ─── Synthesis View ────────────────────────────────────────────────────────
 
 export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
-  const [activeModal, setActiveModal] = useState<string | null>(null)
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null)
-  const [aiBriefing, setAiBriefing] = useState<string | null>(null)
-  const [aiPatterns, setAiPatterns] = useState<DerivedPattern[]>([])
-  const [aiBlindSpotNote, setAiBlindSpotNote] = useState<string | null>(null)
-  const [synthesisLoading, setSynthesisLoading] = useState(false)
-  const synthesisRef = useRef(false)
+  const [data, setData] = useState<SynthesisData | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [statusIdx, setStatusIdx] = useState(0)
+  const fetched = useRef(false)
 
-  const layerCounts = useMemo(() => countByLayer(articles), [articles])
-  const localPatterns = useMemo(() => derivePatterns(articles), [articles])
-  const blindSpots = useMemo(() => findBlindSpots(layerCounts), [layerCounts])
-
-  // Use AI patterns when available, fall back to local derivation
-  const patterns = aiPatterns.length > 0 ? aiPatterns : localPatterns
-
-  // Fetch AI synthesis when articles are available
   useEffect(() => {
-    if (articles.length === 0 || synthesisRef.current) return
+    if (articles.length === 0 || fetched.current) return
     const annotated = articles.filter(a => a.synopsis || a.relevance)
-    if (annotated.length < 3) return // wait for annotations
-    synthesisRef.current = true
-    setSynthesisLoading(true)
+    if (annotated.length < 3) return
+    fetched.current = true
+    setLoading(true)
+    setStatusIdx(0)
+
+    const t = setInterval(() => setStatusIdx(i => Math.min(i + 1, SYNTHESIS_STATUSES.length - 1)), 1200)
+
     fetch("/api/synthesis", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ articles: annotated.slice(0, 25) }),
     })
       .then(r => r.json())
-      .then(data => {
-        if (data.briefing) setAiBriefing(data.briefing)
-        if (data.blindSpotNote) setAiBlindSpotNote(data.blindSpotNote)
-        if (data.patterns?.length > 0) {
-          setAiPatterns(data.patterns.map((p: { title: string; description: string; layers: string[]; signalCount: number }, i: number) => ({
-            id: `ai-${i}`,
-            layers: p.layers as LayerKey[],
-            title: p.title,
-            description: p.description,
-            articles: [],
-            signalCount: p.signalCount,
-          })))
-        }
-        setSynthesisLoading(false)
+      .then(result => {
+        if (result.briefing) setData(result)
+        setLoading(false)
+        clearInterval(t)
       })
-      .catch(() => setSynthesisLoading(false))
+      .catch(() => { setLoading(false); clearInterval(t) })
+
+    return () => clearInterval(t)
   }, [articles])
 
-  const provocations = [
-    {
-      label: "Challenge",
-      text: "What if the strongest signal this week isn\u2019t in your feed at all \u2014 but in what\u2019s conspicuously absent from it?",
-    },
-    {
-      label: "Opportunity",
-      text: "Three pharma companies made infrastructure AI bets this week. How do you position design as the connective tissue between molecule, operations, and experience?",
-    },
-    {
-      label: "Blind Spot",
-      text: "Your Culture layer has been quiet for three days. Is that a sourcing gap or are you unconsciously deprioritizing taste while chasing positioning?",
-    },
-  ]
-
-  function cardHoverStyle(id: string): React.CSSProperties {
-    return hoveredCard === id ? { transform: "scale(1.015)" } : {}
-  }
-
   return (
-    <main className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", background: "var(--bg-primary)" }}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+    <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}>
+      {/* Header */}
+      <div style={{
+        flexShrink: 0, height: 40, display: "flex", alignItems: "center",
+        padding: "0 20px", borderBottom: "1px solid var(--border)",
+      }}>
+        <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase" }}>
+          Synthesis
+        </span>
+      </div>
 
-        {/* ── Module 1: Current Briefing ────────────────────────────────── */}
-        <div
-          style={{
-            ...cardBase, ...cardHoverStyle("briefing"),
-            animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0ms both",
-          }}
-          onMouseEnter={() => setHoveredCard("briefing")}
-          onMouseLeave={() => setHoveredCard(null)}
-          onClick={() => setActiveModal("briefing")}
-        >
-          <div style={sectionLabelStyle}>Current Briefing</div>
-          <div style={bodyStyle}>
-            {synthesisLoading ? (
-              <span className="loading-pulse" style={{ opacity: 0.5 }}>Synthesizing patterns across today&apos;s signal...</span>
-            ) : aiBriefing ? (
-              aiBriefing
-            ) : (
-              "Intelligence briefing will appear when annotated articles are available."
-            )}
-          </div>
-        </div>
+      <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
 
-        {/* ── Module 2: COS Suggests — three-column ──────────────────── */}
-        <div style={{ animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 120ms both" }}>
-          <div style={{ ...sectionLabelStyle, marginBottom: 16, paddingLeft: 2 }}>COS Suggests</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
-            {provocations.map((p, i) => (
+        {/* ── Loading state — terminal boot ── */}
+        {loading && (
+          <div style={{ padding: "4px 0" }}>
+            {SYNTHESIS_STATUSES.slice(0, statusIdx + 1).map((line, i) => (
               <div
                 key={i}
                 style={{
-                  ...cardBase, display: "flex", flexDirection: "column",
-                  ...cardHoverStyle(`prov-${i}`),
-                  animation: `signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${200 + i * 100}ms both`,
+                  ...TYPE.sm, fontFamily: MONO,
+                  color: i === statusIdx ? "var(--accent-muted)" : "var(--text-tertiary)",
+                  opacity: i === statusIdx ? 1 : 0.5,
+                  animation: i === statusIdx ? "status-fade 0.2s ease both" : "none",
+                  marginBottom: 4,
                 }}
-                onMouseEnter={() => setHoveredCard(`prov-${i}`)}
-                onMouseLeave={() => setHoveredCard(null)}
-                onClick={() => onDeliberate(p.text)}
               >
-                <div style={sectionLabelStyle}>{p.label}</div>
-                <div style={{ flex: 1, ...bodyStyle }}>
-                  {p.text}
-                </div>
-                <div style={{ marginTop: 16 }}>
-                  <BumpButton onClick={() => onDeliberate(p.text)} />
-                </div>
+                {line}{i === statusIdx && i < SYNTHESIS_STATUSES.length - 1 && <span className="cursor-blink" style={{ marginLeft: 2 }}>_</span>}
+                {i === statusIdx && i === SYNTHESIS_STATUSES.length - 1 && <span className="loading-pulse" style={{ marginLeft: 4, ...TYPE.xs, opacity: 0.6 }}>...</span>}
               </div>
             ))}
           </div>
-        </div>
+        )}
 
-        {/* ── Module 3: Convergence Patterns ────────────────────────────── */}
-        <div style={{ animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 500ms both" }}>
-          <div style={{ ...sectionLabelStyle, marginBottom: 16, paddingLeft: 2 }}>Convergence Patterns</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            {patterns.map((pattern, i) => (
-              <div
-                key={pattern.id}
-                style={{
-                  ...cardBase, ...cardHoverStyle(`pattern-${i}`),
-                  animation: `signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${600 + i * 100}ms both`,
-                }}
-                onMouseEnter={() => setHoveredCard(`pattern-${i}`)}
-                onMouseLeave={() => setHoveredCard(null)}
-                onClick={() => setActiveModal(`pattern-${i}`)}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
-                  {pattern.layers.map(l => <LayerPill key={l} layer={l} />)}
-                  <span style={{ ...metaStyle }}>
-                    {pattern.signalCount} signals
-                  </span>
-                </div>
-                <div style={{ ...headingStyle, marginBottom: 6 }}>{pattern.title}</div>
-                <div style={{ ...bodyStyle, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                  {pattern.description}
-                </div>
-              </div>
-            ))}
+        {/* ── Empty state ── */}
+        {!loading && !data && (
+          <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7 }}>
+            Pattern intelligence will appear when annotated articles are available. The synthesis layer needs at least 3 annotated signals to detect convergences.
           </div>
-        </div>
+        )}
 
-        {/* ── Module 4: Blind Spots ─────────────────────────────────────── */}
-        <div
-          style={{
-            ...cardBase, ...cardHoverStyle("blindspots"),
-            animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 1000ms both",
-          }}
-          onMouseEnter={() => setHoveredCard("blindspots")}
-          onMouseLeave={() => setHoveredCard(null)}
-          onClick={() => setActiveModal("blindspots")}
-        >
-          <div style={sectionLabelStyle}>Blind Spots</div>
-          <div style={{ ...TYPE.body, color: "var(--text-tertiary)", marginBottom: 16 }}>
-            {aiBlindSpotNote || "Layers trending cold"}
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {blindSpots.length === 0 ? (
-              <div style={bodyStyle}>All layers have healthy coverage.</div>
-            ) : (
-              blindSpots.map(s => (
-                <div key={s.layer} style={bodyStyle}>
-                  <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{LAYER_LABELS[s.layer]}</span>
-                  {" "}&mdash; {s.note}
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Modals ────────────────────────────────────────────────────────── */}
-
-      {activeModal === "briefing" && (
-        <SynthesisModal title="Current Briefing" onClose={() => setActiveModal(null)}>
+        {/* ── Synthesis content ── */}
+        {!loading && data && (
           <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-            <div style={{ ...headingStyle, fontSize: 18, marginBottom: 8 }}>
-              Daily Intelligence Surface
-            </div>
-            <div style={{ ...bodyStyle, lineHeight: 1.6, marginBottom: 24 }}>
-              Intelligence briefing will appear here when the annotation engine is active. This view synthesizes patterns across all five layers to surface the single most important insight for your mandate right now.
-            </div>
 
-            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 24 }}>
-              <div style={sectionLabelStyle}>Trending</div>
-              <div style={{ ...bodyStyle, marginTop: 8 }}>
-                {patterns.length > 0
-                  ? `${patterns.length} convergence patterns detected. Strongest: "${patterns[0]?.title}" spanning ${patterns[0]?.layers.length} layers with ${patterns[0]?.signalCount} signals.`
-                  : "No convergence patterns detected yet. Feed more signals to surface cross-layer themes."}
+            {/* ── The Briefing — the station chief's opening read ── */}
+            <div style={{
+              animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both",
+              marginBottom: 32,
+            }}>
+              <div style={{
+                ...TYPE.reading,
+                color: "var(--text-primary)",
+                lineHeight: 1.8,
+                fontWeight: 400,
+                maxWidth: 640,
+              }}>
+                {data.briefing}
               </div>
             </div>
 
-            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 24 }}>
-              <div style={sectionLabelStyle}>What to Watch</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
-                {blindSpots.length > 0 ? blindSpots.map(s => (
-                  <div key={s.layer} style={bodyStyle}>
-                    <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{LAYER_LABELS[s.layer]}</span> &mdash; {s.note}
-                  </div>
-                )) : (
-                  <div style={bodyStyle}>All layers show healthy coverage. Focus on convergence patterns for actionable insight.</div>
-                )}
-              </div>
-            </div>
-
-            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24 }}>
-              <BumpButton onClick={() => { onDeliberate("Briefing: What is the single most important insight across all five layers today?"); setActiveModal(null) }} />
-            </div>
-          </div>
-        </SynthesisModal>
-      )}
-
-      {patterns.map((pattern, i) =>
-        activeModal === `pattern-${i}` ? (
-          <SynthesisModal key={pattern.id} title="Convergence Pattern" onClose={() => setActiveModal(null)}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-              <div>
-                <div style={{ display: "flex", gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
-                  {pattern.layers.map(l => <LayerPill key={l} layer={l} />)}
-                </div>
-                <div style={{ ...headingStyle, fontSize: 18, marginBottom: 8 }}>{pattern.title}</div>
-                <div style={{ ...bodyStyle, lineHeight: 1.6 }}>{pattern.description}</div>
-              </div>
-
-              <div>
-                <div style={sectionLabelStyle}>Strategic Implication</div>
-                <div style={{ ...bodyStyle, marginTop: 8 }}>
-                  This convergence pattern suggests a developing theme that crosses traditional boundaries. When synthesis is active, this section will contain a strategic interpretation of how these signals relate to your mandate.
-                </div>
-              </div>
-
-              <ContributingSignalsDrawer articles={pattern.articles} />
-
-              <div style={{ borderTop: "1px solid var(--border)", paddingTop: 16 }}>
-                <BumpButton onClick={() => { onDeliberate(`Pattern: ${pattern.title} \u2014 ${pattern.description}`); setActiveModal(null) }} />
-              </div>
-            </div>
-          </SynthesisModal>
-        ) : null
-      )}
-
-      {activeModal === "blindspots" && (
-        <SynthesisModal title="Blind Spots" onClose={() => setActiveModal(null)}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-            <div style={bodyStyle}>
-              Layers with low or no signal coverage may represent gaps in your intelligence feed.
-            </div>
-            {blindSpots.length === 0 ? (
-              <div style={bodyStyle}>All layers show adequate signal density. No blind spots detected.</div>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                {blindSpots.map(s => (
-                  <div key={s.layer} style={{ padding: 16, background: "var(--bg-elevated)", borderRadius: 8 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                      <span style={headingStyle}>{LAYER_LABELS[s.layer]}</span>
-                      <span style={{ ...pillStyle, color: "var(--text-tertiary)" }}>{s.count} signals</span>
+            {/* ── Convergence Patterns ── */}
+            {data.patterns.length > 0 && (
+              <div style={{
+                animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 200ms both",
+                marginBottom: 32,
+              }}>
+                <div style={{ ...labelStyle, marginBottom: 16 }}>Convergences</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  {data.patterns.map((pattern, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        background: "var(--bg-surface)",
+                        borderRadius: 12,
+                        padding: "18px 20px",
+                        cursor: "pointer",
+                        transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                        animation: `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${300 + i * 100}ms both`,
+                      }}
+                      onClick={() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically? What should I be paying attention to?`)}
+                      onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.01)" }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)" }}
+                    >
+                      {/* Layer dots + signal count */}
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+                        {pattern.layers.map(l => (
+                          <span
+                            key={l}
+                            style={{
+                              ...TYPE.xs,
+                              color: LAYER_COLORS[l as LayerKey] || "var(--text-tertiary)",
+                              textTransform: "uppercase",
+                              fontWeight: 500,
+                            }}
+                          >
+                            {LAYER_LABELS[l as LayerKey] || l}
+                          </span>
+                        ))}
+                        <span style={{ ...metaStyle, marginLeft: 4 }}>
+                          {pattern.signalCount} signals
+                        </span>
+                      </div>
+                      {/* Title */}
+                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", marginBottom: 6 }}>
+                        {pattern.title}
+                      </div>
+                      {/* Description */}
+                      <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>
+                        {pattern.description}
+                      </div>
                     </div>
-                    <div style={bodyStyle}>
-                      {s.count === 0
-                        ? `No signals detected in the ${LAYER_LABELS[s.layer].toLowerCase()} layer. Consider adding sources that cover this domain.`
-                        : `Only ${s.count} signal${s.count === 1 ? "" : "s"} detected. The ${LAYER_LABELS[s.layer].toLowerCase()} layer may be under-represented.`
-                      }
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             )}
-            <div>
-              <div style={sectionLabelStyle}>Full Layer Coverage</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
-                {ALL_LAYERS.map(l => (
-                  <div key={l} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <LayerDot layer={l} />
-                    <span style={{ ...TYPE.body, color: "var(--text-secondary)", width: 80 }}>{LAYER_LABELS[l]}</span>
-                    <span style={{ ...metaStyle }}>{layerCounts[l]} articles</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </SynthesisModal>
-      )}
 
+            {/* ── Blind Spot — subtle, not a card ── */}
+            {data.blindSpotNote && (
+              <div style={{
+                animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 600ms both",
+                marginBottom: 32,
+              }}>
+                <div style={{ ...labelStyle, marginBottom: 8 }}>Blind Spot</div>
+                <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7, maxWidth: 640 }}>
+                  {data.blindSpotNote}
+                </div>
+              </div>
+            )}
+
+            {/* ── Cerebro Provocation — single call to action ── */}
+            {data.cerebroProvocation && (
+              <div style={{
+                animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 800ms both",
+              }}>
+                <button
+                  onClick={() => onDeliberate(data.cerebroProvocation!)}
+                  style={{
+                    display: "flex", alignItems: "flex-start", gap: 12, width: "100%",
+                    background: "var(--bg-surface)", border: "1px solid var(--border)",
+                    borderRadius: 12, padding: "16px 20px",
+                    cursor: "pointer", textAlign: "left",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.borderColor = "var(--accent-muted)" }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.borderColor = "var(--border)" }}
+                >
+                  <ArrowUpRight size={14} style={{ color: "var(--accent-secondary)", flexShrink: 0, marginTop: 2 }} />
+                  <div>
+                    <div style={{ ...TYPE.xs, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, fontWeight: 500 }}>
+                      Ask Cerebro
+                    </div>
+                    <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.6 }}>
+                      {data.cerebroProvocation}
+                    </div>
+                  </div>
+                </button>
+              </div>
+            )}
+
+          </div>
+        )}
+      </div>
     </main>
   )
 }

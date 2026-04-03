@@ -87,9 +87,33 @@ Where the IBM piece IS useful: as market evidence. IBM is telling enterprise cli
 
 ---
 
+## PROTOTYPE CONCEPTS TO EXPLORE (Week of April 7)
+
+These are specific things that could be built as the working prototype component of the artifact. Each demonstrates AI-direction capability applied to a real Lilly challenge.
+
+### Concept A: "The Donanemab Companion"
+A patient-facing intelligence system for Alzheimer's caregivers navigating the Donanemab treatment journey. Monthly infusion scheduling, biomarker tracking explained in plain language, caregiver support resources surfaced contextually. Built as a working web app — not a mockup. Demonstrates: healthcare UX, information architecture for complex medical journeys, AI-augmented content personalization.
+
+**Why this works for Lilly:** It addresses the care coordination challenge they know they have (7M Americans, most undiagnosed, 1yr+ specialist wait). It shows what a design leader who understands both the clinical complexity and the human experience would build. And it's a real thing, not a slide.
+
+### Concept B: "The Innovation Intelligence Brief"
+A Dispatch-like system scoped to Lilly's innovation mandate specifically. Monitors pharma AI, patient experience design, competitive direct-to-patient moves, regulatory shifts. Demonstrates: the exact AI-direction and system architecture skills you bring. "I built this for myself. Here's what becomes possible when this capability operates inside your organization."
+
+**Why this works for Lilly:** It directly demonstrates the capability they'd be hiring. The gap between "I read about AI" and "I direct AI systems that produce intelligence" is the entire value proposition.
+
+### Concept C: "The LillyDirect Experience Audit"
+Walk through the actual LillyDirect patient experience as an outside design leader, document the friction points, and build a prototype of what the refill/adherence experience should feel like. Not a critique deck — a working alternative that demonstrates the judgment gap.
+
+**Why this works for Lilly:** It shows you've done the work, not just the research. Laree said "tell us about yourself" — this tells them about yourself through the lens of their own product.
+
+### Which to pursue?
+Deliberate with Cerebro. The strongest is probably B (the meta-demonstration: "I built Dispatch, and here's what your version looks like") because it's the most authentic and requires the least domain assumption. C is riskiest (assumes you know more about their product than they do — Laree's original feedback). A is the safest but requires healthcare domain depth that may feel presumptuous.
+
+---
+
 ## TIMELINE
 
-No deadline set. This should be excellent, not fast. But it should be in progress — the engagement window won't stay open indefinitely.
+Target: ready to share by mid-April. This should be excellent, not fast. But it should be in progress — the engagement window won't stay open indefinitely.
 
 ---
 
