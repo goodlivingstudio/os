@@ -188,7 +188,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
             overflow: "hidden",
             transition: "max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
           }}>
-            <div style={{ display: "flex", gap: 8, padding: "8px 16px 16px", overflowX: "auto", scrollSnapType: "x mandatory" }}>
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(${signals.filter(s => s.body).length || 1}, 1fr)`, gap: 8, padding: "8px 16px 16px" }}>
               {signals.filter(s => s.body).map((signal, i) => (
                   <div
                     key={i}
@@ -204,9 +204,6 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
                       cursor: signal.body ? "pointer" : "default",
                       background: hoveredIdx === i ? "var(--bg-elevated)" : "var(--bg-surface)",
                       transition: "background 0.15s",
-                      width: 280,
-                      flexShrink: 0,
-                      scrollSnapAlign: "start",
                     }}
                   >
                     <div style={{
