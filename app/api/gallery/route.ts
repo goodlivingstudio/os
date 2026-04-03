@@ -26,22 +26,35 @@ async function fetchArena(url: string, sourceName: string): Promise<GalleryImage
 }
 
 function extractImageFromRSS(item: string): string | null {
+  // First try: img in description/content — usually full-size
+  const img = item.match(/<img[^>]+src=["']([^"']{20,})["']/i)
+  if (img?.[1]?.startsWith("http")) {
+    // Upgrade Dezeen thumbnails to full size (remove dimension suffix)
+    let url = img[1]
+    url = url.replace(/-\d+x\d+\./, ".")
+    return url
+  }
+
   // media:content url
   const mc = item.match(/<media:content[^>]+url=["']([^"']+)["'][^>]*/i)
-  if (mc?.[1]) return mc[1]
-
-  // media:thumbnail url
-  const mt = item.match(/<media:thumbnail[^>]+url=["']([^"']+)["'][^>]*/i)
-  if (mt?.[1]) return mt[1]
+  if (mc?.[1]) {
+    let url = mc[1]
+    url = url.replace(/-\d+x\d+\./, ".")
+    return url
+  }
 
   // enclosure
   const enc = item.match(/<enclosure[^>]+url=["']([^"']+)["'][^>]+type=["']image[^"']*["']/i)
     || item.match(/<enclosure[^>]+type=["']image[^"']*["'][^>]+url=["']([^"']+)["']/i)
   if (enc?.[1]) return enc[1]
 
-  // img in description
-  const img = item.match(/<img[^>]+src=["']([^"']{20,})["']/i)
-  if (img?.[1]?.startsWith("http")) return img[1]
+  // media:thumbnail as last resort
+  const mt = item.match(/<media:thumbnail[^>]+url=["']([^"']+)["'][^>]*/i)
+  if (mt?.[1]) {
+    let url = mt[1]
+    url = url.replace(/-\d+x\d+\./, ".")
+    return url
+  }
 
   return null
 }

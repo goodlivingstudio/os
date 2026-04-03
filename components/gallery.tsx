@@ -207,8 +207,10 @@ export function GalleryOverlay({ onClose }: { onClose: () => void }) {
                 src={img.url}
                 alt={img.title || ""}
                 loading="lazy"
+                onError={e => { (e.currentTarget.parentElement as HTMLElement).style.display = "none" }}
                 style={{
                   width: "100%",
+                  height: "auto",
                   display: "block",
                   borderRadius: 8,
                 }}
