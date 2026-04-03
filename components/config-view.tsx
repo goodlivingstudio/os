@@ -407,7 +407,7 @@ function SourceGrid({ sources, type, excludedSources, onToggleSource }: {
         const getName = (f: { source?: string; show?: string }) => type === "show" ? f.show || "" : f.source || ""
         return (
           <div key={layer} style={{ marginBottom: 16 }}>
-            <div style={{ ...TYPE.sm, fontWeight: 500, color: LAYER_DOT[layer], textTransform: "uppercase", marginBottom: 6, paddingLeft: 4 }}>
+            <div style={{ ...TYPE.sm, fontWeight: 500, color: LAYER_DOT[layer], textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, paddingLeft: 4 }}>
               {LAYER_LABELS[layer]}
               <span style={{ color: "var(--text-tertiary)", marginLeft: 6 }}>
                 ({items.filter(f => !excludedSources.has(getName(f))).length})

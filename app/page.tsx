@@ -355,8 +355,8 @@ export default function Page() {
         flexShrink: 0, height: 40, display: "flex", alignItems: "center",
         padding: "0 20px",
       }}>
-        <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 500 }}>
-          Signal
+        <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.04em" }}>
+          News Sources
         </span>
         <span style={{ ...TYPE.sm, color: "var(--text-primary)", marginLeft: 8 }}>
           {filtered.length}/{articles.length} active
