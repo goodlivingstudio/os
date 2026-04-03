@@ -198,15 +198,31 @@ function PitchCard({ pitch, index, onDeliberate }: { pitch: Pitch; index: number
 
 // ─── DispatchView ───────────────────────────────────────────────────────────
 
+const DISPATCH_STATUSES = [
+  "$ dispatch --weekly",
+  "▸ loading 7-day article history",
+  "▸ scoring multi-layer convergences",
+  "▸ identifying publishable angles",
+  "▸ generating content briefs",
+]
+
+// Module-level cache so tab switches don't re-fetch
+let _cachedDispatch: DispatchData | null = null
+
 export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) => void }) {
-  const [data, setData] = useState<DispatchData | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState<DispatchData | null>(_cachedDispatch)
+  const [loading, setLoading] = useState(!_cachedDispatch)
+  const [statusIdx, setStatusIdx] = useState(0)
 
   useEffect(() => {
+    if (_cachedDispatch) return
+    setStatusIdx(0)
+    const t = setInterval(() => setStatusIdx(i => Math.min(i + 1, DISPATCH_STATUSES.length - 1)), 1800)
     fetch("/api/dispatch")
       .then(r => r.json())
-      .then(d => { setData(d); setLoading(false) })
-      .catch(() => setLoading(false))
+      .then(d => { setData(d); _cachedDispatch = d; setLoading(false); clearInterval(t) })
+      .catch(() => { setLoading(false); clearInterval(t) })
+    return () => clearInterval(t)
   }, [])
 
   return (
@@ -228,7 +244,22 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
         <div style={{ animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both" }}>
           <div style={{ ...bodyStyle, color: "var(--text-tertiary)", lineHeight: 1.6 }}>
             {loading ? (
-              <span className="loading-pulse">Analyzing the week&apos;s signal to generate content pitches...</span>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                {DISPATCH_STATUSES.slice(0, statusIdx + 1).map((line, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      fontSize: 11, fontFamily: MONO,
+                      color: idx === statusIdx ? "var(--accent-muted)" : "var(--text-tertiary)",
+                      opacity: idx === statusIdx ? 1 : 0.5,
+                      animation: idx === statusIdx ? "status-fade 0.2s ease both" : "none",
+                    }}
+                  >
+                    {line}{idx === statusIdx && idx < DISPATCH_STATUSES.length - 1 && <span className="cursor-blink" style={{ marginLeft: 2 }}>_</span>}
+                    {idx === statusIdx && idx === DISPATCH_STATUSES.length - 1 && <span className="loading-pulse" style={{ marginLeft: 4, fontSize: 10, opacity: 0.6 }}>…</span>}
+                  </div>
+                ))}
+              </div>
             ) : data?.message ? (
               data.message
             ) : data?.weekSummary ? (
