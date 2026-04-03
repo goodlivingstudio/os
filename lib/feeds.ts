@@ -91,4 +91,6 @@ export const FEEDS: FeedDef[] = [
   { url: "https://medium.com/feed/@khoi",                          source: "Khoi Vinh (Medium)", category: "Design Leadership",  tag: "position",     layer: "position",   type: "social" },
   { url: "https://maeda.pm/feed/",                                 source: "John Maeda",        category: "Design & Technology",  tag: "position",     layer: "position",   type: "social" },
   { url: "https://frankchimero.com/feed.xml",                      source: "Frank Chimero",     category: "Design Philosophy",    tag: "position",     layer: "position",   type: "social" },
+  { url: "https://carlrivera.substack.com/feed",                   source: "Carl Rivera",       category: "Design Operations",    tag: "position",     layer: "position",   type: "social" },
+  { url: "https://medium.com/feed/@carlrivera",                    source: "Carl Rivera (Medium)", category: "Design Leadership", tag: "position",     layer: "position",   type: "social" },
 ]
