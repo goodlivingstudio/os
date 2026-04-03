@@ -83,8 +83,8 @@ The highest-value gated source depends on the operator's domain. For Dispatch's 
 - Health system innovation lab newsletters (gated, Tier 4 today)
 
 **Design Leadership / Career Positioning:**
-- LinkedIn API (job postings, hiring signals, network activity)
-- Greenhouse/Lever/Ashby job board APIs (CDO/Head of Design role specifications read as intelligence)
+- Job board APIs — Greenhouse, Lever, Ashby (CDO/Head of Design role specifications read as primary source intelligence — the job description tells you what problems organizations think they're hiring to solve)
+- LinkedIn job postings only (narrow utility — the feed itself is performative noise with poor signal-to-noise; the structured job posting data is the only defensible intelligence source on the platform)
 - Closed Slack/Discord communities where senior design leaders discuss (Tier 4)
 - Conference speaker lists and panel compositions (semi-structured, scrapable)
 
@@ -94,7 +94,7 @@ The highest-value gated source depends on the operator's domain. For Dispatch's 
 - AI research paper feeds (arXiv API — public, structured)
 - Venture funding data (Crunchbase API — gated, Tier 2)
 
-**The universal high-value integration regardless of domain: the operator's own calendar, email, and notes.** The system that can see what you're *doing* — not just what's happening in the world — can synthesize at a level that purely external intelligence cannot match.
+**A note on personal data integration (calendar, email, notes):** In theory, the system that can see what you're doing — not just what's happening in the world — can synthesize at a deeper level. In practice, this is a surveillance tradeoff that may not be worth the value. The operator should opt into this only when their activity stream is rich enough to justify the integration and when they're comfortable with the exposure. This is not a default recommendation.
 
 ---
 
@@ -112,9 +112,9 @@ Current state and target tier for each integration category:
 | Gallery image feeds | 3 | 3 | Maintained |
 | Figma | 4 (manual) | 1 (plugin) | High |
 | Atlas knowledge base | 4 (clipboard) | 2 (API) | High |
-| LinkedIn | — | 2 (API) | High |
-| Job posting APIs | — | 3 (pull) | Medium |
-| Calendar/email | — | 3 (pull) | Medium |
+| Job posting APIs (Greenhouse/Lever) | — | 3 (pull) | High |
+| LinkedIn (job data only) | — | 3 (pull) | Low |
+| Calendar/email | — | not recommended | — |
 | Lilly internal tools | — | 4 → 3 | Engagement-dependent |
 | Clinical trial data | — | 3 (API) | Low (until needed) |
 | Venture/funding data | — | 3 (API) | Low |
