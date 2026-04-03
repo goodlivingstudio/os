@@ -33,7 +33,7 @@ export const FEEDS: FeedDef[] = [
 
   // ── DISCIPLINE — How design leadership is evolving as a function ──────────
   { url: "https://vercel.com/atom",                              source: "Vercel",            category: "Platform & Tooling",   tag: "discipline",   layer: "discipline" },
-  { url: "https://linear.app/changelog.xml",                     source: "Linear",            category: "Product Engineering",  tag: "discipline",   layer: "discipline" },
+  { url: "https://news.google.com/rss/search?q=%22linear+app%22+product+engineering&hl=en-US&gl=US", source: "Linear", category: "Product Engineering", tag: "discipline", layer: "discipline" },
   { url: "https://medium.com/feed/design-ibm",                   source: "IBM Design",        category: "Enterprise Design",    tag: "discipline",   layer: "discipline" },
   { url: "https://news.google.com/rss/search?q=site:research.ibm.com/blog&hl=en-US&gl=US", source: "IBM Research", category: "AI & Enterprise Research", tag: "discipline", layer: "discipline" },
   { url: "https://news.google.com/rss/search?q=site:ibm.com/blog&hl=en-US&gl=US", source: "IBM Blog", category: "Enterprise & AI", tag: "landscape", layer: "landscape" },
@@ -73,7 +73,6 @@ export const FEEDS: FeedDef[] = [
   { url: "https://news.google.com/rss/search?q=site:figma.com/blog&hl=en-US&gl=US", source: "Figma Blog", category: "Design Tooling", tag: "discipline", layer: "discipline" },
   { url: "https://news.google.com/rss/search?q=site:anthropic.com&hl=en-US&gl=US", source: "Anthropic", category: "AI Platform", tag: "discipline", layer: "discipline" },
   { url: "https://news.google.com/rss/search?q=site:cursor.com/blog+OR+site:cursor.sh/blog&hl=en-US&gl=US", source: "Cursor", category: "Design Engineering", tag: "discipline", layer: "discipline" },
-  { url: "https://news.google.com/rss/search?q=site:linear.app/blog&hl=en-US&gl=US", source: "Linear", category: "Product Engineering", tag: "discipline", layer: "discipline" },
   { url: "https://news.google.com/rss/search?q=site:reuters.com&hl=en-US&gl=US", source: "Reuters", category: "Global Wire", tag: "landscape", layer: "landscape" },
   { url: "https://news.google.com/rss/search?q=site:economist.com&hl=en-US&gl=US", source: "The Economist", category: "Global Analysis", tag: "landscape", layer: "landscape" },
 
@@ -91,7 +90,7 @@ export const FEEDS: FeedDef[] = [
   // Medium — Discipline & Culture
   { url: "https://medium.com/feed/@joulee",                        source: "Julie Zhuo (Medium)", category: "Design Leadership", tag: "position",     layer: "position",   type: "social" },
   { url: "https://medium.com/feed/google-design",                  source: "Google Design",     category: "Design Practice",      tag: "discipline",   layer: "discipline", type: "social" },
-  { url: "https://medium.com/feed/ux-collective",                  source: "UX Collective",     category: "Design Discourse",     tag: "discipline",   layer: "discipline", type: "social" },
+  { url: "https://uxdesign.cc/feed",                                source: "UX Collective",     category: "Design Discourse",     tag: "discipline",   layer: "discipline", type: "social" },
   { url: "https://medium.com/feed/mule-design",                    source: "Mule Design",       category: "Design Ethics",        tag: "discipline",   layer: "discipline", type: "social" },
 
   // Positioning — Senior design leadership voices
@@ -100,5 +99,4 @@ export const FEEDS: FeedDef[] = [
   { url: "https://maeda.pm/feed/",                                 source: "John Maeda",        category: "Design & Technology",  tag: "position",     layer: "position",   type: "social" },
   { url: "https://frankchimero.com/feed.xml",                      source: "Frank Chimero",     category: "Design Philosophy",    tag: "position",     layer: "position",   type: "social" },
   { url: "https://carlrivera.substack.com/feed",                   source: "Carl Rivera",       category: "Design Operations",    tag: "position",     layer: "position",   type: "social" },
-  { url: "https://medium.com/feed/@carlrivera",                    source: "Carl Rivera (Medium)", category: "Design Leadership", tag: "position",     layer: "position",   type: "social" },
 ]
