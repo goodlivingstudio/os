@@ -1,6 +1,7 @@
 // Dispatch endpoint — weekly intelligence brief → content pitch pipeline
 // Analyzes 7 days of article history and generates publishable content briefs
 import Anthropic from "@anthropic-ai/sdk"
+import { generateCardImages } from "@/lib/image-gen"
 import { loadArticleHistory, ARTICLE_STORE_AVAILABLE } from "@/lib/article-store"
 import { DISPATCH_PREAMBLE } from "@/lib/prompts"
 import { kv } from "@vercel/kv"
@@ -131,9 +132,29 @@ export async function GET() {
     }
 
     const result = JSON.parse(match[0])
+
+    // Generate images for each pitch
+    let pitches = result.pitches || []
+    if (pitches.length > 0 && process.env.REPLICATE_API_TOKEN) {
+      try {
+        const imageUrls = await generateCardImages(
+          pitches.map((p: { title: string; layers?: string[] }) => ({
+            title: p.title,
+            layers: p.layers,
+          }))
+        )
+        pitches = pitches.map((p: Record<string, unknown>, i: number) => ({
+          ...p,
+          imageUrl: imageUrls[i] || undefined,
+        }))
+      } catch {
+        // Image generation failure shouldn't break dispatch
+      }
+    }
+
     const responseData = {
       weekSummary: result.weekSummary || null,
-      pitches: result.pitches || [],
+      pitches,
       articleCount: articles.length,
       generatedAt: new Date().toISOString(),
     }

@@ -2,6 +2,7 @@
 import Anthropic from "@anthropic-ai/sdk"
 import { DISPATCH_PREAMBLE } from "@/lib/prompts"
 import { loadArticleHistory } from "@/lib/article-store"
+import { generateCardImages } from "@/lib/image-gen"
 
 const SYSTEM_PROMPT = `${DISPATCH_PREAMBLE}
 
@@ -114,6 +115,25 @@ export async function POST(req: Request) {
     if (!match) return Response.json({ briefing: null, patterns: [], blindSpotNote: null })
 
     const result = JSON.parse(match[0])
+
+    // Generate images for each convergence pattern
+    if (result.patterns?.length > 0 && process.env.REPLICATE_API_TOKEN) {
+      try {
+        const imageUrls = await generateCardImages(
+          result.patterns.map((p: { title: string; layers?: string[] }) => ({
+            title: p.title,
+            layers: p.layers,
+          }))
+        )
+        result.patterns = result.patterns.map((p: Record<string, unknown>, i: number) => ({
+          ...p,
+          imageUrl: imageUrls[i] || undefined,
+        }))
+      } catch {
+        // Image generation failure shouldn't break synthesis
+      }
+    }
+
     return Response.json(result)
   } catch (err) {
     return Response.json(
