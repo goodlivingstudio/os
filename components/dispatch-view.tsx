@@ -254,7 +254,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             ))}
             {elapsed > 0 && (
               <div style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", marginTop: 12, opacity: 0.6 }}>
-                {elapsed}s elapsed {elapsed < 15 ? "· generating text" : elapsed < 45 ? "· generating images" : "· almost done"}
+                ~{Math.max(0, 50 - elapsed)}s remaining
               </div>
             )}
           </div>

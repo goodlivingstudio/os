@@ -54,7 +54,7 @@ function AudioBriefBand({ episodes, visible }: { episodes: Episode[]; visible: b
         onMouseLeave={e => { e.currentTarget.style.background = "none" }}
       >
         <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-secondary)", textTransform: "uppercase" }}>
-          Audio Brief
+          DCOS
         </span>
         <ChevronUp size={14} strokeWidth={1.5} style={{
           color: "var(--text-tertiary)",
@@ -327,12 +327,11 @@ function EpisodeCard({ episode, index, onClick }: { episode: Episode; index?: nu
       style={{
         display: "flex",
         gap: 16,
-        padding: 16,
-        background: "var(--bg-surface)",
-        borderRadius: 14,
+        padding: "14px 16px",
+        background: hovered ? "var(--bg-elevated)" : "var(--bg-surface)",
+        borderRadius: 12,
         cursor: "pointer",
-        transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-        transform: hovered ? "scale(1.015)" : "scale(1)",
+        transition: "background 0.15s",
         animation: index !== undefined ? `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${Math.min(index * 60, 600)}ms both` : undefined,
       }}
     >
@@ -437,11 +436,11 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
       {/* Audio DCOS Band — matches Signal's DCOS layout (no separate header) */}
       <AudioBriefBand episodes={episodes} visible={sortBy === "urgency" && !loading} />
 
-      <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
+      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", padding: "8px 16px" }}>
 
       {/* Layer pills */}
       {!loading && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
           {LAYER_FILTERS.map(layer => {
             const isActive = activeLayer === layer.id
             const count = layer.id === "all" ? episodes.length : episodes.filter(ep => ep.layer === layer.id).length

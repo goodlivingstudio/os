@@ -128,7 +128,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
             ))}
             {elapsed > 0 && (
               <div style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", marginTop: 12, opacity: 0.6 }}>
-                {elapsed}s elapsed {elapsed < 10 ? "· analyzing patterns" : elapsed < 30 ? "· generating images" : "· almost done"}
+                ~{Math.max(0, 35 - elapsed)}s remaining
               </div>
             )}
           </div>
@@ -242,11 +242,9 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                         {/* Layer eyebrow */}
                         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
                           {pattern.layers.map((l, li) => (
-                            <span key={l} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                              {li > 0 && <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.4 }}>·</span>}
-                              <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-                                {LAYER_LABELS[l as LayerKey] || l}
-                              </span>
+                            <span key={l} style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                              {li > 0 && <span style={{ opacity: 0.4, margin: "0 4px" }}>·</span>}
+                              {LAYER_LABELS[l as LayerKey] || l}
                             </span>
                           ))}
                         </div>
