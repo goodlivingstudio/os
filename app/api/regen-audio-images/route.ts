@@ -75,11 +75,22 @@ export async function POST(req: Request) {
     await new Promise(r => setTimeout(r, 1000))
   }
 
+  const done = batchIndex + 1 >= totalBatches
+
+  // On final batch, revalidate the podcast API cache so new images appear immediately
+  if (done) {
+    try {
+      await fetch(`${new URL(req.url).origin}/api/podcasts`, {
+        headers: { "x-prerender-revalidate": process.env.VERCEL_AUTOMATION_BYPASS_SECRET || "1" },
+      })
+    } catch { /* best effort */ }
+  }
+
   return Response.json({
     generated, failed,
     batch: batchIndex,
     totalBatches,
-    done: batchIndex + 1 >= totalBatches,
+    done,
     shows: slice.map(f => f.show),
   })
 }
