@@ -53,6 +53,14 @@ export const GALLERY_SOURCES: GallerySource[] = [
 
 export type ColorMood = "warm" | "cool" | "earth" | "vivid" | "neutral"
 
+export interface ColorSwatch {
+  hex: string
+  hue: number
+  saturation: number
+  lightness: number
+  percentage: number  // how much of the image this color represents
+}
+
 export interface GalleryImage {
   id: string
   url: string
@@ -60,9 +68,10 @@ export interface GalleryImage {
   source: string
   linkUrl?: string
   mood?: ColorMood
-  hue?: number        // 0-360 — for tonal sorting within mood
-  saturation?: number // 0-1
-  lightness?: number  // 0-1
+  hue?: number
+  saturation?: number
+  lightness?: number
+  palette?: ColorSwatch[]  // top 3-5 dominant colors
   mediaType?: "image" | "video"
-  videoUrl?: string   // for video assets
+  videoUrl?: string
 }

@@ -1,6 +1,6 @@
 // Gallery API — aggregates images from Are.na and RSS feeds
-import { GALLERY_SOURCES, type GalleryImage, type ColorMood } from "@/lib/gallery"
-import { storePaletteSnapshot, loadPaletteHistory, type PaletteSnapshot } from "@/lib/article-store"
+import { GALLERY_SOURCES, type GalleryImage, type ColorMood, type ColorSwatch } from "@/lib/gallery"
+import { storePaletteSnapshot, loadPaletteHistory, type PaletteSnapshot, type TrendingPalette } from "@/lib/article-store"
 import sharp from "sharp"
 
 export const revalidate = 1800 // 30 min cache
@@ -186,6 +186,58 @@ interface ColorAnalysis {
   hue: number
   saturation: number
   lightness: number
+  palette: ColorSwatch[]
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  return "#" + [r, g, b].map(c => c.toString(16).padStart(2, "0")).join("")
+}
+
+// Simple k-means-like clustering: quantize pixels into buckets
+function extractPalette(pixelData: Buffer, channels: number, pixelCount: number): ColorSwatch[] {
+  // Sample pixels into color buckets (quantize to 4-bit per channel)
+  const buckets = new Map<string, { r: number; g: number; b: number; count: number }>()
+
+  for (let i = 0; i < pixelCount * channels; i += channels) {
+    const r = pixelData[i]
+    const g = pixelData[i + 1]
+    const b = pixelData[i + 2]
+    // Quantize to reduce color space
+    const qr = Math.round(r / 32) * 32
+    const qg = Math.round(g / 32) * 32
+    const qb = Math.round(b / 32) * 32
+    const key = `${qr},${qg},${qb}`
+    const existing = buckets.get(key)
+    if (existing) {
+      existing.r += r
+      existing.g += g
+      existing.b += b
+      existing.count++
+    } else {
+      buckets.set(key, { r, g, b, count: 1 })
+    }
+  }
+
+  // Sort by frequency, take top 5
+  const sorted = [...buckets.values()]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5)
+
+  const totalPixels = sorted.reduce((s, b) => s + b.count, 0)
+
+  return sorted.map(b => {
+    const r = Math.round(b.r / b.count)
+    const g = Math.round(b.g / b.count)
+    const bl = Math.round(b.b / b.count)
+    const [h, s, l] = rgbToHsl(r, g, bl)
+    return {
+      hex: rgbToHex(r, g, bl),
+      hue: Math.round(h),
+      saturation: Math.round(s * 100) / 100,
+      lightness: Math.round(l * 100) / 100,
+      percentage: Math.round((b.count / totalPixels) * 100),
+    }
+  })
 }
 
 async function analyzeImageColor(url: string): Promise<ColorAnalysis | undefined> {
@@ -196,20 +248,31 @@ async function analyzeImageColor(url: string): Promise<ColorAnalysis | undefined
     })
     if (!res.ok) return undefined
     const buffer = Buffer.from(await res.arrayBuffer())
+    // Resize to 8x8 grid for palette extraction (64 pixels)
     const { data, info } = await sharp(buffer)
-      .resize(1, 1, { fit: "cover" })
+      .resize(8, 8, { fit: "cover" })
       .raw()
       .toBuffer({ resolveWithObject: true })
-    if (info.channels >= 3) {
-      const [h, s, l] = rgbToHsl(data[0], data[1], data[2])
-      return {
-        mood: classifyMood(data[0], data[1], data[2]),
-        hue: Math.round(h),
-        saturation: Math.round(s * 100) / 100,
-        lightness: Math.round(l * 100) / 100,
-      }
+    if (info.channels < 3) return undefined
+
+    const palette = extractPalette(data, info.channels, 64)
+
+    // Overall mood from the dominant color
+    const dominant = palette[0]
+    if (!dominant) return undefined
+    const hexToRgb = (hex: string) => {
+      const m = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i)
+      return m ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] as const : [0, 0, 0] as const
     }
-    return undefined
+    const [dr, dg, db] = hexToRgb(dominant.hex)
+
+    return {
+      mood: classifyMood(dr, dg, db),
+      hue: dominant.hue,
+      saturation: dominant.saturation,
+      lightness: dominant.lightness,
+      palette,
+    }
   } catch {
     return undefined
   }
@@ -232,7 +295,7 @@ async function classifyBatch(images: GalleryImage[]): Promise<GalleryImage[]> {
     analyses.forEach((result, j) => {
       if (result.status === "fulfilled" && result.value) {
         const a = result.value
-        results[i + j] = { ...results[i + j], mood: a.mood, hue: a.hue, saturation: a.saturation, lightness: a.lightness }
+        results[i + j] = { ...results[i + j], mood: a.mood, hue: a.hue, saturation: a.saturation, lightness: a.lightness, palette: a.palette }
       }
     })
   }
@@ -285,6 +348,44 @@ export async function GET() {
     if (img.mood) sourceData[img.source].moods[img.mood] = (sourceData[img.source].moods[img.mood] || 0) + 1
   }
 
+  // Detect trending palettes — find recurring color combinations across images
+  const trendingPalettes: TrendingPalette[] = (() => {
+    // Group images by their quantized dominant+secondary color pair
+    const pairMap = new Map<string, { colors: string[]; sources: Set<string>; count: number }>()
+    for (const img of classified) {
+      if (!img.palette || img.palette.length < 2) continue
+      // Use top 2 colors as the "pair signature" (quantized to reduce noise)
+      const top2 = img.palette.slice(0, 2).map(c => {
+        const qh = Math.round(c.hue / 30) * 30
+        const qs = Math.round(c.saturation * 4) / 4
+        const ql = Math.round(c.lightness * 4) / 4
+        return { qKey: `${qh}-${qs}-${ql}`, hex: c.hex }
+      })
+      const pairKey = top2.map(c => c.qKey).sort().join("|")
+      const existing = pairMap.get(pairKey)
+      if (existing) {
+        existing.count++
+        existing.sources.add(img.source)
+      } else {
+        pairMap.set(pairKey, {
+          colors: top2.map(c => c.hex),
+          sources: new Set([img.source]),
+          count: 1,
+        })
+      }
+    }
+    // Return top 5 most recurring pairs that appear across 2+ sources
+    return [...pairMap.values()]
+      .filter(p => p.sources.size >= 2 || p.count >= 3)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5)
+      .map(p => ({
+        colors: p.colors,
+        sources: [...p.sources],
+        frequency: p.count,
+      }))
+  })()
+
   const snapshot: PaletteSnapshot = {
     date: today,
     totalImages: classified.length,
@@ -292,6 +393,7 @@ export async function GET() {
     avgHue: colorCount > 0 ? Math.round(hueSum / colorCount) : 0,
     avgSaturation: colorCount > 0 ? Math.round((satSum / colorCount) * 100) / 100 : 0,
     avgLightness: colorCount > 0 ? Math.round((lightSum / colorCount) * 100) / 100 : 0,
+    trendingPalettes,
     sourceBreakdown: Object.fromEntries(
       Object.entries(sourceData).map(([name, data]) => {
         const topMood = Object.entries(data.moods).sort((a, b) => b[1] - a[1])[0]
@@ -365,6 +467,6 @@ export async function GET() {
     count: classified.length,
     sources: GALLERY_SOURCES.length,
     paletteIntel,
-    snapshot: { moods, avgHue: snapshot.avgHue, avgSaturation: snapshot.avgSaturation, avgLightness: snapshot.avgLightness },
+    snapshot: { moods, avgHue: snapshot.avgHue, avgSaturation: snapshot.avgSaturation, avgLightness: snapshot.avgLightness, trendingPalettes },
   })
 }

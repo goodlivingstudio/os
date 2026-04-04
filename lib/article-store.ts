@@ -139,14 +139,21 @@ export async function loadSourceFailures(): Promise<SourceFailures> {
 
 // ─── Palette Snapshots — daily mood distribution for trend detection ────────
 
+export interface TrendingPalette {
+  colors: string[]       // hex values, 3-5 colors
+  sources: string[]      // which sources this palette appeared in
+  frequency: number      // how many images share this combination
+}
+
 export interface PaletteSnapshot {
   date: string
   totalImages: number
-  moods: Record<string, number>      // { warm: 44, cool: 15, ... }
-  avgHue: number                      // 0-360
-  avgSaturation: number               // 0-1
-  avgLightness: number                // 0-1
-  sourceBreakdown: Record<string, {   // per-source mood + avg hue
+  moods: Record<string, number>
+  avgHue: number
+  avgSaturation: number
+  avgLightness: number
+  trendingPalettes: TrendingPalette[]  // top 3-5 recurring color combos
+  sourceBreakdown: Record<string, {
     count: number
     dominantMood: string
     avgHue: number
