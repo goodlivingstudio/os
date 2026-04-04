@@ -136,69 +136,73 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
 
         {/* ── Editorial layout ── */}
         {!loading && data && (
-          <div style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 20, padding: "0 20px 48px" }}>
 
-            {/* ─ Header image ─ */}
-            {data.headerImageUrl && (
-              <div style={{
-                height: 200, overflow: "hidden",
-                animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both",
-              }}>
-                <img src={data.headerImageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              </div>
-            )}
-
-            {/* ─ THE BRIEFING — headline + evidence ─ */}
+            {/* ─ HERO — image + headline + summary + bullets ─ */}
             <div style={{
-              padding: "36px 20px 32px",
-              borderBottom: "1px solid var(--border)",
+              background: "var(--bg-surface)", borderRadius: 12, overflow: "hidden",
               animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both",
+              marginTop: 20,
             }}>
-              {/* Headline — the week's biggest shift */}
+              {/* Hero image */}
               <div style={{
-                fontSize: 19,
-                fontWeight: 500,
-                color: "var(--text-primary)",
-                lineHeight: 1.45,
-                letterSpacing: "-0.015em",
-                marginBottom: 16,
+                height: 220, overflow: "hidden",
+                background: data.headerImageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
               }}>
-                {data.headline || data.briefing.split(/[.!?]\s/)[0]}
+                {data.headerImageUrl && (
+                  <img src={data.headerImageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                )}
               </div>
 
-              {/* Briefing — broken into scannable points */}
-              {(() => {
-                const text = data.headline ? data.briefing : data.briefing.split(/(?<=[.!?])\s+/).slice(1).join(" ")
-                const sentences = text.split(/(?<=[.!?])\s+/).filter(s => s.trim())
-                return (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    {sentences.map((s, i) => (
-                      <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                        <span style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--text-tertiary)", flexShrink: 0, marginTop: 8 }} />
-                        <span style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>{s}</span>
-                      </div>
-                    ))}
-                  </div>
-                )
-              })()}
+              {/* Headline + summary + bullets */}
+              <div style={{ padding: "24px 24px 28px" }}>
+                {/* Headline */}
+                <div style={{
+                  fontSize: 19, fontWeight: 500, color: "var(--text-primary)",
+                  lineHeight: 1.45, letterSpacing: "-0.015em", marginBottom: 14,
+                }}>
+                  {data.headline || data.briefing.split(/[.!?]\s/)[0]}
+                </div>
+
+                {/* Summary paragraph */}
+                {(() => {
+                  const text = data.headline ? data.briefing : data.briefing.split(/(?<=[.!?])\s+/).slice(1).join(" ")
+                  const sentences = text.split(/(?<=[.!?])\s+/).filter(s => s.trim())
+                  const summary = sentences[0] || ""
+                  const bullets = sentences.slice(1)
+                  return (
+                    <>
+                      {summary && (
+                        <div style={{ ...TYPE.reading, color: "var(--text-secondary)", lineHeight: 1.75, marginBottom: bullets.length > 0 ? 14 : 0 }}>
+                          {summary}
+                        </div>
+                      )}
+                      {bullets.length > 0 && (
+                        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                          {bullets.map((s, i) => (
+                            <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                              <span style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--text-tertiary)", flexShrink: 0, marginTop: 8 }} />
+                              <span style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7 }}>{s}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )
+                })()}
+              </div>
             </div>
 
-            {/* ─ CONVERGENCES — measured 2-column grid ─ */}
+            {/* ─ CONVERGENCES — 4 separate cards in 2x2 grid ─ */}
             {data.patterns.length > 0 && (
-              <div style={{
-                padding: "28px 20px",
-                animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 150ms both",
-              }}>
-                <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 20 }}>
+              <div style={{ animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 150ms both" }}>
+                <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>
                   Convergences
                 </div>
                 <div style={{
                   display: "grid",
                   gridTemplateColumns: data.patterns.length === 1 ? "1fr" : "1fr 1fr",
-                  gap: 1,
-                  background: "var(--border)",
-                  borderRadius: 12,
-                  overflow: "hidden",
+                  gap: 12,
                 }}>
                   {data.patterns.map((pattern, i) => (
                     <div
@@ -206,88 +210,81 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                       onClick={() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`)}
                       style={{
                         background: "var(--bg-surface)",
-                        padding: "24px",
+                        borderRadius: 12,
+                        overflow: "hidden",
                         cursor: "pointer",
-                        transition: "background 0.15s",
+                        transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                         animation: `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${200 + i * 80}ms both`,
                       }}
-                      onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-                      onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
+                      onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.01)" }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)" }}
                     >
-                      {/* Card image — generative or placeholder */}
+                      {/* Card image */}
                       <div style={{
-                        height: 120, marginBottom: 16, borderRadius: 8, overflow: "hidden",
-                        background: pattern.imageUrl ? "transparent" : `linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)`,
+                        height: 100, overflow: "hidden",
+                        background: pattern.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
                       }}>
                         {pattern.imageUrl && (
-                          <img
-                            src={pattern.imageUrl}
-                            alt=""
-                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                          />
+                          <img src={pattern.imageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                         )}
                       </div>
-                      {/* Layer labels with dot separators */}
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
-                        {pattern.layers.map((l, li) => (
-                          <span key={l} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                            {li > 0 && <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.4 }}>·</span>}
-                            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-                              {LAYER_LABELS[l as LayerKey] || l}
-                            </span>
-                          </span>
-                        ))}
-                      </div>
-                      {/* Title — the headline */}
-                      <div style={{
-                        ...TYPE.heading,
-                        color: "var(--text-primary)",
-                        marginBottom: 8,
-                      }}>
-                        {pattern.title}
-                      </div>
-                      {/* Description — bullet points */}
-                      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                        {pattern.description.split(/(?<=[.!?])\s+/).filter(s => s.trim()).map((s, si) => (
-                          <div key={si} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                            <span style={{ width: 3, height: 3, borderRadius: "50%", background: "var(--text-tertiary)", flexShrink: 0, marginTop: 7 }} />
-                            <span style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>{s}</span>
-                          </div>
-                        ))}
-                      </div>
-                      {/* Sources */}
-                      {pattern.sources && pattern.sources.length > 0 && (
-                        <div style={{ marginTop: 12, paddingTop: 10, borderTop: "1px solid var(--border)" }}>
-                          <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", lineHeight: 1.6 }}>
-                            {pattern.sources.map((src, si) => (
-                              <span key={si}>
-                                {si > 0 && <span style={{ opacity: 0.4 }}> · </span>}
-                                {src}
+                      {/* Card content */}
+                      <div style={{ padding: "16px 18px 20px" }}>
+                        {/* Layer eyebrow */}
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+                          {pattern.layers.map((l, li) => (
+                            <span key={l} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                              {li > 0 && <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.4 }}>·</span>}
+                              <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                                {LAYER_LABELS[l as LayerKey] || l}
                               </span>
-                            ))}
-                          </div>
+                            </span>
+                          ))}
                         </div>
-                      )}
+                        {/* Title */}
+                        <div style={{ ...TYPE.heading, color: "var(--text-primary)", marginBottom: 8 }}>
+                          {pattern.title}
+                        </div>
+                        {/* Description bullets */}
+                        <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                          {pattern.description.split(/(?<=[.!?])\s+/).filter(s => s.trim()).map((s, si) => (
+                            <div key={si} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                              <span style={{ width: 3, height: 3, borderRadius: "50%", background: "var(--text-tertiary)", flexShrink: 0, marginTop: 7 }} />
+                              <span style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>{s}</span>
+                            </div>
+                          ))}
+                        </div>
+                        {/* Sources */}
+                        {pattern.sources && pattern.sources.length > 0 && (
+                          <div style={{ marginTop: 10, paddingTop: 8, borderTop: "1px solid var(--border)" }}>
+                            <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", lineHeight: 1.6 }}>
+                              {pattern.sources.map((src, si) => (
+                                <span key={si}>
+                                  {si > 0 && <span style={{ opacity: 0.4 }}> · </span>}
+                                  {src}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* ─ BOTTOM ROW — blind spots + provocation side by side ─ */}
+            {/* ─ BOTTOM — Blind Spots + Ask Cerebro as separate cards ─ */}
             <div style={{
-              display: "flex",
-              borderTop: "1px solid var(--border)",
+              display: "grid",
+              gridTemplateColumns: data.blindSpotNote && data.cerebroProvocation ? "1fr 1fr" : "1fr",
+              gap: 12,
               animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 500ms both",
-              flex: 1,
             }}>
               {/* Blind Spots */}
               {data.blindSpotNote && (
                 <div style={{
-                  flex: 1,
-                  padding: "28px 20px",
-                  borderRight: data.cerebroProvocation ? "1px solid var(--border)" : "none",
-                  display: "flex", flexDirection: "column",
+                  background: "var(--bg-surface)", borderRadius: 12, padding: "20px 22px",
                 }}>
                   <div style={{ ...TYPE.xs, color: "var(--text-primary)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10, fontWeight: 500 }}>
                     Blind Spots
@@ -298,18 +295,16 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                 </div>
               )}
 
-              {/* Cerebro Provocation */}
+              {/* Ask Cerebro */}
               {data.cerebroProvocation && (
                 <div
                   onClick={() => onDeliberate(data.cerebroProvocation!)}
                   style={{
-                    flex: 1,
-                    padding: "28px 20px",
-                    cursor: "pointer",
-                    transition: "background 0.15s",
+                    background: "var(--bg-surface)", borderRadius: 12, padding: "20px 22px",
+                    cursor: "pointer", transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.01)" }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)" }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
                     <ArrowUpRight size={11} style={{ color: "var(--accent-secondary)" }} />
