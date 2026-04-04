@@ -185,7 +185,7 @@ export default function Page() {
   const [focusMode, setFocusMode] = useState(false)
   const [exportOpen, setExportOpen] = useState(false)
   const [activeLayers,   setActiveLayers]   = useState<Set<string>>(new Set())
-  const [sortBy,         setSortBy]         = useState<"urgency" | "layer">("urgency")
+  const [sortBy,         setSortBy]         = useState<"urgency" | "layer">("layer")
   const [mobileTab,      setMobileTab]      = useState<"signal" | "audio" | "synthesis" | "dispatch" | "cerebro" | "config">("signal")
   const [excludedSources, setExcludedSources] = useState<Set<string>>(new Set())
 
