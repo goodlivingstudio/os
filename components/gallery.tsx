@@ -254,12 +254,12 @@ export function GalleryOverlay({ onClose }: { onClose: () => void }) {
           {/* Color mood filters */}
           <div style={{ display: "flex", alignItems: "center", gap: 4, flex: 1, justifyContent: "center" }}>
             <button
-              onClick={() => setActiveMood(null)}
+              onClick={() => { setActiveMood(null); setShowTrends(false) }}
               style={{
                 ...TYPE.sm, padding: "3px 10px", borderRadius: 9999, border: "none",
-                background: activeMood === null ? "var(--accent-primary)" : "transparent",
-                color: activeMood === null ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                fontWeight: activeMood === null ? 600 : 400,
+                background: activeMood === null && !showTrends ? "var(--accent-primary)" : "transparent",
+                color: activeMood === null && !showTrends ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                fontWeight: activeMood === null && !showTrends ? 600 : 400,
                 cursor: "pointer", transition: "all 0.15s",
               }}
               onMouseEnter={e => { if (activeMood !== null) e.currentTarget.style.background = "var(--bg-elevated)" }}
@@ -274,7 +274,7 @@ export function GalleryOverlay({ onClose }: { onClose: () => void }) {
               return (
                 <button
                   key={mood}
-                  onClick={() => setActiveMood(isActive ? null : mood)}
+                  onClick={() => { setActiveMood(isActive ? null : mood); setShowTrends(false) }}
                   style={{
                     ...TYPE.sm, padding: "3px 10px", borderRadius: 9999, border: "none",
                     display: "inline-flex", alignItems: "center", gap: 5,
@@ -293,7 +293,6 @@ export function GalleryOverlay({ onClose }: { onClose: () => void }) {
               )
             })}
             {/* Trends toggle — inline with mood filters */}
-            <span style={{ width: 1, height: 14, background: "var(--border)", flexShrink: 0 }} />
             <button
               onClick={() => { setShowTrends(!showTrends); if (!showTrends) setActiveMood(null) }}
               style={{
