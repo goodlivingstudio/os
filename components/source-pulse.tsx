@@ -361,6 +361,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                 { name: "Exa Search", check: () => String((health?.env as Record<string, string>)?.EXA_API_KEY || "").startsWith("set") },
                 { name: "KV Memory", check: () => String((health?.env as Record<string, string>)?.KV_REST_API_URL || "").startsWith("set") },
                 { name: "Are.na", check: () => String((health?.env as Record<string, string>)?.ARENA_ACCESS_TOKEN || "").startsWith("set") },
+                { name: "Replicate", check: () => String((health?.env as Record<string, string>)?.REPLICATE_API_TOKEN || "").startsWith("set") },
               ].map(api => {
                 const ok = health ? api.check() : null
                 return (
