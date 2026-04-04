@@ -44,37 +44,43 @@ function PaletteCard({ colors, sources, frequency, index }: TrendingPalette & { 
     <div style={{
       borderRadius: 16, overflow: "hidden",
       animation: `signal-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${index * 120}ms both`,
-    }}>
-      {/* Color bars — large, immersive */}
-      <div style={{ display: "flex", height: 120 }}>
+      cursor: "pointer",
+      transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+    }}
+      onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.01)" }}
+      onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)" }}
+    >
+      {/* Color bars — large, immersive, the colors ARE the content */}
+      <div style={{ display: "flex", height: 160 }}>
         {colors.map((hex, i) => (
           <div key={i} style={{
             flex: 1,
             background: hex,
-            transition: "flex 0.3s ease",
-          }} />
+            display: "flex", alignItems: "flex-end", justifyContent: "center",
+            padding: "0 0 12px",
+          }}>
+            <span style={{
+              ...TYPE.xs, fontFamily: MONO, letterSpacing: "0.02em",
+              color: "rgba(255,255,255,0.5)",
+              textShadow: "0 1px 3px rgba(0,0,0,0.4)",
+            }}>
+              {hex}
+            </span>
+          </div>
         ))}
       </div>
-      {/* Details */}
+      {/* Minimal attribution */}
       <div style={{
-        padding: "14px 18px",
+        padding: "10px 18px",
         background: "var(--bg-surface)",
         display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
-        <div>
-          <div style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-secondary)", letterSpacing: "0.02em" }}>
-            {colors.join("  ·  ")}
-          </div>
-          <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginTop: 4 }}>
-            {sources.slice(0, 3).join(", ")}{sources.length > 3 ? ` +${sources.length - 3}` : ""}
-          </div>
-        </div>
-        <div style={{
-          ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)",
-          background: "var(--bg-elevated)", padding: "3px 8px", borderRadius: 6,
-        }}>
+        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
+          {sources.slice(0, 3).join(", ")}{sources.length > 3 ? ` +${sources.length - 3}` : ""}
+        </span>
+        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
           {frequency} images
-        </div>
+        </span>
       </div>
     </div>
   )
@@ -88,26 +94,29 @@ function MoodSpectrum({ moods, total }: { moods: Record<string, number>; total: 
 
   return (
     <div style={{ animation: "signal-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) both" }}>
-      {/* Thick gradient bar */}
-      <div style={{ display: "flex", height: 32, borderRadius: 10, overflow: "hidden", marginBottom: 14 }}>
-        {entries.map(([mood, count]) => (
-          <div key={mood} style={{
-            width: `${(count / total) * 100}%`,
-            background: MOOD_COLORS[mood] || "var(--text-tertiary)",
-            transition: "width 0.6s",
-            position: "relative",
-            display: "flex", alignItems: "center", justifyContent: "center",
-          }}>
-            {(count / total) > 0.12 && (
-              <span style={{
-                ...TYPE.xs, color: "rgba(0,0,0,0.5)", fontWeight: 600,
-                textTransform: "uppercase", letterSpacing: "0.04em",
-              }}>
-                {Math.round((count / total) * 100)}%
-              </span>
-            )}
-          </div>
-        ))}
+      {/* Vibrant gradient bar */}
+      <div style={{ display: "flex", height: 48, borderRadius: 14, overflow: "hidden", marginBottom: 16 }}>
+        {entries.map(([mood, count]) => {
+          const pct = Math.round((count / total) * 100)
+          return (
+            <div key={mood} style={{
+              width: `${pct}%`,
+              background: MOOD_COLORS[mood] || "var(--text-tertiary)",
+              transition: "width 0.6s",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              minWidth: pct > 4 ? 40 : 0,
+            }}>
+              {pct > 6 && (
+                <span style={{
+                  ...TYPE.sm, color: "rgba(0,0,0,0.45)", fontWeight: 700,
+                  textTransform: "uppercase", letterSpacing: "0.02em",
+                }}>
+                  {pct}%
+                </span>
+              )}
+            </div>
+          )
+        })}
       </div>
       {/* Legend */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
@@ -128,25 +137,26 @@ function MoodSpectrum({ moods, total }: { moods: Record<string, number>; total: 
 function SourceStrip({ name, palette, mood }: { name: string; palette: string[]; mood: string }) {
   return (
     <div style={{
-      display: "flex", alignItems: "center", gap: 12, padding: "8px 0",
+      display: "flex", alignItems: "center", gap: 14, padding: "10px 0",
+      borderBottom: "1px solid var(--border)",
     }}>
-      {/* Mini palette */}
-      <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
+      {/* Palette swatches — generous size */}
+      <div style={{ display: "flex", gap: 3, flexShrink: 0 }}>
         {palette.map((hex, i) => (
           <div key={i} style={{
-            width: 24, height: 24, borderRadius: 5,
+            width: 32, height: 32, borderRadius: 6,
             background: hex,
           }} />
         ))}
       </div>
-      <span style={{ flex: 1, ...TYPE.sm, color: "var(--text-secondary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+      <span style={{ flex: 1, ...TYPE.body, color: "var(--text-primary)", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
         {name}
       </span>
       <span style={{
-        ...TYPE.xs, padding: "2px 8px", borderRadius: 9999,
+        ...TYPE.xs, padding: "3px 10px", borderRadius: 9999,
         background: `${MOOD_COLORS[mood] || "var(--text-tertiary)"}22`,
         color: MOOD_COLORS[mood] || "var(--text-tertiary)",
-        textTransform: "capitalize", fontWeight: 500,
+        textTransform: "capitalize", fontWeight: 600,
       }}>
         {mood}
       </span>
