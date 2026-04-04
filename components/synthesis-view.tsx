@@ -153,14 +153,21 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                 {data.headline || data.briefing.split(/[.!?]\s/)[0]}
               </div>
 
-              {/* Briefing — the evidence and context */}
-              <div style={{
-                ...TYPE.reading,
-                color: "var(--text-secondary)",
-                lineHeight: 1.75,
-              }}>
-                {data.headline ? data.briefing : data.briefing.split(/(?<=[.!?])\s+/).slice(1).join(" ")}
-              </div>
+              {/* Briefing — broken into scannable points */}
+              {(() => {
+                const text = data.headline ? data.briefing : data.briefing.split(/(?<=[.!?])\s+/).slice(1).join(" ")
+                const sentences = text.split(/(?<=[.!?])\s+/).filter(s => s.trim())
+                return (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {sentences.map((s, i) => (
+                      <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                        <span style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--accent-muted)", flexShrink: 0, marginTop: 8 }} />
+                        <span style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>{s}</span>
+                      </div>
+                    ))}
+                  </div>
+                )
+              })()}
             </div>
 
             {/* ─ CONVERGENCES — measured 2-column grid ─ */}
@@ -212,13 +219,14 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                       }}>
                         {pattern.title}
                       </div>
-                      {/* Description */}
-                      <div style={{
-                        ...TYPE.body,
-                        color: "var(--text-secondary)",
-                        lineHeight: 1.7,
-                      }}>
-                        {pattern.description}
+                      {/* Description — bullet points */}
+                      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                        {pattern.description.split(/(?<=[.!?])\s+/).filter(s => s.trim()).map((s, si) => (
+                          <div key={si} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                            <span style={{ width: 3, height: 3, borderRadius: "50%", background: "var(--text-tertiary)", flexShrink: 0, marginTop: 7 }} />
+                            <span style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>{s}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   ))}
