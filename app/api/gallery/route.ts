@@ -216,12 +216,16 @@ async function analyzeImageColor(url: string): Promise<ColorAnalysis | undefined
 }
 
 // Classify colors for a batch of images (parallel, with concurrency limit)
-async function classifyBatch(images: GalleryImage[]): Promise<GalleryImage[]> {
-  const CONCURRENCY = 10
-  const results = [...images]
+// Cap at 150 images to stay within Vercel function timeout
+const MAX_CLASSIFY = 150
 
-  for (let i = 0; i < results.length; i += CONCURRENCY) {
-    const batch = results.slice(i, i + CONCURRENCY)
+async function classifyBatch(images: GalleryImage[]): Promise<GalleryImage[]> {
+  const CONCURRENCY = 15
+  const results = [...images]
+  const toClassify = Math.min(results.length, MAX_CLASSIFY)
+
+  for (let i = 0; i < toClassify; i += CONCURRENCY) {
+    const batch = results.slice(i, Math.min(i + CONCURRENCY, toClassify))
     const analyses = await Promise.allSettled(
       batch.map(img => analyzeImageColor(img.url))
     )
