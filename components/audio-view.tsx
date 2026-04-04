@@ -631,23 +631,46 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
               </button>
             )
           })}
-          {/* Artwork toggle */}
+          {/* Artwork switcher */}
           {episodes.some(ep => ep.originalArtworkUrl) && (
-            <button
-              onClick={() => setArtworkMode(m => m === "generated" ? "source" : "generated")}
-              style={{
-                marginLeft: "auto",
-                display: "inline-flex", alignItems: "center", gap: 5,
-                padding: "4px 10px", borderRadius: 9999, border: "none",
-                background: "transparent", cursor: "pointer", transition: "all 0.15s",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-              onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
-            >
-              <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", transition: "color 0.15s" }}>
-                {artworkMode === "generated" ? "Generated" : "Source"}
-              </span>
-            </button>
+            <div style={{
+              marginLeft: "auto",
+              display: "flex",
+              background: "var(--bg-elevated)",
+              borderRadius: 6,
+              padding: 2,
+              position: "relative",
+              overflow: "hidden",
+            }}>
+              {/* Sliding indicator */}
+              <div style={{
+                position: "absolute",
+                top: 2, left: artworkMode === "generated" ? "2px" : "calc(50% + 1px)",
+                width: "calc(50% - 3px)", height: "calc(100% - 4px)",
+                background: "var(--bg-surface)", borderRadius: 5,
+                transition: "left 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                zIndex: 0,
+              }} />
+              {([
+                { id: "generated" as const, label: "Generated" },
+                { id: "source" as const, label: "Source" },
+              ]).map(mode => (
+                <button
+                  key={mode.id}
+                  onClick={() => setArtworkMode(mode.id)}
+                  style={{
+                    padding: "3px 10px", background: "transparent", border: "none",
+                    borderRadius: 5, cursor: "pointer", position: "relative", zIndex: 1,
+                    ...TYPE.xs,
+                    fontWeight: artworkMode === mode.id ? 600 : 400,
+                    color: artworkMode === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
+                    transition: "color 0.2s, font-weight 0.2s",
+                  }}
+                >
+                  {mode.label}
+                </button>
+              ))}
+            </div>
           )}
         </div>
       )}

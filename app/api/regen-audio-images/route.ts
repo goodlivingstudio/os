@@ -7,7 +7,7 @@ import { REPLICATE_API, REPLICATE_MODEL, GLOBAL_STYLE, LAYER_PALETTES } from "@/
 import { SURFACE_STYLES } from "@/lib/image-gen"
 
 const KV_TTL = 60 * 60 * 24 * 14 // 14 days
-const BATCH_SIZE = 4
+const BATCH_SIZE = 2 // 2 per call — each image takes ~15s with base64 download
 
 async function generateImage(showName: string, layer: string, token: string): Promise<string | undefined> {
   const hint = LAYER_PALETTES[layer] || ""
