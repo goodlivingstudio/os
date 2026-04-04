@@ -18,8 +18,8 @@ import { chromium } from "playwright"
 
 const ARENA_CHANNEL_SLUG = "dispatch-zen"
 const ARENA_API = "https://api.are.na/v2"
-const MIN_IMAGE_WIDTH = 800 // high bar — only substantial images
-const MIN_IMAGE_AREA = 600000 // minimum pixel area (~1000×600) — no small fry
+const MIN_IMAGE_WIDTH = 400 // matches rendered CSS width, not naturalWidth
+const MIN_IMAGE_AREA = 150000 // ~400×375 — catches project images, skips icons
 const MAX_IMAGES_PER_SITE = 8 // fewer, better — quality over volume
 const SCROLL_PAUSE = 1500 // ms between scrolls
 const MAX_SCROLLS = 5 // how far down to scroll
@@ -99,25 +99,9 @@ async function scrapeImages(url: string, name: string): Promise<ExtractedImage[]
 
     // Extract all images — prefer srcset high-res, filter by real resolution
     const images = await page.evaluate((minWidth: number) => {
-      const minArea = 400000 // minimum pixel area — filters out low-res
-      // Exclude images inside headers, footers, navs
-      const excludeSelectors = "header, footer, nav, [role='banner'], [role='navigation'], [role='contentinfo']"
-      const excludeElements = new Set(
-        Array.from(document.querySelectorAll(excludeSelectors))
-      )
-      const isInsideExcluded = (el: Element): boolean => {
-        let parent: Element | null = el
-        while (parent) {
-          if (excludeElements.has(parent)) return true
-          parent = parent.parentElement
-        }
-        return false
-      }
+      const minArea = 250000
 
-      const imgs = Array.from(document.querySelectorAll("img"))
-      return imgs
-        .filter(img => !isInsideExcluded(img))
-        .filter(img => img.complete && img.naturalWidth > 0) // only fully loaded images
+      return Array.from(document.querySelectorAll("img"))
         .map(img => {
           // Prefer highest resolution from srcset if available
           let bestUrl = img.src || img.dataset.src || ""
@@ -134,8 +118,8 @@ async function scrapeImages(url: string, name: string): Promise<ExtractedImage[]
             }
           }
           // Use naturalWidth/Height for actual pixel dimensions, not rendered size
-          const w = img.naturalWidth || img.width
-          const h = img.naturalHeight || img.height
+          const w = img.naturalWidth || img.width || img.getBoundingClientRect().width
+          const h = img.naturalHeight || img.height || img.getBoundingClientRect().height
           return { url: bestUrl, width: w, height: h, alt: img.alt || "" }
         })
         .filter(img => {
@@ -150,8 +134,7 @@ async function scrapeImages(url: string, name: string): Promise<ExtractedImage[]
           const badUrlPatterns = ["favicon", "logo", "icon", "avatar", "sprite", "pixel",
             "tracking", "1x1", "placeholder", "blank", "spacer", "data:image",
             "badge", "client", "partner", "sponsor", "thumbnail", "thumb_",
-            "/thumb/", "svg", ".svg", "emoji", "arrow", "button", "cta",
-            "banner", "ad-", "advert", "promo"]
+            "/thumb/", ".svg?", "emoji", "button", "cta", "advert", "promo"]
           if (badUrlPatterns.some(p => urlLower.includes(p))) return false
           // Reject alt text patterns
           const altLower = img.alt.toLowerCase()
