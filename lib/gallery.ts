@@ -45,4 +45,7 @@ export interface GalleryImage {
   source: string
   linkUrl?: string
   mood?: ColorMood
+  hue?: number        // 0-360 — for tonal sorting within mood
+  saturation?: number // 0-1
+  lightness?: number  // 0-1
 }

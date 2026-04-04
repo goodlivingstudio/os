@@ -153,7 +153,14 @@ function classifyMood(r: number, g: number, b: number): ColorMood {
   return "warm"
 }
 
-async function getImageMood(url: string): Promise<ColorMood | undefined> {
+interface ColorAnalysis {
+  mood: ColorMood
+  hue: number
+  saturation: number
+  lightness: number
+}
+
+async function analyzeImageColor(url: string): Promise<ColorAnalysis | undefined> {
   try {
     const res = await fetch(url, {
       signal: AbortSignal.timeout(4000),
@@ -161,13 +168,18 @@ async function getImageMood(url: string): Promise<ColorMood | undefined> {
     })
     if (!res.ok) return undefined
     const buffer = Buffer.from(await res.arrayBuffer())
-    // Resize to 1x1 pixel to get average color
     const { data, info } = await sharp(buffer)
       .resize(1, 1, { fit: "cover" })
       .raw()
       .toBuffer({ resolveWithObject: true })
     if (info.channels >= 3) {
-      return classifyMood(data[0], data[1], data[2])
+      const [h, s, l] = rgbToHsl(data[0], data[1], data[2])
+      return {
+        mood: classifyMood(data[0], data[1], data[2]),
+        hue: Math.round(h),
+        saturation: Math.round(s * 100) / 100,
+        lightness: Math.round(l * 100) / 100,
+      }
     }
     return undefined
   } catch {
@@ -175,19 +187,20 @@ async function getImageMood(url: string): Promise<ColorMood | undefined> {
   }
 }
 
-// Classify moods for a batch of images (parallel, with concurrency limit)
+// Classify colors for a batch of images (parallel, with concurrency limit)
 async function classifyBatch(images: GalleryImage[]): Promise<GalleryImage[]> {
   const CONCURRENCY = 10
   const results = [...images]
 
   for (let i = 0; i < results.length; i += CONCURRENCY) {
     const batch = results.slice(i, i + CONCURRENCY)
-    const moods = await Promise.allSettled(
-      batch.map(img => getImageMood(img.url))
+    const analyses = await Promise.allSettled(
+      batch.map(img => analyzeImageColor(img.url))
     )
-    moods.forEach((result, j) => {
+    analyses.forEach((result, j) => {
       if (result.status === "fulfilled" && result.value) {
-        results[i + j] = { ...results[i + j], mood: result.value }
+        const a = result.value
+        results[i + j] = { ...results[i + j], mood: a.mood, hue: a.hue, saturation: a.saturation, lightness: a.lightness }
       }
     })
   }

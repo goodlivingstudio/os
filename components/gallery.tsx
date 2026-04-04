@@ -167,8 +167,12 @@ export function GalleryOverlay({ onClose }: { onClose: () => void }) {
   for (const img of allImages) { if (img.mood) moodCounts[img.mood]++ }
   const classifiedCount = allImages.filter(img => img.mood).length
 
-  // Apply mood filter
-  const images = activeMood ? allImages.filter(img => img.mood === activeMood) : allImages
+  // Apply mood filter + sort by hue for tonal coherence (like Ricardo's galleries)
+  const images = activeMood
+    ? allImages
+        .filter(img => img.mood === activeMood)
+        .sort((a, b) => (a.hue ?? 0) - (b.hue ?? 0))
+    : allImages
 
   // Close on Escape (when lightbox isn't open)
   useEffect(() => {
