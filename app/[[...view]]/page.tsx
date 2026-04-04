@@ -275,14 +275,27 @@ export default function Page() {
       // Don't intercept other keys when typing
       if (isTyping) return
 
-      // Arrow keys — cycle views
-      const current = modes.indexOf(viewMode as typeof modes[number])
-      if (e.key === "ArrowRight" && current !== -1) {
+      // Arrow keys — cycle views: Signal → Audio → Synthesis → Gallery
+      const allModes = [...modes, "gallery"] as const
+      const currentIdx = galleryOpen ? 3 : modes.indexOf(viewMode as typeof modes[number])
+      if (e.key === "ArrowRight" && currentIdx !== -1) {
         e.preventDefault()
-        setViewMode(modes[(current + 1) % modes.length])
-      } else if (e.key === "ArrowLeft" && current !== -1) {
+        const next = (currentIdx + 1) % allModes.length
+        if (allModes[next] === "gallery") {
+          setGalleryOpenWithUrl(true)
+        } else {
+          if (galleryOpen) setGalleryOpenWithUrl(false)
+          setViewMode(allModes[next] as ViewMode)
+        }
+      } else if (e.key === "ArrowLeft" && currentIdx !== -1) {
         e.preventDefault()
-        setViewMode(modes[(current - 1 + modes.length) % modes.length])
+        const prev = (currentIdx - 1 + allModes.length) % allModes.length
+        if (allModes[prev] === "gallery") {
+          setGalleryOpenWithUrl(true)
+        } else {
+          if (galleryOpen) setGalleryOpenWithUrl(false)
+          setViewMode(allModes[prev] as ViewMode)
+        }
       }
 
       // Number keys — direct view access
