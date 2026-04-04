@@ -14,11 +14,14 @@ interface AudioSignal {
 const AUDIO_BRIEF_CACHE_KEY = "dispatch-dcos-audio-brief"
 const AUDIO_BRIEF_TTL = 30 * 60 * 1000 // 30 min — matches ISR cycle
 
-function AudioBriefBand({ episodes, visible }: { episodes: Episode[]; visible: boolean }) {
+function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episodes: Episode[]; visible: boolean; defaultExpanded?: boolean }) {
   const [signals, setSignals] = useState<AudioSignal[]>([])
   const [loading, setLoading] = useState(false)
-  const [expanded, setExpanded] = useState(true)
+  const [expanded, setExpanded] = useState(defaultExpanded)
   const fetched = useRef(false)
+
+  // Sync expanded state when toggle changes
+  useEffect(() => { setExpanded(defaultExpanded) }, [defaultExpanded])
 
   useEffect(() => {
     if (episodes.length === 0 || fetched.current || !visible) return
@@ -580,7 +583,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
   return (
     <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}>
       {/* Audio DCOS Band — matches Signal's DCOS layout (no separate header) */}
-      <AudioBriefBand episodes={episodes} visible={sortBy === "urgency" && !loading} />
+      <AudioBriefBand episodes={episodes} visible={!loading} defaultExpanded={sortBy === "urgency"} />
 
       <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
 
