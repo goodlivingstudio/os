@@ -1,6 +1,11 @@
 // Serve generated podcast artwork by show name
+// Crops to square center, resizes to 256px, optimized webp
 // Usage: /api/audio-image?show=The_Daily
 import { kv } from "@vercel/kv"
+import sharp from "sharp"
+
+const TARGET_SIZE = 256 // 256px square — sharp at 2x retina for 96px modal + 64px card
+const QUALITY = 75
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -16,20 +21,28 @@ export async function GET(req: Request) {
       return new Response("Not found", { status: 404 })
     }
 
-    // Parse data URI: data:image/webp;base64,XXXX
-    const match = dataUri.match(/^data:(image\/\w+);base64,(.+)$/)
+    // Parse data URI
+    const match = dataUri.match(/^data:image\/\w+;base64,(.+)$/)
     if (!match) return new Response("Invalid data", { status: 500 })
 
-    const contentType = match[1]
-    const buffer = Buffer.from(match[2], "base64")
+    const source = Buffer.from(match[1], "base64")
 
-    return new Response(buffer, {
+    // Crop to square center + resize + compress
+    const optimized = await sharp(source)
+      .resize(TARGET_SIZE, TARGET_SIZE, {
+        fit: "cover",
+        position: "centre",
+      })
+      .webp({ quality: QUALITY })
+      .toBuffer()
+
+    return new Response(new Uint8Array(optimized), {
       headers: {
-        "Content-Type": contentType,
-        "Cache-Control": "public, max-age=86400, s-maxage=604800", // 1 day browser, 7 day CDN
+        "Content-Type": "image/webp",
+        "Cache-Control": "public, max-age=86400, s-maxage=604800",
       },
     })
   } catch {
-    return new Response("KV error", { status: 500 })
+    return new Response("Image processing error", { status: 500 })
   }
 }

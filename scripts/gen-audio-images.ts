@@ -19,7 +19,8 @@ async function generateImage(showName: string, layer: string): Promise<string | 
   if (!token) return undefined
 
   const hint = LAYER_PALETTES[layer] || ""
-  const prompt = `${GLOBAL_STYLE} ${SURFACE_STYLES.audio} Evoking: "${showName}". ${hint}`
+  const baseStyle = GLOBAL_STYLE.replace("Horizontal 16:9 format.", "Square 1:1 format.")
+  const prompt = `${baseStyle} ${SURFACE_STYLES.audio} Evoking: "${showName}". ${hint}`
 
   try {
     let submitRes: Response | null = null
@@ -31,7 +32,7 @@ async function generateImage(showName: string, layer: string): Promise<string | 
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          input: { prompt, num_outputs: 1, aspect_ratio: "16:9", output_format: "webp", output_quality: 85 },
+          input: { prompt, num_outputs: 1, aspect_ratio: "1:1", output_format: "webp", output_quality: 80 },
         }),
       })
       if (submitRes.ok) break
