@@ -18,7 +18,8 @@ import { chromium } from "playwright"
 
 const ARENA_CHANNEL_SLUG = "dispatch-zen"
 const ARENA_API = "https://api.are.na/v2"
-const MIN_IMAGE_WIDTH = 400 // ignore images smaller than this
+const MIN_IMAGE_WIDTH = 600 // minimum rendered width — filters out thumbnails
+const MIN_IMAGE_AREA = 400000 // minimum pixel area (e.g. 800×500) — filters out low-res
 const MAX_IMAGES_PER_SITE = 12 // cap per site to avoid flooding
 const SCROLL_PAUSE = 1500 // ms between scrolls
 const MAX_SCROLLS = 5 // how far down to scroll
@@ -96,19 +97,34 @@ async function scrapeImages(url: string, name: string): Promise<ExtractedImage[]
       await page.waitForTimeout(SCROLL_PAUSE)
     }
 
-    // Extract all images with their rendered dimensions
-    const images = await page.evaluate((minWidth: number) => {
+    // Extract all images — prefer srcset high-res, filter by real resolution
+    const images = await page.evaluate((minWidth: number, minArea: number) => {
       const imgs = Array.from(document.querySelectorAll("img"))
       return imgs
-        .map(img => ({
-          url: img.src || img.dataset.src || "",
-          width: img.naturalWidth || img.width,
-          height: img.naturalHeight || img.height,
-          alt: img.alt || "",
-        }))
+        .map(img => {
+          // Prefer highest resolution from srcset if available
+          let bestUrl = img.src || img.dataset.src || ""
+          const srcset = img.srcset || img.dataset.srcset || ""
+          if (srcset) {
+            const candidates = srcset.split(",").map(s => {
+              const parts = s.trim().split(/\s+/)
+              const w = parseInt(parts[1]?.replace("w", "") || "0", 10)
+              return { url: parts[0], w }
+            }).filter(c => c.url.startsWith("http") && c.w > 0)
+            if (candidates.length > 0) {
+              candidates.sort((a, b) => b.w - a.w)
+              bestUrl = candidates[0].url
+            }
+          }
+          // Use naturalWidth/Height for actual pixel dimensions, not rendered size
+          const w = img.naturalWidth || img.width
+          const h = img.naturalHeight || img.height
+          return { url: bestUrl, width: w, height: h, alt: img.alt || "" }
+        })
         .filter(img =>
           img.url.startsWith("http") &&
           img.width >= minWidth &&
+          (img.width * img.height) >= minArea &&
           !img.url.includes("favicon") &&
           !img.url.includes("logo") &&
           !img.url.includes("icon") &&
@@ -116,10 +132,11 @@ async function scrapeImages(url: string, name: string): Promise<ExtractedImage[]
           !img.url.includes("sprite") &&
           !img.url.includes("pixel") &&
           !img.url.includes("tracking") &&
-          !img.url.includes("1x1")
+          !img.url.includes("1x1") &&
+          !img.url.includes("placeholder")
         )
         .sort((a, b) => (b.width * b.height) - (a.width * a.height))
-    }, MIN_IMAGE_WIDTH)
+    }, MIN_IMAGE_WIDTH, MIN_IMAGE_AREA)
 
     // Also check for background images on large elements
     const bgImages = await page.evaluate((minWidth: number) => {
