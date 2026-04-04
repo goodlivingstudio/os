@@ -167,7 +167,7 @@ const LAYER_LABELS: Record<string, string> = {
 
 // ─── Episode Modal ──────────────────────────────────────────────────────────
 
-function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; onClose: () => void; onDeliberate?: (text: string) => void }) {
+function EpisodeModal({ episode, onClose, onDeliberate, artworkMode = "generated" }: { episode: Episode; onClose: () => void; onDeliberate?: (text: string) => void; artworkMode?: "generated" | "source" }) {
   return (
     <div
       style={{
@@ -198,7 +198,7 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
         }}>
           {episode.artworkUrl ? (
             <img
-              src={episode.artworkUrl}
+              src={artworkMode === "source" && episode.originalArtworkUrl ? episode.originalArtworkUrl : episode.artworkUrl}
               alt={episode.showName}
               onError={(e) => {
                 const img = e.currentTarget
@@ -352,11 +352,12 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
 
 // ─── Episode Card ────────────────────────────────────────────────────────────
 
-function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onSignalLeave }: {
+function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onSignalLeave, artworkMode = "generated" }: {
   episode: Episode; index?: number; onClick: () => void
   onSignalEnter?: (ep: Episode, x: number, y: number) => void
   onSignalMove?: (x: number, y: number) => void
   onSignalLeave?: () => void
+  artworkMode?: "generated" | "source"
 }) {
   const [hovered, setHovered] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
@@ -415,7 +416,7 @@ function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onS
       {/* Artwork */}
       {episode.artworkUrl ? (
         <img
-          src={episode.artworkUrl}
+          src={artworkMode === "source" && episode.originalArtworkUrl ? episode.originalArtworkUrl : episode.artworkUrl}
           alt={episode.showName}
           onError={(e) => {
             const img = e.currentTarget
@@ -494,6 +495,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
   const [activeEpisode, setActiveEpisode] = useState<Episode | null>(null)
   const [activeLayer, setActiveLayer] = useState("all")
   const [signal, setSignal] = useState<{ episode: Episode; x: number; y: number } | null>(null)
+  const [artworkMode, setArtworkMode] = useState<"generated" | "source">("generated")
   const annotated = useRef(false)
   const [annotating, setAnnotating] = useState(false)
 
@@ -587,9 +589,9 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
 
       <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
 
-      {/* Layer pills */}
+      {/* Layer pills + artwork toggle */}
       {!loading && (
-        <div style={{ padding: "12px 16px 0", display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
+        <div style={{ padding: "12px 16px 0", display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8, alignItems: "center" }}>
           {LAYER_FILTERS.map(layer => {
             const isActive = activeLayer === layer.id
             // Use triage-filtered pool for counts (urgency-gated before layer selection)
@@ -629,12 +631,30 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
               </button>
             )
           })}
+          {/* Artwork toggle */}
+          {episodes.some(ep => ep.originalArtworkUrl) && (
+            <button
+              onClick={() => setArtworkMode(m => m === "generated" ? "source" : "generated")}
+              style={{
+                marginLeft: "auto",
+                display: "inline-flex", alignItems: "center", gap: 5,
+                padding: "4px 10px", borderRadius: 9999, border: "none",
+                background: "transparent", cursor: "pointer", transition: "all 0.15s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+            >
+              <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", transition: "color 0.15s" }}>
+                {artworkMode === "generated" ? "Generated" : "Source"}
+              </span>
+            </button>
+          )}
         </div>
       )}
 
       {/* Loading state */}
       {loading ? (
-        <div className="episode-grid" style={{ gap: 8, padding: "0 16px" }}>
+        <div className="episode-grid" style={{ gap: 8, padding: "8px 16px" }}>
           {[...Array(8)].map((_, i) => (
             <div
               key={i}
@@ -663,7 +683,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
           No episodes loaded. Check podcast feed configuration.
         </div>
       ) : (
-        <div className="episode-grid" style={{ gap: 8, padding: "0 16px" }}>
+        <div className="episode-grid" style={{ gap: 8, padding: "8px 16px" }}>
           {filtered.map((ep, i) => (
             <EpisodeCard
               key={ep.id}
@@ -673,6 +693,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
               onSignalEnter={(e, x, y) => setSignal({ episode: e, x, y })}
               onSignalMove={(x, y) => setSignal(s => s ? { ...s, x, y } : s)}
               onSignalLeave={() => setSignal(null)}
+              artworkMode={artworkMode}
             />
           ))}
         </div>
@@ -705,7 +726,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
 
       {/* Episode modal */}
       {activeEpisode && (
-        <EpisodeModal episode={activeEpisode} onClose={() => setActiveEpisode(null)} onDeliberate={onDeliberate} />
+        <EpisodeModal episode={activeEpisode} onClose={() => setActiveEpisode(null)} onDeliberate={onDeliberate} artworkMode={artworkMode} />
       )}
       </div>
     </main>
