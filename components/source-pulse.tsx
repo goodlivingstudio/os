@@ -493,13 +493,14 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               {[
-                { name: "Anthropic", check: () => health?.anthropic === "ok — API responding" },
-                { name: "Exa Search", check: () => String((health?.env as Record<string, string>)?.EXA_API_KEY || "").startsWith("set") },
-                { name: "KV Memory", check: () => String((health?.env as Record<string, string>)?.KV_REST_API_URL || "").startsWith("set") },
-                { name: "Are.na", check: () => String((health?.env as Record<string, string>)?.ARENA_ACCESS_TOKEN || "").startsWith("set") },
-                { name: "Replicate", check: () => String((health?.env as Record<string, string>)?.REPLICATE_API_TOKEN || "").startsWith("set") },
+                { name: "Anthropic", key: "anthropic" },
+                { name: "Exa Search", key: "exa" },
+                { name: "KV Memory", key: "kv" },
+                { name: "Are.na", key: "arena" },
+                { name: "Replicate", key: "replicate" },
               ].map(api => {
-                const ok = health ? api.check() : null
+                const status = health ? (health as Record<string, string>)[api.key] : null
+                const ok = status === null ? null : status === "ok" ? true : status === "no key" ? false : false
                 return (
                   <div key={api.name} style={{
                     flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "10px 14px",
@@ -508,11 +509,14 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                     <span style={{
                       width: 6, height: 6, borderRadius: "50%",
                       background: ok === null ? "var(--text-tertiary)" : ok ? "var(--live)" : "#ef4444",
-                      boxShadow: ok ? `0 0 4px ${ok ? "var(--live)" : "#ef4444"}` : "none",
+                      boxShadow: ok === null ? "none" : ok ? "0 0 4px var(--live)" : "0 0 4px #ef4444",
                     }} />
                     <span style={{ ...TYPE.sm, fontFamily: MONO, color: ok === null ? "var(--text-tertiary)" : ok ? "var(--text-secondary)" : "#ef4444" }}>
                       {api.name}
                     </span>
+                    {status && status !== "ok" && status !== "no key" && (
+                      <span style={{ ...TYPE.xs, color: "#ef4444", opacity: 0.7, marginLeft: "auto" }} title={status}>!</span>
+                    )}
                   </div>
                 )
               })}

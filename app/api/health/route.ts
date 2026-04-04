@@ -1,57 +1,110 @@
-// Diagnostic endpoint — confirms env vars and Anthropic API reachability
+// Diagnostic endpoint — live connectivity probes for all services
 // Visit /api/health to debug deployment issues
+import { kv } from "@vercel/kv"
+
+const TIMEOUT = 6000
+
+async function probeAnthropic(key: string): Promise<string> {
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "x-api-key": key,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 5,
+        messages: [{ role: "user", content: "ping" }],
+      }),
+      signal: AbortSignal.timeout(TIMEOUT),
+    })
+    if (res.ok) return "ok"
+    const body = await res.json().catch(() => ({}))
+    return `error ${res.status}: ${JSON.stringify(body).slice(0, 120)}`
+  } catch (err) {
+    return `failed: ${err instanceof Error ? err.message : String(err)}`
+  }
+}
+
+async function probeExa(key: string): Promise<string> {
+  try {
+    const res = await fetch("https://api.exa.ai/search", {
+      method: "POST",
+      headers: { "x-api-key": key, "content-type": "application/json" },
+      body: JSON.stringify({ query: "test", numResults: 1 }),
+      signal: AbortSignal.timeout(TIMEOUT),
+    })
+    if (res.ok) return "ok"
+    return `error ${res.status}`
+  } catch (err) {
+    return `failed: ${err instanceof Error ? err.message : String(err)}`
+  }
+}
+
+async function probeKV(): Promise<string> {
+  try {
+    const ttl = await kv.ttl("synthesis:weekly")
+    // ttl returns a number: -2 (key missing), -1 (no expiry), or seconds remaining
+    return typeof ttl === "number" ? "ok" : "unexpected response"
+  } catch (err) {
+    return `failed: ${err instanceof Error ? err.message : String(err)}`
+  }
+}
+
+async function probeArena(token: string): Promise<string> {
+  try {
+    const res = await fetch("https://api.are.na/v2/channels/dispatch-visual-feed/contents?per=1&page=1", {
+      headers: { "Authorization": `Bearer ${token}` },
+      signal: AbortSignal.timeout(TIMEOUT),
+    })
+    if (res.ok) return "ok"
+    return `error ${res.status}`
+  } catch (err) {
+    return `failed: ${err instanceof Error ? err.message : String(err)}`
+  }
+}
+
+async function probeReplicate(token: string): Promise<string> {
+  try {
+    // List recent predictions — free, no generation cost
+    const res = await fetch("https://api.replicate.com/v1/predictions?limit=1", {
+      headers: { "Authorization": `Bearer ${token}` },
+      signal: AbortSignal.timeout(TIMEOUT),
+    })
+    if (res.ok) return "ok"
+    return `error ${res.status}`
+  } catch (err) {
+    return `failed: ${err instanceof Error ? err.message : String(err)}`
+  }
+}
 
 export async function GET() {
-  const anthropicKey = process.env.ANTHROPIC_API_KEY
-  const exaKey       = process.env.EXA_API_KEY
-  const kvUrl        = process.env.KV_REST_API_URL
+  const anthropicKey   = process.env.ANTHROPIC_API_KEY
+  const exaKey         = process.env.EXA_API_KEY
+  const kvUrl          = process.env.KV_REST_API_URL
   const arenaToken     = process.env.ARENA_ACCESS_TOKEN
   const replicateToken = process.env.REPLICATE_API_TOKEN
 
-  const status: Record<string, unknown> = {
-    env: {
-      ANTHROPIC_API_KEY:    anthropicKey    ? `set (${anthropicKey.length} chars)` : "MISSING",
-      EXA_API_KEY:          exaKey          ? `set (${exaKey.length} chars)`       : "not configured (web search disabled)",
-      KV_REST_API_URL:      kvUrl           ? "set"                                : "not configured (memory disabled)",
-      ARENA_ACCESS_TOKEN:   arenaToken      ? "set"                                : "not configured (gallery scraper disabled)",
-      REPLICATE_API_TOKEN:  replicateToken  ? "set"                                : "not configured (image generation disabled)",
-    },
-    anthropic: "not tested",
+  // Run all probes in parallel
+  const [anthropic, exa, kvStatus, arena, replicate] = await Promise.all([
+    anthropicKey   ? probeAnthropic(anthropicKey)   : Promise.resolve("no key"),
+    exaKey         ? probeExa(exaKey)               : Promise.resolve("no key"),
+    kvUrl          ? probeKV()                      : Promise.resolve("no key"),
+    arenaToken     ? probeArena(arenaToken)          : Promise.resolve("no key"),
+    replicateToken ? probeReplicate(replicateToken)  : Promise.resolve("no key"),
+  ])
+
+  return Response.json({
+    anthropic,
+    exa,
+    kv: kvStatus,
+    arena,
+    replicate,
     timestamp: new Date().toISOString(),
     node: process.version,
-  }
-
-  if (anthropicKey) {
-    try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "x-api-key": anthropicKey,
-          "anthropic-version": "2023-06-01",
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "claude-haiku-4-5-20251001",
-          max_tokens: 5,
-          messages: [{ role: "user", content: "ping" }],
-        }),
-        signal: AbortSignal.timeout(8000),
-      })
-
-      if (res.ok) {
-        status.anthropic = "ok — API responding"
-      } else {
-        const body = await res.json().catch(() => ({}))
-        status.anthropic = `error ${res.status}: ${JSON.stringify(body).slice(0, 200)}`
-      }
-    } catch (err) {
-      status.anthropic = `exception: ${err instanceof Error ? err.message : String(err)}`
-    }
-  } else {
-    status.anthropic = "skipped — no key"
-  }
-
-  return Response.json(status, {
+  }, {
     headers: { "Cache-Control": "no-store" },
   })
 }
