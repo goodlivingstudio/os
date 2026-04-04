@@ -164,19 +164,20 @@ function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
 
 function classifyMood(r: number, g: number, b: number): ColorMood {
   const [h, s, l] = rgbToHsl(r, g, b)
-  // Neutral: low saturation — grayscale, desaturated, minimal color
-  if (s < 0.2) return "neutral"
+  // Neutral: truly grayscale only — very low saturation AND mid-range lightness
+  if (s < 0.08) return "neutral"
+  if (s < 0.15 && l > 0.3 && l < 0.7) return "neutral"
   // Vivid: high saturation, bold color
-  if (s > 0.65) return "vivid"
-  // Earth: greens, browns, tans, natural materials
-  if (s < 0.55 && ((h >= 30 && h <= 160)) && l < 0.65) return "earth"
+  if (s > 0.55) return "vivid"
+  // Earth: greens, browns, tans, natural materials, warm desaturated
+  if (s < 0.45 && ((h >= 20 && h <= 170)) && l < 0.7) return "earth"
   // Warm: reds, oranges, yellows, golden tones
-  if (h <= 60 || h >= 330) return "warm"
+  if (h <= 50 || h >= 320) return "warm"
   // Cool: blues, teals, purples
-  if (h >= 180 && h <= 300) return "cool"
-  // Green range
-  if (h > 60 && h < 180) return s < 0.45 ? "earth" : "cool"
-  return "neutral"
+  if (h >= 180 && h <= 310) return "cool"
+  // Green-to-warm transition
+  if (h > 50 && h < 180) return s < 0.35 ? "earth" : "cool"
+  return "warm"
 }
 
 interface ColorAnalysis {
