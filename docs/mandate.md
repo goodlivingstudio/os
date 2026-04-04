@@ -86,6 +86,8 @@ The annotation system scores *articles*, not sources. Every article is evaluated
 
 **Urgency is first-class.** Scored 0–10 per article. The Signal view should treat urgency as the primary sort axis. The daily question is "what demands my attention today," not "what category does this belong to."
 
+**Open question (2026-04-03):** The five-layer model may not feel intuitive as a navigation model. It was designed as an annotation taxonomy for machines, not a mental model for the operator. Give it a week with the urgency-first sort and multi-select layer chips. If the operator never filters by layer — if urgency alone is sufficient for daily triage — the layers may be doing their best work invisibly in the scoring engine rather than as visible UI categories. That's a valid architecture. Revisit after one week of real usage.
+
 ---
 
 ## CEREBRO — THE STATION CHIEF
@@ -138,6 +140,20 @@ Three surfaces form the core intelligence pipeline:
 **Dispatch → Action:** The content pipeline. Week's intelligence translated into 4–5 actionable content pitches. Two modes: strategic positioning (LinkedIn/Medium/Substack) and creative expression (IG/Lummi).
 
 The missing link: **Dispatch → Atlas handoff.** Pitches are generated but not developed. Deliberations happen but evaporate. Atlas closes the loop by capturing decisions and developed work — turning Dispatch from a monitoring instrument into a decision-support system over time.
+
+---
+
+## SURFACES REQUIRING REAL USAGE (2026-04-03)
+
+The following surfaces were rebuilt or significantly updated in the April 3 session. They need real usage before further tuning. Do not redesign based on theory — use them for a week and let the friction reveal what needs to change.
+
+**Cerebro (voice):** Station chief model newly installed. Needs 10-15 real conversations before evaluating whether the voice calibration is right. Watch for: is it challenging weak reasoning? Is it leading with intelligence or orientation? Is it pushing forward or waiting to be asked?
+
+**Synthesis:** 7-day history now injected. The prompt asks for trend detection, convergence patterns, blind spots, and a Cerebro provocation. The output quality depends on article history depth — will improve each day the system runs. The *presentation* of synthesis may need design work. Currently static text. May want interactive hooks into Cerebro for any pattern that catches the operator's eye.
+
+**Dispatch pitches:** New prompt asks for `angle` (what only Jeremy can say) and `wordCount`. Verify that Claude is returning these fields. The pitch quality depends on 7-day article history richness. Atlas export buttons are in place — test the clipboard-to-Atlas workflow.
+
+**Five-layer navigation:** Urgency-first sort is the new default. Layers are now multi-select filters. Use this for a week. If urgency alone is sufficient for triage, consider demoting layers from visible navigation to invisible scoring infrastructure.
 
 ---
 
