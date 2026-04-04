@@ -473,22 +473,49 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
   const [annotating, setAnnotating] = useState(false)
 
   useEffect(() => {
+    const ANNOTATION_CACHE_KEY = "dispatch-audio-annotations"
+    const ANNOTATION_TTL = 30 * 60 * 1000 // 30 min — matches ISR cycle
+
     fetch("/api/podcasts")
       .then(r => r.json())
       .then(data => {
-        setEpisodes(data.episodes || [])
+        const eps: Episode[] = data.episodes || []
         setShowCount(data.showCount || 0)
         setLoading(false)
 
+        // Check localStorage for cached annotations
+        let cachedAnnotations: Map<string, { synopsis?: string; relevance?: string; signalScores?: { urgency: number } }> | null = null
+        try {
+          const raw = localStorage.getItem(ANNOTATION_CACHE_KEY)
+          if (raw) {
+            const { ts, entries } = JSON.parse(raw)
+            if (Date.now() - ts < ANNOTATION_TTL && Array.isArray(entries)) {
+              cachedAnnotations = new Map(entries)
+            }
+          }
+        } catch { /* */ }
+
+        // Apply cached annotations immediately if available
+        if (cachedAnnotations && cachedAnnotations.size > 0) {
+          const cache = cachedAnnotations
+          setEpisodes(eps.map(ep => {
+            const a = cache.get(ep.id)
+            return a ? { ...ep, synopsis: a.synopsis, relevance: a.relevance, urgency: a.signalScores?.urgency } : ep
+          }))
+          return // skip API call — cache is fresh
+        }
+
+        setEpisodes(eps)
+
         // Client-side annotation (lazy — only when Audio tab is visited)
-        if (!annotated.current && data.episodes?.length > 0) {
+        if (!annotated.current && eps.length > 0) {
           annotated.current = true
           setAnnotating(true)
           fetch("/api/annotate", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              articles: data.episodes.slice(0, 15).map((ep: Episode) => ({
+              articles: eps.slice(0, 15).map((ep: Episode) => ({
                 id: ep.id, title: `${ep.showName}: ${ep.title}`, category: ep.category,
               })),
             }),
@@ -501,6 +528,11 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
                   const a = map.get(ep.id) as { synopsis?: string; relevance?: string; signalScores?: { urgency: number } } | undefined
                   return a ? { ...ep, synopsis: a.synopsis, relevance: a.relevance, urgency: a.signalScores?.urgency } : ep
                 }))
+                // Cache to localStorage
+                try {
+                  const entries = ann.annotations.map((a: { id: string; synopsis?: string; relevance?: string; signalScores?: Record<string, number> }) => [a.id, { synopsis: a.synopsis, relevance: a.relevance, signalScores: a.signalScores }])
+                  localStorage.setItem(ANNOTATION_CACHE_KEY, JSON.stringify({ ts: Date.now(), entries }))
+                } catch { /* quota exceeded */ }
               }
               setAnnotating(false)
             })
