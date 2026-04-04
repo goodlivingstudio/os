@@ -103,7 +103,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
 
         {/* ── Loading ── */}
         {loading && (
-          <div style={{ padding: "32px 32px" }}>
+          <div style={{ padding: "32px 20px" }}>
             {SYNTHESIS_STATUSES.slice(0, statusIdx + 1).map((line, i) => (
               <div
                 key={i}
@@ -124,7 +124,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
 
         {/* ── Empty ── */}
         {!loading && !data && (
-          <div style={{ padding: "48px 32px", maxWidth: 520 }}>
+          <div style={{ padding: "48px 20px", maxWidth: 520 }}>
             <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.8 }}>
               Pattern intelligence will appear when annotated articles are available.
             </div>
@@ -137,7 +137,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
 
             {/* ─ THE BRIEFING — headline + evidence ─ */}
             <div style={{
-              padding: "36px 32px 32px",
+              padding: "36px 20px 32px",
               borderBottom: "1px solid var(--border)",
               animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
@@ -173,7 +173,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
             {/* ─ CONVERGENCES — measured 2-column grid ─ */}
             {data.patterns.length > 0 && (
               <div style={{
-                padding: "28px 32px",
+                padding: "28px 20px",
                 borderBottom: "1px solid var(--border)",
                 animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 150ms both",
               }}>
@@ -202,11 +202,14 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     >
-                      {/* Layer labels — text only, no colored dots */}
-                      <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-                        {pattern.layers.map(l => (
-                          <span key={l} style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-                            {LAYER_LABELS[l as LayerKey] || l}
+                      {/* Layer labels with dot separators */}
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
+                        {pattern.layers.map((l, li) => (
+                          <span key={l} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                            {li > 0 && <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.4 }}>·</span>}
+                            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                              {LAYER_LABELS[l as LayerKey] || l}
+                            </span>
                           </span>
                         ))}
                       </div>
@@ -238,14 +241,15 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
               display: "flex",
               borderTop: "1px solid var(--border)",
               animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 500ms both",
-              minHeight: 120,
+              flex: 1,
             }}>
               {/* Blind Spots */}
               {data.blindSpotNote && (
                 <div style={{
                   flex: 1,
-                  padding: "28px 32px",
+                  padding: "28px 20px",
                   borderRight: data.cerebroProvocation ? "1px solid var(--border)" : "none",
+                  display: "flex", flexDirection: "column",
                 }}>
                   <div style={{ ...TYPE.xs, color: "var(--text-primary)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10, fontWeight: 500 }}>
                     Blind Spots
@@ -262,7 +266,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                   onClick={() => onDeliberate(data.cerebroProvocation!)}
                   style={{
                     flex: 1,
-                    padding: "28px 32px",
+                    padding: "28px 20px",
                     cursor: "pointer",
                     transition: "background 0.15s",
                   }}

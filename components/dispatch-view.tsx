@@ -190,7 +190,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
 
         {/* ── Loading ── */}
         {loading && (
-          <div style={{ padding: "32px 32px" }}>
+          <div style={{ padding: "32px 20px" }}>
             {DISPATCH_STATUSES.slice(0, statusIdx + 1).map((line, idx) => (
               <div
                 key={idx}
@@ -215,7 +215,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
 
             {/* ─ WEEK SUMMARY — editorial lead ─ */}
             <div style={{
-              padding: "40px 32px 36px",
+              padding: "40px 20px 36px",
               borderBottom: "1px solid var(--border)",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
@@ -246,7 +246,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                     key={i}
                     onClick={() => setActivePitch(pitch)}
                     style={{
-                      padding: "28px 32px",
+                      padding: "28px 20px",
                       borderBottom: "1px solid var(--border)",
                       cursor: "pointer",
                       transition: "background 0.15s",
@@ -284,7 +284,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                 ))}
 
                 {/* Copy all */}
-                <div style={{ padding: "20px 32px" }}>
+                <div style={{ padding: "20px 20px" }}>
                   <CopyButton
                     text={`# Weekly Dispatch\n${data.weekSummary || ""}\n\n${data.pitches.map((p, i) => `## ${i + 1}. ${p.title}\n**Thesis:** ${p.thesis}\n**Mode:** ${p.mode}\n**Brief:** ${p.brief}\n**Platform:** ${p.platforms.primary}\n**Urgency:** ${p.urgency}\n`).join("\n")}`}
                     label="Copy all pitches"
@@ -297,7 +297,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
 
         {/* ── Empty ── */}
         {!loading && !data?.pitches?.length && !data?.message && !data?.weekSummary && (
-          <div style={{ padding: "48px 32px", maxWidth: 520 }}>
+          <div style={{ padding: "48px 20px", maxWidth: 520 }}>
             <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.8 }}>
               Content pitches will appear after the weekly intelligence brief generates.
             </div>
