@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Copy, Check } from "lucide-react"
+import { Copy, Check, Sun, Moon, Upload, ChevronDown } from "lucide-react"
 import { TYPE, MONO, metaStyle } from "@/lib/styles"
 import type { ColorMood, ColorSwatch } from "@/lib/gallery"
 
@@ -180,20 +180,92 @@ function generatePalettes(images: PaletteTrendsProps["images"]): GeneratedPalett
   return palettes
 }
 
+// ─── Dark mode color derivation ─────────────────────────────────────────────
+
+function deriveDarkColor(hex: string): string {
+  const [r, g, b] = hexToRgb(hex)
+  const lum = relativeLuminance(r, g, b)
+
+  let dr: number, dg: number, db: number
+  if (lum > 0.7) {
+    // Very light → invert to dark
+    dr = Math.round(255 - r * 0.7)
+    dg = Math.round(255 - g * 0.7)
+    db = Math.round(255 - b * 0.7)
+  } else if (lum < 0.05) {
+    // Very dark → lighten significantly
+    dr = Math.min(255, r + 200)
+    dg = Math.min(255, g + 200)
+    db = Math.min(255, b + 200)
+  } else if (lum < 0.2) {
+    // Dark → lighten
+    dr = Math.min(255, Math.round(r * 1.5 + 40))
+    dg = Math.min(255, Math.round(g * 1.5 + 40))
+    db = Math.min(255, Math.round(b * 1.5 + 40))
+  } else {
+    // Mid-range → shift slightly deeper and more saturated
+    dr = Math.max(0, Math.round(r * 0.82))
+    dg = Math.max(0, Math.round(g * 0.82))
+    db = Math.max(0, Math.round(b * 0.82))
+  }
+
+  return `#${[dr, dg, db].map(c => Math.min(255, Math.max(0, c)).toString(16).padStart(2, "0")).join("")}`
+}
+
 // ─── Palette Card — the hero element ────────────────────────────────────────
 
 function PaletteDisplay({ palette, index }: { palette: GeneratedPalette; index: number }) {
-  const [copied, setCopied] = useState(false)
+  const [isDark, setIsDark] = useState(false)
+  const [copied, setCopied] = useState<string | null>(null)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [pushing, setPushing] = useState(false)
+  const [pushed, setPushed] = useState(false)
 
-  const copyPalette = () => {
-    const text = palette.colors.join(", ")
+  const activeColors = isDark ? palette.colors.map(deriveDarkColor) : palette.colors
+
+  const handleCopy = (format: string) => {
+    let text = ""
+    if (format === "hex") {
+      text = activeColors.join(", ")
+    } else if (format === "css") {
+      text = activeColors.map((c, i) => `--${palette.name.toLowerCase()}-${i + 1}: ${c};`).join("\n")
+    } else if (format === "tailwind") {
+      const obj: Record<string, string> = {}
+      activeColors.forEach((c, i) => { obj[`${(i + 1) * 100}`] = c })
+      text = `"${palette.name.toLowerCase()}": ${JSON.stringify(obj, null, 2)}`
+    }
     navigator.clipboard.writeText(text).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      setCopied(format)
+      setMenuOpen(false)
+      setTimeout(() => setCopied(null), 2000)
     })
   }
 
-  // Find best text color for each swatch
+  const handlePushToFigma = async () => {
+    setPushing(true)
+    try {
+      const tokens = activeColors.map((hex, i) => ({
+        name: `${palette.name.toLowerCase()}/${i + 1}`,
+        resolvedType: "COLOR" as const,
+        values: {
+          [isDark ? "Dark" : "Light"]: hex,
+          [isDark ? "Light" : "Dark"]: isDark ? palette.colors[i] : deriveDarkColor(hex),
+        },
+      }))
+      // Use the figma-console MCP tool via a fetch to our own API
+      // For now, copy as Figma-ready JSON
+      const figmaJson = JSON.stringify({
+        collectionName: `Dispatch — ${palette.name}`,
+        modes: ["Light", "Dark"],
+        tokens,
+      }, null, 2)
+      await navigator.clipboard.writeText(figmaJson)
+      setPushed(true)
+      setTimeout(() => setPushed(false), 3000)
+    } catch { /* */ }
+    setPushing(false)
+  }
+
   const textColor = (hex: string) => {
     const [r, g, b] = hexToRgb(hex)
     const lum = relativeLuminance(r, g, b)
@@ -205,42 +277,56 @@ function PaletteDisplay({ palette, index }: { palette: GeneratedPalette; index: 
       borderRadius: 16, overflow: "hidden",
       animation: `signal-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${index * 100}ms both`,
     }}>
-      {/* Color bands — immersive, the colors are everything */}
-      <div style={{ display: "flex", height: 140 }}>
-        {palette.colors.map((hex, i) => (
+      {/* Color bands — with smooth transition between light/dark */}
+      <div style={{ display: "flex", height: 140, transition: "all 0.4s ease" }}>
+        {activeColors.map((hex, i) => (
           <div key={i} style={{
             flex: 1,
             background: hex,
             display: "flex", flexDirection: "column",
             alignItems: "center", justifyContent: "flex-end",
             padding: "0 0 14px",
-            transition: "flex 0.3s ease",
+            transition: "background 0.4s ease",
           }}>
             <span style={{
               ...TYPE.xs, fontFamily: MONO,
               color: textColor(hex),
               letterSpacing: "0.02em",
+              transition: "color 0.3s ease",
             }}>
               {hex}
             </span>
           </div>
         ))}
       </div>
-      {/* Details */}
+
+      {/* Controls */}
       <div style={{
-        padding: "14px 18px",
+        padding: "12px 18px",
         background: "var(--bg-surface)",
         display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
-        <div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ ...TYPE.sm, color: "var(--text-primary)", fontWeight: 600 }}>
             {palette.name}
           </div>
-          <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginTop: 2 }}>
-            {palette.description}
-          </div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          {/* Light/Dark toggle */}
+          <button
+            onClick={() => setIsDark(!isDark)}
+            title={isDark ? "Switch to light" : "Switch to dark"}
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "center",
+              width: 26, height: 26, borderRadius: 6,
+              border: "1px solid var(--border)", background: "transparent",
+              color: "var(--text-tertiary)", cursor: "pointer",
+              transition: "all 0.15s",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+          >
+            {isDark ? <Sun size={12} /> : <Moon size={12} />}
+          </button>
+          {/* Accessibility badge */}
           {palette.accessibilityScore && (() => {
             const ratio = parseFloat(palette.accessibilityScore)
             const label = contrastLabel(ratio)
@@ -255,21 +341,84 @@ function PaletteDisplay({ palette, index }: { palette: GeneratedPalette; index: 
               </span>
             ) : null
           })()}
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0, position: "relative" }}>
+          {/* Copy dropdown */}
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              style={{
+                display: "flex", alignItems: "center", gap: 3,
+                padding: "4px 10px", borderRadius: 6,
+                border: "1px solid var(--border)", background: "transparent",
+                ...TYPE.xs, color: copied ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                cursor: "pointer", transition: "all 0.15s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+            >
+              {copied ? <Check size={11} /> : <Copy size={11} />}
+              {copied ? "Copied" : "Copy"}
+              <ChevronDown size={10} />
+            </button>
+            {menuOpen && (
+              <div style={{
+                position: "absolute", bottom: "calc(100% + 4px)", right: 0, zIndex: 100,
+                background: "var(--bg-elevated)", border: "1px solid var(--border)",
+                borderRadius: 8, padding: "4px 0", minWidth: 160,
+                boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+              }}>
+                {[
+                  { id: "hex", label: "Hex values" },
+                  { id: "css", label: "CSS variables" },
+                  { id: "tailwind", label: "Tailwind config" },
+                ].map(opt => (
+                  <button
+                    key={opt.id}
+                    onClick={() => handleCopy(opt.id)}
+                    style={{
+                      width: "100%", display: "block", padding: "6px 14px",
+                      background: "transparent", border: "none", textAlign: "left",
+                      ...TYPE.xs, color: "var(--text-secondary)",
+                      cursor: "pointer", transition: "background 0.1s",
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Push to Figma */}
           <button
-            onClick={copyPalette}
+            onClick={handlePushToFigma}
+            disabled={pushing}
             style={{
               display: "flex", alignItems: "center", gap: 4,
               padding: "4px 10px", borderRadius: 6,
-              border: "1px solid var(--border)", background: "transparent",
-              ...TYPE.xs, color: copied ? "var(--accent-secondary)" : "var(--text-tertiary)",
-              cursor: "pointer", transition: "all 0.15s",
+              border: "1px solid var(--border)",
+              background: pushed ? "var(--accent-secondary)" : "transparent",
+              ...TYPE.xs,
+              color: pushed ? "var(--bg-primary)" : pushing ? "var(--text-tertiary)" : "var(--text-tertiary)",
+              cursor: pushing ? "default" : "pointer", transition: "all 0.15s",
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+            onMouseEnter={e => { if (!pushing && !pushed) e.currentTarget.style.background = "var(--bg-elevated)" }}
+            onMouseLeave={e => { if (!pushed) e.currentTarget.style.background = "transparent" }}
           >
-            {copied ? <Check size={11} /> : <Copy size={11} />}
-            {copied ? "Copied" : "Copy"}
+            {pushed ? <Check size={11} /> : <Upload size={11} />}
+            {pushed ? "Copied for Figma" : pushing ? "..." : "Figma"}
           </button>
+        </div>
+      </div>
+
+      {/* Description */}
+      <div style={{ padding: "0 18px 12px", background: "var(--bg-surface)" }}>
+        <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
+          {palette.description}
         </div>
       </div>
     </div>
