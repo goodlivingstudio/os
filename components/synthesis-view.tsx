@@ -66,6 +66,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
   const [elapsed, setElapsed] = useState(0)
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
   const [hoveredCerebro, setHoveredCerebro] = useState(false)
+  const [hoveredBlindSpots, setHoveredBlindSpots] = useState(false)
   const fetched = useRef(false)
 
   const isTriage = sortBy === "urgency"
@@ -216,7 +217,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                 </div>
                 <div style={{
                   display: "grid",
-                  gridTemplateColumns: isTriage ? "1fr" : (data.patterns.length === 1 ? "1fr" : "1fr 1fr"),
+                  gridTemplateColumns: data.patterns.length === 1 ? "1fr" : "1fr 1fr",
                   gap: 16,
                 }}>
                   {data.patterns.map((pattern, i) => (
@@ -259,21 +260,25 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                           ...TYPE.heading,
                           color: hoveredCard === i ? "var(--text-primary)" : "var(--text-secondary)",
                           transition: "color 0.15s",
-                          marginBottom: (!isTriage && pattern.description) ? 10 : 0,
+                          marginBottom: pattern.description ? 10 : 0,
                         }}>
                           {pattern.title}
                         </div>
-                        {/* Description bullets — Explore only */}
-                        {!isTriage && (
-                          <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-                            {pattern.description.split(/(?<=[.!?])\s+/).filter(s => s.trim()).map((s, si) => (
-                              <div key={si} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                                <span style={{ width: 3, height: 3, borderRadius: "50%", background: "var(--text-tertiary)", flexShrink: 0, marginTop: 7 }} />
-                                <span style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>{s}</span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
+                        {/* Description bullets — Triage: 2-3 max, Explore: all */}
+                        {pattern.description && (() => {
+                          const allBullets = pattern.description.split(/(?<=[.!?])\s+/).filter(s => s.trim())
+                          const bullets = isTriage ? allBullets.slice(0, 3) : allBullets
+                          return (
+                            <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                              {bullets.map((s, si) => (
+                                <div key={si} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                                  <span style={{ width: 3, height: 3, borderRadius: "50%", background: "var(--text-tertiary)", flexShrink: 0, marginTop: 7 }} />
+                                  <span style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>{s}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )
+                        })()}
                         {/* Sources — Explore only, quiet attribution */}
                         {!isTriage && pattern.sources && pattern.sources.length > 0 && (
                           <div style={{ marginTop: 12, ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, lineHeight: 1.6 }}>
@@ -296,10 +301,17 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             }}>
               {/* Blind Spots — structured bullets */}
               {data.blindSpotNote && (
-                <div style={{
-                  background: "var(--bg-surface)", borderRadius: 12, padding: "20px 24px",
-                }}>
-                  <div style={{ ...TYPE.xs, color: "var(--text-primary)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10, fontWeight: 500 }}>
+                <div
+                  onClick={() => onDeliberate(`Explore this blind spot in my intelligence feed:\n\n"${data.blindSpotNote}"\n\nWhat am I missing and why does it matter?`)}
+                  onMouseEnter={() => setHoveredBlindSpots(true)}
+                  onMouseLeave={() => setHoveredBlindSpots(false)}
+                  style={{
+                    background: hoveredBlindSpots ? "var(--bg-elevated)" : "var(--bg-surface)",
+                    borderRadius: 12, padding: "20px 24px",
+                    cursor: "pointer", transition: "background 0.15s",
+                  }}
+                >
+                  <div style={{ ...TYPE.xs, color: hoveredBlindSpots ? "var(--text-primary)" : "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10, fontWeight: 500, transition: "color 0.15s" }}>
                     Blind Spots
                   </div>
                   {(() => {
