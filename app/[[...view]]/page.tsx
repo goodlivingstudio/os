@@ -259,7 +259,7 @@ export default function Page() {
 
   // Global keyboard shortcuts
   useEffect(() => {
-    const modes: ViewMode[] = ["signal", "audio", "synthesis", "dispatch"]
+    const modes: ViewMode[] = ["signal", "audio", "synthesis"]
     const handler = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName
       const isTyping = tag === "INPUT" || tag === "TEXTAREA"
@@ -288,7 +288,7 @@ export default function Page() {
       else if (e.key === "1") setViewMode("signal")
       else if (e.key === "2") setViewMode("audio")
       else if (e.key === "3") setViewMode("synthesis")
-      else if (e.key === "4") setViewMode("dispatch")
+      else if (e.key === "4") setGalleryOpenWithUrl(true)
 
       // F — focus mode
       else if (e.key === "f" || e.key === "F") setFocusModeWithUrl(!focusMode)

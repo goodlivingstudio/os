@@ -419,7 +419,7 @@ export function LeftRail({
           >
             {/* Sliding indicator — hidden when config is active */}
             {(() => {
-              const modes = ["signal", "audio", "synthesis", "dispatch"]
+              const modes = ["signal", "audio", "synthesis", "gallery"]
               const idx = modes.indexOf(viewMode)
               return (
                 <div
@@ -439,16 +439,16 @@ export function LeftRail({
               )
             })()}
             {([
-              { id: "signal" as const,    Icon: Radio,      title: "Signal"    },
-              { id: "audio" as const,     Icon: AudioLines, title: "Sound"     },
-              { id: "synthesis" as const, Icon: Blend,      title: "Synthesis" },
-              { id: "dispatch" as const,  Icon: Send,       title: "Dispatch"  },
+              { id: "signal" as const,    Icon: Radio,      title: "Signal",    action: null },
+              { id: "audio" as const,     Icon: AudioLines, title: "Sound",     action: null },
+              { id: "synthesis" as const, Icon: Blend,      title: "Synthesis", action: null },
+              { id: "gallery" as const,   Icon: Aperture,   title: "Gallery",   action: "gallery" },
             ]).map(tab => {
-              const isActive = viewMode === tab.id
+              const isActive = tab.action === "gallery" ? false : viewMode === tab.id
               return (
                 <button
                   key={tab.id}
-                  onClick={() => onViewChange(tab.id)}
+                  onClick={() => tab.action === "gallery" && onGalleryOpen ? onGalleryOpen() : onViewChange(tab.id as ViewMode)}
                   title={tab.title}
                   aria-label={tab.title}
                   aria-pressed={isActive}
@@ -596,103 +596,46 @@ export function LeftRail({
 
       </nav>
 
-      {/* Bottom bar — utilities, aligned with toggle edges */}
+      {/* Bottom bar — Config, Pulse, Shortcuts, Export, Dispatch */}
       <div style={{ flexShrink: 0, padding: "12px 10px", borderTop: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <button
-          onClick={() => onViewChange("config")}
-          title="Configuration"
-          aria-label="Configuration"
-          style={{
-            display: "flex", alignItems: "center", justifyContent: "center",
-            width: 36, height: 36, borderRadius: 8,
-            border: "none",
-            background: viewMode === "config" ? "var(--accent-primary)" : "transparent",
-            color: viewMode === "config" ? "var(--accent-secondary)" : "var(--text-tertiary)",
-            cursor: "pointer", transition: "all 0.15s", padding: 0,
-          }}
-          onMouseEnter={e => { if (viewMode !== "config") { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" } }}
-          onMouseLeave={e => { e.currentTarget.style.background = viewMode === "config" ? "var(--accent-primary)" : "transparent"; e.currentTarget.style.color = viewMode === "config" ? "var(--accent-secondary)" : "var(--text-tertiary)" }}
-        >
-          <Settings size={18} strokeWidth={1.5} />
-        </button>
-        {onGalleryOpen && (
-          <button
-            onClick={onGalleryOpen}
-            title="Gallery"
-            aria-label="Gallery"
-            style={{
-              display: "flex", alignItems: "center", justifyContent: "center",
-              width: 36, height: 36, borderRadius: 8,
-              border: "none", background: "transparent",
-              color: "var(--text-tertiary)",
-              cursor: "pointer", transition: "all 0.15s", padding: 0,
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
-          >
-            <Aperture size={18} strokeWidth={1.5} />
-          </button>
-        )}
-        {onHotkeysOpen && (
-          <button
-            onClick={onHotkeysOpen}
-            title="Keyboard shortcuts"
-            aria-label="Keyboard shortcuts"
-            style={{
-              display: "flex", alignItems: "center", justifyContent: "center",
-              width: 36, height: 36, borderRadius: 8,
-              border: "none", background: "transparent",
-              color: "var(--text-tertiary)",
-              cursor: "pointer", transition: "all 0.15s", padding: 0,
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
-          >
-            <Keyboard size={18} strokeWidth={1.5} />
-          </button>
-        )}
-        {onExportOpen && (
-          <button
-            onClick={onExportOpen}
-            title="Quick Export"
-            aria-label="Quick Export"
-            style={{
-              display: "flex", alignItems: "center", justifyContent: "center",
-              width: 36, height: 36, borderRadius: 8,
-              border: "none", background: "transparent",
-              color: "var(--text-tertiary)",
-              cursor: "pointer", transition: "all 0.15s", padding: 0,
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
-          >
-            <FileDown size={18} strokeWidth={1.5} />
-          </button>
-        )}
-        <button
-          onClick={() => onViewChange("pulse")}
-          title="Source Pulse — Diagnostics"
-          aria-label="Source Pulse"
-          style={{
-            display: "flex", alignItems: "center", justifyContent: "center",
-            width: 36, height: 36, borderRadius: 8,
-            border: "none", background: "transparent",
-            color: feedHealth && feedHealth.sourcesFailed > 0 ? "#D4A05A" : "var(--text-tertiary)",
-            cursor: "pointer", transition: "all 0.15s", padding: 0,
-            position: "relative",
-          }}
-          onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" }}
-          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = feedHealth && feedHealth.sourcesFailed > 0 ? "#D4A05A" : "var(--text-tertiary)" }}
-        >
-          <Activity size={18} strokeWidth={1.5} />
-          {feedHealth && feedHealth.sourcesFailed > 0 && (
-            <span style={{
-              position: "absolute", top: 4, right: 4,
-              width: 6, height: 6, borderRadius: "50%",
-              background: "#ef4444",
-            }} />
-          )}
-        </button>
+        {([
+          { id: "config" as const,   Icon: Settings,  title: "Configuration",        isView: true },
+          { id: "pulse" as const,    Icon: Activity,  title: "Source Pulse",          isView: true },
+          { id: "shortcuts" as const, Icon: Keyboard, title: "Keyboard shortcuts",   isView: false },
+          { id: "export" as const,   Icon: FileDown,  title: "Quick Export",          isView: false },
+          { id: "dispatch" as const, Icon: Send,      title: "Dispatch",             isView: true },
+        ]).map(item => {
+          const isActive = item.isView && viewMode === item.id
+          const hasBadge = item.id === "pulse" && feedHealth && feedHealth.sourcesFailed > 0
+          return (
+            <button
+              key={item.id}
+              onClick={() => {
+                if (item.id === "shortcuts" && onHotkeysOpen) onHotkeysOpen()
+                else if (item.id === "export" && onExportOpen) onExportOpen()
+                else if (item.isView) onViewChange(item.id as ViewMode)
+              }}
+              title={item.title}
+              aria-label={item.title}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "center",
+                width: 36, height: 36, borderRadius: 8,
+                border: "none",
+                background: isActive ? "var(--accent-primary)" : "transparent",
+                color: isActive ? "var(--accent-secondary)" : hasBadge ? "#D4A05A" : "var(--text-tertiary)",
+                cursor: "pointer", transition: "all 0.15s", padding: 0,
+                position: "relative",
+              }}
+              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" } }}
+              onMouseLeave={e => { e.currentTarget.style.background = isActive ? "var(--accent-primary)" : "transparent"; e.currentTarget.style.color = isActive ? "var(--accent-secondary)" : hasBadge ? "#D4A05A" : "var(--text-tertiary)" }}
+            >
+              <item.Icon size={18} strokeWidth={1.5} />
+              {hasBadge && (
+                <span style={{ position: "absolute", top: 4, right: 4, width: 6, height: 6, borderRadius: "50%", background: "#ef4444" }} />
+              )}
+            </button>
+          )
+        })}
       </div>
     </aside>
   )
