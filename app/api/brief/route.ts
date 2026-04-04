@@ -21,7 +21,7 @@ Sort the feed by urgency score first. From the highest-urgency signals, select 3
 CARD FORMAT:
 Each card must contain:
 - headline: A sharp declarative statement of the signal (not a news headline — a synthesis statement). Max 12 words.
-- body: 2–3 sentences. What the signal is. Why it matters. What it might demand.
+- body: ONE sentence only. Max 30 words. Lead with the implication, not the event. What this demands, not what happened.
 - source: Article title and source name
 - citation: [1], [2], [3] inline references
 - layer: Primary intelligence layer (Opportunity / Position / Discipline / Landscape / Culture)
