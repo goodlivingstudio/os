@@ -99,7 +99,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
         </span>
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
+      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", display: "flex", flexDirection: "column" }}>
 
         {/* ── Loading ── */}
         {loading && (
@@ -133,7 +133,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
 
         {/* ── Editorial layout ── */}
         {!loading && data && (
-          <div style={{ padding: "0 0 48px" }}>
+          <div style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
 
             {/* ─ THE BRIEFING — headline + evidence ─ */}
             <div style={{
@@ -174,7 +174,6 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
             {data.patterns.length > 0 && (
               <div style={{
                 padding: "28px 20px",
-                borderBottom: "1px solid var(--border)",
                 animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 150ms both",
               }}>
                 <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 20 }}>

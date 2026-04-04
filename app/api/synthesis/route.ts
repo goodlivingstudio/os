@@ -17,7 +17,7 @@ PRODUCE:
 
 2. BRIEFING: 2-3 sentences expanding on the headline. What specific signals across which days demonstrate this shift? Name sources and dates when possible. This should feel like week-in-review intelligence, not a daily summary.
 
-3. CONVERGENCES (2-4): Patterns where multiple intelligence layers are intersecting in new ways THIS WEEK. Each must reference specific signals from different days to demonstrate the trend.
+3. CONVERGENCES (exactly 4): Patterns where multiple intelligence layers are intersecting in new ways THIS WEEK. Always return exactly 4 patterns. Each must reference specific signals from different days to demonstrate the trend.
    - title: Declarative pattern name (5-8 words)
    - description: 2-3 sentences. What's converging and why it matters.
    - layers: Which 2-3 layers intersect
@@ -43,7 +43,7 @@ Return JSON:
       "layers": ["opportunity", "discipline"],
       "signalCount": 4
     }
-  ],
+  ],  // EXACTLY 4 patterns required
   "blindSpotNote": "What dropped off or should be present but isn't.",
   "cerebroProvocation": "One sharp question grounded in this week's trends."
 }
