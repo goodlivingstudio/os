@@ -512,8 +512,8 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
 
   const TRIAGE_THRESHOLD = 6
   const sourceFiltered = excludedSources?.size ? episodes.filter(ep => !excludedSources.has(ep.showName)) : episodes
+  const hasScores = sourceFiltered.some(ep => ep.urgency !== undefined && ep.urgency > 0)
   const layerFiltered = activeLayer === "all" ? sourceFiltered : sourceFiltered.filter(ep => ep.layer === activeLayer)
-  const hasScores = layerFiltered.some(ep => ep.urgency !== undefined && ep.urgency > 0)
   // Triage: show urgency 6+ once scores exist. While annotating, show nothing (loading state handles it).
   // If annotation finished with no qualifying scores, fall back to recency.
   const triageWaiting = sortBy === "urgency" && annotating && !hasScores
@@ -535,7 +535,11 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
         <div style={{ padding: "12px 16px 0", display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
           {LAYER_FILTERS.map(layer => {
             const isActive = activeLayer === layer.id
-            const count = layer.id === "all" ? episodes.length : episodes.filter(ep => ep.layer === layer.id).length
+            // Use triage-filtered pool for counts (urgency-gated before layer selection)
+            const pool = sortBy === "urgency" && hasScores
+              ? sourceFiltered.filter(ep => (ep.urgency ?? 0) >= TRIAGE_THRESHOLD)
+              : sourceFiltered
+            const count = layer.id === "all" ? pool.length : pool.filter(ep => ep.layer === layer.id).length
             if (layer.id !== "all" && count === 0) return null
             return (
               <button
@@ -551,7 +555,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
                 onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? "var(--accent-primary)" : "transparent" }}
               >
                 <span style={{
-                  ...TYPE.body,
+                  ...TYPE.sm,
                   color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
                   fontWeight: isActive ? 600 : 400,
                   transition: "color 0.15s",
@@ -559,9 +563,9 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
                   {layer.label}
                 </span>
                 <span style={{
-                  ...TYPE.sm, fontVariantNumeric: "tabular-nums",
+                  ...TYPE.xs, fontVariantNumeric: "tabular-nums",
                   color: isActive ? "var(--accent-muted)" : "var(--text-tertiary)",
-                  opacity: 0.7, transition: "color 0.15s",
+                  opacity: 0.5, transition: "color 0.15s",
                 }}>
                   {count}
                 </span>
