@@ -256,9 +256,11 @@ function CacheManagement() {
       }
       setAudioStatus("done")
       setAudioResult(`${totalGen} generated${totalFail ? `, ${totalFail} failed` : ""}`)
+      setTimeout(() => { setAudioStatus("idle"); setAudioResult("") }, 5000)
     } catch {
       setAudioStatus("error")
-      setAudioResult("Failed")
+      setAudioResult("Check Replicate connection")
+      setTimeout(() => { setAudioStatus("idle"); setAudioResult("") }, 5000)
     }
   }
 
@@ -318,19 +320,19 @@ function CacheManagement() {
               <RefreshCw
                 size={10}
                 style={{
-                  color: a.status === "done" ? "var(--live)" : a.status === "error" ? "#ef4444" : "var(--text-tertiary)",
+                  color: a.status === "done" ? "var(--live)" : a.status === "error" ? "var(--text-tertiary)" : "var(--text-tertiary)",
                   animation: a.status === "running" ? "spin 1s linear infinite" : "none",
                 }}
               />
               <span style={{
                 ...TYPE.sm, fontFamily: MONO,
-                color: a.status === "done" ? "var(--live)" : a.status === "error" ? "#ef4444" : "var(--text-secondary)",
+                color: a.status === "done" ? "var(--live)" : a.status === "error" ? "#D4A05A" : "var(--text-secondary)",
               }}>
                 {a.label}
               </span>
             </div>
-            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textAlign: "left" }}>
-              {a.status === "running" ? (a.sub || "Working...") : a.status === "done" ? (a.sub || "Done") : a.desc}
+            <span style={{ ...TYPE.xs, color: a.status === "error" ? "#D4A05A" : "var(--text-tertiary)", textAlign: "left" }}>
+              {a.status === "running" ? (a.sub || "Working...") : a.status === "done" ? (a.sub || "Done") : a.status === "error" ? (a.sub || "Issue — try again") : a.desc}
             </span>
             {a.status === "idle" && (
               <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", opacity: 0.6, marginTop: 2 }}>
