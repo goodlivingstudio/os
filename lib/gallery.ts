@@ -11,7 +11,7 @@ export interface GallerySource {
 
 export const GALLERY_SOURCES: GallerySource[] = [
   // Are.na — manual curation channel
-  { url: "https://api.are.na/v2/channels/dispatch-zen/contents?per=40", name: "Dispatch Zen", type: "arena" },
+  { url: "https://api.are.na/v2/channels/dispatch-zen/contents?per=200", name: "Dispatch Zen", type: "arena" },
 
   // Architecture & built environment (Mono/Muted heavy — intentionally reduced)
   { url: "https://www.dezeen.com/architecture/feed/", name: "Dezeen", type: "rss" },
