@@ -138,24 +138,23 @@ async function scrapeImages(url: string, name: string): Promise<ExtractedImage[]
           const h = img.naturalHeight || img.height
           return { url: bestUrl, width: w, height: h, alt: img.alt || "" }
         })
-        .filter(img =>
-          img.url.startsWith("http") &&
-          img.width >= minWidth &&
-          img.width > 0 && img.height > 0 &&
-          (img.width * img.height) >= minArea &&
-          !img.url.includes("favicon") &&
-          !img.url.includes("logo") &&
-          !img.url.includes("icon") &&
-          !img.url.includes("avatar") &&
-          !img.url.includes("sprite") &&
-          !img.url.includes("pixel") &&
-          !img.url.includes("tracking") &&
-          !img.url.includes("1x1") &&
-          !img.url.includes("placeholder") &&
-          !img.url.includes("blank") &&
-          !img.url.includes("spacer") &&
-          !img.url.includes("data:image")
-        )
+        .filter(img => {
+          if (!img.url.startsWith("http")) return false
+          if (img.width < minWidth || img.width <= 0 || img.height <= 0) return false
+          if ((img.width * img.height) < minArea) return false
+          // Reject extreme aspect ratios (logos, banners, thin strips)
+          const ratio = img.width / img.height
+          if (ratio > 4 || ratio < 0.2) return false
+          // Reject URL patterns
+          const badPatterns = ["favicon", "logo", "icon", "avatar", "sprite", "pixel",
+            "tracking", "1x1", "placeholder", "blank", "spacer", "data:image",
+            "badge", "client", "partner", "sponsor"]
+          if (badPatterns.some(p => img.url.toLowerCase().includes(p))) return false
+          // Reject alt text patterns (client logos often have descriptive alt)
+          const altLower = img.alt.toLowerCase()
+          if (altLower.includes("logo") || altLower.includes("client") || altLower.includes("partner")) return false
+          return true
+        })
         .sort((a, b) => (b.width * b.height) - (a.width * a.height))
     }, MIN_IMAGE_WIDTH)
 
