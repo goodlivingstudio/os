@@ -54,9 +54,10 @@ const TARGETS: ScrapeTarget[] = [
   { url: "https://fantasy.co/", name: "Fantasy", category: "agency" },
   { url: "https://www.monks.com/work", name: "Monks", category: "agency" },
   { url: "https://erichu.info/", name: "Eric Hu", category: "agency" },
-  { url: "https://daisychain.design/", name: "Daisy Chain", category: "agency" },
+  { url: "https://www.daisychainstudio.net/", name: "Daisy Chain", category: "agency" },
+  { url: "https://mouthwash.studio/", name: "Mouthwash Studio", category: "agency" },
   { url: "https://koto.studio/", name: "Koto", category: "agency" },
-  { url: "https://madebyws.com/", name: "MWS", category: "agency" },
+  { url: "https://dfrnt.com/", name: "DFRNT", category: "agency" },
   { url: "https://tendril.ca/", name: "Tendril", category: "agency" },
   { url: "https://watsondesign.com/", name: "Watson", category: "agency" },
   { url: "https://locomotive.ca/en", name: "Locomotive", category: "agency" },
@@ -82,7 +83,9 @@ async function scrapeImages(url: string, name: string): Promise<ExtractedImage[]
 
   try {
     console.log(`  Visiting ${url}...`)
-    await page.goto(url, { waitUntil: "networkidle", timeout: 30000 })
+    // Use domcontentloaded + manual wait — some sites (heavy video/animation) never reach networkidle
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 })
+    await page.waitForTimeout(3000) // give JS time to render images
 
     // Scroll down to trigger lazy loading
     for (let i = 0; i < MAX_SCROLLS; i++) {
@@ -143,6 +146,13 @@ async function scrapeImages(url: string, name: string): Promise<ExtractedImage[]
       seen.add(img.url)
       return true
     })
+
+    if (unique.length === 0) {
+      const videoCount = await page.evaluate(() => document.querySelectorAll("video").length)
+      if (videoCount > 0) {
+        console.log(`  No images — site uses ${videoCount} video elements (manual curation via Are.na recommended)`)
+      }
+    }
 
     console.log(`  Found ${unique.length} images from ${name}`)
     return unique.slice(0, MAX_IMAGES_PER_SITE)
