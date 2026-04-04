@@ -1,5 +1,6 @@
 // ─── Gallery Feed Sources ───────────────────────────────────────────────────
 // Curated image feeds for the visual intelligence gallery.
+// Balanced across mood categories: warm, cool, mono, earth, vivid, muted.
 // Uses Are.na channels and RSS image feeds.
 
 export interface GallerySource {
@@ -9,40 +10,46 @@ export interface GallerySource {
 }
 
 export const GALLERY_SOURCES: GallerySource[] = [
-  // Are.na channels — curated visual streams
+  // Are.na — manual curation channel
   { url: "https://api.are.na/v2/channels/dispatch-zen/contents?per=40", name: "Dispatch Zen", type: "arena" },
 
-  // RSS image feeds — architecture, design, photography
-  { url: "https://www.dezeen.com/architecture/feed/", name: "Dezeen Architecture", type: "rss" },
-  { url: "https://www.dezeen.com/design/feed/", name: "Dezeen Design", type: "rss" },
-  { url: "https://www.dezeen.com/interiors/feed/", name: "Dezeen Interiors", type: "rss" },
+  // Architecture & built environment (Mono/Muted heavy — intentionally reduced)
+  { url: "https://www.dezeen.com/architecture/feed/", name: "Dezeen", type: "rss" },
   { url: "https://www.architectural-review.com/rss", name: "Architectural Review", type: "rss" },
   { url: "https://www.archdaily.com/feed", name: "ArchDaily", type: "rss" },
   { url: "https://www.designboom.com/feed/", name: "Designboom", type: "rss" },
+  { url: "https://leibal.com/feed/", name: "Leibal", type: "rss" },
+
+  // Design & product (mixed moods)
   { url: "https://www.wallpaper.com/rss", name: "Wallpaper*", type: "rss" },
   { url: "https://www.ignant.com/feed/", name: "IGNANT", type: "rss" },
+  { url: "https://minimalissimo.com/feed/", name: "Minimalissimo", type: "rss" },
+  { url: "https://plainmagazine.com/feed/", name: "Plain Magazine", type: "rss" },
+  { url: "https://www.yellowtrace.com.au/feed/", name: "Yellowtrace", type: "rss" },
 
-  // Visual art, photography, creative practice
+  // Photography (fills Cool, Warm, Earth, Vivid)
+  { url: "https://petapixel.com/feed/", name: "PetaPixel", type: "rss" },
+  { url: "https://www.featureshoot.com/feed/", name: "Feature Shoot", type: "rss" },
+  { url: "https://www.thisiscolossal.com/category/photography/feed/", name: "Colossal Photography", type: "rss" },
+  { url: "https://trendland.com/feed/", name: "Trendland", type: "rss" },
+
+  // Visual art & creative culture (Vivid, Warm)
   { url: "https://www.thisiscolossal.com/feed/", name: "Colossal", type: "rss" },
   { url: "https://www.booooooom.com/feed/", name: "Booooooom", type: "rss" },
-  { url: "https://minimalissimo.com/feed/", name: "Minimalissimo", type: "rss" },
+  { url: "https://www.juxtapoz.com/feed/", name: "Juxtapoz", type: "rss" },
+  { url: "https://www.fubiz.net/en/feed/", name: "Fubiz", type: "rss" },
 
-  // Web design, interactive, digital craft
+  // Street culture & fashion (Vivid, Warm, Cool)
+  { url: "https://hypebeast.com/feed", name: "Hypebeast", type: "rss" },
+  { url: "https://highsnobiety.com/feed/", name: "Highsnobiety", type: "rss" },
+
+  // Web design & digital craft (Mono/Cool)
   { url: "https://www.awwwards.com/feed", name: "Awwwards", type: "rss" },
   { url: "https://www.minimal.gallery/feed", name: "Minimal Gallery", type: "rss" },
   { url: "https://tympanus.net/codrops/feed/", name: "Codrops", type: "rss" },
 
   // Agency portfolios
   { url: "https://www.tendril.ca/feed", name: "Tendril", type: "rss" },
-
-  // Design journalism, visual culture, creative practice
-  { url: "https://www.yellowtrace.com.au/feed/", name: "Yellowtrace", type: "rss" },
-  { url: "https://www.fubiz.net/en/feed/", name: "Fubiz", type: "rss" },
-  { url: "https://plainmagazine.com/feed/", name: "Plain Magazine", type: "rss" },
-  { url: "https://hypebeast.com/feed", name: "Hypebeast", type: "rss" },
-  { url: "https://highsnobiety.com/feed/", name: "Highsnobiety", type: "rss" },
-  { url: "https://www.juxtapoz.com/feed/", name: "Juxtapoz", type: "rss" },
-  { url: "https://leibal.com/feed/", name: "Leibal", type: "rss" },
 ]
 
 export type ColorMood = "warm" | "cool" | "mono" | "earth" | "vivid" | "muted"
