@@ -30,8 +30,6 @@ const LAYER_LABELS: Record<LayerKey, string> = {
   culture: "Culture",
 }
 
-// ─── AI Synthesis Data ─────────────────────────────────────────────────────
-
 interface AIPattern {
   title: string
   description: string
@@ -45,8 +43,6 @@ interface SynthesisData {
   blindSpotNote: string
   cerebroProvocation?: string
 }
-
-// ─── Loading Animation ─────────────────────────────────────────────────────
 
 const SYNTHESIS_STATUSES = [
   "$ synthesis --analyze",
@@ -102,11 +98,11 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
         </span>
       </div>
 
-      <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
+      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
 
-        {/* ── Loading state — terminal boot ── */}
+        {/* ── Loading ── */}
         {loading && (
-          <div style={{ padding: "4px 0" }}>
+          <div style={{ padding: "32px 32px" }}>
             {SYNTHESIS_STATUSES.slice(0, statusIdx + 1).map((line, i) => (
               <div
                 key={i}
@@ -125,81 +121,92 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
           </div>
         )}
 
-        {/* ── Empty state ── */}
+        {/* ── Empty ── */}
         {!loading && !data && (
-          <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7 }}>
-            Pattern intelligence will appear when annotated articles are available. The synthesis layer needs at least 3 annotated signals to detect convergences.
+          <div style={{ padding: "48px 32px", maxWidth: 520 }}>
+            <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.8 }}>
+              Pattern intelligence will appear when annotated articles are available.
+            </div>
           </div>
         )}
 
-        {/* ── Synthesis content ── */}
+        {/* ── Editorial layout ── */}
         {!loading && data && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+          <div style={{ padding: "0 0 48px" }}>
 
-            {/* ── The Briefing — the station chief's opening read ── */}
+            {/* ─ THE BRIEFING — editorial lead, commanding presence ─ */}
             <div style={{
+              padding: "40px 32px 36px",
+              borderBottom: "1px solid var(--border)",
               animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both",
-              marginBottom: 32,
             }}>
               <div style={{
-                ...TYPE.reading,
-                color: "var(--text-primary)",
-                lineHeight: 1.8,
+                fontSize: 17,
                 fontWeight: 400,
-                maxWidth: 640,
+                color: "var(--text-primary)",
+                lineHeight: 1.75,
+                maxWidth: 580,
+                letterSpacing: "-0.01em",
               }}>
                 {data.briefing}
               </div>
             </div>
 
-            {/* ── Convergence Patterns ── */}
+            {/* ─ CONVERGENCES — measured 2-column grid ─ */}
             {data.patterns.length > 0 && (
               <div style={{
-                animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 200ms both",
-                marginBottom: 32,
+                padding: "28px 32px",
+                borderBottom: "1px solid var(--border)",
+                animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 150ms both",
               }}>
-                <div style={{ ...labelStyle, marginBottom: 16 }}>Convergences</div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 20 }}>
+                  Convergences
+                </div>
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: data.patterns.length === 1 ? "1fr" : "1fr 1fr",
+                  gap: 1,
+                  background: "var(--border)",
+                  borderRadius: 12,
+                  overflow: "hidden",
+                }}>
                   {data.patterns.map((pattern, i) => (
                     <div
                       key={i}
+                      onClick={() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`)}
                       style={{
                         background: "var(--bg-surface)",
-                        borderRadius: 12,
-                        padding: "18px 20px",
+                        padding: "24px",
                         cursor: "pointer",
-                        transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-                        animation: `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${300 + i * 100}ms both`,
+                        transition: "background 0.15s",
+                        animation: `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${200 + i * 80}ms both`,
                       }}
-                      onClick={() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically? What should I be paying attention to?`)}
-                      onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.01)" }}
-                      onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)" }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     >
-                      {/* Layer dots + signal count */}
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+                      {/* Layer indicators — minimal, color-only */}
+                      <div style={{ display: "flex", gap: 4, marginBottom: 12 }}>
                         {pattern.layers.map(l => (
-                          <span
-                            key={l}
-                            style={{
-                              ...TYPE.xs,
-                              color: LAYER_COLORS[l as LayerKey] || "var(--text-tertiary)",
-                              textTransform: "uppercase",
-                              fontWeight: 500,
-                            }}
-                          >
-                            {LAYER_LABELS[l as LayerKey] || l}
-                          </span>
+                          <span key={l} style={{
+                            width: 6, height: 6, borderRadius: "50%",
+                            background: LAYER_COLORS[l as LayerKey] || "var(--text-tertiary)",
+                          }} />
                         ))}
-                        <span style={{ ...metaStyle, marginLeft: 4 }}>
-                          {pattern.signalCount} signals
-                        </span>
                       </div>
-                      {/* Title */}
-                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", marginBottom: 6 }}>
+                      {/* Title — the headline */}
+                      <div style={{
+                        ...TYPE.heading,
+                        color: "var(--text-primary)",
+                        marginBottom: 8,
+                      }}>
                         {pattern.title}
                       </div>
                       {/* Description */}
-                      <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>
+                      <div style={{
+                        ...TYPE.body,
+                        color: "var(--text-secondary)",
+                        lineHeight: 1.7,
+                      }}>
                         {pattern.description}
                       </div>
                     </div>
@@ -208,48 +215,52 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
               </div>
             )}
 
-            {/* ── Blind Spot — subtle, not a card ── */}
-            {data.blindSpotNote && (
-              <div style={{
-                animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 600ms both",
-                marginBottom: 32,
-              }}>
-                <div style={{ ...labelStyle, marginBottom: 8 }}>Blind Spot</div>
-                <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7, maxWidth: 640 }}>
-                  {data.blindSpotNote}
+            {/* ─ BOTTOM ROW — blind spot + provocation side by side ─ */}
+            <div style={{
+              display: "flex",
+              animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 500ms both",
+            }}>
+              {/* Blind Spot */}
+              {data.blindSpotNote && (
+                <div style={{
+                  flex: 1,
+                  padding: "28px 32px",
+                  borderRight: data.cerebroProvocation ? "1px solid var(--border)" : "none",
+                }}>
+                  <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
+                    Blind Spot
+                  </div>
+                  <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7 }}>
+                    {data.blindSpotNote}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* ── Cerebro Provocation — single call to action ── */}
-            {data.cerebroProvocation && (
-              <div style={{
-                animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 800ms both",
-              }}>
-                <button
+              {/* Cerebro Provocation */}
+              {data.cerebroProvocation && (
+                <div
                   onClick={() => onDeliberate(data.cerebroProvocation!)}
                   style={{
-                    display: "flex", alignItems: "flex-start", gap: 12, width: "100%",
-                    background: "var(--bg-surface)", border: "1px solid var(--border)",
-                    borderRadius: 12, padding: "16px 20px",
-                    cursor: "pointer", textAlign: "left",
-                    transition: "all 0.2s",
+                    flex: 1,
+                    padding: "28px 32px",
+                    cursor: "pointer",
+                    transition: "background 0.15s",
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.borderColor = "var(--accent-muted)" }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.borderColor = "var(--border)" }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                 >
-                  <ArrowUpRight size={14} style={{ color: "var(--accent-secondary)", flexShrink: 0, marginTop: 2 }} />
-                  <div>
-                    <div style={{ ...TYPE.xs, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, fontWeight: 500 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+                    <ArrowUpRight size={11} style={{ color: "var(--accent-secondary)" }} />
+                    <span style={{ ...TYPE.xs, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                       Ask Cerebro
-                    </div>
-                    <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.6 }}>
-                      {data.cerebroProvocation}
-                    </div>
+                    </span>
                   </div>
-                </button>
-              </div>
-            )}
+                  <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>
+                    {data.cerebroProvocation}
+                  </div>
+                </div>
+              )}
+            </div>
 
           </div>
         )}
