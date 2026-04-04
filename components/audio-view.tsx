@@ -111,6 +111,8 @@ interface Episode {
   layer: string
   urgency?: number
   signalScores?: { opportunity: number; position: number; discipline: number; landscape: number; culture: number; urgency: number }
+  synopsis?: string
+  relevance?: string
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -316,14 +318,55 @@ function EpisodeModal({ episode, onClose, onDeliberate }: { episode: Episode; on
 
 // ─── Episode Card ────────────────────────────────────────────────────────────
 
-function EpisodeCard({ episode, index, onClick }: { episode: Episode; index?: number; onClick: () => void }) {
+function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onSignalLeave }: {
+  episode: Episode; index?: number; onClick: () => void
+  onSignalEnter?: (ep: Episode, x: number, y: number) => void
+  onSignalMove?: (x: number, y: number) => void
+  onSignalLeave?: () => void
+}) {
   const [hovered, setHovered] = useState(false)
+  const cardRef = useRef<HTMLDivElement>(null)
+  const signalActive = useRef(false)
+  const hasSignal = !!(episode.synopsis || episode.relevance)
+
+  const isLeftHalf = (clientX: number) => {
+    if (!cardRef.current) return true
+    const rect = cardRef.current.getBoundingClientRect()
+    return clientX < rect.left + rect.width * 0.5
+  }
 
   return (
     <div
+      ref={cardRef}
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={(e) => {
+        setHovered(true)
+        if (hasSignal && isLeftHalf(e.clientX) && onSignalEnter) {
+          signalActive.current = true
+          onSignalEnter(episode, e.clientX, e.clientY)
+        }
+      }}
+      onMouseMove={(e) => {
+        if (!hasSignal) return
+        if (isLeftHalf(e.clientX)) {
+          if (!signalActive.current && onSignalEnter) {
+            signalActive.current = true
+            onSignalEnter(episode, e.clientX, e.clientY)
+          } else if (onSignalMove) {
+            onSignalMove(e.clientX, e.clientY)
+          }
+        } else if (signalActive.current && onSignalLeave) {
+          signalActive.current = false
+          onSignalLeave()
+        }
+      }}
+      onMouseLeave={() => {
+        setHovered(false)
+        if (signalActive.current && onSignalLeave) {
+          signalActive.current = false
+          onSignalLeave()
+        }
+      }}
       style={{
         display: "flex",
         gap: 16,
@@ -408,6 +451,8 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
   const [showCount, setShowCount] = useState(0)
   const [activeEpisode, setActiveEpisode] = useState<Episode | null>(null)
   const [activeLayer, setActiveLayer] = useState("all")
+  const [signal, setSignal] = useState<{ episode: Episode; x: number; y: number } | null>(null)
+  const annotated = useRef(false)
 
   useEffect(() => {
     fetch("/api/podcasts")
@@ -416,6 +461,31 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
         setEpisodes(data.episodes || [])
         setShowCount(data.showCount || 0)
         setLoading(false)
+
+        // Client-side annotation (lazy — only when Audio tab is visited)
+        if (!annotated.current && data.episodes?.length > 0) {
+          annotated.current = true
+          fetch("/api/annotate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              articles: data.episodes.slice(0, 15).map((ep: Episode) => ({
+                id: ep.id, title: `${ep.showName}: ${ep.title}`, category: ep.category,
+              })),
+            }),
+          })
+            .then(r => r.json())
+            .then(ann => {
+              if (ann.annotations?.length > 0) {
+                const map = new Map(ann.annotations.map((a: { id: string; synopsis: string; relevance: string; signalScores?: Record<string, number> }) => [a.id, a]))
+                setEpisodes(prev => prev.map(ep => {
+                  const a = map.get(ep.id) as { synopsis?: string; relevance?: string; signalScores?: { urgency: number } } | undefined
+                  return a ? { ...ep, synopsis: a.synopsis, relevance: a.relevance, urgency: a.signalScores?.urgency } : ep
+                }))
+              }
+            })
+            .catch(() => {})
+        }
       })
       .catch(() => setLoading(false))
   }, [])
@@ -504,10 +574,43 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
           No episodes loaded. Check podcast feed configuration.
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "0 16px" }}>
+        <div className="episode-grid" style={{ gap: 8, padding: "0 16px" }}>
           {filtered.map((ep, i) => (
-            <EpisodeCard key={ep.id} episode={ep} index={i} onClick={() => setActiveEpisode(ep)} />
+            <EpisodeCard
+              key={ep.id}
+              episode={ep}
+              index={i}
+              onClick={() => setActiveEpisode(ep)}
+              onSignalEnter={(e, x, y) => setSignal({ episode: e, x, y })}
+              onSignalMove={(x, y) => setSignal(s => s ? { ...s, x, y } : s)}
+              onSignalLeave={() => setSignal(null)}
+            />
           ))}
+        </div>
+      )}
+
+      {/* Episode signal card — hover insight */}
+      {signal && (signal.episode.synopsis || signal.episode.relevance) && (
+        <div style={{
+          position: "fixed",
+          left: Math.min(signal.x + 18, (typeof window !== "undefined" ? window.innerWidth : 1200) - 276),
+          top: Math.max(8, signal.y - 44),
+          width: 260, pointerEvents: "none", zIndex: 1000,
+          background: "var(--bg-elevated)", borderRadius: 8,
+          border: "1px solid var(--border)", overflow: "hidden",
+        }}>
+          {signal.episode.synopsis && (
+            <div style={{ padding: "12px 14px", borderBottom: signal.episode.relevance ? "1px solid var(--border)" : "none" }}>
+              <div style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.04em", marginBottom: 6 }}>Synopsis</div>
+              <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.55 }}>{signal.episode.synopsis}</div>
+            </div>
+          )}
+          {signal.episode.relevance && (
+            <div style={{ padding: "12px 14px" }}>
+              <div style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.04em", marginBottom: 6 }}>Relevance</div>
+              <div style={{ ...TYPE.body, color: "var(--text-primary)", lineHeight: 1.55 }}>{signal.episode.relevance}</div>
+            </div>
+          )}
         </div>
       )}
 
