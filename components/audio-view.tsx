@@ -424,30 +424,17 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
   const TRIAGE_THRESHOLD = 6
   const sourceFiltered = excludedSources?.size ? episodes.filter(ep => !excludedSources.has(ep.showName)) : episodes
   const layerFiltered = activeLayer === "all" ? sourceFiltered : sourceFiltered.filter(ep => ep.layer === activeLayer)
+  // Triage: show urgency 6+ if scores exist, otherwise show all (sorted by recency)
+  const hasScores = layerFiltered.some(ep => ep.urgency !== undefined && ep.urgency > 0)
   const filtered = sortBy === "urgency"
-    ? layerFiltered
-        .filter(ep => (ep.urgency ?? 0) >= TRIAGE_THRESHOLD)
-        .sort((a, b) => (b.urgency ?? 0) - (a.urgency ?? 0))
+    ? hasScores
+      ? layerFiltered.filter(ep => (ep.urgency ?? 0) >= TRIAGE_THRESHOLD).sort((a, b) => (b.urgency ?? 0) - (a.urgency ?? 0))
+      : [...layerFiltered].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
     : layerFiltered
 
   return (
     <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}>
-      {/* Header bar — matches all other views */}
-      <div style={{
-        flexShrink: 0, height: 40, display: "flex", alignItems: "center",
-        padding: "0 20px", borderBottom: "1px solid var(--border)",
-      }}>
-        <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase" }}>
-          Audio
-        </span>
-        {!loading && (
-          <span style={{ ...TYPE.sm, color: "var(--text-primary)", marginLeft: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>
-            {filtered.length}/{episodes.length} Active
-          </span>
-        )}
-      </div>
-
-      {/* Audio DCOS Band — visible in Triage only */}
+      {/* Audio DCOS Band — matches Signal's DCOS layout (no separate header) */}
       <AudioBriefBand episodes={episodes} visible={sortBy === "urgency" && !loading} />
 
       <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
