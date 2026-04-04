@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react"
 import { X, ChevronLeft, ChevronRight } from "lucide-react"
 import { TYPE, MONO } from "@/lib/styles"
 import type { GalleryImage, ColorMood } from "@/lib/gallery"
-import { PaletteTrends } from "@/components/palette-trends"
 
 // ─── Color Mood Display ─────────────────────────────────────────────────────
 
@@ -169,25 +168,12 @@ export function GalleryOverlay({ onClose }: { onClose: () => void }) {
   const [allImages, setAllImages] = useState<GalleryImage[]>([])
   const [loading, setLoading] = useState(true)
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
-  const [galleryTab, setGalleryTab] = useState<"grid" | "trends">("grid")
   const [activeMood, setActiveMood] = useState<ColorMood | null>(null)
-  const [paletteIntel, setPaletteIntel] = useState<{
-    trend: string
-    moodShifts: { mood: string; direction: "rising" | "falling"; delta: number }[]
-    hueShift: number
-    saturationShift: number
-  } | null>(null)
-  const [snapshot, setSnapshot] = useState<{ moods: Record<string, number>; avgHue: number; avgSaturation: number; avgLightness: number; trendingPalettes: { colors: string[]; sources: string[]; frequency: number }[] } | null>(null)
 
   useEffect(() => {
     fetch("/api/gallery")
       .then(r => r.json())
-      .then(data => {
-        setAllImages(data.images || [])
-        if (data.paletteIntel) setPaletteIntel(data.paletteIntel)
-        if (data.snapshot) setSnapshot(data.snapshot)
-        setLoading(false)
-      })
+      .then(data => { setAllImages(data.images || []); setLoading(false) })
       .catch(() => setLoading(false))
   }, [])
 
@@ -237,39 +223,13 @@ export function GalleryOverlay({ onClose }: { onClose: () => void }) {
           height: 52, display: "flex", alignItems: "center",
           justifyContent: "space-between", padding: "0 24px",
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
-            <span style={{
-              ...TYPE.sm, fontFamily: MONO,
-              color: "var(--accent-muted)", textTransform: "uppercase",
-              letterSpacing: "0.08em",
-            }}>
-              Gallery
-            </span>
-            {/* Grid / Trends toggle */}
-            <div style={{ display: "flex", gap: 2 }}>
-              {(["grid", "trends"] as const).map(tab => {
-                const isActive = galleryTab === tab
-                return (
-                  <button
-                    key={tab}
-                    onClick={() => setGalleryTab(tab)}
-                    style={{
-                      ...TYPE.xs, padding: "3px 10px", borderRadius: 9999, border: "none",
-                      background: isActive ? "var(--bg-elevated)" : "transparent",
-                      color: isActive ? "var(--text-secondary)" : "var(--text-tertiary)",
-                      fontWeight: isActive ? 600 : 400,
-                      cursor: "pointer", transition: "all 0.15s",
-                      textTransform: "capitalize",
-                    }}
-                    onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-surface)" }}
-                    onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? "var(--bg-elevated)" : "transparent" }}
-                  >
-                    {tab}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
+          <span style={{
+            ...TYPE.sm, fontFamily: MONO,
+            color: "var(--accent-muted)", textTransform: "uppercase",
+            letterSpacing: "0.08em", flexShrink: 0,
+          }}>
+            Gallery
+          </span>
 
           {/* Color mood filters */}
           <div style={{ display: "flex", alignItems: "center", gap: 4, flex: 1, justifyContent: "center" }}>
@@ -336,20 +296,8 @@ export function GalleryOverlay({ onClose }: { onClose: () => void }) {
 
       </div>
 
-      {/* ── Trends View ── */}
-      {galleryTab === "trends" && (
-        <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
-          <PaletteTrends
-            snapshot={snapshot}
-            paletteIntel={paletteIntel}
-            totalImages={allImages.length}
-            images={allImages}
-          />
-        </div>
-      )}
-
       {/* Masonry grid — manual 3-column distribution, vertical scroll */}
-      {galleryTab === "grid" && <div style={{
+      <div style={{
         flex: 1, overflowY: "auto", overflowX: "hidden",
         padding: 32,
       }}>
@@ -424,7 +372,7 @@ export function GalleryOverlay({ onClose }: { onClose: () => void }) {
             </div>
           )
         })()}
-      </div>}
+      </div>
 
       {/* Lightbox */}
       {lightboxIdx !== null && images[lightboxIdx] && (

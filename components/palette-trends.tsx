@@ -139,26 +139,11 @@ export function PaletteTrends({ snapshot, paletteIntel, totalImages, images }: P
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24, padding: "0 32px 32px" }}>
 
-      {/* ── Today's Palette Read ── */}
+      {/* ── Mood Distribution ── */}
       <div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-          {/* Average color swatch */}
-          <div style={{
-            width: 36, height: 36, borderRadius: 8,
-            background: `hsl(${snapshot.avgHue}, ${Math.round(snapshot.avgSaturation * 100)}%, ${Math.round(snapshot.avgLightness * 100)}%)`,
-            border: "1px solid rgba(255,255,255,0.08)",
-          }} />
-          <div>
-            <div style={{ ...TYPE.sm, color: "var(--text-primary)", fontWeight: 500 }}>
-              Today's Average
-            </div>
-            <div style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)" }}>
-              hue {snapshot.avgHue}° · sat {Math.round(snapshot.avgSaturation * 100)}% · light {Math.round(snapshot.avgLightness * 100)}%
-            </div>
-          </div>
+        <div style={{ ...metaStyle, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>
+          Mood Distribution
         </div>
-
-        {/* Mood distribution bar */}
         <MoodBar moods={snapshot.moods} total={totalImages} />
       </div>
 

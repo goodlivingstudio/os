@@ -43,7 +43,7 @@ export interface FeedHealth {
 
 export type Skin = "mineral" | "slate" | "forest"
 
-export type ViewMode = "signal" | "audio" | "synthesis" | "dispatch" | "config" | "pulse"
+export type ViewMode = "signal" | "audio" | "synthesis" | "dispatch" | "config" | "pulse" | "trends"
 
 // ─── Intelligence layers (from mandate) ──────────────────────────────────────
 

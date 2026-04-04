@@ -12,6 +12,7 @@ import { AudioView } from "@/components/audio-view"
 import { ConfigView } from "@/components/config-view"
 import { DispatchView } from "@/components/dispatch-view"
 import { SourcePulseView } from "@/components/source-pulse"
+import { TrendsView } from "@/components/trends-view"
 import { GalleryOverlay } from "@/components/gallery"
 import { HotkeysOverlay } from "@/components/hotkeys"
 import { ExportPanel } from "@/components/export-panel"
@@ -339,7 +340,7 @@ export default function Page() {
       // View mode now synced via URL — localStorage fallback only when on root path
       if (window.location.pathname === "/") {
         const savedView = localStorage.getItem("dispatch-view-mode")
-        if (savedView === "signal" || savedView === "audio" || savedView === "synthesis" || savedView === "dispatch" || savedView === "config" || savedView === "pulse") setViewModeRaw(savedView)
+        if (savedView === "signal" || savedView === "audio" || savedView === "synthesis" || savedView === "dispatch" || savedView === "config" || savedView === "pulse" || savedView === "trends") setViewModeRaw(savedView)
       }
 
       const savedTab = localStorage.getItem("dispatch-mobile-tab")
@@ -777,6 +778,8 @@ export default function Page() {
           ? <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} feedHealth={feedHealth} articles={articles} />
           : viewMode === "pulse"
           ? <SourcePulseView articles={articles} feedHealth={feedHealth} fetchedAt={fetchedAt} />
+          : viewMode === "trends"
+          ? <TrendsView />
           : viewMode === "dispatch"
           ? <DispatchView onDeliberate={handleSynthesisDeliberate} />
           : viewMode === "synthesis"
