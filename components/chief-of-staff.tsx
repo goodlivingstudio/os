@@ -8,6 +8,9 @@ import { renderCitedBody } from "@/components/citation"
 
 // ─── Chief of Staff — data hook ─────────────────────────────────────────────
 
+const BRIEF_CACHE_KEY = "dispatch-dcos-brief"
+const BRIEF_TTL = 30 * 60 * 1000 // 30 min — matches ISR cycle
+
 export function useChiefOfStaff(articles: Article[]) {
   const [signals, setSignals] = useState<Signal[]>([])
   const [briefLoading, setBriefLoading] = useState(false)
@@ -17,6 +20,19 @@ export function useChiefOfStaff(articles: Article[]) {
   useEffect(() => {
     if (articles.length > 0 && !fetched.current) {
       fetched.current = true
+
+      // Check localStorage cache
+      try {
+        const raw = localStorage.getItem(BRIEF_CACHE_KEY)
+        if (raw) {
+          const { ts, signals: cached } = JSON.parse(raw)
+          if (Date.now() - ts < BRIEF_TTL && Array.isArray(cached) && cached.length > 0) {
+            setSignals(cached)
+            return // cache hit — skip API call
+          }
+        }
+      } catch { /* */ }
+
       setBriefLoading(true)
       setBriefError(false)
       fetch("/api/brief", {
@@ -29,8 +45,13 @@ export function useChiefOfStaff(articles: Article[]) {
           return r.json()
         })
         .then(data => {
-          setSignals(data.signals || [])
+          const sigs = data.signals || []
+          setSignals(sigs)
           setBriefLoading(false)
+          // Cache to localStorage
+          if (sigs.length > 0) {
+            try { localStorage.setItem(BRIEF_CACHE_KEY, JSON.stringify({ ts: Date.now(), signals: sigs })) } catch { /* */ }
+          }
         })
         .catch(() => {
           setBriefError(true)

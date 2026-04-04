@@ -11,6 +11,9 @@ interface AudioSignal {
   body: string
 }
 
+const AUDIO_BRIEF_CACHE_KEY = "dispatch-dcos-audio-brief"
+const AUDIO_BRIEF_TTL = 30 * 60 * 1000 // 30 min — matches ISR cycle
+
 function AudioBriefBand({ episodes, visible }: { episodes: Episode[]; visible: boolean }) {
   const [signals, setSignals] = useState<AudioSignal[]>([])
   const [loading, setLoading] = useState(false)
@@ -20,8 +23,20 @@ function AudioBriefBand({ episodes, visible }: { episodes: Episode[]; visible: b
   useEffect(() => {
     if (episodes.length === 0 || fetched.current || !visible) return
     fetched.current = true
-    setLoading(true)
 
+    // Check localStorage cache
+    try {
+      const raw = localStorage.getItem(AUDIO_BRIEF_CACHE_KEY)
+      if (raw) {
+        const { ts, signals: cached } = JSON.parse(raw)
+        if (Date.now() - ts < AUDIO_BRIEF_TTL && Array.isArray(cached) && cached.length > 0) {
+          setSignals(cached)
+          return
+        }
+      }
+    } catch { /* */ }
+
+    setLoading(true)
     fetch("/api/audio-brief", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -32,7 +47,14 @@ function AudioBriefBand({ episodes, visible }: { episodes: Episode[]; visible: b
       }),
     })
       .then(r => r.json())
-      .then(data => { setSignals(data.signals || []); setLoading(false) })
+      .then(data => {
+        const sigs = data.signals || []
+        setSignals(sigs)
+        setLoading(false)
+        if (sigs.length > 0) {
+          try { localStorage.setItem(AUDIO_BRIEF_CACHE_KEY, JSON.stringify({ ts: Date.now(), signals: sigs })) } catch { /* */ }
+        }
+      })
       .catch(() => setLoading(false))
   }, [episodes, visible])
 
