@@ -1,21 +1,18 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { Copy, Check, RefreshCw, Trash2, Download } from "lucide-react"
+import { Copy, Check, Trash2, Download } from "lucide-react"
 // Skin removed from props — controlled via ticker header
 import { FEEDS } from "@/lib/feeds"
 import { PODCAST_FEEDS } from "@/lib/podcasts"
 import { GALLERY_SOURCES } from "@/lib/gallery"
 import { MONO, TYPE, labelStyle, metaStyle } from "@/lib/styles"
-import type { FeedHealth } from "@/lib/types"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
 interface ConfigViewProps {
   excludedSources: Set<string>
   onToggleSource: (source: string) => void
-  feedHealth: FeedHealth | null
-  articles?: import("@/lib/types").Article[]
 }
 
 const LAYERS = ["opportunity", "position", "discipline", "landscape", "culture"] as const
@@ -443,10 +440,7 @@ function SourceGrid({ sources, type, excludedSources, onToggleSource }: {
 
 // ─── ConfigView ─────────────────────────────────────────────────────────────
 
-export function ConfigView({ excludedSources, onToggleSource, feedHealth, articles = [] }: ConfigViewProps) {
-  const [health, setHealth] = useState<Record<string, unknown> | null>(null)
-  const [healthLoading, setHealthLoading] = useState(false)
-
+export function ConfigView({ excludedSources, onToggleSource }: ConfigViewProps) {
   const newsFeedsOnly = useMemo(() => FEEDS.filter(f => f.type !== "social"), [])
   const socialFeeds = useMemo(() => FEEDS.filter(f => f.type === "social"), [])
   const newsGroups = useMemo(() => groupByLayer(newsFeedsOnly, "source"), [newsFeedsOnly])
@@ -456,16 +450,6 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, articl
   const activeNewsCount = newsFeedsOnly.filter(f => !excludedSources.has(f.source)).length
   const activeSocialCount = socialFeeds.filter(f => !excludedSources.has(f.source)).length
   const activePodCount = PODCAST_FEEDS.filter(f => !excludedSources.has(f.show)).length
-
-  const fetchHealth = () => {
-    setHealthLoading(true)
-    fetch("/api/health")
-      .then(r => r.json())
-      .then(data => { setHealth(data); setHealthLoading(false) })
-      .catch(() => setHealthLoading(false))
-  }
-
-  useEffect(() => { fetchHealth() }, [])
 
   const inventoryMd = useMemo(() => generateInventoryMarkdown(excludedSources), [excludedSources])
 
@@ -565,139 +549,6 @@ export function ConfigView({ excludedSources, onToggleSource, feedHealth, articl
       {/* ── Cerebro Station ── */}
       <CerebroStation />
 
-      <div style={separator} />
-
-      {/* ── Diagnostics ── */}
-      <div style={{ marginBottom: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <div style={sectionLabel}>Diagnostics</div>
-          <button
-            onClick={fetchHealth}
-            style={{
-              display: "inline-flex", alignItems: "center", gap: 4,
-              padding: "4px 10px", borderRadius: 6,
-              border: "1px solid var(--border)", background: "transparent",
-              ...metaStyle,
-              cursor: "pointer", transition: "all 0.15s",
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
-          >
-            <RefreshCw size={11} style={{ animation: healthLoading ? "spin 1s linear infinite" : "none" }} />
-            Refresh
-          </button>
-        </div>
-
-        <div style={{ background: "var(--bg-elevated)", borderRadius: 8, padding: "16px", fontFamily: MONO, ...TYPE.sm, lineHeight: 2 }}>
-          {/* API Status */}
-          <div style={{ color: "var(--text-tertiary)", marginBottom: 4 }}>API STATUS</div>
-          <div>
-            <span style={{ color: health?.anthropic === "ok — API responding" ? "var(--live)" : "#ef4444" }}>●</span>
-            {" "}Anthropic: {health ? String((health.env as Record<string, string>)?.ANTHROPIC_API_KEY || "unknown") : "checking..."}
-          </div>
-          <div>
-            <span style={{ color: String((health?.env as Record<string, string>)?.EXA_API_KEY || "").startsWith("set") ? "var(--live)" : "var(--text-tertiary)" }}>●</span>
-            {" "}Exa: {health ? String((health.env as Record<string, string>)?.EXA_API_KEY || "unknown") : "checking..."}
-          </div>
-          <div>
-            <span style={{ color: String((health?.env as Record<string, string>)?.KV_REST_API_URL || "").startsWith("set") ? "var(--live)" : "var(--text-tertiary)" }}>●</span>
-            {" "}KV Memory: {health ? String((health.env as Record<string, string>)?.KV_REST_API_URL || "unknown") : "checking..."}
-          </div>
-          <div>
-            <span style={{ color: "var(--live)" }}>●</span>
-            {" "}Connection: {health?.anthropic ? String(health.anthropic) : "checking..."}
-          </div>
-
-          {/* Feed Health — Source Pulse */}
-          {feedHealth && (
-            <>
-              <div style={{ color: "var(--text-tertiary)", marginTop: 12, marginBottom: 4 }}>FEED HEALTH</div>
-              <div>
-                <span style={{ color: feedHealth.sourcesLive / feedHealth.sourcesTotal >= 0.8 ? "var(--live)" : feedHealth.sourcesLive / feedHealth.sourcesTotal >= 0.5 ? "#D4A05A" : "#ef4444" }}>●</span>
-                {" "}{feedHealth.sourcesLive}/{feedHealth.sourcesTotal} sources live ({Math.round(feedHealth.sourcesLive / feedHealth.sourcesTotal * 100)}%)
-              </div>
-              {feedHealth.sourcesFailed > 0 && (
-                <div style={{ color: "#ef4444" }}>
-                  <span>●</span> {feedHealth.sourcesFailed} sources failed
-                </div>
-              )}
-              {feedHealth.stubCategories?.length > 0 && (
-                <div>Stub fallback: {feedHealth.stubCategories.join(", ")}</div>
-              )}
-            </>
-          )}
-
-          {/* Per-source breakdown */}
-          {articles && articles.length > 0 && (() => {
-            const sourceMap: Record<string, { count: number; annotated: number; live: boolean; tag: string }> = {}
-            articles.forEach(a => {
-              if (!sourceMap[a.source]) sourceMap[a.source] = { count: 0, annotated: 0, live: a.url !== "#", tag: a.tag }
-              sourceMap[a.source].count++
-              if (a.synopsis || a.relevance) sourceMap[a.source].annotated++
-            })
-            const sources = Object.entries(sourceMap).sort((a, b) => b[1].count - a[1].count)
-            const totalAnnotated = articles.filter(a => a.synopsis || a.relevance).length
-
-            return (
-              <>
-                <div style={{ color: "var(--text-tertiary)", marginTop: 12, marginBottom: 4 }}>SOURCE PULSE ({sources.length} sources, {totalAnnotated}/{articles.length} annotated)</div>
-                <div style={{ maxHeight: 240, overflowY: "auto", margin: "0 -4px", padding: "0 4px" }}>
-                  {sources.map(([name, stats]) => (
-                    <div key={name} style={{ display: "flex", alignItems: "center", gap: 8, padding: "3px 0" }}>
-                      <span style={{
-                        width: 5, height: 5, borderRadius: "50%", flexShrink: 0,
-                        background: stats.live ? "var(--live)" : "#ef4444",
-                      }} />
-                      <span style={{
-                        flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                        color: stats.live ? "var(--text-secondary)" : "var(--text-tertiary)",
-                        opacity: stats.live ? 1 : 0.6,
-                      }}>
-                        {name}
-                      </span>
-                      <span style={{ color: "var(--text-tertiary)", fontVariantNumeric: "tabular-nums", minWidth: 20, textAlign: "right" }}>
-                        {stats.count}
-                      </span>
-                      {stats.annotated > 0 && (
-                        <span style={{ color: "var(--accent-muted)", fontVariantNumeric: "tabular-nums", minWidth: 28, textAlign: "right" }}>
-                          ✓{stats.annotated}
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </>
-            )
-          })()}
-
-          {/* Cache */}
-          <div style={{ color: "var(--text-tertiary)", marginTop: 12, marginBottom: 4 }}>CACHE</div>
-          <div>
-            Annotation cache: {(() => {
-              try {
-                const raw = localStorage.getItem("dispatch-annotations-v3")
-                if (!raw) return "empty"
-                const { ts } = JSON.parse(raw)
-                const age = Math.round((Date.now() - ts) / 60000)
-                return `${age}m old`
-              } catch { return "unknown" }
-            })()}
-          </div>
-          <button
-            onClick={() => { localStorage.removeItem("dispatch-annotations-v3"); fetchHealth() }}
-            style={{
-              marginTop: 4, padding: "3px 8px", borderRadius: 4,
-              border: "1px solid var(--border)", background: "transparent",
-              ...TYPE.xs, color: "var(--text-tertiary)",
-              cursor: "pointer",
-            }}
-          >
-            Clear annotation cache
-          </button>
-        </div>
-      </div>
-
-      <div style={separator} />
 
       <div style={{ height: 32 }} />
     </div>

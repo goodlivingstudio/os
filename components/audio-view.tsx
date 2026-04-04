@@ -333,18 +333,18 @@ export function AudioView({ onDeliberate, excludedSources }: { onDeliberate?: (t
 
   return (
     <main className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", background: "var(--bg-primary)" }}>
-      {/* Header */}
-      <div style={{ marginBottom: 16 }}>
-        <div style={{
-          ...metaStyle, textTransform: "uppercase",
-          fontWeight: 600,
-        }}>
-          Audio Intelligence
-        </div>
+      {/* Section header — matches news feed */}
+      <div style={{
+        height: 36, display: "flex", alignItems: "center",
+        marginBottom: 8,
+      }}>
+        <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.04em" }}>
+          Audio Sources
+        </span>
         {!loading && (
-          <div style={{ ...TYPE.body, color: "var(--text-tertiary)", marginTop: 4 }}>
-            {filtered.length} episodes from {showCount} shows
-          </div>
+          <span style={{ ...TYPE.sm, color: "var(--text-primary)", marginLeft: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+            {filtered.length}/{episodes.length} Active
+          </span>
         )}
       </div>
 
