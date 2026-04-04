@@ -63,6 +63,9 @@ const TARGETS: ScrapeTarget[] = [
   { url: "https://locomotive.ca/en", name: "Locomotive", category: "agency" },
   { url: "https://metalab.com/work", name: "Metalab", category: "agency" },
   { url: "https://portorocha.com/", name: "Porto Rocha", category: "agency" },
+
+  // AI-generated visual art
+  { url: "https://www.lummi.ai/creator/ricardomatos", name: "Ricardo Matos (Lummi)", category: "gallery" },
 ]
 
 // ─── Image Extraction ───────────────────────────────────────────────────────
