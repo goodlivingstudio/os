@@ -101,8 +101,6 @@ async function fetchRSS(url: string, sourceName: string): Promise<GalleryImage[]
 
     for (let i = 0; i < Math.min(items.length, 30); i++) {
       const item = items[i]
-      const imageUrl = extractImageFromRSS(item)
-      if (!imageUrl) continue
 
       const titleMatch = item.match(/<title[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/i)
       const title = titleMatch?.[1]?.trim().replace(/<[^>]+>/g, "") || undefined
@@ -110,13 +108,36 @@ async function fetchRSS(url: string, sourceName: string): Promise<GalleryImage[]
       const linkMatch = item.match(/<link[^>]+href=["']([^"']+)["']/i) || item.match(/<link[^>]*>([^<]+)<\/link>/i)
       const linkUrl = linkMatch?.[1]?.trim() || undefined
 
-      images.push({
-        id: `rss-${sourceName}-${i}`,
-        url: imageUrl,
-        title,
-        source: sourceName,
-        linkUrl,
-      })
+      // Check for video enclosures first
+      const videoEnc = item.match(/<enclosure[^>]+url=["']([^"']+)["'][^>]+type=["']video[^"']*["']/i)
+        || item.match(/<enclosure[^>]+type=["']video[^"']*["'][^>]+url=["']([^"']+)["']/i)
+      const videoMedia = item.match(/<media:content[^>]+url=["']([^"']+)["'][^>]+medium=["']video["']/i)
+        || item.match(/<media:content[^>]+medium=["']video["'][^>]+url=["']([^"']+)["']/i)
+      const videoUrl = videoEnc?.[1] || videoMedia?.[1] || undefined
+
+      // Extract image (thumbnail for videos, or main image)
+      const imageUrl = extractImageFromRSS(item)
+
+      if (videoUrl) {
+        images.push({
+          id: `rss-${sourceName}-v${i}`,
+          url: imageUrl || videoUrl, // use thumbnail if available, else video URL
+          title,
+          source: sourceName,
+          linkUrl,
+          mediaType: "video",
+          videoUrl,
+        })
+      } else if (imageUrl) {
+        images.push({
+          id: `rss-${sourceName}-${i}`,
+          url: imageUrl,
+          title,
+          source: sourceName,
+          linkUrl,
+          mediaType: "image",
+        })
+      }
     }
 
     return images
@@ -143,14 +164,19 @@ function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
 
 function classifyMood(r: number, g: number, b: number): ColorMood {
   const [h, s, l] = rgbToHsl(r, g, b)
-  if (s < 0.12) return "mono"
-  if (s < 0.3) return "muted"
-  if (s > 0.7) return "vivid"
+  // Neutral: low saturation — grayscale, desaturated, minimal color
+  if (s < 0.2) return "neutral"
+  // Vivid: high saturation, bold color
+  if (s > 0.65) return "vivid"
+  // Earth: greens, browns, tans, natural materials
   if (s < 0.55 && ((h >= 30 && h <= 160)) && l < 0.65) return "earth"
+  // Warm: reds, oranges, yellows, golden tones
   if (h <= 60 || h >= 330) return "warm"
+  // Cool: blues, teals, purples
   if (h >= 180 && h <= 300) return "cool"
-  if (h > 60 && h < 180) return s < 0.5 ? "earth" : "cool"
-  return "warm"
+  // Green range
+  if (h > 60 && h < 180) return s < 0.45 ? "earth" : "cool"
+  return "neutral"
 }
 
 interface ColorAnalysis {

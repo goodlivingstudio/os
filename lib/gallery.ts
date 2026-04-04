@@ -52,7 +52,7 @@ export const GALLERY_SOURCES: GallerySource[] = [
   { url: "https://www.tendril.ca/feed", name: "Tendril", type: "rss" },
 ]
 
-export type ColorMood = "warm" | "cool" | "mono" | "earth" | "vivid" | "muted"
+export type ColorMood = "warm" | "cool" | "earth" | "vivid" | "neutral"
 
 export interface GalleryImage {
   id: string
@@ -64,4 +64,6 @@ export interface GalleryImage {
   hue?: number        // 0-360 — for tonal sorting within mood
   saturation?: number // 0-1
   lightness?: number  // 0-1
+  mediaType?: "image" | "video"
+  videoUrl?: string   // for video assets
 }

@@ -10,19 +10,17 @@ import type { GalleryImage, ColorMood } from "@/lib/gallery"
 const MOOD_LABELS: Record<ColorMood, string> = {
   warm: "Warm",
   cool: "Cool",
-  mono: "Mono",
   earth: "Earth",
   vivid: "Vivid",
-  muted: "Muted",
+  neutral: "Neutral",
 }
 
 const MOOD_COLORS: Record<ColorMood, string> = {
   warm: "#D4A05A",
   cool: "#5A9EB0",
-  mono: "#888888",
   earth: "#7BAF6A",
   vivid: "#C87A6A",
-  muted: "#9A85B8",
+  neutral: "#888888",
 }
 
 // ─── Lightbox ───────────────────────────────────────────────────────────────
@@ -95,19 +93,36 @@ function Lightbox({ image, onClose, onPrev, onNext }: {
         <ChevronRight size={32} strokeWidth={1} />
       </button>
 
-      {/* Image — try loading, hide alt text on error */}
-      <img
-        src={image.url}
-        alt=""
-        referrerPolicy="no-referrer"
-        onClick={e => e.stopPropagation()}
-        onError={e => { e.currentTarget.style.display = "none" }}
-        style={{
-          maxWidth: "90vw", maxHeight: "80vh",
-          objectFit: "contain", cursor: "default",
-          borderRadius: 4,
-        }}
-      />
+      {/* Media — image or video */}
+      {image.mediaType === "video" && image.videoUrl ? (
+        <video
+          src={image.videoUrl}
+          autoPlay
+          muted
+          loop
+          playsInline
+          controls
+          onClick={e => e.stopPropagation()}
+          style={{
+            maxWidth: "90vw", maxHeight: "80vh",
+            objectFit: "contain", cursor: "default",
+            borderRadius: 4,
+          }}
+        />
+      ) : (
+        <img
+          src={image.url}
+          alt=""
+          referrerPolicy="no-referrer"
+          onClick={e => e.stopPropagation()}
+          onError={e => { e.currentTarget.style.display = "none" }}
+          style={{
+            maxWidth: "90vw", maxHeight: "80vh",
+            objectFit: "contain", cursor: "default",
+            borderRadius: 4,
+          }}
+        />
+      )}
 
       {/* Caption — entire block is clickable to source */}
       <div style={{
@@ -163,7 +178,7 @@ export function GalleryOverlay({ onClose }: { onClose: () => void }) {
   }, [])
 
   // Mood counts from server-classified data
-  const moodCounts: Record<ColorMood, number> = { warm: 0, cool: 0, mono: 0, earth: 0, vivid: 0, muted: 0 }
+  const moodCounts: Record<ColorMood, number> = { warm: 0, cool: 0, earth: 0, vivid: 0, neutral: 0 }
   for (const img of allImages) { if (img.mood) moodCounts[img.mood]++ }
   const classifiedCount = allImages.filter(img => img.mood).length
 
@@ -321,18 +336,34 @@ export function GalleryOverlay({ onClose }: { onClose: () => void }) {
                         onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.015)" }}
                         onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)" }}
                       >
-                        <img
-                          src={img.url}
-                          alt={img.title || ""}
-                          loading="lazy"
-                          referrerPolicy="no-referrer"
-                          onError={e => { (e.currentTarget.parentElement as HTMLElement).style.display = "none" }}
-                          style={{
-                            width: "100%",
-                            height: "auto",
-                            display: "block",
-                          }}
-                        />
+                        {img.mediaType === "video" && img.videoUrl ? (
+                          <video
+                            src={img.videoUrl}
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            onError={e => { (e.currentTarget.parentElement as HTMLElement).style.display = "none" }}
+                            style={{
+                              width: "100%",
+                              height: "auto",
+                              display: "block",
+                            }}
+                          />
+                        ) : (
+                          <img
+                            src={img.url}
+                            alt={img.title || ""}
+                            loading="lazy"
+                            referrerPolicy="no-referrer"
+                            onError={e => { (e.currentTarget.parentElement as HTMLElement).style.display = "none" }}
+                            style={{
+                              width: "100%",
+                              height: "auto",
+                              display: "block",
+                            }}
+                          />
+                        )}
                       </div>
                     )
                   })}
