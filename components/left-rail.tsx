@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react"
-import { Radio, AudioLines, Blend, Send, Settings, Aperture, Keyboard, Minimize2, FileDown, Activity } from "lucide-react"
+import { Radio, AudioLines, Blend, Send, Settings, Aperture, Keyboard, FileDown, Activity } from "lucide-react"
 import type { Article, FeedHealth, ViewMode } from "@/lib/types"
 import { CATEGORY_CONFIG } from "@/lib/types"
 import { TYPE, metaStyle } from "@/lib/styles"
@@ -295,7 +295,6 @@ export function LeftRail({
   onToggleSource,
   onGalleryOpen,
   onHotkeysOpen,
-  onFocusMode,
   onExportOpen,
   feedHealth,
 }: {
@@ -314,7 +313,6 @@ export function LeftRail({
   onToggleSource: (source: string) => void
   onGalleryOpen?: () => void
   onHotkeysOpen?: () => void
-  onFocusMode?: () => void
   onExportOpen?: () => void
 }) {
   const time = useClock()
@@ -651,24 +649,6 @@ export function LeftRail({
             onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
           >
             <Keyboard size={18} strokeWidth={1.5} />
-          </button>
-        )}
-        {onFocusMode && (
-          <button
-            onClick={onFocusMode}
-            title="Focus mode (F)"
-            aria-label="Focus mode"
-            style={{
-              display: "flex", alignItems: "center", justifyContent: "center",
-              width: 36, height: 36, borderRadius: 8,
-              border: "none", background: "transparent",
-              color: "var(--text-tertiary)",
-              cursor: "pointer", transition: "all 0.15s", padding: 0,
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
-          >
-            <Minimize2 size={18} strokeWidth={1.5} />
           </button>
         )}
         {onExportOpen && (

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Paperclip, Mic, MicOff, ExternalLink, ArrowUpRight, Copy, Check, Flag, BookMarked } from "lucide-react"
+import { Paperclip, Mic, MicOff, ExternalLink, ArrowUpRight, Copy, Check, Flag, BookMarked, Minimize2 } from "lucide-react"
 import type { Article, Message } from "@/lib/types"
 import { renderCitedBody, CitationSource } from "@/components/citation"
 
@@ -53,9 +53,10 @@ const PROVOCATIONS = [
 
 // ─── Cerebro — strategic intelligence advisor ───────────────────────────────
 
-export function Cerebro({ articles, pendingPrompt }: {
+export function Cerebro({ articles, pendingPrompt, onFocusMode }: {
   articles: Article[]
   pendingPrompt?: { text: string; id: number } | null
+  onFocusMode?: () => void
 }) {
   const [messages,  setMessages]  = useState<Message[]>([])
   const [input,     setInput]     = useState("")
@@ -546,6 +547,18 @@ export function Cerebro({ articles, pendingPrompt }: {
                 </button>
               ) : <div />}
               <div style={{ display: "flex", gap: 2 }}>
+                {onFocusMode && (
+                  <button
+                    onClick={onFocusMode}
+                    aria-label="Focus mode"
+                    title="Focus mode (F)"
+                    style={{ width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, border: "none", background: "transparent", color: "var(--text-tertiary)", cursor: "pointer", transition: "all 0.15s", padding: 0 }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.color = "var(--text-secondary)" }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
+                  >
+                    <Minimize2 size={16} strokeWidth={1.5} />
+                  </button>
+                )}
                 <button
                   onClick={() => fileRef.current?.click()}
                   aria-label="Attach file"

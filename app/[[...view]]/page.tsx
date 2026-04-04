@@ -766,7 +766,6 @@ export default function Page() {
                 onToggleSource={handleToggleSource}
                 onGalleryOpen={() => setGalleryOpenWithUrl(true)}
                 onHotkeysOpen={() => setHotkeysOpen(true)}
-                onFocusMode={() => setFocusModeWithUrl(true)}
                 onExportOpen={() => setExportOpen(true)}
                 feedHealth={feedHealth}
               />
@@ -831,7 +830,7 @@ export default function Page() {
               >
                 <ChevronRight size={14} strokeWidth={1.5} style={{ color: "var(--text-tertiary)" }} />
               </button>
-              <Cerebro articles={articles} pendingPrompt={cerebroPrompt} />
+              <Cerebro articles={articles} pendingPrompt={cerebroPrompt} onFocusMode={() => setFocusModeWithUrl(true)} />
             </>
           )}
         </div>
