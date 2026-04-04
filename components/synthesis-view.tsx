@@ -62,6 +62,7 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
   const [data, setData] = useState<SynthesisData | null>(null)
   const [loading, setLoading] = useState(false)
   const [statusIdx, setStatusIdx] = useState(0)
+  const [elapsed, setElapsed] = useState(0)
   const fetched = useRef(false)
 
   useEffect(() => {
@@ -71,8 +72,10 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
     fetched.current = true
     setLoading(true)
     setStatusIdx(0)
+    setElapsed(0)
 
     const t = setInterval(() => setStatusIdx(i => Math.min(i + 1, SYNTHESIS_STATUSES.length - 1)), 1200)
+    const timer = setInterval(() => setElapsed(e => e + 1), 1000)
 
     fetch("/api/synthesis", {
       method: "POST",
@@ -84,10 +87,11 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
         if (result.briefing) setData(result)
         setLoading(false)
         clearInterval(t)
+        clearInterval(timer)
       })
-      .catch(() => { setLoading(false); clearInterval(t) })
+      .catch(() => { setLoading(false); clearInterval(t); clearInterval(timer) })
 
-    return () => clearInterval(t)
+    return () => { clearInterval(t); clearInterval(timer) }
   }, [articles])
 
   return (
@@ -122,6 +126,11 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                 {i === statusIdx && i === SYNTHESIS_STATUSES.length - 1 && <span className="loading-pulse" style={{ marginLeft: 4, ...TYPE.xs, opacity: 0.6 }}>...</span>}
               </div>
             ))}
+            {elapsed > 0 && (
+              <div style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", marginTop: 12, opacity: 0.6 }}>
+                {elapsed}s elapsed {elapsed < 10 ? "· analyzing patterns" : elapsed < 30 ? "· generating images" : "· almost done"}
+              </div>
+            )}
           </div>
         )}
 

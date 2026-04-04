@@ -163,6 +163,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
   const [data, setData] = useState<DispatchData | null>(_cachedDispatch)
   const [loading, setLoading] = useState(!_cachedDispatch)
   const [statusIdx, setStatusIdx] = useState(0)
+  const [elapsed, setElapsed] = useState(0)
   const [activePitch, setActivePitch] = useState<Pitch | null>(null)
   const [regenerating, setRegenerating] = useState(false)
 
@@ -190,12 +191,14 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
   useEffect(() => {
     if (_cachedDispatch) return
     setStatusIdx(0)
+    setElapsed(0)
     const t = setInterval(() => setStatusIdx(i => Math.min(i + 1, DISPATCH_STATUSES.length - 1)), 1800)
+    const timer = setInterval(() => setElapsed(e => e + 1), 1000)
     fetch("/api/dispatch")
       .then(r => r.json())
-      .then(d => { setData(d); _cachedDispatch = d; setLoading(false); clearInterval(t) })
-      .catch(() => { setLoading(false); clearInterval(t) })
-    return () => clearInterval(t)
+      .then(d => { setData(d); _cachedDispatch = d; setLoading(false); clearInterval(t); clearInterval(timer) })
+      .catch(() => { setLoading(false); clearInterval(t); clearInterval(timer) })
+    return () => { clearInterval(t); clearInterval(timer) }
   }, [])
 
   return (
@@ -249,6 +252,11 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                 {idx === statusIdx && idx === DISPATCH_STATUSES.length - 1 && <span className="loading-pulse" style={{ marginLeft: 4, ...TYPE.xs, opacity: 0.6 }}>...</span>}
               </div>
             ))}
+            {elapsed > 0 && (
+              <div style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", marginTop: 12, opacity: 0.6 }}>
+                {elapsed}s elapsed {elapsed < 15 ? "· generating text" : elapsed < 45 ? "· generating images" : "· almost done"}
+              </div>
+            )}
           </div>
         )}
 

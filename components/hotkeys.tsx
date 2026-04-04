@@ -6,14 +6,14 @@ import { TYPE, MONO } from "@/lib/styles"
 
 const SHORTCUTS = [
   { section: "Navigation", items: [
-    { keys: ["←", "→"], desc: "Cycle view modes (Signal / Audio / Synthesis / Dispatch)" },
-    { keys: ["1"], desc: "Signal view" },
-    { keys: ["2"], desc: "Audio view" },
-    { keys: ["3"], desc: "Synthesis view" },
-    { keys: ["4"], desc: "Dispatch view" },
-    { keys: ["G"], desc: "Open gallery" },
-    { keys: ["C"], desc: "Focus Cerebro input" },
-    { keys: ["/"], desc: "Focus Cerebro input" },
+    { keys: ["←", "→"], desc: "Cycle views (Signal / Audio / Synthesis)" },
+    { keys: ["1"], desc: "Signal" },
+    { keys: ["2"], desc: "Audio" },
+    { keys: ["3"], desc: "Synthesis" },
+    { keys: ["4"], desc: "Gallery" },
+    { keys: ["F"], desc: "Focus mode (Cerebro full-width)" },
+    { keys: ["G"], desc: "Gallery" },
+    { keys: ["C", "/"], desc: "Focus Cerebro input" },
   ]},
   { section: "Gallery", items: [
     { keys: ["←", "→"], desc: "Previous / next image" },
@@ -21,7 +21,7 @@ const SHORTCUTS = [
   ]},
   { section: "General", items: [
     { keys: ["?"], desc: "Toggle this panel" },
-    { keys: ["Esc"], desc: "Close overlays" },
+    { keys: ["Esc"], desc: "Close overlays / exit focus mode" },
   ]},
 ]
 
