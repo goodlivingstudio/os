@@ -484,7 +484,14 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                 const dispatchDaily = dispatchWeekly / 7
 
                 const clientAnnotation = 1 * ((1000 * 0.25 / 1e6) + (2000 * 1.25 / 1e6)) * 5 // 1 batch × 5 visits
-                const totalDaily = annotationDaily + briefDaily + synthesisDaily + cerebroDaily + dispatchDaily + clientAnnotation
+
+                // Replicate image generation (Flux Schnell ~$0.003/image)
+                const replicatePerImage = 0.003
+                const synthesisImages = 4 * 3 // 4 convergence cards × ~3 views/day
+                const dispatchImages = 5 / 7 // 5 pitch cards × 1/week
+                const replicateDaily = (synthesisImages + dispatchImages) * replicatePerImage
+
+                const totalDaily = annotationDaily + briefDaily + synthesisDaily + cerebroDaily + dispatchDaily + clientAnnotation + replicateDaily
 
                 const items = [
                   { label: "Annotation (server ISR)", cost: annotationDaily, model: "Haiku" },
@@ -493,6 +500,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                   { label: "Synthesis", cost: synthesisDaily, model: "Haiku" },
                   { label: "Cerebro (~10 turns)", cost: cerebroDaily, model: "Sonnet" },
                   { label: "Dispatch (weekly)", cost: dispatchDaily, model: "Sonnet" },
+                  { label: "Image gen (Flux)", cost: replicateDaily, model: "Replicate" },
                 ]
 
                 const monthlyEstimate = totalDaily * 30
