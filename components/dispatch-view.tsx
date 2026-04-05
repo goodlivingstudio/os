@@ -460,30 +460,6 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
           Dispatch
         </span>
 
-        {/* Week navigation */}
-        <div style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: 16 }}>
-          <button
-            onClick={() => setWeekOffset(o => Math.max(o - 1, -12))}
-            style={{ width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", borderRadius: 4, transition: "all 0.15s", padding: 0 }}
-            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
-          >
-            <ChevronLeft size={14} />
-          </button>
-          <span style={{ ...TYPE.xs, fontFamily: MONO, color: weekOffset === 0 ? "var(--text-secondary)" : "var(--text-tertiary)", minWidth: 90, textAlign: "center" }}>
-            {weekOffset === 0 ? "This week" : formatWeekRangeForOffset(weekOffset)}
-          </span>
-          <button
-            onClick={() => setWeekOffset(o => Math.min(o + 1, 0))}
-            disabled={weekOffset === 0}
-            style={{ width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: weekOffset === 0 ? "var(--border)" : "var(--text-tertiary)", cursor: weekOffset === 0 ? "default" : "pointer", borderRadius: 4, transition: "all 0.15s", padding: 0 }}
-            onMouseEnter={e => { if (weekOffset !== 0) e.currentTarget.style.background = "var(--bg-elevated)" }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
-          >
-            <ChevronRight size={14} />
-          </button>
-        </div>
-
         {/* Regenerate — current week only */}
         {data && !loading && weekOffset === 0 && (
           <button
@@ -583,8 +559,35 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                 )}
               </div>
               {data.articleCount && data.generatedAt && (
-                <div style={{ ...metaStyle, marginTop: 18 }}>
-                  {data.articleCount} articles · {new Date(data.generatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                <div style={{ marginTop: 20, display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+                  <div style={metaStyle}>
+                    {data.articleCount} articles · {new Date(data.generatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  </div>
+                  {/* Week carousel dots */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    {Array.from({ length: 6 }, (_, i) => {
+                      const offset = -(5 - i) // -5, -4, -3, -2, -1, 0
+                      const isActive = weekOffset === offset
+                      return (
+                        <button
+                          key={offset}
+                          onClick={() => setWeekOffset(offset)}
+                          title={offset === 0 ? "This week" : formatWeekRangeForOffset(offset)}
+                          style={{
+                            width: isActive ? 20 : 6,
+                            height: 6,
+                            borderRadius: 3,
+                            border: "none",
+                            background: isActive ? "var(--accent-secondary)" : "var(--border)",
+                            cursor: "pointer",
+                            padding: 0,
+                            transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+                            opacity: isActive ? 1 : 0.5,
+                          }}
+                        />
+                      )
+                    })}
+                  </div>
                 </div>
               )}
             </div>
