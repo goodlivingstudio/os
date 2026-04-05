@@ -10,12 +10,17 @@ const KV_AVAILABLE = !!(
   process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN
 )
 
+function getISOWeek(d: Date): { year: number; week: number } {
+  const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()))
+  date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7))
+  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1))
+  const week = Math.ceil(((date.getTime() - yearStart.getTime()) / 86400000 + 1) / 7)
+  return { year: date.getUTCFullYear(), week }
+}
+
 function getWeekKey(): string {
-  const now = new Date()
-  const start = new Date(now.getFullYear(), 0, 1)
-  const diff = now.getTime() - start.getTime()
-  const weekNum = Math.ceil((diff / 86400000 + start.getDay() + 1) / 7)
-  return `dispatch:weekly:${now.getFullYear()}-w${weekNum}`
+  const { year, week } = getISOWeek(new Date())
+  return `dispatch:weekly:${year}-w${week}`
 }
 
 const WEEK_TTL = 90 * 24 * 60 * 60 // 90 days — archive support
