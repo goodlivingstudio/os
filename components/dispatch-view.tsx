@@ -136,7 +136,7 @@ function PerspectiveCard({ perspective, index, onDeliberate }: {
       </div>
       {/* Title */}
       <div style={{
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 400,
         fontFamily: "var(--font-grenette), Georgia, serif",
         color: "var(--text-primary)",

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Paperclip, Mic, MicOff, ExternalLink, ArrowUpRight, Copy, Check, Flag, BookMarked, Maximize2 } from "lucide-react"
+import { Paperclip, Mic, MicOff, ExternalLink, ArrowUpRight, Copy, Check, Flag, BookMarked, Maximize2, Square, RotateCcw } from "lucide-react"
 import type { Article, Message } from "@/lib/types"
 import { renderCitedBody, CitationSource } from "@/components/citation"
 
@@ -138,7 +138,27 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
     }
   }, [input])
 
+  const abortRef = useRef<AbortController | null>(null)
   const sendRef = useRef<((text: string) => Promise<void>) | undefined>(undefined)
+
+  const handleStop = useCallback(() => {
+    if (abortRef.current) {
+      abortRef.current.abort()
+      abortRef.current = null
+    }
+    setLoading(false)
+  }, [])
+
+  const handleClear = useCallback(() => {
+    if (abortRef.current) { abortRef.current.abort(); abortRef.current = null }
+    setMessages([])
+    setInput("")
+    setLoading(false)
+    setFollowUps(null)
+    setTokens(0)
+    setSourcesByMsg({})
+    setLastSources([])
+  }, [])
 
   const send = useCallback(
     async (text: string) => {
@@ -161,6 +181,8 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
         : null
 
       try {
+        const controller = new AbortController()
+        abortRef.current = controller
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -170,6 +192,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
             sessionId,
             images: attachments.length > 0 ? attachments.map(a => ({ media_type: a.media_type, data: a.data })) : undefined,
           }),
+          signal: controller.signal,
         })
         const data = await res.json()
         if (!res.ok || data.error) {
@@ -192,11 +215,16 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
           if (data.followUp) setFollowUps(data.followUp)
         }
       } catch (err) {
-        setMessages(prev => [
-          ...prev,
-          { role: "assistant", content: `// network error: ${err instanceof Error ? err.message : String(err)}` },
-        ])
+        if (err instanceof DOMException && err.name === "AbortError") {
+          // User cancelled — don't add error message
+        } else {
+          setMessages(prev => [
+            ...prev,
+            { role: "assistant", content: `// network error: ${err instanceof Error ? err.message : String(err)}` },
+          ])
+        }
       }
+      abortRef.current = null
       setLoading(false)
     },
     [messages, loading, articles, sessionId, attachments]
@@ -408,13 +436,13 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
               </div>
             )}
 
-            {/* ── User: right-aligned, the questioner's voice ── */}
+            {/* ── User: right-aligned in focus, left-aligned in sidebar ── */}
             {m.role === "user" ? (
-              <div style={{ padding: "0 32px", display: "flex", justifyContent: "flex-end" }}>
+              <div style={{ padding: "0 32px", display: "flex", justifyContent: maxWidth ? "flex-end" : "flex-start" }}>
                 <div style={{
                   fontSize: 13, color: "var(--text-primary)", lineHeight: 1.7,
-                  wordBreak: "break-word", fontWeight: 500, textAlign: "right",
-                  maxWidth: "68%",
+                  wordBreak: "break-word", fontWeight: 500, textAlign: maxWidth ? "right" : "left",
+                  maxWidth: maxWidth ? "68%" : undefined,
                 }}>
                   {m.content}
                 </div>
@@ -605,17 +633,30 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
 
             {/* Toolbar row */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 8px 8px" }}>
-              {!input.trim() ? (
-                <button
-                  onClick={() => send(PROVOCATIONS[placeholderIdx])}
-                  aria-label="Discuss this prompt"
-                  style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--text-tertiary)", width: 30, height: 30, borderRadius: 8, transition: "all 0.15s", display: "flex", alignItems: "center", justifyContent: "center", padding: 0 }}
-                  onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.background = "var(--bg-surface)" }}
-                  onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
-                >
-                  <ArrowUpRight size={16} strokeWidth={1.5} />
-                </button>
-              ) : <div />}
+              <div style={{ display: "flex", gap: 2 }}>
+                {loading ? (
+                  <button
+                    onClick={handleStop}
+                    aria-label="Stop generating"
+                    title="Stop"
+                    style={{ width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, border: "none", background: "transparent", color: "var(--text-tertiary)", cursor: "pointer", transition: "all 0.15s", padding: 0 }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.color = "#ef4444" }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
+                  >
+                    <Square size={14} strokeWidth={2} />
+                  </button>
+                ) : !input.trim() ? (
+                  <button
+                    onClick={() => send(PROVOCATIONS[placeholderIdx])}
+                    aria-label="Discuss this prompt"
+                    style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--text-tertiary)", width: 30, height: 30, borderRadius: 8, transition: "all 0.15s", display: "flex", alignItems: "center", justifyContent: "center", padding: 0 }}
+                    onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.background = "var(--bg-surface)" }}
+                    onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
+                  >
+                    <ArrowUpRight size={16} strokeWidth={1.5} />
+                  </button>
+                ) : <div />}
+              </div>
               <div style={{ display: "flex", gap: 2 }}>
                 {onFocusMode && (
                   <button
@@ -659,6 +700,16 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
                       onMouseLeave={e => { e.currentTarget.style.background = "transparent"; if (!atlasCopied) e.currentTarget.style.color = "var(--text-tertiary)" }}
                     >
                       {atlasCopied ? <Check size={15} strokeWidth={1.5} /> : <BookMarked size={15} strokeWidth={1.5} />}
+                    </button>
+                    <button
+                      onClick={handleClear}
+                      aria-label="Clear conversation"
+                      title="New conversation"
+                      style={{ width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, border: "none", background: "transparent", color: "var(--text-tertiary)", cursor: "pointer", transition: "all 0.15s", padding: 0 }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.color = "var(--text-secondary)" }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
+                    >
+                      <RotateCcw size={14} strokeWidth={1.5} />
                     </button>
                   </>
                 )}
