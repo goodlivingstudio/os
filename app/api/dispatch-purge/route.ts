@@ -7,10 +7,11 @@ const KV_AVAILABLE = !!(
 
 function getWeekKey(): string {
   const now = new Date()
-  const start = new Date(now.getFullYear(), 0, 1)
-  const diff = now.getTime() - start.getTime()
-  const weekNum = Math.ceil((diff / 86400000 + start.getDay() + 1) / 7)
-  return `dispatch:weekly:${now.getFullYear()}-w${weekNum}`
+  const date = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()))
+  date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7))
+  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1))
+  const week = Math.ceil(((date.getTime() - yearStart.getTime()) / 86400000 + 1) / 7)
+  return `dispatch:weekly:${date.getUTCFullYear()}-w${week}`
 }
 
 export async function POST() {
