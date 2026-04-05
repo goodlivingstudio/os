@@ -18,7 +18,7 @@ function getWeekKey(): string {
   return `dispatch:weekly:${now.getFullYear()}-w${weekNum}`
 }
 
-const WEEK_TTL = 7 * 24 * 60 * 60 // 7 days
+const WEEK_TTL = 90 * 24 * 60 * 60 // 90 days — archive support
 
 // ─── Citation resolution ────────────────────────────────────────────────────
 
@@ -110,9 +110,16 @@ PITCHES: Generate exactly 7 pitches. Be specific. Name companies, cite data poin
 
 Return only valid JSON. No prose outside the JSON.`
 
-export async function GET() {
+export async function GET(request: Request) {
   const apiKey = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
   if (!apiKey) return Response.json({ error: "No API key" }, { status: 500 })
+
+  // Support week navigation: ?week=2026-w14
+  const { searchParams } = new URL(request.url)
+  const weekParam = searchParams.get("week")
+  const currentWeekId = getWeekKey().replace("dispatch:weekly:", "")
+  const cacheKey = weekParam ? `dispatch:weekly:${weekParam}` : getWeekKey()
+  const isArchive = weekParam && weekParam !== currentWeekId
 
   if (!ARTICLE_STORE_AVAILABLE) {
     return Response.json({
@@ -127,7 +134,7 @@ export async function GET() {
     // Check KV cache first — avoid 10-20s Sonnet call on repeat visits
     if (KV_AVAILABLE) {
       try {
-        const cached = await kv.get<Record<string, unknown>>(getWeekKey())
+        const cached = await kv.get<Record<string, unknown>>(cacheKey)
         if (cached && (cached.pitches as unknown[])?.length > 0) {
           return Response.json({
             available: true,
@@ -138,6 +145,16 @@ export async function GET() {
       } catch {
         // KV read failed — fall through to generation
       }
+    }
+
+    // Don't regenerate for past weeks — only serve from cache
+    if (isArchive) {
+      return Response.json({
+        available: true,
+        weekSummary: null,
+        pitches: [],
+        message: "No archived data for this week.",
+      })
     }
 
     const articles = await loadArticleHistory(7)

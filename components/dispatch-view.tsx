@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Copy, Check, ArrowUpRight, X, RefreshCw } from "lucide-react"
+import { useState, useEffect, useCallback } from "react"
+import { Copy, Check, ArrowUpRight, X, RefreshCw, ChevronLeft, ChevronRight, Pen } from "lucide-react"
 import { TYPE, MONO, labelStyle, metaStyle } from "@/lib/styles"
 import { renderCitedBody } from "@/components/citation"
 import type { CitationSource } from "@/lib/types"
@@ -72,6 +72,68 @@ function formatWeekRange(generatedAt?: string): string {
   sunday.setDate(monday.getDate() + 6)
   const fmt = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
   return `${fmt(monday)} – ${fmt(sunday)}`
+}
+
+// ─── Signal Strength + Convergence helpers ─────────────────────────────────
+
+function countUniqueSources(pitch: Pitch): number {
+  if (!pitch.evidenceSources) return 0
+  const names = new Set<string>()
+  for (const group of pitch.evidenceSources) {
+    if (group) for (const s of group) {
+      if (s.source) names.add(s.source)
+      else if (s.title) names.add(s.title)
+    }
+  }
+  return names.size
+}
+
+function isConvergence(pitch: Pitch): boolean {
+  return (pitch.layers?.length ?? 0) >= 3
+}
+
+// ─── Pitch Status helpers ──────────────────────────────────────────────────
+
+type PitchStatus = "drafted" | "published" | "killed"
+
+const STATUS_COLORS: Record<PitchStatus, string> = {
+  drafted: "#D4A05A",
+  published: "#7BAF6A",
+  killed: "var(--text-tertiary)",
+}
+
+function pitchKey(title: string): string {
+  let h = 0
+  for (let i = 0; i < title.length; i++) h = ((h << 5) - h + title.charCodeAt(i)) | 0
+  return String(Math.abs(h))
+}
+
+function loadPitchStatuses(): Record<string, PitchStatus> {
+  try {
+    const raw = localStorage.getItem("dispatch-pitch-status")
+    return raw ? JSON.parse(raw) : {}
+  } catch { return {} }
+}
+
+function savePitchStatuses(statuses: Record<string, PitchStatus>) {
+  try { localStorage.setItem("dispatch-pitch-status", JSON.stringify(statuses)) } catch { /* */ }
+}
+
+// ─── Week key helpers ──────────────────────────────────────────────────────
+
+function getWeekId(offset = 0): string {
+  const d = new Date()
+  d.setDate(d.getDate() + offset * 7)
+  const start = new Date(d.getFullYear(), 0, 1)
+  const diff = d.getTime() - start.getTime()
+  const weekNum = Math.ceil((diff / 86400000 + start.getDay() + 1) / 7)
+  return `${d.getFullYear()}-w${weekNum}`
+}
+
+function formatWeekRangeForOffset(offset: number): string {
+  const d = new Date()
+  d.setDate(d.getDate() + offset * 7)
+  return formatWeekRange(d.toISOString())
 }
 
 // ─── Copy Button ────────────────────────────────────────────────────────────
@@ -156,7 +218,10 @@ function PerspectiveCard({ perspective, index, onDeliberate }: {
 
 // ─── Pitch Overlay ──────────────────────────────────────────────────────────
 
-function PitchOverlay({ pitch, onClose, onDeliberate }: { pitch: Pitch; onClose: () => void; onDeliberate: (text: string) => void }) {
+function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
+  pitch: Pitch; onClose: () => void; onDeliberate: (text: string) => void
+  status?: PitchStatus; onSetStatus: (s: PitchStatus | null) => void
+}) {
   const pitchMarkdown = `# ${pitch.title}\n\n**Thesis:** ${pitch.thesis}\n\n**Brief:** ${pitch.brief}\n\n**Platform:** ${pitch.platforms.primary}\n**Adaptations:**\n${pitch.platforms.adaptations.map(a => `- ${a}`).join("\n")}\n\n**Evidence:**\n${pitch.evidence.map(e => `- ${e}`).join("\n")}\n\n**Urgency:** ${pitch.urgency}`
 
   useEffect(() => {
@@ -184,7 +249,31 @@ function PitchOverlay({ pitch, onClose, onDeliberate }: { pitch: Pitch; onClose:
         </div>
 
         <div style={{ fontSize: 22, fontWeight: 400, fontFamily: "var(--font-grenette), Georgia, serif", color: "var(--text-primary)", marginBottom: 8, lineHeight: 1.35, letterSpacing: "-0.01em" }}>{pitch.title}</div>
-        <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7, marginBottom: 24 }}>{pitch.thesis}</div>
+        <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7, marginBottom: isConvergence(pitch) ? 12 : 24 }}>{pitch.thesis}</div>
+
+        {/* Convergence callout */}
+        {isConvergence(pitch) && (
+          <div style={{
+            display: "flex", alignItems: "center", gap: 8, marginBottom: 24,
+            padding: "10px 14px", borderRadius: 8, background: "var(--bg-elevated)",
+          }}>
+            <div style={{ display: "flex", gap: 3 }}>
+              {pitch.layers.map(l => (
+                <span key={l} style={{ width: 6, height: 6, borderRadius: "50%", background: LAYER_DOT[l] || "var(--text-tertiary)" }} />
+              ))}
+            </div>
+            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
+              Convergence — {pitch.layers.map(l => LAYER_LABELS[l] || l).join(", ")}
+            </span>
+          </div>
+        )}
+
+        {/* Signal strength */}
+        {countUniqueSources(pitch) > 0 && (
+          <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginBottom: 16 }}>
+            {countUniqueSources(pitch)} unique sources
+          </div>
+        )}
 
         <div style={{ height: 1, background: "var(--border)", marginBottom: 24 }} />
 
@@ -222,7 +311,7 @@ function PitchOverlay({ pitch, onClose, onDeliberate }: { pitch: Pitch; onClose:
           <div style={{ ...TYPE.body, color: "var(--accent-muted)", lineHeight: 1.7 }}>{pitch.urgency}</div>
         </div>
 
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
           <CopyButton text={pitchMarkdown} label="Copy brief" />
           <CopyButton
             text={`---\ntype: dispatch-pitch\ndate: ${new Date().toISOString().slice(0, 10)}\nmode: ${pitch.mode}\nlayers: [${pitch.layers.join(", ")}]\nplatform: ${pitch.platforms.primary}\n---\n\n# ${pitch.title}\n\n**Thesis:** ${pitch.thesis}\n\n**Brief:** ${pitch.brief}\n\n${pitch.angle ? `**Angle:** ${pitch.angle}\n\n` : ""}**Evidence:**\n${pitch.evidence.map(e => `- ${e}`).join("\n")}\n\n**Urgency:** ${pitch.urgency}\n\n**Adaptations:**\n${pitch.platforms.adaptations.map(a => `- ${a}`).join("\n")}\n\n${pitch.wordCount ? `**Target:** ~${pitch.wordCount} words` : ""}`}
@@ -237,6 +326,38 @@ function PitchOverlay({ pitch, onClose, onDeliberate }: { pitch: Pitch; onClose:
             <ArrowUpRight size={12} />
             Develop in Cerebro
           </button>
+          <button
+            onClick={() => {
+              onDeliberate(`Act as my co-writer — help me write this piece, not strategize about it.\n\nTitle: "${pitch.title}"\nPlatform: ${pitch.platforms.primary}${pitch.wordCount ? ` (~${pitch.wordCount} words)` : ""}\nThesis: ${pitch.thesis}\nBrief: ${pitch.brief}${pitch.angle ? `\nAngle: ${pitch.angle}` : ""}\nEvidence:\n${pitch.evidence.map(e => `- ${e}`).join("\n")}\n\nStart with an opening hook. Write in first person, conversational but authoritative. Make it publishable.`)
+              onClose()
+            }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 6, border: "1px solid var(--accent-secondary)", background: "rgba(184, 150, 106, 0.08)", color: "var(--accent-secondary)", ...TYPE.sm, cursor: "pointer", transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.background = "rgba(184, 150, 106, 0.15)" }}
+            onMouseLeave={e => { e.currentTarget.style.background = "rgba(184, 150, 106, 0.08)" }}
+          >
+            <Pen size={11} />
+            Start drafting
+          </button>
+        </div>
+
+        {/* Status toggles */}
+        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginRight: 4 }}>Status</span>
+          {(["drafted", "published", "killed"] as PitchStatus[]).map(s => (
+            <button
+              key={s}
+              onClick={() => onSetStatus(status === s ? null : s)}
+              style={{
+                ...TYPE.xs, padding: "3px 10px", borderRadius: 9999,
+                border: `1px solid ${status === s ? STATUS_COLORS[s] : "var(--border)"}`,
+                background: status === s ? `${STATUS_COLORS[s]}18` : "transparent",
+                color: status === s ? STATUS_COLORS[s] : "var(--text-tertiary)",
+                cursor: "pointer", transition: "all 0.15s", textTransform: "capitalize",
+              }}
+            >
+              {s}
+            </button>
+          ))}
         </div>
       </div>
     </div>
@@ -262,6 +383,21 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
   const [elapsed, setElapsed] = useState(0)
   const [activePitch, setActivePitch] = useState<Pitch | null>(null)
   const [regenerating, setRegenerating] = useState(false)
+  const [pitchStatuses, setPitchStatuses] = useState<Record<string, PitchStatus>>({})
+  const [weekOffset, setWeekOffset] = useState(0)
+
+  // Load pitch statuses from localStorage
+  useEffect(() => { setPitchStatuses(loadPitchStatuses()) }, [])
+
+  const setStatus = useCallback((title: string, status: PitchStatus | null) => {
+    setPitchStatuses(prev => {
+      const next = { ...prev }
+      if (status) next[pitchKey(title)] = status
+      else delete next[pitchKey(title)]
+      savePitchStatuses(next)
+      return next
+    })
+  }, [])
 
   const handleRegenerate = async () => {
     setRegenerating(true)
@@ -285,17 +421,25 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
   }
 
   useEffect(() => {
-    if (_cachedDispatch) return
+    // Only use module cache for current week
+    if (weekOffset === 0 && _cachedDispatch) return
+    setData(null)
     setStatusIdx(0)
     setElapsed(0)
+    setLoading(true)
     const t = setInterval(() => setStatusIdx(i => Math.min(i + 1, DISPATCH_STATUSES.length - 1)), 1800)
     const timer = setInterval(() => setElapsed(e => e + 1), 1000)
-    fetch("/api/dispatch")
+    const weekParam = weekOffset !== 0 ? `?week=${getWeekId(weekOffset)}` : ""
+    fetch(`/api/dispatch${weekParam}`)
       .then(r => r.json())
-      .then(d => { setData(d); _cachedDispatch = d; setLoading(false); clearInterval(t); clearInterval(timer) })
+      .then(d => {
+        setData(d)
+        if (weekOffset === 0) _cachedDispatch = d
+        setLoading(false); clearInterval(t); clearInterval(timer)
+      })
       .catch(() => { setLoading(false); clearInterval(t); clearInterval(timer) })
     return () => { clearInterval(t); clearInterval(timer) }
-  }, [])
+  }, [weekOffset])
 
   return (
     <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}>
@@ -307,7 +451,33 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
         <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase" }}>
           Dispatch
         </span>
-        {data && !loading && (
+
+        {/* Week navigation */}
+        <div style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: 16 }}>
+          <button
+            onClick={() => setWeekOffset(o => Math.max(o - 1, -12))}
+            style={{ width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", borderRadius: 4, transition: "all 0.15s", padding: 0 }}
+            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+          >
+            <ChevronLeft size={14} />
+          </button>
+          <span style={{ ...TYPE.xs, fontFamily: MONO, color: weekOffset === 0 ? "var(--text-secondary)" : "var(--text-tertiary)", minWidth: 90, textAlign: "center" }}>
+            {weekOffset === 0 ? "This week" : formatWeekRangeForOffset(weekOffset)}
+          </span>
+          <button
+            onClick={() => setWeekOffset(o => Math.min(o + 1, 0))}
+            disabled={weekOffset === 0}
+            style={{ width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: weekOffset === 0 ? "var(--border)" : "var(--text-tertiary)", cursor: weekOffset === 0 ? "default" : "pointer", borderRadius: 4, transition: "all 0.15s", padding: 0 }}
+            onMouseEnter={e => { if (weekOffset !== 0) e.currentTarget.style.background = "var(--bg-elevated)" }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+          >
+            <ChevronRight size={14} />
+          </button>
+        </div>
+
+        {/* Regenerate — current week only */}
+        {data && !loading && weekOffset === 0 && (
           <button
             onClick={handleRegenerate}
             disabled={regenerating}
@@ -466,16 +636,43 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                       </div>
                       {/* Text content — right side */}
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        {/* Mode + platform indicator */}
+                        {/* Mode + platform + indicators */}
                         <div style={{
                           ...TYPE.xs, textTransform: "uppercase", letterSpacing: "0.06em",
                           fontWeight: 600, marginBottom: 8,
+                          display: "flex", alignItems: "center", flexWrap: "wrap", gap: 4,
                         }}>
                           <span style={{ color: pitch.mode === "thought_leadership" ? "#5A9EB0" : "#C87A6A" }}>
                             {pitch.mode === "thought_leadership" ? "Thought Leadership" : "Creative"}
                           </span>
-                          <span style={{ color: "var(--text-tertiary)", margin: "0 6px" }}>·</span>
+                          <span style={{ color: "var(--text-tertiary)" }}>·</span>
                           <span style={{ color: "var(--text-primary)" }}>{pitch.platforms.primary}</span>
+                          {countUniqueSources(pitch) > 0 && (
+                            <>
+                              <span style={{ color: "var(--text-tertiary)" }}>·</span>
+                              <span style={{ color: "var(--text-tertiary)", fontWeight: 400 }}>{countUniqueSources(pitch)} sources</span>
+                            </>
+                          )}
+                          {isConvergence(pitch) && (
+                            <>
+                              <span style={{ color: "var(--text-tertiary)" }}>·</span>
+                              <span style={{ display: "inline-flex", alignItems: "center", gap: 2 }}>
+                                {pitch.layers.slice(0, 4).map(l => (
+                                  <span key={l} style={{ width: 5, height: 5, borderRadius: "50%", background: LAYER_DOT[l] || "var(--text-tertiary)", display: "inline-block" }} />
+                                ))}
+                              </span>
+                            </>
+                          )}
+                          {pitchStatuses[pitchKey(pitch.title)] && (
+                            <span style={{
+                              padding: "1px 6px", borderRadius: 9999, fontSize: 9,
+                              background: `${STATUS_COLORS[pitchStatuses[pitchKey(pitch.title)]]}18`,
+                              color: STATUS_COLORS[pitchStatuses[pitchKey(pitch.title)]],
+                              textTransform: "capitalize", fontWeight: 500, marginLeft: 4,
+                            }}>
+                              {pitchStatuses[pitchKey(pitch.title)]}
+                            </span>
+                          )}
                         </div>
                         {/* Title */}
                         <div style={{
@@ -541,7 +738,13 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
 
       {/* Pitch overlay */}
       {activePitch && (
-        <PitchOverlay pitch={activePitch} onClose={() => setActivePitch(null)} onDeliberate={onDeliberate} />
+        <PitchOverlay
+          pitch={activePitch}
+          onClose={() => setActivePitch(null)}
+          onDeliberate={onDeliberate}
+          status={pitchStatuses[pitchKey(activePitch.title)]}
+          onSetStatus={(s) => setStatus(activePitch.title, s)}
+        />
       )}
     </main>
   )
