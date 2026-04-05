@@ -567,11 +567,11 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 4, marginBottom: 8 }}>
                     <button
                       onClick={() => setWeekOffset(o => Math.max(o - 1, -6))}
-                      style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: weekOffset <= -6 ? "var(--border)" : "var(--text-tertiary)", cursor: weekOffset <= -6 ? "default" : "pointer", borderRadius: 4, transition: "all 0.15s", padding: 0 }}
-                      onMouseEnter={e => { if (weekOffset > -6) e.currentTarget.style.color = "var(--text-secondary)" }}
-                      onMouseLeave={e => { e.currentTarget.style.color = weekOffset <= -6 ? "var(--border)" : "var(--text-tertiary)" }}
+                      style={{ width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: weekOffset <= -6 ? "var(--border)" : "var(--text-tertiary)", cursor: weekOffset <= -6 ? "default" : "pointer", borderRadius: 6, transition: "all 0.15s", padding: 0 }}
+                      onMouseEnter={e => { if (weekOffset > -6) { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-elevated)" } }}
+                      onMouseLeave={e => { e.currentTarget.style.color = weekOffset <= -6 ? "var(--border)" : "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
                     >
-                      <ChevronLeft size={12} />
+                      <ChevronLeft size={14} />
                     </button>
                     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                       {Array.from({ length: 7 }, (_, i) => {
@@ -599,11 +599,11 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                     </div>
                     <button
                       onClick={() => setWeekOffset(o => Math.min(o + 1, 0))}
-                      style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: weekOffset >= 0 ? "var(--border)" : "var(--text-tertiary)", cursor: weekOffset >= 0 ? "default" : "pointer", borderRadius: 4, transition: "all 0.15s", padding: 0 }}
-                      onMouseEnter={e => { if (weekOffset < 0) e.currentTarget.style.color = "var(--text-secondary)" }}
-                      onMouseLeave={e => { e.currentTarget.style.color = weekOffset >= 0 ? "var(--border)" : "var(--text-tertiary)" }}
+                      style={{ width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: weekOffset >= 0 ? "var(--border)" : "var(--text-tertiary)", cursor: weekOffset >= 0 ? "default" : "pointer", borderRadius: 6, transition: "all 0.15s", padding: 0 }}
+                      onMouseEnter={e => { if (weekOffset < 0) { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-elevated)" } }}
+                      onMouseLeave={e => { e.currentTarget.style.color = weekOffset >= 0 ? "var(--border)" : "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
                     >
-                      <ChevronRight size={12} />
+                      <ChevronRight size={14} />
                     </button>
                   </div>
                 </div>
