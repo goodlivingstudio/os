@@ -565,8 +565,8 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                   </div>
                   {/* Week carousel dots */}
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    {Array.from({ length: 6 }, (_, i) => {
-                      const offset = -(5 - i) // -5, -4, -3, -2, -1, 0
+                    {Array.from({ length: 7 }, (_, i) => {
+                      const offset = -(6 - i) // -6, -5, -4, -3, -2, -1, 0
                       const isActive = weekOffset === offset
                       return (
                         <button
