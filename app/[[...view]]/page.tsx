@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef, useCallback, useMemo } from "react"
+import { createPortal } from "react-dom"
 import { Radio, AudioLines, Blend, Send, Brain, Settings, ChevronRight, ChevronLeft, Minimize2 } from "lucide-react"
 import { Ticker } from "@/components/ticker"
 import { LeftRail } from "@/components/left-rail"
@@ -184,6 +185,10 @@ export default function Page() {
   const [hotkeysOpen, setHotkeysOpen] = useState(false)
   const [focusMode, setFocusMode] = useState(false)
   const [exportOpen, setExportOpen] = useState(false)
+  const cerebroSidebarRef = useRef<HTMLDivElement>(null)
+  const cerebroFocusRef = useRef<HTMLDivElement>(null)
+  const [cerebroMounted, setCerebroMounted] = useState(false)
+  useEffect(() => { setCerebroMounted(true) }, [])
   const [activeLayers,   setActiveLayers]   = useState<Set<string>>(new Set())
   const [sortBy,         setSortBy]         = useState<"urgency" | "layer">("layer")
   const [mobileTab,      setMobileTab]      = useState<"signal" | "audio" | "synthesis" | "dispatch" | "cerebro" | "config">("signal")
@@ -707,7 +712,10 @@ export default function Page() {
 
       {/* Focus Mode — DCOS strip + full-width Cerebro */}
       {focusMode && !isMobile && (
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <div style={{
+          flex: 1, display: "flex", flexDirection: "column", overflow: "hidden",
+          animation: "focus-enter 0.35s cubic-bezier(0.16, 1, 0.3, 1) both",
+        }}>
           {/* Compact DCOS strip */}
           <div style={{
             flexShrink: 0, borderBottom: "1px solid var(--border)",
@@ -758,10 +766,8 @@ export default function Page() {
               </div>
             )}
           </div>
-          {/* Cerebro — constrained width, open background */}
-          <div style={{ flex: 1, overflow: "hidden" }}>
-            <Cerebro articles={articles} pendingPrompt={cerebroPrompt} maxWidth={960} />
-          </div>
+          {/* Cerebro portal target — focus mode */}
+          <div ref={cerebroFocusRef} style={{ flex: 1, overflow: "hidden" }} />
         </div>
       )}
 
@@ -898,7 +904,7 @@ export default function Page() {
               >
                 <ChevronRight size={14} strokeWidth={1.5} style={{ color: "var(--text-tertiary)" }} />
               </button>
-              <Cerebro articles={articles} pendingPrompt={cerebroPrompt} onFocusMode={() => setFocusModeWithUrl(true)} />
+              <div ref={cerebroSidebarRef} style={{ height: "100%" }} />
             </>
           )}
         </div>
@@ -919,6 +925,21 @@ export default function Page() {
 
       {/* Export panel */}
       {exportOpen && <ExportPanel onClose={() => setExportOpen(false)} signals={signals} articles={articles} />}
+
+      {/* Single Cerebro instance — portaled between sidebar and focus mode */}
+      {cerebroMounted && (() => {
+        const target = focusMode && !isMobile ? cerebroFocusRef.current : cerebroSidebarRef.current
+        if (!target) return null
+        return createPortal(
+          <Cerebro
+            articles={articles}
+            pendingPrompt={cerebroPrompt}
+            onFocusMode={() => setFocusModeWithUrl(true)}
+            maxWidth={focusMode ? 960 : undefined}
+          />,
+          target
+        )
+      })()}
     </div>
   )
 }
