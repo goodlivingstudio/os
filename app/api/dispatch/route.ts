@@ -64,7 +64,7 @@ Be specific. Name companies, cite data points, reference real trends from the ar
 Return only valid JSON. No prose outside the JSON.`
 
 export async function GET() {
-  const apiKey = process.env.ANTHROPIC_API_KEY
+  const apiKey = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
   if (!apiKey) return Response.json({ error: "No API key" }, { status: 500 })
 
   if (!ARTICLE_STORE_AVAILABLE) {

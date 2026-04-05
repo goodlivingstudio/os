@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react"
 import { RefreshCw } from "lucide-react"
-import { TYPE, MONO, metaStyle } from "@/lib/styles"
+import { TYPE, MONO, metaStyle, labelStyle } from "@/lib/styles"
 import type { Article, FeedHealth } from "@/lib/types"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -144,7 +144,7 @@ function SourceRow({ source }: { source: SourceStat }) {
 
   return (
     <div style={{
-      display: "flex", alignItems: "center", gap: 8, padding: "4px 0",
+      display: "flex", alignItems: "center", gap: 8, padding: "6px 0",
       background: isPersistentFailure ? "rgba(239, 68, 68, 0.06)" : "transparent",
       borderRadius: isPersistentFailure ? 4 : 0,
       margin: isPersistentFailure ? "0 -4px" : 0,
@@ -298,7 +298,7 @@ function CacheManagement() {
 
   return (
     <div>
-      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+      <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
         Cache Management
       </div>
       <div style={{ display: "flex", gap: 8 }}>
@@ -308,7 +308,7 @@ function CacheManagement() {
             onClick={a.action}
             disabled={a.status === "running"}
             style={{
-              flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "10px 14px",
+              flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "14px 16px",
               border: "none", cursor: a.status === "running" ? "wait" : "pointer",
               display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-start",
               transition: "background 0.15s",
@@ -486,7 +486,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
       </div>
 
       <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
 
           {/* ── Top metrics row ── */}
           <div style={{ display: "flex", gap: 8 }}>
@@ -498,7 +498,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
 
           {/* ── API Status ── */}
           <div>
-            <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+            <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
               API Connections
             </div>
             <div style={{ display: "flex", gap: 8 }}>
@@ -513,7 +513,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                 const ok = status === null ? null : status === "ok" ? true : status === "no key" ? false : false
                 return (
                   <div key={api.name} style={{
-                    flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "10px 14px",
+                    flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "14px 16px",
                     display: "flex", alignItems: "center", gap: 8,
                   }}>
                     <span style={{
@@ -538,8 +538,8 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
 
           {/* ── Layer Coverage ── */}
           <div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-              <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <div style={{ ...labelStyle, letterSpacing: "0.04em" }}>
                 Layer Coverage
               </div>
               <div style={{ display: "flex", gap: 16 }}>
@@ -548,48 +548,21 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                 <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", width: 40, textAlign: "right" }}>urg.</span>
               </div>
             </div>
-            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "8px 14px" }}>
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "10px 14px" }}>
               {layerHealth.map(lh => (
                 <LayerBar key={lh.layer} layer={lh} health={0} maxArticles={maxLayerArticles} />
               ))}
             </div>
           </div>
 
-          {/* ── Layer Glossary ── */}
-          <div>
-            <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>
-              Intelligence Layers
-            </div>
-            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px", display: "flex", flexDirection: "column", gap: 14 }}>
-              {([
-                { layer: "Opportunity", color: "#D4A05A", what: "Healthcare, pharma, AI-health signal", why: "Direct relevance to the Lilly engagement and the broader healthcare transformation thesis. Signals here inform positioning for healthcare design leadership." },
-                { layer: "Position", color: "#5A9EB0", what: "Career trajectory — hiring, comp, competitive positioning", why: "Tracks the market for senior design leadership roles. CDO/Head of Design hiring patterns, agency-to-in-house transitions, what organizations are hiring to solve." },
-                { layer: "Discipline", color: "#7BAF6A", what: "How design leadership is evolving as a function", why: "The profession is changing — CDO role scope, AI impact on practice, design-engineering convergence, org design. Staying current here is non-negotiable." },
-                { layer: "Landscape", color: "#9A85B8", what: "Broader forces shaping the operating environment", why: "AI policy, healthcare regulation, economic shifts affecting hiring and investment. The macro context that every other layer operates within." },
-                { layer: "Culture", color: "#C87A6A", what: "Taste, criticism, creative practice", why: "Architecture, film, music, cultural theory. A design leader who only reads industry publications is a technician. Formation signals develop the judgment that separates leaders from practitioners." },
-              ]).map(item => (
-                <div key={item.layer}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                    <span style={{ width: 8, height: 8, borderRadius: 3, background: item.color, flexShrink: 0 }} />
-                    <span style={{ ...TYPE.sm, color: "var(--text-primary)", fontWeight: 500 }}>{item.layer}</span>
-                    <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>{item.what}</span>
-                  </div>
-                  <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", lineHeight: 1.6, paddingLeft: 16 }}>
-                    {item.why}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* ── Annotation Pipeline ── */}
           <div>
-            <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+            <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
               Annotation Pipeline
             </div>
-            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "14px 16px" }}>
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
               {/* Pipeline bar */}
-              <div style={{ display: "flex", height: 8, borderRadius: 4, overflow: "hidden", background: "var(--bg-elevated)", marginBottom: 10 }}>
+              <div style={{ display: "flex", height: 8, borderRadius: 4, overflow: "hidden", background: "var(--bg-elevated)", marginBottom: 12 }}>
                 {pipeline.annotatedServer > 0 && (
                   <div style={{ width: `${(pipeline.annotatedServer / pipeline.totalArticles) * 100}%`, background: "var(--live)", transition: "width 0.6s" }} title={`Server: ${pipeline.annotatedServer}`} />
                 )}
@@ -616,9 +589,12 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
 
           {/* ── Source Grid ── */}
           <div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-              <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                Source Grid ({sourceStats.length} sources)
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <div style={{ ...labelStyle, letterSpacing: "0.04em" }}>
+                Source Grid
+                <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
+                  {sourceStats.length} sources
+                </span>
               </div>
               <div style={{ display: "flex", gap: 12 }}>
                 <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", fontFamily: MONO }}>layer</span>
@@ -627,7 +603,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                 <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", fontFamily: MONO, width: 24, textAlign: "right" }}>urg</span>
               </div>
             </div>
-            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "8px 14px" }}>
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "10px 14px" }}>
               {sourceStats.map(source => (
                 <SourceRow key={source.name} source={source} />
               ))}
@@ -636,10 +612,10 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
 
           {/* ── Estimated Daily Cost ── */}
           <div>
-            <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+            <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
               Estimated Daily Cost
             </div>
-            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "14px 16px" }}>
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
               {(() => {
                 // Cost model based on Anthropic pricing (April 2026)
                 // Haiku: $0.25/M input, $1.25/M output
@@ -703,7 +679,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                       )}
                     </div>
                     {items.map(item => (
-                      <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 8, padding: "2px 0" }}>
+                      <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 0" }}>
                         <span style={{ flex: 1, ...TYPE.sm, fontFamily: MONO, color: "var(--text-secondary)" }}>
                           {item.label}
                         </span>
@@ -722,6 +698,33 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                   </>
                 )
               })()}
+            </div>
+          </div>
+
+          {/* ── Intelligence Layers (reference) ── */}
+          <div>
+            <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
+              Intelligence Layers
+            </div>
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px", display: "flex", flexDirection: "column", gap: 16 }}>
+              {([
+                { layer: "Opportunity", color: "#D4A05A", what: "Healthcare, pharma, AI-health signal", why: "Direct relevance to the Lilly engagement and the broader healthcare transformation thesis. Signals here inform positioning for healthcare design leadership." },
+                { layer: "Position", color: "#5A9EB0", what: "Career trajectory — hiring, comp, competitive positioning", why: "Tracks the market for senior design leadership roles. CDO/Head of Design hiring patterns, agency-to-in-house transitions, what organizations are hiring to solve." },
+                { layer: "Discipline", color: "#7BAF6A", what: "How design leadership is evolving as a function", why: "The profession is changing — CDO role scope, AI impact on practice, design-engineering convergence, org design. Staying current here is non-negotiable." },
+                { layer: "Landscape", color: "#9A85B8", what: "Broader forces shaping the operating environment", why: "AI policy, healthcare regulation, economic shifts affecting hiring and investment. The macro context that every other layer operates within." },
+                { layer: "Culture", color: "#C87A6A", what: "Taste, criticism, creative practice", why: "Architecture, film, music, cultural theory. A design leader who only reads industry publications is a technician. Formation signals develop the judgment that separates leaders from practitioners." },
+              ]).map(item => (
+                <div key={item.layer}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                    <span style={{ width: 8, height: 8, borderRadius: 3, background: item.color, flexShrink: 0 }} />
+                    <span style={{ ...TYPE.body, color: "var(--text-primary)", fontWeight: 500 }}>{item.layer}</span>
+                    <span style={{ ...TYPE.sm, color: "var(--text-tertiary)" }}>{item.what}</span>
+                  </div>
+                  <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7, paddingLeft: 16 }}>
+                    {item.why}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 

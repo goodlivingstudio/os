@@ -165,7 +165,7 @@ function Lightbox({ image, onClose, onPrev, onNext }: {
 
 // ─── Gallery Overlay ────────────────────────────────────────────────────────
 
-export function GalleryOverlay({ onClose }: { onClose: () => void }) {
+export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => void; excludedSources?: Set<string> }) {
   const [allImages, setAllImages] = useState<GalleryImage[]>([])
   const [loading, setLoading] = useState(true)
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
@@ -197,17 +197,22 @@ export function GalleryOverlay({ onClose }: { onClose: () => void }) {
       .catch(() => setLoading(false))
   }, [])
 
+  // Filter out excluded sources first
+  const includedImages = excludedSources?.size
+    ? allImages.filter(img => !img.source || !excludedSources.has(img.source))
+    : allImages
+
   // Mood counts from server-classified data
   const moodCounts: Record<ColorMood, number> = { warm: 0, cool: 0, earth: 0, vivid: 0, neutral: 0 }
-  for (const img of allImages) { if (img.mood) moodCounts[img.mood]++ }
-  const classifiedCount = allImages.filter(img => img.mood).length
+  for (const img of includedImages) { if (img.mood) moodCounts[img.mood]++ }
+  const classifiedCount = includedImages.filter(img => img.mood).length
 
-  // Apply mood filter + sort by hue for tonal coherence (like Ricardo's galleries)
+  // Apply mood filter + sort by hue for tonal coherence
   const images = activeMood
-    ? allImages
+    ? includedImages
         .filter(img => img.mood === activeMood)
         .sort((a, b) => (a.hue ?? 0) - (b.hue ?? 0))
-    : allImages
+    : includedImages
 
   // Close on Escape (when lightbox isn't open)
   useEffect(() => {

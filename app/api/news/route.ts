@@ -252,7 +252,7 @@ async function annotateBatch(
 // Annotate articles in parallel batches — 5 concurrent Haiku calls × 20 articles each
 // Cost: ~$0.01–0.02 per ISR cycle. Runs every 30 minutes.
 async function annotateArticles(articles: Article[]): Promise<Article[]> {
-  const apiKey = process.env.ANTHROPIC_API_KEY
+  const apiKey = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
   if (!apiKey || articles.length === 0) return articles
 
   const BATCH_SIZE = 20

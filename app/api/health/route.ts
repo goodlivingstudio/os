@@ -83,7 +83,7 @@ async function probeReplicate(token: string): Promise<string> {
 }
 
 export async function GET() {
-  const anthropicKey   = process.env.ANTHROPIC_API_KEY
+  const anthropicKey   = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
   const exaKey         = process.env.EXA_API_KEY
   const kvUrl          = process.env.KV_REST_API_URL
   const arenaToken     = process.env.ARENA_ACCESS_TOKEN

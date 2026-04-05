@@ -7,6 +7,7 @@ import { FEEDS } from "@/lib/feeds"
 import { PODCAST_FEEDS } from "@/lib/podcasts"
 import { GALLERY_SOURCES } from "@/lib/gallery"
 import { MONO, TYPE, labelStyle, metaStyle } from "@/lib/styles"
+import { RefreshCw } from "lucide-react"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -78,7 +79,7 @@ function generateInventoryMarkdown(excludedSources: Set<string>): string {
 // ─── Shared styles ──────────────────────────────────────────────────────────
 
 const sectionLabel: React.CSSProperties = {
-  ...labelStyle, letterSpacing: "0.04em", marginBottom: 12,
+  ...labelStyle, letterSpacing: "0.04em", marginBottom: 10,
 }
 const rowStyle: React.CSSProperties = {
   display: "flex", alignItems: "center", gap: 10,
@@ -411,7 +412,7 @@ function SourceGrid({ sources, type, excludedSources, onToggleSource }: {
                 ({items.filter(f => !excludedSources.has(getName(f))).length})
               </span>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
               {items.map(feed => {
                 const name = getName(feed)
                 const active = !excludedSources.has(name)
@@ -419,7 +420,7 @@ function SourceGrid({ sources, type, excludedSources, onToggleSource }: {
                   <div
                     key={feed.url}
                     onClick={() => onToggleSource(name)}
-                    style={{ ...rowStyle, opacity: active ? 1 : 0.5, padding: "6px 8px" }}
+                    style={{ ...rowStyle, opacity: active ? 1 : 0.5, padding: "8px 10px" }}
                     onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
@@ -450,107 +451,110 @@ export function ConfigView({ excludedSources, onToggleSource }: ConfigViewProps)
   const activeNewsCount = newsFeedsOnly.filter(f => !excludedSources.has(f.source)).length
   const activeSocialCount = socialFeeds.filter(f => !excludedSources.has(f.source)).length
   const activePodCount = PODCAST_FEEDS.filter(f => !excludedSources.has(f.show)).length
+  const activeGalleryCount = GALLERY_SOURCES.filter(s => !excludedSources.has(s.name)).length
+  const totalActive = activeNewsCount + activeSocialCount + activePodCount + activeGalleryCount
+  const totalSources = newsFeedsOnly.length + socialFeeds.length + PODCAST_FEEDS.length + GALLERY_SOURCES.length
 
   const inventoryMd = useMemo(() => generateInventoryMarkdown(excludedSources), [excludedSources])
 
   return (
-    <div style={{ flex: 1, overflowY: "auto", padding: "24px 32px" }}>
-      {/* Header */}
-      <div style={{ marginBottom: 24 }}>
-        <div style={sectionLabel}>Configuration</div>
-        <div style={{ ...TYPE.body, color: "var(--text-tertiary)" }}>
-          Source inventory, diagnostics, and preferences.
-        </div>
-      </div>
-
-      <div style={separator} />
-
-      {/* ── News Sources ── */}
-      <div style={{ marginBottom: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <div style={sectionLabel}>
-            News Sources
-            <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
-              {activeNewsCount}/{newsFeedsOnly.length} active
-            </span>
-          </div>
-        </div>
-
-        <SourceGrid sources={newsGroups} type="source" excludedSources={excludedSources} onToggleSource={onToggleSource} />
-      </div>
-
-      <div style={separator} />
-
-      {/* ── Social Sources ── */}
-      <div style={{ marginBottom: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <div style={sectionLabel}>
-            Social Sources
-            <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
-              {activeSocialCount}/{socialFeeds.length} active
-            </span>
-          </div>
-        </div>
-
-        <SourceGrid sources={socialGroups} type="source" excludedSources={excludedSources} onToggleSource={onToggleSource} />
-      </div>
-
-      <div style={separator} />
-
-      {/* ── Podcast Sources ── */}
-      <div style={{ marginBottom: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <div style={sectionLabel}>
-            Podcast Sources
-            <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
-              {activePodCount}/{PODCAST_FEEDS.length} active
-            </span>
-          </div>
-        </div>
-
-        <SourceGrid sources={podGroups} type="show" excludedSources={excludedSources} onToggleSource={onToggleSource} />
-      </div>
-
-      <div style={separator} />
-
-      {/* ── Gallery Sources ── */}
-      <div style={{ marginBottom: 8 }}>
-        <div style={sectionLabel}>
-          Gallery Sources
-          <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
-            {GALLERY_SOURCES.length} feeds
+    <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}>
+      {/* Sticky header — matches Pulse */}
+      <div style={{
+        flexShrink: 0, height: 40, display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "0 20px", borderBottom: "1px solid var(--border)",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase" }}>
+            Configuration
+          </span>
+          <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
+            {totalActive}/{totalSources} sources active
           </span>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-          {GALLERY_SOURCES.map(src => (
-            <div key={src.url} style={{ ...rowStyle, cursor: "default" }}>
-              <span style={{ ...TYPE.body, color: "var(--text-primary)" }}>{src.name}</span>
-              <span style={badgeStyle("var(--text-tertiary)")}>{src.type}</span>
+        <CopyButton text={inventoryMd} label="Export inventory" />
+      </div>
+
+      <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+
+          {/* ── Cerebro Station ── */}
+          <CerebroStation />
+
+          {/* ── News Sources ── */}
+          <div>
+            <div style={sectionLabel}>
+              News Sources
+              <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
+                {activeNewsCount}/{newsFeedsOnly.length} active
+              </span>
             </div>
-          ))}
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
+              <SourceGrid sources={newsGroups} type="source" excludedSources={excludedSources} onToggleSource={onToggleSource} />
+            </div>
+          </div>
+
+          {/* ── Social Sources ── */}
+          <div>
+            <div style={sectionLabel}>
+              Social Sources
+              <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
+                {activeSocialCount}/{socialFeeds.length} active
+              </span>
+            </div>
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
+              <SourceGrid sources={socialGroups} type="source" excludedSources={excludedSources} onToggleSource={onToggleSource} />
+            </div>
+          </div>
+
+          {/* ── Podcast Sources ── */}
+          <div>
+            <div style={sectionLabel}>
+              Podcast Sources
+              <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
+                {activePodCount}/{PODCAST_FEEDS.length} active
+              </span>
+            </div>
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
+              <SourceGrid sources={podGroups} type="show" excludedSources={excludedSources} onToggleSource={onToggleSource} />
+            </div>
+          </div>
+
+          {/* ── Gallery Sources ── */}
+          <div>
+            <div style={sectionLabel}>
+              Gallery Sources
+              <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
+                {activeGalleryCount}/{GALLERY_SOURCES.length} active
+              </span>
+            </div>
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+                {GALLERY_SOURCES.map(src => {
+                  const active = !excludedSources.has(src.name)
+                  return (
+                    <div
+                      key={src.url}
+                      onClick={() => onToggleSource(src.name)}
+                      style={{ ...rowStyle, opacity: active ? 1 : 0.5, padding: "8px 10px" }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+                    >
+                      <Toggle active={active} onToggle={() => onToggleSource(src.name)} />
+                      <span style={{ ...TYPE.body, color: active ? "var(--text-primary)" : "var(--text-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {src.name}
+                      </span>
+                      <span style={badgeStyle("var(--text-tertiary)")}>{src.type}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ height: 8 }} />
         </div>
       </div>
-
-      <div style={separator} />
-
-      {/* ── Export ── */}
-      <div style={{ marginBottom: 8 }}>
-        <div style={sectionLabel}>Export</div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <CopyButton text={inventoryMd} label="Copy full inventory (Markdown)" />
-        </div>
-        <div style={{ ...metaStyle, marginTop: 8, lineHeight: 1.6 }}>
-          Paste into Claude for analysis of your signal bundle structure.
-        </div>
-      </div>
-
-      <div style={separator} />
-
-      {/* ── Cerebro Station ── */}
-      <CerebroStation />
-
-
-      <div style={{ height: 32 }} />
-    </div>
+    </main>
   )
 }

@@ -63,7 +63,7 @@ For each numbered headline, return a JSON array. One object per article, same or
 Return only valid JSON array. No prose.`
 
 export async function POST(req: Request) {
-  const apiKey = process.env.ANTHROPIC_API_KEY
+  const apiKey = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
   if (!apiKey) return Response.json({ error: "No API key" }, { status: 500 })
 
   let articles: ArticleInput[] = []

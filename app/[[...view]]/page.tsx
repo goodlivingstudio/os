@@ -260,7 +260,8 @@ export default function Page() {
 
   // Global keyboard shortcuts
   useEffect(() => {
-    const modes: ViewMode[] = ["signal", "audio", "synthesis"]
+    // All 9 left-rail buttons in visual order (top row → bottom row)
+    const allTabs = ["signal", "audio", "synthesis", "gallery", "config", "pulse", "shortcuts", "export", "dispatch"] as const
     const handler = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName
       const isTyping = tag === "INPUT" || tag === "TEXTAREA"
@@ -275,34 +276,35 @@ export default function Page() {
       // Don't intercept other keys when typing
       if (isTyping) return
 
-      // Arrow keys — cycle views: Signal → Audio → Synthesis → Gallery
-      const allModes = [...modes, "gallery"] as const
-      const currentIdx = galleryOpen ? 3 : modes.indexOf(viewMode as typeof modes[number])
-      if (e.key === "ArrowRight" && currentIdx !== -1) {
+      // Arrow keys — cycle through all 9 tabs in a loop
+      const currentTab = galleryOpen ? "gallery" : hotkeysOpen ? "shortcuts" : exportOpen ? "export" : viewMode
+      const currentIdx = allTabs.indexOf(currentTab as typeof allTabs[number])
+      if ((e.key === "ArrowRight" || e.key === "ArrowLeft") && currentIdx !== -1) {
         e.preventDefault()
-        const next = (currentIdx + 1) % allModes.length
-        if (allModes[next] === "gallery") {
-          setGalleryOpenWithUrl(true)
-        } else {
-          if (galleryOpen) setGalleryOpenWithUrl(false)
-          setViewMode(allModes[next] as ViewMode)
-        }
-      } else if (e.key === "ArrowLeft" && currentIdx !== -1) {
-        e.preventDefault()
-        const prev = (currentIdx - 1 + allModes.length) % allModes.length
-        if (allModes[prev] === "gallery") {
-          setGalleryOpenWithUrl(true)
-        } else {
-          if (galleryOpen) setGalleryOpenWithUrl(false)
-          setViewMode(allModes[prev] as ViewMode)
-        }
+        const delta = e.key === "ArrowRight" ? 1 : -1
+        const nextIdx = (currentIdx + delta + allTabs.length) % allTabs.length
+        const next = allTabs[nextIdx]
+        // Close any open overlays without triggering history.back()
+        if (galleryOpen) { setGalleryOpen(false) }
+        if (hotkeysOpen) setHotkeysOpen(false)
+        if (exportOpen) setExportOpen(false)
+        // Navigate to the target
+        if (next === "gallery") setGalleryOpenWithUrl(true)
+        else if (next === "shortcuts") setHotkeysOpen(true)
+        else if (next === "export") setExportOpen(true)
+        else setViewMode(next as ViewMode)
       }
 
-      // Number keys — direct view access
-      else if (e.key === "1") setViewMode("signal")
-      else if (e.key === "2") setViewMode("audio")
-      else if (e.key === "3") setViewMode("synthesis")
-      else if (e.key === "4") setGalleryOpenWithUrl(true)
+      // Number keys — direct access to all 9 tabs
+      else if (e.key === "1") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("signal") }
+      else if (e.key === "2") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("audio") }
+      else if (e.key === "3") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("synthesis") }
+      else if (e.key === "4") { if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setGalleryOpenWithUrl(true) }
+      else if (e.key === "5") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("config") }
+      else if (e.key === "6") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("pulse") }
+      else if (e.key === "7") { if (galleryOpen) setGalleryOpenWithUrl(false); if (exportOpen) setExportOpen(false); setHotkeysOpen(true) }
+      else if (e.key === "8") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); setExportOpen(true) }
+      else if (e.key === "9") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("dispatch") }
 
       // F — focus mode
       else if (e.key === "f" || e.key === "F") setFocusModeWithUrl(!focusMode)
@@ -326,7 +328,7 @@ export default function Page() {
     }
     window.addEventListener("keydown", handler)
     return () => window.removeEventListener("keydown", handler)
-  }, [viewMode, hotkeysOpen, galleryOpen, focusMode, setGalleryOpenWithUrl, setFocusModeWithUrl])
+  }, [viewMode, hotkeysOpen, galleryOpen, exportOpen, focusMode, setGalleryOpenWithUrl, setFocusModeWithUrl])
 
   const handleToggleSource = useCallback((source: string) => {
     setExcludedSources(prev => {
@@ -902,7 +904,7 @@ export default function Page() {
       />
 
       {/* Gallery overlay */}
-      {galleryOpen && <GalleryOverlay onClose={() => setGalleryOpenWithUrl(false)} />}
+      {galleryOpen && <GalleryOverlay onClose={() => setGalleryOpenWithUrl(false)} excludedSources={excludedSources} />}
 
       {/* Hotkeys overlay */}
       {hotkeysOpen && <HotkeysOverlay onClose={() => setHotkeysOpen(false)} />}

@@ -57,7 +57,7 @@ Return JSON:
 Return only valid JSON.`
 
 export async function POST(req: Request) {
-  const apiKey = process.env.ANTHROPIC_API_KEY
+  const apiKey = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
   if (!apiKey) return Response.json({ error: "No API key" }, { status: 500 })
 
   try {

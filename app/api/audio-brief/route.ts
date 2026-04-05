@@ -4,7 +4,7 @@ import Anthropic from "@anthropic-ai/sdk"
 import { DISPATCH_PREAMBLE } from "@/lib/prompts"
 
 function getClient() {
-  const key = process.env.ANTHROPIC_API_KEY
+  const key = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
   if (!key) throw new Error("ANTHROPIC_API_KEY not configured")
   return new Anthropic({ apiKey: key })
 }
