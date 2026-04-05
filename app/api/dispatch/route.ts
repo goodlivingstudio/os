@@ -108,6 +108,8 @@ PERSPECTIVES: Generate 3-4 perspectives. Each must analyze the week through a DI
 
 PITCHES: Generate exactly 7 pitches. Be specific. Name companies, cite data points, reference real trends from the articles. Every pitch must trace to multiple signals.
 
+WILDCARD (required): Exactly ONE of the 7 pitches must be a wildcard. This pitch should be bold, unexpected, and break from the operator's usual positioning. It might challenge the mandate, argue a contrarian position, draw from a signal the operator would normally ignore, or connect dots nobody's connecting. Mark it with "wildcard": true in the JSON. The wildcard is not devil's advocacy for sport — it's the strongest, most surprising argument the week's signals actually support that falls outside the operator's default lens. Make it genuinely compelling.
+
 Return only valid JSON. No prose outside the JSON.`
 
 export async function GET(request: Request) {

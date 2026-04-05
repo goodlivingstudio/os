@@ -24,6 +24,7 @@ interface Pitch {
   urgency: string
   wordCount?: number
   imageUrl?: string
+  wildcard?: boolean
 }
 
 interface Perspective {
@@ -240,8 +241,15 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
         style={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "32px 36px", width: 600, maxHeight: "85vh", overflowY: "auto" }}
       >
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
-          <div style={{ ...TYPE.xs, textTransform: "uppercase", color: pitch.mode === "thought_leadership" ? "#5A9EB0" : "#C87A6A", fontWeight: 600, letterSpacing: "0.06em" }}>
-            {pitch.mode === "thought_leadership" ? "Thought Leadership" : "Creative"}
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ ...TYPE.xs, textTransform: "uppercase", color: pitch.mode === "thought_leadership" ? "#5A9EB0" : "#C87A6A", fontWeight: 600, letterSpacing: "0.06em" }}>
+              {pitch.mode === "thought_leadership" ? "Thought Leadership" : "Creative"}
+            </span>
+            {pitch.wildcard && (
+              <span style={{ ...TYPE.xs, padding: "2px 8px", borderRadius: 9999, background: "rgba(184, 150, 106, 0.12)", color: "var(--accent-secondary)", fontWeight: 600, letterSpacing: "0.03em" }}>
+                WILDCARD
+              </span>
+            )}
           </div>
           <button onClick={onClose} style={{ background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", padding: 0 }}>
             <X size={18} strokeWidth={1.5} />
@@ -663,12 +671,22 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                               </span>
                             </>
                           )}
+                          {pitch.wildcard && (
+                            <span style={{
+                              padding: "1px 6px", borderRadius: 9999, fontSize: 9,
+                              background: "rgba(184, 150, 106, 0.12)",
+                              color: "var(--accent-secondary)",
+                              fontWeight: 600, letterSpacing: "0.03em",
+                            }}>
+                              WILDCARD
+                            </span>
+                          )}
                           {pitchStatuses[pitchKey(pitch.title)] && (
                             <span style={{
                               padding: "1px 6px", borderRadius: 9999, fontSize: 9,
                               background: `${STATUS_COLORS[pitchStatuses[pitchKey(pitch.title)]]}18`,
                               color: STATUS_COLORS[pitchStatuses[pitchKey(pitch.title)]],
-                              textTransform: "capitalize", fontWeight: 500, marginLeft: 4,
+                              textTransform: "capitalize", fontWeight: 500,
                             }}>
                               {pitchStatuses[pitchKey(pitch.title)]}
                             </span>
