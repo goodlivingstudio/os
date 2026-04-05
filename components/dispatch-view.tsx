@@ -384,13 +384,14 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
               }}>
                 New ideas and opportunities for week of {formatWeekRange(data.generatedAt)}
               </div>
-              {/* Headline — large, light weight, centered */}
+              {/* Headline — Grenette Pro display serif, centered */}
               <div style={{
-                fontSize: 26,
-                fontWeight: 300,
+                fontSize: 28,
+                fontWeight: 400,
+                fontFamily: "var(--font-grenette), Georgia, serif",
                 color: "var(--text-primary)",
-                lineHeight: 1.5,
-                letterSpacing: "-0.02em",
+                lineHeight: 1.45,
+                letterSpacing: "-0.01em",
                 maxWidth: 640,
                 margin: "0 auto",
               }}>
@@ -413,9 +414,6 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                 borderBottom: "1px solid var(--border)",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, textAlign: "center" }}>
-                  Perspectives
-                </div>
                 <div style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",

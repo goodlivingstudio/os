@@ -23,6 +23,13 @@ const geistMono = localFont({
   display: "swap",
 })
 
+const grenette = localFont({
+  src: "../public/fonts/GrenettePro-Regular.ttf",
+  weight: "400",
+  variable: "--font-grenette",
+  display: "swap",
+})
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://dispatch.goodliving.studio"),
   title: "Dispatch",
@@ -39,7 +46,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable} h-full`}>
+    <html lang="en" className={`${geist.variable} ${geistMono.variable} ${grenette.variable} h-full`}>
       <body className="h-full antialiased">
         <a href="#main-feed" className="skip-link">Skip to feed</a>
         {children}
