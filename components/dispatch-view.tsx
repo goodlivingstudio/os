@@ -136,8 +136,12 @@ function PerspectiveCard({ perspective, index, onDeliberate }: {
       </div>
       {/* Title */}
       <div style={{
-        ...TYPE.heading,
+        fontSize: 16,
+        fontWeight: 400,
+        fontFamily: "var(--font-grenette), Georgia, serif",
         color: "var(--text-primary)",
+        lineHeight: 1.4,
+        letterSpacing: "-0.01em",
         marginBottom: 8,
       }}>
         {perspective.title}
@@ -179,7 +183,7 @@ function PitchOverlay({ pitch, onClose, onDeliberate }: { pitch: Pitch; onClose:
           </button>
         </div>
 
-        <div style={{ fontSize: 18, fontWeight: 500, color: "var(--text-primary)", marginBottom: 8, lineHeight: 1.4 }}>{pitch.title}</div>
+        <div style={{ fontSize: 22, fontWeight: 400, fontFamily: "var(--font-grenette), Georgia, serif", color: "var(--text-primary)", marginBottom: 8, lineHeight: 1.35, letterSpacing: "-0.01em" }}>{pitch.title}</div>
         <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7, marginBottom: 24 }}>{pitch.thesis}</div>
 
         <div style={{ height: 1, background: "var(--border)", marginBottom: 24 }} />
@@ -386,13 +390,13 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
               </div>
               {/* Headline — Grenette Pro display serif, centered */}
               <div style={{
-                fontSize: 28,
+                fontSize: 34,
                 fontWeight: 400,
                 fontFamily: "var(--font-grenette), Georgia, serif",
                 color: "var(--text-primary)",
-                lineHeight: 1.45,
+                lineHeight: 1.4,
                 letterSpacing: "-0.01em",
-                maxWidth: 640,
+                maxWidth: 740,
                 margin: "0 auto",
               }}>
                 {renderCitedBody(
@@ -475,8 +479,12 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                         </div>
                         {/* Title */}
                         <div style={{
-                          ...TYPE.heading,
+                          fontSize: 16,
+                          fontWeight: 400,
+                          fontFamily: "var(--font-grenette), Georgia, serif",
                           color: "var(--text-primary)",
+                          lineHeight: 1.35,
+                          letterSpacing: "-0.01em",
                           marginBottom: 6,
                         }}>
                           {pitch.title}
