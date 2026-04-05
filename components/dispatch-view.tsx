@@ -564,7 +564,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                     {data.articleCount} articles · {new Date(data.generatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                   </div>
                   {/* Week carousel dots with arrows */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 4, marginBottom: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 4, marginBottom: -4 }}>
                     <button
                       onClick={() => setWeekOffset(o => Math.max(o - 1, -6))}
                       style={{ width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: weekOffset <= -6 ? "var(--border)" : "var(--text-tertiary)", cursor: weekOffset <= -6 ? "default" : "pointer", borderRadius: 6, transition: "all 0.15s", padding: 0 }}
