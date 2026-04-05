@@ -28,7 +28,10 @@ PRODUCE:
    - layers: Which 2-3 layers intersect
    - signalCount: How many signals support this
 
-4. BLIND SPOT: What was being discussed last week but dropped off this week? Or: what major development in healthcare, design leadership, or AI should be generating signal but isn't? Be specific — name the absent topic.
+4. BLIND SPOTS (exactly 3): Three specific intelligence gaps. These are NOT contrarian takes — they are genuine absences in the signal that a rigorous analyst would flag. For each, explain WHY the absence matters:
+   a) DROPPED SIGNAL: A topic that was generating signal last week but went quiet this week. Name it specifically — what were the articles, and why did they stop?
+   b) MISSING SIGNAL: A major development in healthcare, AI, or design leadership that SHOULD be generating articles in the feed but isn't. What's happening in the world that your sources aren't covering?
+   c) ASSUMPTION CHECK: One belief the operator is likely holding based on this week's signals that may not be as solid as it appears. What's the strongest evidence against the prevailing narrative? Not devil's advocacy — genuine analytical rigor.
 
 5. CEREBRO PROVOCATION: One sharp question that only makes sense given this week's trend data. Not generic. The kind of question that would produce a genuinely different Cerebro conversation than anything from the daily brief.
 
@@ -50,7 +53,11 @@ Return JSON:
       "sources": ["STAT News: Article title", "The Verge: Article title"]
     }
   ],  // EXACTLY 4 patterns required
-  "blindSpotNote": "What dropped off or should be present but isn't.",
+  "blindSpots": [
+    { "type": "dropped", "title": "Short label", "body": "What dropped and why it matters." },
+    { "type": "missing", "title": "Short label", "body": "What should be here but isn't." },
+    { "type": "assumption", "title": "Short label", "body": "What belief might be weaker than it appears." }
+  ],
   "cerebroProvocation": "One sharp question grounded in this week's trends."
 }
 
@@ -134,6 +141,15 @@ export async function POST(req: Request) {
     } catch {
       console.error("[synthesis] Failed to parse Claude response as JSON")
       return Response.json({ briefing: null, patterns: [], blindSpotNote: null })
+    }
+
+    // Normalize blindSpots — support both new array format and old string format
+    if (result.blindSpots && Array.isArray(result.blindSpots)) {
+      // New format: keep as-is, generate backward-compat string
+      result.blindSpotNote = result.blindSpots.map((b: { title: string; body: string }) => `${b.title}: ${b.body}`).join(" ")
+    } else if (result.blindSpotNote && !result.blindSpots) {
+      // Old format: wrap in array
+      result.blindSpots = [{ type: "general", title: "Blind Spot", body: result.blindSpotNote }]
     }
 
     // Generate images: header + each convergence pattern

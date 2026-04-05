@@ -32,11 +32,18 @@ interface AIPattern {
   sources?: string[] // article titles / source names backing this pattern
 }
 
+interface BlindSpot {
+  type: "dropped" | "missing" | "assumption" | "general"
+  title: string
+  body: string
+}
+
 interface SynthesisData {
   headline?: string
   briefing: string
   patterns: AIPattern[]
   blindSpotNote: string
+  blindSpots?: BlindSpot[]
   cerebroProvocation?: string
   headerImageUrl?: string
 }
@@ -287,54 +294,57 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ BOTTOM — Blind Spots + Ask Cerebro ─ */}
             <div style={{
               display: "grid",
-              gridTemplateColumns: data.blindSpotNote && data.cerebroProvocation ? "1fr 1fr" : "1fr",
+              gridTemplateColumns: (data.blindSpots || data.blindSpotNote) && data.cerebroProvocation ? "1fr 1fr" : "1fr",
               gap: 16,
               animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 500ms both",
             }}>
-              {/* Blind Spots — structured bullets */}
-              {data.blindSpotNote && (
-                <div
-                  onClick={() => onDeliberate(`Explore this blind spot in my intelligence feed:\n\n"${data.blindSpotNote}"\n\nWhat am I missing and why does it matter?`)}
-                  onMouseEnter={() => setHoveredBlindSpots(true)}
-                  onMouseLeave={() => setHoveredBlindSpots(false)}
-                  style={{
-                    background: hoveredBlindSpots ? "var(--bg-elevated)" : "var(--bg-surface)",
-                    borderRadius: 12, padding: "20px 24px",
-                    cursor: "pointer", transition: "background 0.15s",
-                  }}
-                >
-                  <div style={{ ...TYPE.xs, color: hoveredBlindSpots ? "var(--text-primary)" : "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10, fontWeight: 500, transition: "color 0.15s" }}>
+              {/* Blind Spots — structured cards */}
+              {(data.blindSpots || data.blindSpotNote) && (
+                <div style={{
+                  background: "var(--bg-surface)",
+                  borderRadius: 12, padding: "20px 24px",
+                }}>
+                  <div style={{ ...TYPE.xs, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 14, fontWeight: 500 }}>
                     Blind Spots
                   </div>
-                  {(() => {
-                    const sentences = data.blindSpotNote.split(/(?<=[.!?])\s+/).filter(s => s.trim())
-                    if (isTriage) {
-                      // Triage: first sentence only
-                      return (
-                        <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7 }}>
-                          {sentences[0]}
-                        </div>
-                      )
-                    }
-                    // Explore: structured bullets
-                    if (sentences.length <= 1) {
-                      return (
-                        <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7 }}>
-                          {data.blindSpotNote}
-                        </div>
-                      )
-                    }
-                    return (
-                      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                        {sentences.map((s, i) => (
-                          <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                            <span style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--accent-muted)", flexShrink: 0, marginTop: 7 }} />
-                            <span style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7 }}>{s}</span>
+                  {data.blindSpots && data.blindSpots.length > 0 ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                      {(isTriage ? data.blindSpots.slice(0, 1) : data.blindSpots).map((spot, i) => {
+                        const typeLabels: Record<string, string> = { dropped: "Dropped Signal", missing: "Missing Signal", assumption: "Assumption Check", general: "Blind Spot" }
+                        const typeColors: Record<string, string> = { dropped: "#D4A05A", missing: "#9A85B8", assumption: "#C87A6A", general: "var(--accent-muted)" }
+                        return (
+                          <div
+                            key={i}
+                            onClick={() => onDeliberate(`Explore this blind spot:\n\n**${typeLabels[spot.type] || "Blind Spot"}: ${spot.title}**\n\n${spot.body}\n\nWhat am I missing and what should I do about it?`)}
+                            style={{ cursor: "pointer", transition: "background 0.15s", padding: "10px 12px", borderRadius: 8, marginLeft: -12, marginRight: -12 }}
+                            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+                            onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+                          >
+                            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                              <span style={{ width: 5, height: 5, borderRadius: "50%", background: typeColors[spot.type] || "var(--accent-muted)", flexShrink: 0 }} />
+                              <span style={{ ...TYPE.xs, color: typeColors[spot.type] || "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 500 }}>
+                                {typeLabels[spot.type] || "Blind Spot"}
+                              </span>
+                            </div>
+                            <div style={{ ...TYPE.body, color: "var(--text-primary)", fontWeight: 500, marginBottom: 4, lineHeight: 1.5 }}>
+                              {spot.title}
+                            </div>
+                            <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7 }}>
+                              {spot.body}
+                            </div>
                           </div>
-                        ))}
-                      </div>
-                    )
-                  })()}
+                        )
+                      })}
+                    </div>
+                  ) : data.blindSpotNote ? (
+                    // Backward compat: old single-string format
+                    <div
+                      onClick={() => onDeliberate(`Explore this blind spot:\n\n"${data.blindSpotNote}"\n\nWhat am I missing and why does it matter?`)}
+                      style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7, cursor: "pointer" }}
+                    >
+                      {data.blindSpotNote}
+                    </div>
+                  ) : null}
                 </div>
               )}
 
