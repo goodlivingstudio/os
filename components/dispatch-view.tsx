@@ -563,30 +563,48 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                   <div style={metaStyle}>
                     {data.articleCount} articles · {new Date(data.generatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                   </div>
-                  {/* Week carousel dots */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    {Array.from({ length: 7 }, (_, i) => {
-                      const offset = -(6 - i) // -6, -5, -4, -3, -2, -1, 0
-                      const isActive = weekOffset === offset
-                      return (
-                        <button
-                          key={offset}
-                          onClick={() => setWeekOffset(offset)}
-                          title={offset === 0 ? "This week" : formatWeekRangeForOffset(offset)}
-                          style={{
-                            width: isActive ? 20 : 6,
-                            height: 6,
-                            borderRadius: 3,
-                            border: "none",
-                            background: isActive ? "var(--accent-secondary)" : "var(--border)",
-                            cursor: "pointer",
-                            padding: 0,
-                            transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-                            opacity: isActive ? 1 : 0.5,
-                          }}
-                        />
-                      )
-                    })}
+                  {/* Week carousel dots with arrows */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 4, marginBottom: 8 }}>
+                    <button
+                      onClick={() => setWeekOffset(o => Math.max(o - 1, -6))}
+                      style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: weekOffset <= -6 ? "var(--border)" : "var(--text-tertiary)", cursor: weekOffset <= -6 ? "default" : "pointer", borderRadius: 4, transition: "all 0.15s", padding: 0 }}
+                      onMouseEnter={e => { if (weekOffset > -6) e.currentTarget.style.color = "var(--text-secondary)" }}
+                      onMouseLeave={e => { e.currentTarget.style.color = weekOffset <= -6 ? "var(--border)" : "var(--text-tertiary)" }}
+                    >
+                      <ChevronLeft size={12} />
+                    </button>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      {Array.from({ length: 7 }, (_, i) => {
+                        const offset = -(6 - i)
+                        const isActive = weekOffset === offset
+                        return (
+                          <button
+                            key={offset}
+                            onClick={() => setWeekOffset(offset)}
+                            title={offset === 0 ? "This week" : formatWeekRangeForOffset(offset)}
+                            style={{
+                              width: isActive ? 20 : 6,
+                              height: 6,
+                              borderRadius: 3,
+                              border: "none",
+                              background: isActive ? "var(--accent-secondary)" : "var(--border)",
+                              cursor: "pointer",
+                              padding: 0,
+                              transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+                              opacity: isActive ? 1 : 0.5,
+                            }}
+                          />
+                        )
+                      })}
+                    </div>
+                    <button
+                      onClick={() => setWeekOffset(o => Math.min(o + 1, 0))}
+                      style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: weekOffset >= 0 ? "var(--border)" : "var(--text-tertiary)", cursor: weekOffset >= 0 ? "default" : "pointer", borderRadius: 4, transition: "all 0.15s", padding: 0 }}
+                      onMouseEnter={e => { if (weekOffset < 0) e.currentTarget.style.color = "var(--text-secondary)" }}
+                      onMouseLeave={e => { e.currentTarget.style.color = weekOffset >= 0 ? "var(--border)" : "var(--text-tertiary)" }}
+                    >
+                      <ChevronRight size={12} />
+                    </button>
                   </div>
                 </div>
               )}
