@@ -751,11 +751,9 @@ export default function Page() {
               </button>
             ))}
           </div>
-          {/* Cerebro — max-width container for readability */}
-          <div style={{ flex: 1, overflow: "hidden", display: "flex", justifyContent: "center" }}>
-            <div style={{ width: "100%", maxWidth: 768, height: "100%" }}>
-              <Cerebro articles={articles} pendingPrompt={cerebroPrompt} />
-            </div>
+          {/* Cerebro — constrained width, open background */}
+          <div style={{ flex: 1, overflow: "hidden" }}>
+            <Cerebro articles={articles} pendingPrompt={cerebroPrompt} maxWidth={960} />
           </div>
         </div>
       )}

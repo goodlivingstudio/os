@@ -53,10 +53,11 @@ const PROVOCATIONS = [
 
 // ─── Cerebro — strategic intelligence advisor ───────────────────────────────
 
-export function Cerebro({ articles, pendingPrompt, onFocusMode }: {
+export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
   articles: Article[]
   pendingPrompt?: { text: string; id: number } | null
   onFocusMode?: () => void
+  maxWidth?: number
 }) {
   const [messages,  setMessages]  = useState<Message[]>([])
   const [input,     setInput]     = useState("")
@@ -268,12 +269,12 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode }: {
         display: "flex",
         flexDirection: "column",
         height: "100%",
-        background: "var(--bg-surface)",
+        background: maxWidth ? "var(--bg-primary)" : "var(--bg-surface)",
         overflow: "hidden",
       }}
     >
-      {/* Header */}
-      <div
+      {/* Header — hidden in focus mode */}
+      {!maxWidth && <div
         style={{
           flexShrink: 0,
           height: 40,
@@ -327,15 +328,15 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode }: {
             </button>
           )}
         </div>
-      </div>
+      </div>}
 
       {/* Messages */}
       <div
         role="log"
         aria-label="Cerebro conversation"
         aria-live="polite"
-        style={{ flex: 1, overflowY: "auto", padding: "12px 0" }}
-      >
+        style={{ flex: 1, overflowY: "auto", padding: "12px 0", display: "flex", flexDirection: "column", alignItems: maxWidth ? "center" : "stretch" }}
+      ><div style={maxWidth ? { width: "100%", maxWidth } : undefined}>
         {messages.length === 0 && (
           <div style={{ padding: "24px 16px" }}>
             <div
@@ -459,7 +460,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode }: {
           </div>
         )}
         <div ref={bottomRef} />
-      </div>
+      </div></div>
 
       {/* Hidden file input */}
       <input
@@ -487,7 +488,8 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode }: {
       />
 
       {/* Input */}
-      <div style={{ flexShrink: 0 }}>
+      <div style={{ flexShrink: 0, display: "flex", flexDirection: "column", alignItems: maxWidth ? "center" : "stretch" }}>
+      <div style={maxWidth ? { width: "100%", maxWidth } : { width: "100%" }}>
         {attachments.length > 0 && (
           <div style={{ display: "flex", gap: 8, padding: "8px 16px 0", flexWrap: "wrap" }}>
             {attachments.map((att, i) => (
@@ -626,7 +628,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode }: {
             </div>
           </div>
         </div>
-      </div>
+      </div></div>
     </section>
   )
 }
