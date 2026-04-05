@@ -338,7 +338,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
         style={{ flex: 1, overflowY: "auto", padding: "12px 0", display: "flex", flexDirection: "column", alignItems: maxWidth ? "center" : "stretch" }}
       ><div style={maxWidth ? { width: "100%", maxWidth } : undefined}>
         {messages.length === 0 && (
-          <div style={{ padding: "24px 16px" }}>
+          <div style={{ padding: "32px 24px" }}>
             <div
               style={{
                 fontSize: 12.5,
@@ -356,17 +356,29 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
           </div>
         )}
 
-        {messages.map((m, i) => (
+        {messages.map((m, i) => {
+          // Contextual spacing: more space before user messages (new turn),
+          // tight between search results, generous after responses
+          const prev = i > 0 ? messages[i - 1] : null
+          const mb = m.role === "search" ? 6
+            : m.role === "user" ? 32
+            : 32 // assistant
+          const mt = m.role === "user" && prev?.role === "assistant" ? 36
+            : m.role === "assistant" && prev?.role === "search" ? 20
+            : m.role === "assistant" && prev?.role === "user" ? 28
+            : 0
+
+          return (
           <div
             key={i}
             className="cerebro-msg"
-            style={{ marginBottom: m.role === "search" ? 12 : 20, position: "relative" }}
+            style={{ marginBottom: mb, marginTop: mt, position: "relative" }}
             onMouseEnter={e => { const actions = e.currentTarget.querySelector('.msg-actions') as HTMLElement; if (actions) actions.style.opacity = "1" }}
             onMouseLeave={e => { const actions = e.currentTarget.querySelector('.msg-actions') as HTMLElement; if (actions) actions.style.opacity = "0" }}
           >
             {/* Per-message actions — visible on hover */}
             {m.role !== "search" && (
-              <div className="msg-actions" style={{ position: "absolute", top: 0, right: 16, display: "flex", gap: 2, opacity: 0, transition: "opacity 0.15s" }}>
+              <div className="msg-actions" style={{ position: "absolute", top: 0, right: 24, display: "flex", gap: 2, opacity: 0, transition: "opacity 0.15s" }}>
                 <button
                   onClick={() => handleCopyMessage(i)}
                   title="Copy this message"
@@ -388,29 +400,30 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
               </div>
             )}
             {m.role === "user" ? (
-              <div style={{ padding: "0 16px", display: "flex", justifyContent: "flex-end" }}>
-                <div style={{ fontSize: 13, color: "var(--text-primary)", lineHeight: 1.6, wordBreak: "break-word", fontWeight: 500, textAlign: "right", maxWidth: "85%" }}>
+              <div style={{ padding: "0 24px", display: "flex", justifyContent: "flex-end" }}>
+                <div style={{ fontSize: 13, color: "var(--text-primary)", lineHeight: 1.7, wordBreak: "break-word", fontWeight: 500, textAlign: "right", maxWidth: "72%" }}>
                   {m.content}
                 </div>
               </div>
             ) : m.role === "search" ? (
-              <div style={{ padding: "0 16px", fontSize: 11, fontFamily: "var(--font-geist-mono), monospace", color: "var(--text-tertiary)", lineHeight: 1.5, display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ padding: "0 24px", fontSize: 11, fontFamily: "var(--font-geist-mono), monospace", color: "var(--text-tertiary)", lineHeight: 1.5, display: "flex", alignItems: "center", gap: 6 }}>
                 <span style={{ color: "var(--accent-muted)", opacity: 0.7 }}>↗</span>
                 <span style={{ opacity: 0.6 }}>searched &ldquo;{m.content}&rdquo;</span>
               </div>
             ) : (
-              <div style={{ padding: "0 16px" }}>
-                <div style={{ fontSize: 12.5, fontFamily: "var(--font-geist-mono), monospace", color: "var(--text-secondary)", lineHeight: 1.75, whiteSpace: "pre-wrap", wordBreak: "break-word", maxWidth: "85%" }}>
+              <div style={{ padding: "0 24px" }}>
+                <div style={{ fontSize: 12.5, fontFamily: "var(--font-geist-mono), monospace", color: "var(--text-secondary)", lineHeight: 1.85, whiteSpace: "pre-wrap", wordBreak: "break-word", maxWidth: 680 }}>
                   {sourcesByMsg[i] ? renderCitedBody(m.content, sourcesByMsg[i]) : m.content}
                 </div>
               </div>
             )}
           </div>
-        ))}
+          )
+        })}
 
         {/* Follow-up directions — provocations, not quiz answers */}
         {followUps && !loading && (
-          <div style={{ margin: "8px 12px 16px", animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both" }}>
+          <div style={{ margin: "8px 20px 24px", animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both" }}>
             {/* Primary question — the station chief's next move */}
             <button
               onClick={() => send(followUps.question)}
@@ -455,7 +468,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
         )}
 
         {loading && (
-          <div style={{ padding: "0 16px" }}>
+          <div style={{ padding: "0 24px" }}>
             <span className="cursor-blink" style={{ fontSize: 13, fontFamily: "var(--font-geist-mono), monospace" }}>▊</span>
           </div>
         )}
