@@ -136,11 +136,11 @@ function PerspectiveCard({ perspective, index, onDeliberate }: {
       </div>
       {/* Title */}
       <div style={{
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 400,
         fontFamily: "var(--font-grenette), Georgia, serif",
         color: "var(--text-primary)",
-        lineHeight: 1.4,
+        lineHeight: 1.35,
         letterSpacing: "-0.01em",
         marginBottom: 8,
       }}>
@@ -396,7 +396,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                 color: "var(--text-primary)",
                 lineHeight: 1.4,
                 letterSpacing: "-0.01em",
-                maxWidth: 740,
+                maxWidth: 820,
                 margin: "0 auto",
               }}>
                 {renderCitedBody(
@@ -479,7 +479,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                         </div>
                         {/* Title */}
                         <div style={{
-                          fontSize: 16,
+                          fontSize: 18,
                           fontWeight: 400,
                           fontFamily: "var(--font-grenette), Georgia, serif",
                           color: "var(--text-primary)",
