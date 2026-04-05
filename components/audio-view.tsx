@@ -587,11 +587,9 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
       {/* Audio DCOS Band — matches Signal's DCOS layout (no separate header) */}
       <AudioBriefBand episodes={episodes} visible={!loading} defaultExpanded={sortBy === "urgency"} />
 
-      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
-
-      {/* Layer pills + artwork toggle */}
+      {/* Layer pills + artwork toggle — sticky band */}
       {!loading && (
-        <div style={{ padding: "12px 16px 0", display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8, alignItems: "center" }}>
+        <div style={{ flexShrink: 0, padding: "10px 16px", display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", borderBottom: "1px solid var(--border)" }}>
           {LAYER_FILTERS.map(layer => {
             const isActive = activeLayer === layer.id
             // Use triage-filtered pool for counts (urgency-gated before layer selection)
@@ -666,6 +664,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
         </div>
       )}
 
+      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
       {/* Loading state */}
       {loading ? (
         <div className="episode-grid" style={{ gap: 8, padding: "8px 16px" }}>

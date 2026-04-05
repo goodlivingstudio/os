@@ -269,7 +269,6 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode }: {
         flexDirection: "column",
         height: "100%",
         background: "var(--bg-surface)",
-        borderLeft: "1px solid var(--border)",
         overflow: "hidden",
       }}
     >

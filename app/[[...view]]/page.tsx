@@ -862,7 +862,7 @@ export default function Page() {
                 width: 42, height: "100%",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 background: "var(--bg-surface)",
-                border: "none", borderLeft: "1px solid var(--border)",
+                border: "none",
                 cursor: "pointer",
                 transition: "background 0.15s",
               }}
