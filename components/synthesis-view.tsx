@@ -66,6 +66,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
   const [hoveredCerebro, setHoveredCerebro] = useState(false)
   const [hoveredBlindSpots, setHoveredBlindSpots] = useState(false)
+  const [retryCount, setRetryCount] = useState(0)
   const fetched = useRef(false)
 
   const isTriage = sortBy === "urgency"
@@ -90,14 +91,20 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
       .then(r => r.json())
       .then(result => {
         if (result.briefing) setData(result)
+        else fetched.current = false // allow retry if no briefing returned
         setLoading(false)
         clearInterval(t)
         clearInterval(timer)
       })
-      .catch(() => { setLoading(false); clearInterval(t); clearInterval(timer) })
+      .catch(() => {
+        fetched.current = false // allow retry on failure
+        setLoading(false)
+        clearInterval(t)
+        clearInterval(timer)
+      })
 
     return () => { clearInterval(t); clearInterval(timer) }
-  }, [articles])
+  }, [articles, retryCount]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}>
@@ -142,9 +149,21 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
         {/* ── Empty ── */}
         {!loading && !data && (
           <div style={{ padding: "48px 20px", maxWidth: 520 }}>
-            <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.8 }}>
+            <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.8, marginBottom: 16 }}>
               Pattern intelligence will appear when annotated articles are available.
             </div>
+            <button
+              onClick={() => { fetched.current = false; setRetryCount(c => c + 1) }}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 6,
+                padding: "6px 14px", borderRadius: 6,
+                border: "1px solid var(--border)", background: "transparent",
+                ...TYPE.sm, color: "var(--text-tertiary)", cursor: "pointer",
+                transition: "all 0.15s",
+              }}
+            >
+              Retry
+            </button>
           </div>
         )}
 
