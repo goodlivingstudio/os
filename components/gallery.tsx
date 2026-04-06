@@ -171,7 +171,8 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
   const [activeMood, setActiveMood] = useState<ColorMood | null>(null)
   const [showTrends, setShowTrends] = useState(false)
-  const [galleryCols, setGalleryCols] = useState(typeof window !== "undefined" && window.innerWidth <= 768 ? 2 : 3)
+  const [galleryCols, setGalleryCols] = useState(3)
+  useEffect(() => { if (window.innerWidth <= 768) setGalleryCols(2) }, [])
   const [paletteIntel, setPaletteIntel] = useState<{
     trend: string
     moodShifts: { mood: string; direction: "rising" | "falling"; delta: number }[]
