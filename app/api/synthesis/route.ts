@@ -9,6 +9,16 @@ import { kv } from "@vercel/kv"
 const KV_KEY = "synthesis:weekly"
 const CACHE_TTL = 60 * 60 * 12 // 12 hours
 
+const LAYER_NAMES: Record<string, string> = {
+  opportunity: "Opportunity", position: "Position", discipline: "Discipline",
+  landscape: "Landscape", culture: "Culture",
+}
+const LAYER_COLORS: Record<string, string> = {
+  opportunity: "#D4A05A", position: "#5A9EB0", discipline: "#7BAF6A",
+  landscape: "#9A85B8", culture: "#C87A6A",
+}
+const ALL_LAYERS = ["opportunity", "position", "discipline", "landscape", "culture"]
+
 const SYSTEM_PROMPT = `${DISPATCH_PREAMBLE}
 
 You are the trend intelligence layer of Dispatch. You are categorically different from the daily brief (DCOS). DCOS answers "what's urgent today." You answer "what's changing this week that wasn't true last week."
@@ -34,7 +44,9 @@ PRODUCE:
    b) MISSING SIGNAL: A major development in healthcare, AI, or design leadership that SHOULD be generating articles in the feed but isn't. What's happening in the world that your sources aren't covering?
    c) ASSUMPTION CHECK: One belief the operator is likely holding based on this week's signals that may not be as solid as it appears. What's the strongest evidence against the prevailing narrative? Not devil's advocacy — genuine analytical rigor.
 
-5. CEREBRO PROVOCATION: One sharp question that only makes sense given this week's trend data. Not generic. The kind of question that would produce a genuinely different Cerebro conversation than anything from the daily brief.
+5. CEREBRO TOPICS (exactly 4): Four distinct conversation starters for the Cerebro intelligence panel — questions or provocations that would produce genuinely different strategic conversations. Each should be grounded in this week's data. One should be a wildcard: unexpected, cross-domain, the kind of question that connects signals most analysts would keep separate.
+   - title: Short label (3-6 words) for the card
+   - prompt: The full question or provocation to send to Cerebro
 
 CRITICAL RULES:
 - If no prior history is available, say so honestly. Don't fabricate trends from a single day.
@@ -53,16 +65,114 @@ Return JSON:
       "signalCount": 4,
       "sources": ["STAT News: Article title", "The Verge: Article title"]
     }
-  ],  // EXACTLY 4 patterns required
+  ],
   "blindSpots": [
     { "type": "dropped", "title": "Short label", "body": "What dropped and why it matters." },
     { "type": "missing", "title": "Short label", "body": "What should be here but isn't." },
     { "type": "assumption", "title": "Short label", "body": "What belief might be weaker than it appears." }
   ],
-  "cerebroProvocation": "One sharp question grounded in this week's trends."
+  "cerebroTopics": [
+    { "title": "Short card label", "prompt": "Full question for Cerebro." },
+    { "title": "Short card label", "prompt": "Full question for Cerebro." },
+    { "title": "Short card label", "prompt": "Full question for Cerebro." },
+    { "title": "Wildcard label", "prompt": "Cross-domain wildcard question." }
+  ]
 }
 
 Return only valid JSON.`
+
+// ─── Signal Velocity + Heatmap (computed from article history, no AI cost) ──
+
+interface VelocityItem {
+  topic: string
+  delta: string
+  prev: number
+  curr: number
+}
+
+interface HeatmapLayer {
+  name: string
+  color: string
+  data: number[]
+}
+
+function computeVelocityAndHeatmap(
+  history: { publishedAt: string; tag: string; signalScores?: Record<string, number> }[],
+  todayArticles: { tag: string; signalScores?: Record<string, number> }[],
+) {
+  // Split history into this-week (last 3 days + today) and last-week (4-7 days ago)
+  const now = new Date()
+  const dates: string[] = []
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now)
+    d.setDate(d.getDate() - i)
+    dates.push(d.toISOString().slice(0, 10))
+  }
+
+  // ── Velocity: compare tag counts this-half vs last-half of the week ──
+  const thisHalf = dates.slice(4) // last 3 days
+  const lastHalf = dates.slice(0, 4) // first 4 days
+
+  const tagCountThis: Record<string, number> = {}
+  const tagCountLast: Record<string, number> = {}
+
+  for (const a of history) {
+    const d = a.publishedAt.slice(0, 10)
+    if (thisHalf.includes(d)) tagCountThis[a.tag] = (tagCountThis[a.tag] || 0) + 1
+    else if (lastHalf.includes(d)) tagCountLast[a.tag] = (tagCountLast[a.tag] || 0) + 1
+  }
+  // Add today's articles to thisHalf
+  for (const a of todayArticles) {
+    tagCountThis[a.tag] = (tagCountThis[a.tag] || 0) + 1
+  }
+
+  const accelerating: VelocityItem[] = []
+  const decelerating: VelocityItem[] = []
+  const allTags = new Set([...Object.keys(tagCountThis), ...Object.keys(tagCountLast)])
+
+  for (const tag of allTags) {
+    const curr = tagCountThis[tag] || 0
+    const prev = tagCountLast[tag] || 0
+    if (prev === 0 && curr === 0) continue
+    const pct = prev === 0 ? (curr > 0 ? 100 : 0) : Math.round(((curr - prev) / prev) * 100)
+    if (pct === 0) continue
+    const name = LAYER_NAMES[tag] || tag
+    const item = { topic: name, delta: `${pct > 0 ? "+" : ""}${pct}%`, prev, curr }
+    if (pct > 0) accelerating.push(item)
+    else decelerating.push(item)
+  }
+
+  accelerating.sort((a, b) => parseInt(b.delta) - parseInt(a.delta))
+  decelerating.sort((a, b) => parseInt(a.delta) - parseInt(b.delta))
+
+  // ── Heatmap: per-day × per-layer average urgency ──
+  const dayLabels = dates.map(d => {
+    const dt = new Date(d + "T12:00:00")
+    return dt.toLocaleDateString("en-US", { weekday: "short" })
+  })
+
+  const layers: HeatmapLayer[] = ALL_LAYERS.map(layer => {
+    const data = dates.map(date => {
+      const dayArticles = history.filter(a =>
+        a.publishedAt.slice(0, 10) === date && a.tag === layer && a.signalScores
+      )
+      // Also include today's articles for the last date
+      if (date === dates[dates.length - 1]) {
+        const todayOfLayer = todayArticles.filter(a => a.tag === layer && a.signalScores)
+        dayArticles.push(...todayOfLayer as typeof dayArticles)
+      }
+      if (dayArticles.length === 0) return 0
+      const avg = dayArticles.reduce((sum, a) => sum + (a.signalScores?.urgency ?? 0), 0) / dayArticles.length
+      return Math.round(avg * 10) / 10
+    })
+    return { name: LAYER_NAMES[layer], color: LAYER_COLORS[layer], data }
+  })
+
+  return {
+    velocity: { accelerating: accelerating.slice(0, 5), decelerating: decelerating.slice(0, 5) },
+    heatmap: { days: dayLabels, layers },
+  }
+}
 
 export async function POST(req: Request) {
   const apiKey = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
@@ -88,10 +198,12 @@ export async function POST(req: Request) {
       return `${i + 1}. [${a.tag}] ${a.source}: ${a.title}${a.synopsis ? ` — ${a.synopsis}` : ""}${scores ? ` (scores: ${scores})` : ""}`
     }).join("\n")
 
-    // Load 7-day history for trend detection (lightweight: titles, scores, layers only)
+    // Load 7-day history for trend detection + dataviz
     let historyContext = ""
+    let historyArticles: { publishedAt: string; tag: string; title: string; signalScores?: Record<string, number> }[] = []
     try {
       const history = await loadArticleHistory(7)
+      historyArticles = history
       // Exclude today's articles (already in context above) — group by date
       const todayStr = new Date().toISOString().slice(0, 10)
       const priorArticles = history.filter(a => !a.publishedAt.startsWith(todayStr))
@@ -150,42 +262,43 @@ export async function POST(req: Request) {
 
     // Normalize blindSpots — support both new array format and old string format
     if (result.blindSpots && Array.isArray(result.blindSpots)) {
-      // New format: keep as-is, generate backward-compat string
       result.blindSpotNote = result.blindSpots.map((b: { title: string; body: string }) => `${b.title}: ${b.body}`).join(" ")
     } else if (result.blindSpotNote && !result.blindSpots) {
-      // Old format: wrap in array
       result.blindSpots = [{ type: "general", title: "Blind Spot", body: result.blindSpotNote }]
     }
 
-    // Generate images: header + each convergence pattern
+    // Backward compat: convert old cerebroProvocation to cerebroTopics
+    if (result.cerebroProvocation && !result.cerebroTopics) {
+      result.cerebroTopics = [{ title: "Strategic question", prompt: result.cerebroProvocation }]
+    }
+
+    // Compute Signal Velocity + Urgency Heatmap from article history (no AI cost)
+    const { velocity, heatmap } = computeVelocityAndHeatmap(historyArticles, articles)
+    result.velocity = velocity
+    result.heatmap = heatmap
+
+    // Generate images for convergence pattern cards (no header image)
     if (process.env.REPLICATE_API_TOKEN) {
       try {
-        const allCards = [
-          { title: result.headline || result.briefing?.split(/[.!?]/)[0] || "Weekly intelligence", layers: ["landscape"] },
-          ...(result.patterns || []).map((p: { title: string; layers?: string[] }) => ({
-            title: p.title,
-            layers: p.layers,
-          }))
-        ]
-        const imageUrls = await generateCardImages(allCards, "synthesis")
-        result.headerImageUrl = imageUrls[0] || undefined
-        const patternImageUrls = imageUrls.slice(1)
-        result.patterns = result.patterns.map((p: Record<string, unknown>, i: number) => ({
-          ...p,
-          imageUrl: patternImageUrls[i] || undefined,
+        const patternCards = (result.patterns || []).map((p: { title: string; layers?: string[] }) => ({
+          title: p.title,
+          layers: p.layers,
         }))
+        if (patternCards.length > 0) {
+          const imageUrls = await generateCardImages(patternCards, "synthesis")
+          result.patterns = result.patterns.map((p: Record<string, unknown>, i: number) => ({
+            ...p,
+            imageUrl: imageUrls[i] || undefined,
+          }))
+        }
       } catch (err) {
-        // Image generation failure shouldn't break synthesis — log and continue
         console.error("[synthesis] Image generation failed:", err instanceof Error ? err.message : err)
       }
     }
 
-    // Cache to KV if images loaded — avoid re-generating on every visit
+    // Cache to KV — avoid re-generating on every visit
     if (process.env.KV_REST_API_URL) {
-      const hasImages = result.headerImageUrl || result.patterns?.some((p: { imageUrl?: string }) => p.imageUrl)
-      if (hasImages) {
-        try { await kv.set(KV_KEY, result, { ex: CACHE_TTL }) } catch { /* KV write failure */ }
-      }
+      try { await kv.set(KV_KEY, result, { ex: CACHE_TTL }) } catch { /* KV write failure */ }
     }
 
     return Response.json(result)

@@ -29,6 +29,24 @@ interface BlindSpot {
   body: string
 }
 
+interface CerebroTopic {
+  title: string
+  prompt: string
+}
+
+interface VelocityItem {
+  topic: string
+  delta: string
+  prev: number
+  curr: number
+}
+
+interface HeatmapLayer {
+  name: string
+  color: string
+  data: number[]
+}
+
 interface SynthesisData {
   headline?: string
   briefing: string
@@ -36,7 +54,10 @@ interface SynthesisData {
   blindSpotNote: string
   blindSpots?: BlindSpot[]
   cerebroProvocation?: string
+  cerebroTopics?: CerebroTopic[]
   headerImageUrl?: string
+  velocity?: { accelerating: VelocityItem[]; decelerating: VelocityItem[] }
+  heatmap?: { days: string[]; layers: HeatmapLayer[] }
 }
 
 const SYNTHESIS_STATUSES = [
@@ -47,19 +68,30 @@ const SYNTHESIS_STATUSES = [
   "▸ composing briefing",
 ]
 
+const BLIND_SPOT_LABELS: Record<string, string> = {
+  dropped: "Dropped Signal",
+  missing: "Missing Signal",
+  assumption: "Assumption Check",
+  general: "Blind Spot",
+}
+
+const LAYER_DOT: Record<string, string> = {
+  opportunity: "#D4A05A",
+  position: "#5A9EB0",
+  discipline: "#7BAF6A",
+  landscape: "#9A85B8",
+  culture: "#C87A6A",
+}
+
 // ─── Synthesis View ────────────────────────────────────────────────────────
 
-export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: SynthesisViewProps) {
+export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
   const [data, setData] = useState<SynthesisData | null>(null)
   const [loading, setLoading] = useState(false)
   const [statusIdx, setStatusIdx] = useState(0)
   const [elapsed, setElapsed] = useState(0)
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
-  const [hoveredCerebro, setHoveredCerebro] = useState(false)
   const [retryCount, setRetryCount] = useState(0)
   const fetched = useRef(false)
-
-  const isTriage = sortBy === "urgency"
 
   useEffect(() => {
     if (articles.length === 0 || fetched.current) return
@@ -96,30 +128,42 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
     return () => { clearInterval(t); clearInterval(timer) }
   }, [articles, retryCount]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Week range for header
+  const weekRange = (() => {
+    const now = new Date()
+    const day = now.getDay()
+    const monday = new Date(now)
+    monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1))
+    const sunday = new Date(monday)
+    sunday.setDate(monday.getDate() + 6)
+    const fmt = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    return `${fmt(monday)} – ${fmt(sunday)}`
+  })()
+
+  // Resolve cerebro topics — support both old and new format
+  const cerebroTopics: CerebroTopic[] = data?.cerebroTopics
+    || (data?.cerebroProvocation ? [{ title: "Strategic question", prompt: data.cerebroProvocation }] : [])
+
   return (
     <main
       role="main"
       aria-label="Synthesis intelligence view"
       style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}
     >
-      {/* Header */}
-      <div
-        role="banner"
-        style={{
-          flexShrink: 0, height: 40, display: "flex", alignItems: "center",
-          padding: "0 20px", borderBottom: "1px solid var(--border)",
-        }}
-      >
+      {/* Header bar */}
+      <div style={{
+        flexShrink: 0, height: 40, display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "0 20px", borderBottom: "1px solid var(--border)",
+      }}>
         <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase" }}>
           Synthesis
         </span>
+        <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)" }}>
+          {weekRange}
+        </span>
       </div>
 
-      <div
-        role="region"
-        aria-label="Synthesis content"
-        style={{ flex: 1, overflowY: "auto", overflowX: "hidden", display: "flex", flexDirection: "column" }}
-      >
+      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
 
         {/* ── Loading ── */}
         {loading && (
@@ -169,268 +213,261 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
           </div>
         )}
 
-        {/* ── Editorial layout ── */}
+        {/* ── Content — D7 Dashboard Intelligence ── */}
         {!loading && data && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 28, padding: "0 20px 48px" }}>
+          <div>
 
-            {/* ─ HERO — image + headline + summary ─ */}
-            <article style={{
-              background: "var(--bg-surface)", borderRadius: 12, overflow: "hidden",
-              animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both",
-              marginTop: 20,
+            {/* ─ WEEKLY SHIFT banner ─ */}
+            <div style={{
+              background: "var(--bg-surface)", padding: "14px 20px",
+              animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
-              {/* Hero image */}
+              <div style={{ ...TYPE.xs, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 6 }}>
+                Weekly Shift
+              </div>
+              <div style={{ ...TYPE.body, color: "var(--text-primary)", fontWeight: 500, lineHeight: 1.5 }}>
+                {data.headline || data.briefing.split(/[.!?]\s/)[0]}
+              </div>
+            </div>
+
+            {/* ─ IMAGE BAND ─ */}
+            <div style={{
+              height: 130, overflow: "hidden",
+              background: data.patterns[0]?.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
+            }}>
+              {data.patterns[0]?.imageUrl && (
+                <img src={data.patterns[0].imageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              )}
+            </div>
+
+            {/* ─ SIGNAL VELOCITY ─ */}
+            {data.velocity && (data.velocity.accelerating.length > 0 || data.velocity.decelerating.length > 0) && (
               <div style={{
-                height: 280, overflow: "hidden",
-                background: data.headerImageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
+                padding: "16px 20px",
+                borderBottom: "1px solid var(--border)",
+                animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
-                {data.headerImageUrl && (
-                  <img
-                    src={data.headerImageUrl}
-                    alt="Weekly intelligence visual"
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  />
-                )}
-              </div>
-
-              {/* Headline + summary */}
-              <div style={{ padding: "32px 32px 36px" }}>
-                {/* Eyebrow — no color, no category references */}
-                <div style={{
-                  ...TYPE.xs, color: "var(--text-tertiary)",
-                  textTransform: "uppercase", letterSpacing: "0.08em",
-                  marginBottom: 14,
-                }}>
-                  Weekly Intelligence · {(() => {
-                    const now = new Date()
-                    const day = now.getDay()
-                    const monday = new Date(now)
-                    monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1))
-                    const sunday = new Date(monday)
-                    sunday.setDate(monday.getDate() + 6)
-                    const fmt = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
-                    return `${fmt(monday)} – ${fmt(sunday)}`
-                  })()}
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 12, fontSize: 11 }}>
+                  Signal Velocity
                 </div>
-                {/* Headline — Grenette Pro, white, matching Dispatch scale */}
-                <h1 style={{
-                  fontSize: 28, fontWeight: 400,
-                  fontFamily: "var(--font-grenette), Georgia, serif",
-                  color: "var(--text-primary)",
-                  lineHeight: 1.4, letterSpacing: "-0.01em",
-                  marginBottom: isTriage ? 0 : 16,
-                  margin: 0,
-                }}>
-                  {data.headline || data.briefing.split(/[.!?]\s/)[0]}
-                </h1>
-
-                {/* Summary — Explore only */}
-                {!isTriage && (() => {
-                  const text = data.headline ? data.briefing : data.briefing.split(/(?<=[.!?])\s+/).slice(1).join(" ")
-                  const sentences = text.split(/(?<=[.!?])\s+/).filter(s => s.trim())
-                  const summary = sentences[0] || ""
-                  const bullets = sentences.slice(1)
-                  return (
-                    <>
-                      {summary && (
-                        <p style={{ ...TYPE.reading, color: "var(--text-secondary)", lineHeight: 1.75, marginBottom: bullets.length > 0 ? 14 : 0, marginTop: 0 }}>
-                          {summary}
-                        </p>
-                      )}
-                      {bullets.length > 0 && (
-                        <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 6 }}>
-                          {bullets.map((s, i) => (
-                            <li key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                              <span aria-hidden="true" style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--text-tertiary)", flexShrink: 0, marginTop: 8 }} />
-                              <span style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7 }}>{s}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </>
-                  )
-                })()}
-              </div>
-            </article>
-
-            {/* ─ CONVERGENCES ─ */}
-            {data.patterns.length > 0 && (
-              <section aria-label="Convergence patterns" style={{ animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 150ms both" }}>
-                <h2 style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
-                  Convergences
-                </h2>
-                <div className="convergence-grid" style={{
-                  display: "grid",
-                  gridTemplateColumns: data.patterns.length === 1 ? "1fr" : "1fr 1fr",
-                  gap: 16,
-                }}>
-                  {data.patterns.map((pattern, i) => (
-                    <article
-                      key={i}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`Explore convergence: ${pattern.title}`}
-                      onClick={() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`)}
-                      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
-                      onMouseEnter={() => setHoveredCard(i)}
-                      onMouseLeave={() => setHoveredCard(null)}
-                      style={{
-                        background: hoveredCard === i ? "var(--bg-elevated)" : "var(--bg-surface)",
-                        borderRadius: 12,
-                        overflow: "hidden",
-                        cursor: "pointer",
-                        transition: "background 0.15s",
-                        animation: `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${200 + i * 60}ms both`,
-                        outline: "none",
-                      }}
-                    >
-                      {/* Card image */}
-                      <div style={{
-                        height: 160, overflow: "hidden",
-                        background: pattern.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
-                      }}>
-                        {pattern.imageUrl && (
-                          <img src={pattern.imageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                        )}
+                <div style={{ display: "flex", gap: 12 }}>
+                  {/* Accelerating */}
+                  <div style={{ flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "14px 16px" }}>
+                    <div style={{ ...TYPE.xs, color: "#61BF6B", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 10 }}>
+                      Accelerating
+                    </div>
+                    {data.velocity.accelerating.length > 0 ? data.velocity.accelerating.map((item, i) => (
+                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, padding: "3px 0" }}>
+                        <span style={{ ...TYPE.sm, color: "#61BF6B" }}>↑</span>
+                        <span style={{ flex: 1, ...TYPE.sm, color: "var(--text-primary)" }}>{item.topic}</span>
+                        <span style={{ ...TYPE.xs, fontFamily: MONO, color: "#61BF6B", fontWeight: 600 }}>{item.delta}</span>
                       </div>
-                      {/* Card content */}
-                      <div style={{ padding: "24px 28px 28px" }}>
-                        {/* Eyebrow — no color, tertiary only */}
-                        <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 10 }}>
-                          {pattern.signalCount} signals
-                        </div>
-                        {/* Title — white, Grenette Pro, sized to match Dispatch pitch cards */}
-                        <h3 style={{
-                          fontSize: 20, fontWeight: 400,
-                          fontFamily: "var(--font-grenette), Georgia, serif",
-                          color: "var(--text-primary)",
-                          lineHeight: 1.35, letterSpacing: "-0.01em",
-                          margin: 0,
-                          marginBottom: pattern.description ? 12 : 0,
-                        }}>
-                          {pattern.title}
-                        </h3>
-                        {/* Description — rendered with citation support */}
-                        {pattern.description && (
-                          <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>
-                            {renderCitedBody(pattern.description)}
-                          </div>
-                        )}
-                        {/* Sources — quiet attribution */}
-                        {!isTriage && pattern.sources && pattern.sources.length > 0 && (
-                          <div style={{ marginTop: 12, ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, lineHeight: 1.6 }}>
-                            Based on {pattern.sources.join(" · ")}
-                          </div>
-                        )}
+                    )) : (
+                      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>No accelerating signals</div>
+                    )}
+                  </div>
+                  {/* Decelerating */}
+                  <div style={{ flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "14px 16px" }}>
+                    <div style={{ ...TYPE.xs, color: "#BF6161", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 10 }}>
+                      Decelerating
+                    </div>
+                    {data.velocity.decelerating.length > 0 ? data.velocity.decelerating.map((item, i) => (
+                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, padding: "3px 0" }}>
+                        <span style={{ ...TYPE.sm, color: "#BF6161" }}>↓</span>
+                        <span style={{ flex: 1, ...TYPE.sm, color: "var(--text-primary)" }}>{item.topic}</span>
+                        <span style={{ ...TYPE.xs, fontFamily: MONO, color: "#BF6161", fontWeight: 600 }}>{item.delta}</span>
                       </div>
-                    </article>
-                  ))}
+                    )) : (
+                      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>No decelerating signals</div>
+                    )}
+                  </div>
                 </div>
-              </section>
+              </div>
             )}
 
-            {/* ─ BLIND SPOTS + ASK CEREBRO ─ */}
-            <section
-              aria-label="Blind spots and provocations"
-              className="blindspots-grid"
-              style={{
-                display: "grid",
-                gridTemplateColumns: (data.blindSpots || data.blindSpotNote) && data.cerebroProvocation ? "1fr 1fr" : "1fr",
-                gap: 20,
-                animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 500ms both",
-              }}
-            >
-              {/* Blind Spots */}
-              {(data.blindSpots || data.blindSpotNote) && (
-                <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "24px 28px" }}>
-                  <h2 style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500, margin: 0, marginBottom: 16 }}>
-                    Blind Spots
-                  </h2>
-                  {data.blindSpots && data.blindSpots.length > 0 ? (
-                    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                      {(isTriage ? data.blindSpots.slice(0, 1) : data.blindSpots).map((spot, i) => {
-                        const typeLabels: Record<string, string> = { dropped: "Dropped Signal", missing: "Missing Signal", assumption: "Assumption Check", general: "Blind Spot" }
+            {/* ─ CONVERGENCES table ─ */}
+            {data.patterns.length > 0 && (
+              <div style={{
+                padding: "16px 20px",
+                borderBottom: "1px solid var(--border)",
+                animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 200ms both",
+              }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 12, fontSize: 11 }}>
+                  Convergences
+                </div>
+                {/* Table header */}
+                <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "0 0 6px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+                  <span style={{ flex: 1, ...TYPE.xs, color: "var(--text-tertiary)", fontWeight: 600 }}>Pattern</span>
+                  <span style={{ width: 36, textAlign: "right", ...TYPE.xs, color: "var(--text-tertiary)", fontWeight: 600 }}>Sig.</span>
+                  <span style={{ width: 60, ...TYPE.xs, color: "var(--text-tertiary)", fontWeight: 600 }}>Layers</span>
+                </div>
+                {/* Table rows */}
+                {data.patterns.map((pattern, i) => (
+                  <div
+                    key={i}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`)}
+                    onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
+                    style={{
+                      display: "flex", alignItems: "flex-start", gap: 8,
+                      padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,0.04)",
+                      cursor: "pointer", transition: "background 0.15s", outline: "none",
+                      margin: "0 -4px", paddingLeft: 4, paddingRight: 4, borderRadius: 4,
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+                  >
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ ...TYPE.body, color: "var(--text-primary)", fontWeight: 500, lineHeight: 1.4, letterSpacing: "-0.01em" }}>
+                        {pattern.title}
+                      </div>
+                      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", lineHeight: 1.5, marginTop: 2 }}>
+                        {renderCitedBody(pattern.description)}
+                      </div>
+                    </div>
+                    <span style={{ width: 36, textAlign: "right", ...TYPE.sm, fontFamily: MONO, color: "var(--text-secondary)", flexShrink: 0, paddingTop: 2 }}>
+                      {pattern.signalCount}
+                    </span>
+                    <div style={{ width: 60, display: "flex", gap: 4, flexShrink: 0, paddingTop: 4 }}>
+                      {pattern.layers.map(l => (
+                        <span key={l} style={{ width: 7, height: 7, borderRadius: "50%", background: LAYER_DOT[l] || "var(--text-tertiary)" }} />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* ─ URGENCY HEATMAP ─ */}
+            {data.heatmap && data.heatmap.layers.length > 0 && (
+              <div style={{
+                padding: "16px 20px",
+                borderBottom: "1px solid var(--border)",
+                animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 300ms both",
+              }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 12, fontSize: 11 }}>
+                  Urgency Heatmap
+                </div>
+                <div style={{ background: "var(--bg-surface)", borderRadius: 8, padding: "14px 16px", overflow: "hidden" }}>
+                  {/* Day headers */}
+                  <div style={{ display: "flex", marginBottom: 6 }}>
+                    <div style={{ width: 80, flexShrink: 0 }} />
+                    {data.heatmap.days.map((day, i) => (
+                      <div key={i} style={{ flex: 1, textAlign: "center", ...TYPE.xs, color: "var(--text-tertiary)", fontWeight: 500 }}>
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+                  {/* Layer rows */}
+                  {data.heatmap.layers.map((layer, li) => (
+                    <div key={li} style={{ display: "flex", alignItems: "center", marginBottom: 4 }}>
+                      <div style={{ width: 80, flexShrink: 0, ...TYPE.xs, color: layer.color, fontWeight: 500 }}>
+                        {layer.name}
+                      </div>
+                      {layer.data.map((val, di) => {
+                        const maxVal = 10
+                        const opacity = val > 0 ? Math.max(0.08, (val / maxVal) * 0.65) : 0.03
                         return (
-                          <div
-                            key={i}
-                            role="button"
-                            tabIndex={0}
-                            aria-label={`Explore blind spot: ${spot.title}`}
-                            onClick={() => onDeliberate(`Explore this blind spot:\n\n**${typeLabels[spot.type] || "Blind Spot"}: ${spot.title}**\n\n${spot.body}\n\nWhat am I missing and what should I do about it?`)}
-                            onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`Explore this blind spot: ${spot.title}`) } }}
-                            style={{ cursor: "pointer", transition: "background 0.15s", padding: "10px 12px", borderRadius: 8, marginLeft: -12, marginRight: -12, outline: "none" }}
-                            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-                            onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
-                          >
-                            {/* Eyebrow — no color, tertiary only */}
-                            <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 500, marginBottom: 6 }}>
-                              {typeLabels[spot.type] || "Blind Spot"}
-                            </div>
-                            <h3 style={{
-                              fontSize: 16, fontWeight: 400,
-                              fontFamily: "var(--font-grenette), Georgia, serif",
-                              color: "var(--text-primary)",
-                              marginBottom: 6, lineHeight: 1.4, letterSpacing: "-0.01em",
-                              margin: "0 0 6px 0",
+                          <div key={di} style={{ flex: 1, padding: "0 1px" }}>
+                            <div style={{
+                              height: 24, borderRadius: 3,
+                              background: layer.color, opacity,
+                              display: "flex", alignItems: "center", justifyContent: "center",
                             }}>
-                              {spot.title}
-                            </h3>
-                            <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7 }}>
-                              {spot.body}
+                              {val > 0 && (
+                                <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-secondary)", fontSize: 9 }}>
+                                  {val}
+                                </span>
+                              )}
                             </div>
                           </div>
                         )
                       })}
                     </div>
-                  ) : data.blindSpotNote ? (
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ─ BLIND SPOTS — 3 cards ─ */}
+            {data.blindSpots && data.blindSpots.length > 0 && (
+              <div style={{
+                padding: "16px 20px",
+                borderBottom: "1px solid var(--border)",
+                animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 400ms both",
+              }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 12, fontSize: 11 }}>
+                  Blind Spots
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+                  {data.blindSpots.map((spot, i) => (
                     <div
+                      key={i}
                       role="button"
                       tabIndex={0}
-                      onClick={() => onDeliberate(`Explore this blind spot:\n\n"${data.blindSpotNote}"\n\nWhat am I missing and why does it matter?`)}
-                      style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7, cursor: "pointer" }}
+                      onClick={() => onDeliberate(`Explore this blind spot:\n\n**${BLIND_SPOT_LABELS[spot.type] || "Blind Spot"}: ${spot.title}**\n\n${spot.body}\n\nWhat am I missing and what should I do about it?`)}
+                      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`Explore this blind spot: ${spot.title}`) } }}
+                      style={{
+                        background: "var(--bg-surface)", borderRadius: 8, padding: "14px 16px",
+                        cursor: "pointer", transition: "background 0.15s", outline: "none",
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     >
-                      {data.blindSpotNote}
+                      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600, marginBottom: 8 }}>
+                        {BLIND_SPOT_LABELS[spot.type] || "Blind Spot"}
+                      </div>
+                      <div style={{ ...TYPE.sm, color: "var(--text-primary)", fontWeight: 500, lineHeight: 1.4, marginBottom: 6 }}>
+                        {spot.title}
+                      </div>
+                      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", lineHeight: 1.5 }}>
+                        {spot.body.length > 120 ? spot.body.slice(0, 117) + "..." : spot.body}
+                      </div>
                     </div>
-                  ) : null}
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* Ask Cerebro */}
-              {data.cerebroProvocation && (
-                <div
-                  role="button"
-                  tabIndex={0}
-                  aria-label="Send this question to Cerebro"
-                  onClick={() => onDeliberate(data.cerebroProvocation!)}
-                  onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(data.cerebroProvocation!) } }}
-                  onMouseEnter={() => setHoveredCerebro(true)}
-                  onMouseLeave={() => setHoveredCerebro(false)}
-                  style={{
-                    background: hoveredCerebro ? "var(--bg-elevated)" : "var(--bg-surface)",
-                    borderRadius: 12, padding: "24px 28px",
-                    cursor: "pointer", transition: "background 0.15s",
-                    outline: "none",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
-                    <ArrowUpRight size={11} style={{ color: "var(--text-tertiary)" }} />
-                    <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                      Ask Cerebro
-                    </span>
-                  </div>
-                  <div style={{
-                    fontSize: 16, fontWeight: 400,
-                    fontFamily: "var(--font-grenette), Georgia, serif",
-                    color: hoveredCerebro ? "var(--text-primary)" : "var(--text-secondary)",
-                    lineHeight: 1.5, transition: "color 0.15s",
-                    letterSpacing: "-0.01em",
-                  }}>
-                    {data.cerebroProvocation}
-                  </div>
+            {/* ─ ASK CEREBRO — 4 cards ─ */}
+            {cerebroTopics.length > 0 && (
+              <div style={{
+                padding: "16px 20px",
+                animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 500ms both",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
+                  <ArrowUpRight size={11} style={{ color: "var(--accent-secondary)" }} />
+                  <span style={{ ...labelStyle, letterSpacing: "0.04em", fontSize: 11, color: "var(--accent-secondary)" }}>
+                    Ask Cerebro
+                  </span>
                 </div>
-              )}
-            </section>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 10 }}>
+                  {cerebroTopics.slice(0, 4).map((topic, i) => (
+                    <div
+                      key={i}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => onDeliberate(topic.prompt)}
+                      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(topic.prompt) } }}
+                      style={{
+                        background: "var(--bg-surface)", borderRadius: 8, padding: "14px 16px",
+                        cursor: "pointer", transition: "background 0.15s", outline: "none",
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
+                    >
+                      <div style={{ ...TYPE.sm, color: "var(--text-secondary)", lineHeight: 1.4 }}>
+                        {topic.title}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
+            {/* Bottom padding */}
+            <div style={{ height: 48 }} />
           </div>
         )}
       </div>
