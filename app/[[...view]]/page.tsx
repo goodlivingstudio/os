@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { createPortal } from "react-dom"
-import { Radio, AudioLines, Blend, Send, Brain, Settings, ChevronRight, ChevronLeft, Minimize2, Aperture } from "lucide-react"
+import { Radio, AudioLines, Blend, Send, Brain, Settings, ChevronRight, ChevronLeft, Minimize2, Aperture, SunMedium, MoonStar, MoreHorizontal, ChevronDown, Activity } from "lucide-react"
 import { Ticker } from "@/components/ticker"
 import { LeftRail } from "@/components/left-rail"
 import { useChiefOfStaff, ChiefOfStaffBand } from "@/components/chief-of-staff"
@@ -194,6 +194,8 @@ export default function Page() {
   const [mobileTab,      setMobileTab]      = useState<"signal" | "audio" | "synthesis" | "gallery" | "cerebro" | "config">("signal")
   const [excludedSources, setExcludedSources] = useState<Set<string>>(new Set())
   const [mobileDcosIdx, setMobileDcosIdx] = useState(0)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
 
   // ── URL ↔ State sync ───────────────────────────────────────────────────────
   const VALID_VIEWS = ["signal", "audio", "synthesis", "dispatch", "config", "pulse"] as const
@@ -500,60 +502,128 @@ export default function Page() {
       }}
     >
       {!isMobile && <ChiefOfStaffBand signals={signals} briefLoading={briefLoading} briefError={briefError} onDeliberate={handleDeliberate} defaultExpanded={sortBy === "urgency"} />}
-      {/* Layer pills — inline with feed (Triage/Explore toggle stays in left rail) */}
+      {/* Layer filters — pills on desktop, dropdown on mobile */}
       <div style={{ flexShrink: 0, padding: "12px 16px 0" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
-          {/* All chip */}
-          <button
-            onClick={() => setActiveLayers(new Set())}
-            style={{
-              display: "inline-flex", alignItems: "center", gap: 4,
-              padding: "4px 12px", borderRadius: 9999, border: "none",
-              background: activeLayers.size === 0 ? "var(--accent-primary)" : "transparent",
-              cursor: "pointer", transition: "all 0.15s",
-            }}
-            onMouseEnter={e => { if (activeLayers.size > 0) e.currentTarget.style.background = "var(--bg-elevated)" }}
-            onMouseLeave={e => { if (activeLayers.size > 0) e.currentTarget.style.background = "transparent" }}
-          >
-            <span style={{ ...TYPE.sm, color: activeLayers.size === 0 ? "var(--accent-secondary)" : "var(--text-tertiary)", fontWeight: activeLayers.size === 0 ? 600 : 400 }}>
-              All
-            </span>
-            <span style={{ ...TYPE.xs, fontVariantNumeric: "tabular-nums", color: activeLayers.size === 0 ? "var(--accent-muted)" : "var(--text-tertiary)", opacity: 0.5 }}>
-              {triagePool.length}
-            </span>
-          </button>
-          {CATEGORY_CONFIG.filter(cat => cat.id !== "all").map(cat => {
-            const n = cat.id === "all" ? triagePool.length : triagePool.filter(a => a.tag === cat.id).length
-            if (n === 0 && !feedLoading) return null
-            const isActive = activeLayers.has(cat.id)
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setActiveLayers(prev => {
-                  const next = new Set(prev)
-                  if (next.has(cat.id)) next.delete(cat.id)
-                  else next.add(cat.id)
-                  return next
+        {isMobile ? (
+          /* ── Mobile: dropdown select ── */
+          <div style={{ position: "relative", marginBottom: 8 }}>
+            <button
+              onClick={() => { setMobileFilterOpen(v => !v); setMobileMenuOpen(false) }}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 6,
+                padding: "6px 14px", borderRadius: 8, border: "1px solid var(--border)",
+                background: "transparent", cursor: "pointer", transition: "all 0.15s",
+              }}
+            >
+              <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 500 }}>
+                {activeLayers.size === 0 ? "All" : [...activeLayers].map(l => CATEGORY_CONFIG.find(c => c.id === l)?.label || l).join(", ")}
+              </span>
+              <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.6, fontVariantNumeric: "tabular-nums" }}>
+                {triagePool.length}
+              </span>
+              <ChevronDown size={12} style={{ color: "var(--text-tertiary)", transition: "transform 0.2s", transform: mobileFilterOpen ? "rotate(180deg)" : "none" }} />
+            </button>
+            {mobileFilterOpen && (
+              <div style={{
+                position: "absolute", top: 38, left: 0, zIndex: 100, minWidth: 180,
+                background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 10,
+                padding: "4px 0", animation: "status-fade 0.15s ease both",
+              }}>
+                <button
+                  onClick={() => { setActiveLayers(new Set()); setMobileFilterOpen(false) }}
+                  style={{
+                    display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
+                    padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
+                    ...TYPE.sm, color: activeLayers.size === 0 ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: activeLayers.size === 0 ? 600 : 400,
+                  }}
+                >
+                  <span>All</span>
+                  <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, fontVariantNumeric: "tabular-nums" }}>{triagePool.length}</span>
+                </button>
+                {CATEGORY_CONFIG.filter(cat => cat.id !== "all").map(cat => {
+                  const n = triagePool.filter(a => a.tag === cat.id).length
+                  if (n === 0 && !feedLoading) return null
+                  const isActive = activeLayers.has(cat.id)
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => {
+                        setActiveLayers(prev => {
+                          const next = new Set(prev)
+                          if (next.has(cat.id)) next.delete(cat.id)
+                          else next.add(cat.id)
+                          return next
+                        })
+                        setMobileFilterOpen(false)
+                      }}
+                      style={{
+                        display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
+                        padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
+                        ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: isActive ? 600 : 400,
+                      }}
+                    >
+                      <span>{cat.label}</span>
+                      <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, fontVariantNumeric: "tabular-nums" }}>{n}</span>
+                    </button>
+                  )
                 })}
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 4,
-                  padding: "4px 12px", borderRadius: 9999, border: "none",
-                  background: isActive ? "var(--accent-primary)" : "transparent",
-                  cursor: "pointer", transition: "all 0.15s",
-                }}
-                onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
-                onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? "var(--accent-primary)" : "transparent" }}
-              >
-                <span style={{ ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)", fontWeight: isActive ? 600 : 400 }}>
-                  {cat.label}
-                </span>
-                <span style={{ ...TYPE.xs, fontVariantNumeric: "tabular-nums", color: isActive ? "var(--accent-muted)" : "var(--text-tertiary)", opacity: 0.5 }}>
-                  {n}
-                </span>
-              </button>
-            )
-          })}
-        </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          /* ── Desktop: pills ── */
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
+            <button
+              onClick={() => setActiveLayers(new Set())}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 4,
+                padding: "4px 12px", borderRadius: 9999, border: "none",
+                background: activeLayers.size === 0 ? "var(--accent-primary)" : "transparent",
+                cursor: "pointer", transition: "all 0.15s",
+              }}
+              onMouseEnter={e => { if (activeLayers.size > 0) e.currentTarget.style.background = "var(--bg-elevated)" }}
+              onMouseLeave={e => { if (activeLayers.size > 0) e.currentTarget.style.background = "transparent" }}
+            >
+              <span style={{ ...TYPE.sm, color: activeLayers.size === 0 ? "var(--accent-secondary)" : "var(--text-tertiary)", fontWeight: activeLayers.size === 0 ? 600 : 400 }}>
+                All
+              </span>
+              <span style={{ ...TYPE.xs, fontVariantNumeric: "tabular-nums", color: activeLayers.size === 0 ? "var(--accent-muted)" : "var(--text-tertiary)", opacity: 0.5 }}>
+                {triagePool.length}
+              </span>
+            </button>
+            {CATEGORY_CONFIG.filter(cat => cat.id !== "all").map(cat => {
+              const n = cat.id === "all" ? triagePool.length : triagePool.filter(a => a.tag === cat.id).length
+              if (n === 0 && !feedLoading) return null
+              const isActive = activeLayers.has(cat.id)
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveLayers(prev => {
+                    const next = new Set(prev)
+                    if (next.has(cat.id)) next.delete(cat.id)
+                    else next.add(cat.id)
+                    return next
+                  })}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: 4,
+                    padding: "4px 12px", borderRadius: 9999, border: "none",
+                    background: isActive ? "var(--accent-primary)" : "transparent",
+                    cursor: "pointer", transition: "all 0.15s",
+                  }}
+                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
+                  onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? "var(--accent-primary)" : "transparent" }}
+                >
+                  <span style={{ ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)", fontWeight: isActive ? 600 : 400 }}>
+                    {cat.label}
+                  </span>
+                  <span style={{ ...TYPE.xs, fontVariantNumeric: "tabular-nums", color: isActive ? "var(--accent-muted)" : "var(--text-tertiary)", opacity: 0.5 }}>
+                    {n}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        )}
       </div>
       <div id="main-feed" role="feed" aria-label="Intelligence feed" tabIndex={-1} style={{ flex: 1, overflowY: "auto", padding: "8px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
         {feedLoading ? (
@@ -596,60 +666,120 @@ export default function Page() {
   if (isMobile) {
     return (
       <div style={{ display: "flex", flexDirection: "column", height: "100dvh", overflow: "hidden", background: "var(--bg-primary)", position: "fixed", inset: 0 }}>
-        {/* Mobile header — replaces ticker, has skin/theme controls */}
+        {/* ── Mobile Header ── */}
         <div style={{
-          flexShrink: 0, height: 36, display: "flex", alignItems: "center",
+          flexShrink: 0, height: 40, display: "flex", alignItems: "center",
           justifyContent: "space-between", padding: "0 16px",
-          borderBottom: "1px solid var(--border)", background: "var(--bg-surface)",
+          borderBottom: "1px solid var(--border)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--live)" }} />
-            <span style={{ fontSize: 10, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase" }}>Dispatch</span>
+            <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase", fontWeight: 500 }}>Dispatch</span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            {/* Skin dots */}
-            {(["mineral", "slate", "forest"] as Skin[]).map(s => (
-              <button
-                key={s}
-                onClick={() => setSkin(s)}
-                style={{
-                  width: 14, height: 14, borderRadius: "50%", border: "none", cursor: "pointer", padding: 0,
-                  background: s === "mineral" ? "#B8966A" : s === "slate" ? "#4A7A9B" : "#5C8A6E",
-                  opacity: skin === s ? 1 : 0.3, transition: "opacity 0.15s",
-                }}
-              />
-            ))}
-            {/* Day/night toggle */}
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            {/* Skin dots — matches desktop ticker pattern */}
+            {(["mineral", "slate", "forest"] as Skin[]).map(s => {
+              const isActive = skin === s
+              const color = s === "mineral" ? "#B8966A" : s === "slate" ? "#4A7A9B" : "#5C8A6E"
+              return (
+                <button
+                  key={s}
+                  onClick={() => setSkin(s)}
+                  style={{
+                    width: isActive ? 8 : 5, height: isActive ? 8 : 5, borderRadius: "50%",
+                    border: "none", cursor: "pointer", padding: 0,
+                    background: color,
+                    outline: isActive ? `1.5px solid ${color}` : "none",
+                    outlineOffset: isActive ? 2 : 0,
+                    opacity: isActive ? 1 : 0.35,
+                    transition: "all 0.2s",
+                  }}
+                />
+              )
+            })}
+            {/* Day/night toggle — Lucide icons */}
             <button
               onClick={toggleMode}
-              style={{ width: 24, height: 24, borderRadius: 6, border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0 }}
+              style={{ width: 28, height: 28, borderRadius: 6, border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, color: "var(--text-tertiary)", transition: "color 0.15s" }}
             >
-              <span style={{ fontSize: 14 }}>{isDay ? "☀" : "☽"}</span>
+              {isDay ? <SunMedium size={16} strokeWidth={1.5} /> : <MoonStar size={16} strokeWidth={1.5} />}
             </button>
+            {/* Overflow menu */}
+            <div style={{ position: "relative" }}>
+              <button
+                onClick={() => { setMobileMenuOpen(v => !v); setMobileFilterOpen(false) }}
+                style={{ width: 28, height: 28, borderRadius: 6, border: "none", background: mobileMenuOpen ? "var(--bg-elevated)" : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, color: "var(--text-tertiary)", transition: "all 0.15s" }}
+              >
+                <MoreHorizontal size={16} strokeWidth={1.5} />
+              </button>
+              {mobileMenuOpen && (
+                <div style={{
+                  position: "absolute", top: 34, right: 0, width: 200, zIndex: 100,
+                  background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 12,
+                  padding: "8px 0", animation: "status-fade 0.15s ease both",
+                }}>
+                  {/* Triage / Explore toggle */}
+                  <div style={{ padding: "8px 12px" }}>
+                    <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Sort Mode</div>
+                    <div style={{ display: "flex", background: "var(--bg-elevated)", borderRadius: 6, padding: 2 }}>
+                      {(["urgency", "layer"] as const).map(mode => (
+                        <button
+                          key={mode}
+                          onClick={() => { setSortBy(mode); setMobileMenuOpen(false) }}
+                          style={{
+                            flex: 1, padding: "6px 0", borderRadius: 5, border: "none",
+                            background: sortBy === mode ? "var(--bg-surface)" : "transparent",
+                            ...TYPE.xs, fontWeight: sortBy === mode ? 600 : 400,
+                            color: sortBy === mode ? "var(--text-primary)" : "var(--text-tertiary)",
+                            textTransform: "uppercase", letterSpacing: "0.04em",
+                            cursor: "pointer", transition: "all 0.15s",
+                          }}
+                        >
+                          {mode === "urgency" ? "Triage" : "Explore"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ height: 1, background: "var(--border)", margin: "4px 0" }} />
+                  {/* Config + Pulse links */}
+                  <button
+                    onClick={() => { setMobileTab("config" as typeof mobileTab); setMobileMenuOpen(false) }}
+                    style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer", ...TYPE.sm, color: "var(--text-secondary)", textAlign: "left" }}
+                  >
+                    <Settings size={14} strokeWidth={1.5} /> Configuration
+                  </button>
+                  <button
+                    onClick={() => { setMobileTab("config" as typeof mobileTab); setMobileMenuOpen(false) }}
+                    style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer", ...TYPE.sm, color: "var(--text-secondary)", textAlign: "left" }}
+                  >
+                    <Activity size={14} strokeWidth={1.5} /> Source Pulse
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* DCOS swipeable card — visible on Signal tab */}
+        {/* ── DCOS swipeable card — Signal tab only ── */}
         {mobileTab === "signal" && signals.filter(s => s.body).length > 0 && (() => {
-          const filtered = signals.filter(s => s.body)
-          const current = filtered[mobileDcosIdx]
+          const dcosSignals = signals.filter(s => s.body)
+          const current = dcosSignals[mobileDcosIdx]
           if (!current) return null
           return (
-            <div style={{ flexShrink: 0, borderBottom: "1px solid var(--border)", padding: "12px 16px" }}>
+            <div style={{ flexShrink: 0, borderBottom: "1px solid var(--border)", padding: "14px 20px" }}>
               <button
                 onClick={() => handleDeliberate(current)}
                 style={{ display: "block", width: "100%", background: "transparent", border: "none", cursor: "pointer", textAlign: "left", padding: 0 }}
               >
-                <div style={{ fontSize: 10, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.04em", marginBottom: 4 }}>
+                <div style={{ ...TYPE.xs, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.04em", marginBottom: 6 }}>
                   {current.label}
                 </div>
-                <div style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.6 }}>
-                  {current.body.replace(/\[\d+\]/g, "").slice(0, 120)}{current.body.length > 120 ? "..." : ""}
+                <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.65, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
+                  {current.body.replace(/\[\d+\]/g, "")}
                 </div>
               </button>
-              {/* Dots */}
-              <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 10 }}>
-                {filtered.map((_, i) => (
+              <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 14 }}>
+                {dcosSignals.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => setMobileDcosIdx(i)}
