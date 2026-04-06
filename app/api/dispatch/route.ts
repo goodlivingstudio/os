@@ -3,6 +3,7 @@
 import Anthropic from "@anthropic-ai/sdk"
 import { generateCardImages } from "@/lib/image-gen"
 import { loadArticleHistory, ARTICLE_STORE_AVAILABLE } from "@/lib/article-store"
+import { trackUsage } from "@/lib/usage-tracker"
 import { DISPATCH_PREAMBLE } from "@/lib/prompts"
 import { kv } from "@vercel/kv"
 
@@ -193,6 +194,7 @@ export async function GET(request: Request) {
         content: `This week's intelligence (${articles.length} articles across 7 days):\n\n${context}\n\nGenerate the weekly dispatch.`,
       }],
     })
+    trackUsage({ endpoint: "dispatch", provider: "anthropic", model: "claude-sonnet-4-20250514", inputTokens: response.usage?.input_tokens, outputTokens: response.usage?.output_tokens }).catch(() => {})
 
     const text = response.content[0]?.type === "text" ? response.content[0].text : ""
     const match = text.match(/\{[\s\S]*\}/)

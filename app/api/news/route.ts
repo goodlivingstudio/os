@@ -5,6 +5,7 @@ import Anthropic from "@anthropic-ai/sdk"
 import { FEEDS, type FeedDef } from "@/lib/feeds"
 import { storeArticles, recordSourceHealth, loadSourceFailures } from "@/lib/article-store"
 import { OPERATOR, FIVE_LAYERS } from "@/lib/prompts"
+import { trackUsage } from "@/lib/usage-tracker"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -240,6 +241,7 @@ async function annotateBatch(
       system: ANNOTATE_PROMPT,
       messages: [{ role: "user", content: items + "\n\nReturn JSON array." }],
     })
+    trackUsage({ endpoint: "news-annotate", provider: "anthropic", model: "claude-haiku-4-5-20251001", inputTokens: response.usage?.input_tokens, outputTokens: response.usage?.output_tokens }).catch(() => {})
     const text = response.content[0]?.type === "text" ? response.content[0].text : ""
     const match = text.match(/\[[\s\S]*\]/)
     if (!match) return []

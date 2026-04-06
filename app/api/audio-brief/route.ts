@@ -2,6 +2,7 @@
 // Same pattern as /api/brief but specific to audio content
 import Anthropic from "@anthropic-ai/sdk"
 import { DISPATCH_PREAMBLE } from "@/lib/prompts"
+import { trackUsage } from "@/lib/usage-tracker"
 
 function getClient() {
   const key = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
@@ -65,6 +66,7 @@ export async function POST(req: Request) {
       system: BRIEF_SYSTEM,
       messages: [{ role: "user", content: `Podcast episodes (${episodes.length}):\n\n${context}\n\nGenerate the audio brief.` }],
     })
+    trackUsage({ endpoint: "audio-brief", provider: "anthropic", model: "claude-haiku-4-5-20251001", inputTokens: response.usage?.input_tokens, outputTokens: response.usage?.output_tokens }).catch(() => {})
 
     const text = response.content[0]?.type === "text" ? response.content[0].text.trim() : ""
     const parts = text.split("|||").map(s => s.trim()).filter(Boolean)

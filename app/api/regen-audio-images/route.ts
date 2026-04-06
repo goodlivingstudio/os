@@ -3,6 +3,7 @@
 import { PODCAST_FEEDS } from "@/lib/podcasts"
 import { kv } from "@vercel/kv"
 import { downloadAsDataUri } from "@/lib/image-utils"
+import { trackUsage } from "@/lib/usage-tracker"
 import { REPLICATE_API, REPLICATE_MODEL, GLOBAL_STYLE, LAYER_PALETTES } from "@/lib/image-gen"
 import { SURFACE_STYLES } from "@/lib/image-gen"
 
@@ -36,6 +37,7 @@ async function generateImage(showName: string, layer: string, token: string): Pr
       if (!pollRes.ok) continue
       const result = await pollRes.json()
       if (result.status === "succeeded" && result.output?.[0]) {
+        trackUsage({ endpoint: "regen-audio-images", provider: "replicate", model: "flux-schnell", imageCount: 1 }).catch(() => {})
         return await downloadAsDataUri(result.output[0])
       }
       if (result.status === "failed" || result.status === "canceled") return undefined

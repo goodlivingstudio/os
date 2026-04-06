@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk"
 import { DISPATCH_PREAMBLE } from "@/lib/prompts"
 import { loadArticleHistory } from "@/lib/article-store"
 import { generateCardImages } from "@/lib/image-gen"
+import { trackUsage } from "@/lib/usage-tracker"
 import { kv } from "@vercel/kv"
 
 const KV_KEY = "synthesis:weekly"
@@ -125,21 +126,25 @@ export async function POST(req: Request) {
     const client = new Anthropic({ apiKey })
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 2000,
+      max_tokens: 4096,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userMessage }],
     })
+    trackUsage({ endpoint: "synthesis", provider: "anthropic", model: "claude-haiku-4-5-20251001", inputTokens: response.usage?.input_tokens, outputTokens: response.usage?.output_tokens }).catch(() => {})
 
     const text = response.content[0]?.type === "text" ? response.content[0].text : ""
     const match = text.match(/\{[\s\S]*\}/)
-    if (!match) return Response.json({ briefing: null, patterns: [], blindSpotNote: null })
+    if (!match) {
+      console.error("[synthesis] No JSON block found in Claude response")
+      return Response.json({ briefing: null, patterns: [], blindSpotNote: null })
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let result: any
     try {
       result = JSON.parse(match[0])
-    } catch {
-      console.error("[synthesis] Failed to parse Claude response as JSON")
+    } catch (parseErr) {
+      console.error("[synthesis] JSON parse failed:", parseErr instanceof Error ? parseErr.message : parseErr)
       return Response.json({ briefing: null, patterns: [], blindSpotNote: null })
     }
 
@@ -185,6 +190,7 @@ export async function POST(req: Request) {
 
     return Response.json(result)
   } catch (err) {
+    console.error("[synthesis] API error:", err instanceof Error ? err.message : err)
     return Response.json(
       { error: err instanceof Error ? err.message : "Unknown error" },
       { status: 500 }

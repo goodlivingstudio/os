@@ -4,6 +4,7 @@
 // Cost: ~$0.003 per image.
 
 import { downloadAsDataUri } from "@/lib/image-utils"
+import { trackUsage } from "@/lib/usage-tracker"
 
 export const REPLICATE_API = "https://api.replicate.com/v1"
 export const REPLICATE_MODEL = "black-forest-labs/flux-schnell"
@@ -117,6 +118,7 @@ export async function generateCardImage(
 
       const result = await pollRes.json()
       if (result.status === "succeeded" && result.output?.[0]) {
+        trackUsage({ endpoint: "image-gen", provider: "replicate", model: "flux-schnell", imageCount: 1 }).catch(() => {})
         // Download image and convert to permanent data URI
         return await downloadAsDataUri(result.output[0])
       }

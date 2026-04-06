@@ -346,6 +346,255 @@ function CacheManagement() {
   )
 }
 
+// ─── Sparkline ─────────────────────────────────────────────────────────────
+
+function Sparkline({ values, width = 200, height = 40 }: { values: number[]; width?: number; height?: number }) {
+  if (values.length < 2) return null
+  const max = Math.max(...values, 0.001)
+  const points = values.map((v, i) => {
+    const x = (i / (values.length - 1)) * width
+    const y = height - (v / max) * (height - 4) - 2
+    return `${x},${y}`
+  }).join(" ")
+  return (
+    <svg width={width} height={height} style={{ display: "block" }}>
+      <defs>
+        <linearGradient id="spark-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--accent-muted)" stopOpacity={0.15} />
+          <stop offset="100%" stopColor="var(--accent-muted)" stopOpacity={0} />
+        </linearGradient>
+      </defs>
+      <polygon
+        points={`0,${height} ${points} ${width},${height}`}
+        fill="url(#spark-fill)"
+      />
+      <polyline
+        points={points}
+        fill="none"
+        stroke="var(--accent-muted)"
+        strokeWidth={1.5}
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+// ─── Usage Panel (live) ────────────────────────────────────────────────────
+
+interface UsageData {
+  today: {
+    date: string
+    totalCost: number
+    totalInputTokens: number
+    totalOutputTokens: number
+    totalImages: number
+    callCount: number
+    byEndpoint: Record<string, { calls: number; inputTokens: number; outputTokens: number; imageCount: number; cost: number }>
+    byProvider: Record<string, { calls: number; cost: number }>
+    byModel: Record<string, { calls: number; inputTokens: number; outputTokens: number; cost: number }>
+  }
+  recentEvents: { ts: string; endpoint: string; provider: string; model: string; inputTokens?: number; outputTokens?: number; imageCount?: number; cost: number }[]
+  dailyHistory?: { date: string; totalCost: number; callCount: number; totalInputTokens: number; totalOutputTokens: number; totalImages: number }[]
+}
+
+const MODEL_LABELS: Record<string, string> = {
+  "claude-haiku-4-5-20251001": "Haiku",
+  "claude-sonnet-4-20250514": "Sonnet",
+  "flux-schnell": "Flux",
+}
+
+const ENDPOINT_LABELS: Record<string, string> = {
+  "news-annotate": "Annotation (ISR)",
+  "annotate": "Annotation (client)",
+  "brief": "DCOS Brief",
+  "audio-brief": "Audio Brief",
+  "chat": "Cerebro",
+  "synthesis": "Synthesis",
+  "dispatch": "Dispatch",
+  "image-gen": "Image gen",
+  "regen-audio-images": "Audio artwork",
+}
+
+function formatTokens(n: number): string {
+  if (n >= 1e6) return `${(n / 1e6).toFixed(1)}M`
+  if (n >= 1e3) return `${(n / 1e3).toFixed(1)}K`
+  return String(n)
+}
+
+function UsagePanel() {
+  const [data, setData] = useState<UsageData | null>(null)
+  const [range, setRange] = useState<"today" | "7d" | "30d">("today")
+
+  useEffect(() => {
+    fetch(`/api/usage?range=${range}`).then(r => r.json()).then(setData).catch(() => {})
+  }, [range])
+
+  // Auto-refresh every 60s
+  useEffect(() => {
+    const id = setInterval(() => {
+      fetch(`/api/usage?range=${range}`).then(r => r.json()).then(setData).catch(() => {})
+    }, 60000)
+    return () => clearInterval(id)
+  }, [range])
+
+  const today = data?.today
+  const mtdCost = data?.dailyHistory
+    ? data.dailyHistory.reduce((sum, d) => sum + d.totalCost, 0) + (today?.totalCost || 0)
+    : today?.totalCost || 0
+  const monthlyProjection = range === "today" ? mtdCost * 30 : mtdCost
+  const isHealthy = monthlyProjection < 40
+  const isWarning = monthlyProjection >= 40 && monthlyProjection < 80
+  const costColor = isHealthy ? "var(--live)" : isWarning ? "#D4A05A" : "#ef4444"
+
+  // Endpoint breakdown sorted by cost desc
+  const endpoints = today?.byEndpoint
+    ? Object.entries(today.byEndpoint).sort(([, a], [, b]) => b.cost - a.cost)
+    : []
+
+  // Sparkline data: daily history + today
+  const sparkValues = data?.dailyHistory
+    ? [...data.dailyHistory.map(d => d.totalCost), today?.totalCost || 0]
+    : []
+
+  const ranges: ("today" | "7d" | "30d")[] = ["today", "7d", "30d"]
+
+  return (
+    <div>
+      <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
+        API Usage
+      </div>
+
+      {/* Range toggle */}
+      <div style={{ display: "flex", gap: 2, marginBottom: 12 }}>
+        {ranges.map(r => (
+          <button
+            key={r}
+            onClick={() => setRange(r)}
+            style={{
+              padding: "3px 10px", borderRadius: 4, border: "none",
+              background: range === r ? "var(--bg-elevated)" : "transparent",
+              ...TYPE.xs, fontFamily: MONO, color: range === r ? "var(--text-primary)" : "var(--text-tertiary)",
+              cursor: "pointer", textTransform: "uppercase", letterSpacing: "0.04em",
+            }}
+          >
+            {r}
+          </button>
+        ))}
+      </div>
+
+      {/* Summary cards */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+        <MetricCard label="Today" value={`$${(today?.totalCost || 0).toFixed(3)}`} color={costColor} />
+        <MetricCard
+          label={range === "today" ? "Projected/mo" : "Period"}
+          value={`$${monthlyProjection.toFixed(2)}`}
+          color={costColor}
+          sub={!isHealthy ? (isWarning ? "WATCH" : "HIGH") : undefined}
+        />
+        <MetricCard label="Calls" value={today?.callCount || 0} />
+        <MetricCard label="Tokens" value={formatTokens((today?.totalInputTokens || 0) + (today?.totalOutputTokens || 0))} />
+      </div>
+
+      <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
+        {/* Endpoint breakdown */}
+        {endpoints.length > 0 ? (
+          <>
+            {endpoints.map(([ep, stats]) => {
+              const epModel = data?.recentEvents.find(e => e.endpoint === ep)?.model || ""
+              return (
+                <div key={ep} style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 0" }}>
+                  <span style={{ flex: 1, ...TYPE.sm, fontFamily: MONO, color: "var(--text-secondary)" }}>
+                    {ENDPOINT_LABELS[ep] || ep}
+                  </span>
+                  <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", width: 24, textAlign: "right" }}>
+                    {stats.calls}x
+                  </span>
+                  <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", width: 44 }}>
+                    {MODEL_LABELS[epModel] || (stats.imageCount > 0 ? "Flux" : "—")}
+                  </span>
+                  <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", width: 54, textAlign: "right" }}>
+                    ${stats.cost.toFixed(4)}
+                  </span>
+                </div>
+              )
+            })}
+          </>
+        ) : (
+          <div style={{ ...TYPE.sm, color: "var(--text-tertiary)", padding: "8px 0" }}>
+            No usage tracked yet. Data appears after API calls are made.
+          </div>
+        )}
+
+        {/* Provider split */}
+        {today?.byProvider && Object.keys(today.byProvider).length > 0 && (
+          <>
+            <div style={{ height: 1, background: "var(--border)", margin: "10px 0" }} />
+            <div style={{ display: "flex", gap: 12 }}>
+              {Object.entries(today.byProvider).map(([provider, stats]) => {
+                const pct = today.totalCost > 0 ? Math.round((stats.cost / today.totalCost) * 100) : 0
+                return (
+                  <span key={provider} style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
+                    {provider === "anthropic" ? "Anthropic" : "Replicate"} {pct}%
+                  </span>
+                )
+              })}
+            </div>
+          </>
+        )}
+
+        {/* Sparkline for 7d/30d */}
+        {sparkValues.length > 1 && (
+          <>
+            <div style={{ height: 1, background: "var(--border)", margin: "10px 0" }} />
+            <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+              Daily Cost
+            </div>
+            <Sparkline values={sparkValues} width={280} height={36} />
+          </>
+        )}
+
+        {/* Live event feed */}
+        {data?.recentEvents && data.recentEvents.length > 0 && (
+          <>
+            <div style={{ height: 1, background: "var(--border)", margin: "10px 0" }} />
+            <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+              Recent
+            </div>
+            <div style={{ maxHeight: 160, overflowY: "auto" }}>
+              {data.recentEvents.slice(0, 15).map((event, i) => {
+                const ago = Math.round((Date.now() - new Date(event.ts).getTime()) / 60000)
+                const timeLabel = ago < 1 ? "now" : ago < 60 ? `${ago}m` : `${Math.round(ago / 60)}h`
+                const tokens = (event.inputTokens || 0) + (event.outputTokens || 0)
+                return (
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 6, padding: "2px 0" }}>
+                    <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", width: 28, flexShrink: 0 }}>
+                      {timeLabel}
+                    </span>
+                    <span style={{ flex: 1, ...TYPE.xs, fontFamily: MONO, color: "var(--text-secondary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {ENDPOINT_LABELS[event.endpoint] || event.endpoint}
+                    </span>
+                    <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", width: 40, textAlign: "right" }}>
+                      {event.imageCount ? `${event.imageCount} img` : tokens > 0 ? formatTokens(tokens) : "—"}
+                    </span>
+                    <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", width: 46, textAlign: "right" }}>
+                      ${event.cost.toFixed(4)}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          </>
+        )}
+
+        <div style={{ height: 1, background: "var(--border)", margin: "8px 0" }} />
+        <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.6 }}>
+          Self-tracked · refreshes every 60s
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── Source Pulse View ──────────────────────────────────────────────────────
 
 export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
@@ -610,96 +859,8 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
             </div>
           </div>
 
-          {/* ── Estimated Daily Cost ── */}
-          <div>
-            <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
-              Estimated Daily Cost
-            </div>
-            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
-              {(() => {
-                // Cost model based on Anthropic pricing (April 2026)
-                // Haiku: $0.25/M input, $1.25/M output
-                // Sonnet: $3/M input, $15/M output
-                const isrCyclesPerDay = 48 // 30-min cache
-                const annotationBatches = 2 // server-side per cycle
-                const annotationTokensIn = 1000 // ~1K input per batch
-                const annotationTokensOut = 2000 // ~2K output per batch
-                const annotationCostPerCycle = annotationBatches * ((annotationTokensIn * 0.25 / 1e6) + (annotationTokensOut * 1.25 / 1e6))
-                const annotationDaily = annotationCostPerCycle * isrCyclesPerDay
-
-                const briefCostPerCall = (2000 * 0.25 / 1e6) + (800 * 1.25 / 1e6) // Haiku
-                const briefDaily = briefCostPerCall * 5 // ~5 page loads/day
-
-                const synthesisCostPerCall = (3000 * 0.25 / 1e6) + (1500 * 1.25 / 1e6) // Haiku
-                const synthesisDaily = synthesisCostPerCall * 3 // ~3 views/day
-
-                const cerebroCostPerTurn = (4000 * 3 / 1e6) + (800 * 15 / 1e6) // Sonnet
-                const cerebroDaily = cerebroCostPerTurn * 10 // ~10 turns/day estimate
-
-                const dispatchWeekly = (5000 * 3 / 1e6) + (2500 * 15 / 1e6) // Sonnet, 1x/week
-                const dispatchDaily = dispatchWeekly / 7
-
-                const clientAnnotation = 1 * ((1000 * 0.25 / 1e6) + (2000 * 1.25 / 1e6)) * 5 // 1 batch × 5 visits
-
-                // Replicate image generation (Flux Schnell ~$0.003/image)
-                const replicatePerImage = 0.003
-                const synthesisImages = 4 * 3 // 4 convergence cards × ~3 views/day
-                const dispatchImages = 5 / 7 // 5 pitch cards × 1/week
-                const replicateDaily = (synthesisImages + dispatchImages) * replicatePerImage
-
-                const totalDaily = annotationDaily + briefDaily + synthesisDaily + cerebroDaily + dispatchDaily + clientAnnotation + replicateDaily
-
-                const items = [
-                  { label: "Annotation (server ISR)", cost: annotationDaily, model: "Haiku" },
-                  { label: "Annotation (client)", cost: clientAnnotation, model: "Haiku" },
-                  { label: "DCOS Brief", cost: briefDaily, model: "Haiku" },
-                  { label: "Synthesis", cost: synthesisDaily, model: "Haiku" },
-                  { label: "Cerebro (~10 turns)", cost: cerebroDaily, model: "Sonnet" },
-                  { label: "Dispatch (weekly)", cost: dispatchDaily, model: "Sonnet" },
-                  { label: "Image gen (Flux)", cost: replicateDaily, model: "Replicate" },
-                ]
-
-                const monthlyEstimate = totalDaily * 30
-                const isHealthy = monthlyEstimate < 40
-                const isWarning = monthlyEstimate >= 40 && monthlyEstimate < 80
-
-                return (
-                  <>
-                    <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 12 }}>
-                      <span style={{ fontSize: 20, fontWeight: 600, color: isHealthy ? "var(--live)" : isWarning ? "#D4A05A" : "#ef4444" }}>
-                        ${totalDaily.toFixed(2)}/day
-                      </span>
-                      <span style={{ ...TYPE.sm, color: "var(--text-tertiary)" }}>
-                        ~${monthlyEstimate.toFixed(0)}/mo
-                      </span>
-                      {!isHealthy && (
-                        <span style={{ ...TYPE.xs, color: isWarning ? "#D4A05A" : "#ef4444", fontWeight: 600 }}>
-                          {isWarning ? "WATCH" : "HIGH"}
-                        </span>
-                      )}
-                    </div>
-                    {items.map(item => (
-                      <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 0" }}>
-                        <span style={{ flex: 1, ...TYPE.sm, fontFamily: MONO, color: "var(--text-secondary)" }}>
-                          {item.label}
-                        </span>
-                        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", width: 44 }}>
-                          {item.model}
-                        </span>
-                        <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", width: 50, textAlign: "right" }}>
-                          ${item.cost.toFixed(3)}
-                        </span>
-                      </div>
-                    ))}
-                    <div style={{ height: 1, background: "var(--border)", margin: "8px 0" }} />
-                    <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", lineHeight: 1.6 }}>
-                      Estimates based on typical usage (5 visits, 10 Cerebro turns/day). Actual costs depend on usage patterns. Annotation is the largest fixed cost.
-                    </div>
-                  </>
-                )
-              })()}
-            </div>
-          </div>
+          {/* ── API Usage (live) ── */}
+          <UsagePanel />
 
           {/* ── Intelligence Layers (reference) ── */}
           <div>

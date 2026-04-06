@@ -3,6 +3,7 @@
 // Decoupled from /api/news to avoid Vercel function timeout during ISR
 
 import Anthropic from "@anthropic-ai/sdk"
+import { trackUsage } from "@/lib/usage-tracker"
 import { OPERATOR, FIVE_LAYERS } from "@/lib/prompts"
 
 interface ArticleInput {
@@ -92,6 +93,7 @@ export async function POST(req: Request) {
         { role: "user", content: items + "\n\nReturn JSON array." },
       ],
     })
+    trackUsage({ endpoint: "annotate", provider: "anthropic", model: "claude-haiku-4-5-20251001", inputTokens: response.usage?.input_tokens, outputTokens: response.usage?.output_tokens }).catch(() => {})
 
     const text = response.content[0]?.type === "text" ? response.content[0].text : ""
     const match = text.match(/\[[\s\S]*\]/)

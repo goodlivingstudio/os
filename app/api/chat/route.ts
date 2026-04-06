@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk"
 import { loadHistory, saveHistory, KV_AVAILABLE } from "@/lib/memory"
 import { DISPATCH_PREAMBLE } from "@/lib/prompts"
+import { trackUsage } from "@/lib/usage-tracker"
 
 function getClient() {
   const key = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
@@ -262,6 +263,8 @@ export async function POST(req: Request) {
         break
       }
     }
+
+    trackUsage({ endpoint: "chat", provider: "anthropic", model: "claude-sonnet-4-20250514", inputTokens: totalInput, outputTokens: totalOutput }).catch(() => {})
 
     // ── Parse follow-up prompts from response ──────────────────────────────
     const { cleanText, followUp } = parseFollowUp(finalText)
