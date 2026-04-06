@@ -74,7 +74,7 @@ function useTheme() {
 // Single-user tool; 5-10 visits/day — fresh enough, eliminates every load cost.
 
 const ANNOTATION_CACHE_KEY = "dispatch-annotations-v3"
-const ANNOTATION_TTL_MS    = 2 * 60 * 60 * 1000 // 2 hours
+const ANNOTATION_TTL_MS    = 4 * 60 * 60 * 1000 // 4 hours — resilient to weak connections
 
 interface AnnotationEntry {
   id: string
@@ -604,7 +604,7 @@ export default function Page() {
               onClick={() => setActiveLayers(new Set())}
               style={{
                 display: "inline-flex", alignItems: "center", gap: 4,
-                padding: "4px 12px", borderRadius: 9999, border: "none",
+                padding: "4px 12px", borderRadius: 8, border: "none",
                 background: activeLayers.size === 0 ? "var(--accent-primary)" : "transparent",
                 cursor: "pointer", transition: "all 0.15s",
               }}
@@ -633,7 +633,7 @@ export default function Page() {
                   })}
                   style={{
                     display: "inline-flex", alignItems: "center", gap: 4,
-                    padding: "4px 12px", borderRadius: 9999, border: "none",
+                    padding: "4px 12px", borderRadius: 8, border: "none",
                     background: isActive ? "var(--accent-primary)" : "transparent",
                     cursor: "pointer", transition: "all 0.15s",
                   }}

@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
-import { X, ChevronLeft, ChevronRight, LayoutGrid, Columns2, Square } from "lucide-react"
+import { useState, useEffect, useCallback, useMemo } from "react"
+import { X, ChevronLeft, ChevronRight, Shuffle } from "lucide-react"
 import { TYPE, MONO } from "@/lib/styles"
 import type { GalleryImage, ColorMood } from "@/lib/gallery"
-import { PaletteTrends } from "@/components/palette-trends"
+import { SurfaceTrends } from "@/components/surface-trends"
 
 // ─── Color Mood Display ─────────────────────────────────────────────────────
 
@@ -163,6 +163,10 @@ function Lightbox({ image, onClose, onPrev, onNext }: {
   )
 }
 
+const GALLERY_CACHE_KEY = "dispatch-gallery"
+const GALLERY_TTL = 4 * 60 * 60 * 1000 // 4 hours
+const GALLERY_FETCH_TIMEOUT = 10_000
+
 // ─── Gallery Overlay ────────────────────────────────────────────────────────
 
 export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => void; excludedSources?: Set<string> }) {
@@ -171,8 +175,8 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
   const [activeMood, setActiveMood] = useState<ColorMood | null>(null)
   const [showTrends, setShowTrends] = useState(false)
-  const [galleryCols, setGalleryCols] = useState(3)
-  useEffect(() => { if (window.innerWidth <= 768) setGalleryCols(2) }, [])
+  const [shuffleKey, setShuffleKey] = useState(0)
+  const galleryCols = typeof window !== "undefined" && window.innerWidth <= 768 ? 2 : 3
   const [paletteIntel, setPaletteIntel] = useState<{
     trend: string
     moodShifts: { mood: string; direction: "rising" | "falling"; delta: number }[]
@@ -188,15 +192,37 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
   } | null>(null)
 
   useEffect(() => {
-    fetch("/api/gallery")
-      .then(r => r.json())
+    // Stale-while-revalidate
+    let hasStale = false
+    try {
+      const raw = localStorage.getItem(GALLERY_CACHE_KEY)
+      if (raw) {
+        const { ts, data } = JSON.parse(raw)
+        if (data?.images?.length) {
+          setAllImages(data.images)
+          if (data.paletteIntel) setPaletteIntel(data.paletteIntel)
+          if (data.snapshot) setSnapshot(data.snapshot)
+          setLoading(false)
+          hasStale = true
+          if (Date.now() - ts < GALLERY_TTL) return // fresh — skip fetch
+        }
+      }
+    } catch { /* */ }
+
+    if (!hasStale) setLoading(true)
+    const abort = new AbortController()
+    const timeout = setTimeout(() => abort.abort(), GALLERY_FETCH_TIMEOUT)
+
+    fetch("/api/gallery", { signal: abort.signal })
+      .then(r => { clearTimeout(timeout); return r.json() })
       .then(data => {
         setAllImages(data.images || [])
         if (data.paletteIntel) setPaletteIntel(data.paletteIntel)
         if (data.snapshot) setSnapshot(data.snapshot)
         setLoading(false)
+        try { localStorage.setItem(GALLERY_CACHE_KEY, JSON.stringify({ ts: Date.now(), data })) } catch { /* */ }
       })
-      .catch(() => setLoading(false))
+      .catch(() => { clearTimeout(timeout); setLoading(false) })
   }, [])
 
   // Filter out excluded sources first
@@ -210,11 +236,22 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
   const classifiedCount = includedImages.filter(img => img.mood).length
 
   // Apply mood filter + sort by hue for tonal coherence
-  const images = activeMood
+  const filtered = activeMood
     ? includedImages
         .filter(img => img.mood === activeMood)
         .sort((a, b) => (a.hue ?? 0) - (b.hue ?? 0))
     : includedImages
+
+  // Fisher-Yates shuffle, seeded by shuffleKey
+  const images = useMemo(() => {
+    if (shuffleKey === 0) return filtered
+    const arr = [...filtered]
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]]
+    }
+    return arr
+  }, [filtered, shuffleKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Close on Escape (when lightbox isn't open)
   useEffect(() => {
@@ -250,20 +287,41 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
           height: 52, display: "flex", alignItems: "center",
           justifyContent: "space-between", padding: "0 24px",
         }}>
-          <span style={{
-            ...TYPE.sm, fontFamily: MONO,
-            color: "var(--accent-muted)", textTransform: "uppercase",
-            letterSpacing: "0.08em", flexShrink: 0,
-          }}>
-            Surface
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+            <span style={{
+              ...TYPE.sm, fontFamily: MONO,
+              color: "var(--accent-muted)", textTransform: "uppercase",
+              letterSpacing: "0.08em",
+            }}>
+              Surface
+            </span>
+            <button
+              onClick={() => setShuffleKey(k => k + 1)}
+              title="Shuffle"
+              aria-label="Shuffle images"
+              style={{
+                width: 28, height: 28,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: "transparent", border: "none", borderRadius: 6,
+                color: "var(--text-tertiary)", cursor: "pointer",
+                transition: "all 0.15s", padding: 0,
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
+            >
+              <Shuffle size={14} strokeWidth={1.5} />
+            </button>
+            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
+              {images.length}
+            </span>
+          </div>
 
           {/* Color mood filters */}
           <div style={{ display: "flex", alignItems: "center", gap: 4, flex: 1, justifyContent: "center" }}>
             <button
               onClick={() => { setActiveMood(null); setShowTrends(false) }}
               style={{
-                ...TYPE.sm, padding: "3px 10px", borderRadius: 9999, border: "none",
+                ...TYPE.sm, padding: "3px 10px", borderRadius: 8, border: "none",
                 background: activeMood === null && !showTrends ? "var(--accent-primary)" : "transparent",
                 color: activeMood === null && !showTrends ? "var(--accent-secondary)" : "var(--text-tertiary)",
                 fontWeight: activeMood === null && !showTrends ? 600 : 400,
@@ -283,7 +341,7 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
                   key={mood}
                   onClick={() => { setActiveMood(isActive ? null : mood); setShowTrends(false) }}
                   style={{
-                    ...TYPE.sm, padding: "3px 10px", borderRadius: 9999, border: "none",
+                    ...TYPE.sm, padding: "3px 10px", borderRadius: 8, border: "none",
                     display: "inline-flex", alignItems: "center", gap: 5,
                     background: isActive ? "var(--accent-primary)" : "transparent",
                     color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
@@ -303,7 +361,8 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
             <button
               onClick={() => { setShowTrends(!showTrends); if (!showTrends) setActiveMood(null) }}
               style={{
-                ...TYPE.sm, padding: "3px 10px", borderRadius: 9999, border: "none",
+                ...TYPE.sm, padding: "3px 10px", borderRadius: 8,
+                border: showTrends ? "none" : "1px solid var(--border)",
                 background: showTrends ? "var(--accent-primary)" : "transparent",
                 color: showTrends ? "var(--accent-secondary)" : "var(--text-tertiary)",
                 fontWeight: showTrends ? 600 : 400,
@@ -317,40 +376,20 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            {/* Column toggle */}
-            <div style={{ display: "flex", gap: 2, background: "var(--bg-elevated)", borderRadius: 6, padding: 2 }}>
-              {([1, 2, 3] as const).map(n => (
-                <button
-                  key={n}
-                  onClick={() => setGalleryCols(n)}
-                  title={`${n} column${n > 1 ? "s" : ""}`}
-                  style={{
-                    width: 26, height: 26, borderRadius: 4, border: "none",
-                    background: galleryCols === n ? "var(--bg-surface)" : "transparent",
-                    color: galleryCols === n ? "var(--text-primary)" : "var(--text-tertiary)",
-                    cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                    padding: 0, transition: "all 0.15s",
-                  }}
-                >
-                  {n === 1 ? <Square size={12} strokeWidth={1.5} /> : n === 2 ? <Columns2 size={12} strokeWidth={1.5} /> : <LayoutGrid size={12} strokeWidth={1.5} />}
-                </button>
-              ))}
-            </div>
-            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
-              {images.length}
-            </span>
             <button
               onClick={onClose}
+              title="Close"
               style={{
-                background: "transparent", border: "none",
+                width: 28, height: 28,
+                background: "transparent", border: "none", borderRadius: 6,
                 color: "var(--text-tertiary)", cursor: "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                transition: "color 0.15s",
+                transition: "all 0.15s", padding: 0,
               }}
-              onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)" }}
-              onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)" }}
+              onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
             >
-              <X size={18} strokeWidth={1.5} />
+              <X size={16} strokeWidth={1.5} />
             </button>
           </div>
         </div>
@@ -360,11 +399,10 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
       {/* Trends panel — replaces grid when active */}
       {showTrends && (
         <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
-          <PaletteTrends
-            snapshot={snapshot}
-            paletteIntel={paletteIntel}
-            totalImages={allImages.length}
+          <SurfaceTrends
             images={allImages}
+            paletteIntel={paletteIntel}
+            snapshot={snapshot}
           />
         </div>
       )}
@@ -391,11 +429,13 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
           const gridGap = galleryCols === 1 ? 8 : galleryCols === 2 ? 10 : 14
 
           return (
-            <div style={{ display: "flex", gap: gridGap, alignItems: "flex-start" }}>
+            <div key={`${shuffleKey}-${activeMood ?? "all"}`} style={{ display: "flex", gap: gridGap, alignItems: "flex-start" }}>
               {cols.map((col, colIdx) => (
                 <div key={colIdx} style={{ flex: 1, display: "flex", flexDirection: "column", gap: gridGap, minWidth: 0 }}>
-                  {col.map((img) => {
+                  {col.map((img, rowIdx) => {
                     const globalIdx = idxMap.get(img.id) ?? 0
+                    // Stagger by row position within column + slight column offset
+                    const delay = rowIdx * 60 + colIdx * 30
                     return (
                       <div
                         key={img.id}
@@ -404,8 +444,8 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
                           borderRadius: 8,
                           overflow: "hidden",
                           cursor: "zoom-in",
-                          transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-                          animation: `signal-reveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${Math.min(globalIdx * 20, 600)}ms both`,
+                          transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+                          animation: `gallery-reveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) ${Math.min(delay, 1400)}ms both`,
                         }}
                         onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.015)" }}
                         onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)" }}

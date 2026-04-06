@@ -62,6 +62,10 @@ interface SynthesisData {
   heatmap?: { days: string[]; layers: HeatmapLayer[] }
 }
 
+const SYNTHESIS_CACHE_KEY = "dispatch-synthesis"
+const SYNTHESIS_TTL = 4 * 60 * 60 * 1000 // 4 hours
+const SYNTHESIS_FETCH_TIMEOUT = 45_000 // 45s — synthesis is heavier
+
 const SYNTHESIS_STATUSES = [
   "$ synthesis --analyze",
   "▸ reading annotated feed",
@@ -101,13 +105,31 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
     const annotated = articles.filter(a => a.synopsis || a.relevance)
     if (annotated.length < 3) return
     fetched.current = true
-    setLoading(true)
-    setStatusIdx(0)
-    setElapsed(0)
+
+    // Stale-while-revalidate: show cached synthesis immediately
+    let hasStale = false
+    try {
+      const raw = localStorage.getItem(SYNTHESIS_CACHE_KEY)
+      if (raw) {
+        const { ts, data: cached } = JSON.parse(raw)
+        if (cached?.briefing) {
+          setData(cached)
+          hasStale = true
+          if (Date.now() - ts < SYNTHESIS_TTL) return // fresh — skip fetch
+        }
+      }
+    } catch { /* */ }
+
+    if (!hasStale) {
+      setLoading(true)
+      setStatusIdx(0)
+      setElapsed(0)
+    }
 
     const abort = new AbortController()
-    const t = setInterval(() => setStatusIdx(i => Math.min(i + 1, SYNTHESIS_STATUSES.length - 1)), 1200)
-    const timer = setInterval(() => setElapsed(e => e + 1), 1000)
+    const timeout = setTimeout(() => abort.abort(), SYNTHESIS_FETCH_TIMEOUT)
+    const t = !hasStale ? setInterval(() => setStatusIdx(i => Math.min(i + 1, SYNTHESIS_STATUSES.length - 1)), 1200) : undefined
+    const timer = !hasStale ? setInterval(() => setElapsed(e => e + 1), 1000) : undefined
 
     fetch("/api/synthesis", {
       method: "POST",
@@ -115,23 +137,30 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
       body: JSON.stringify({ articles: annotated.slice(0, 25) }),
       signal: abort.signal,
     })
-      .then(r => r.json())
+      .then(r => { clearTimeout(timeout); return r.json() })
       .then(result => {
-        if (result.briefing) setData(result)
-        else fetched.current = false
+        if (result.briefing) {
+          setData(result)
+          try { localStorage.setItem(SYNTHESIS_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: result })) } catch { /* */ }
+        } else if (!hasStale) {
+          fetched.current = false
+        }
         setLoading(false)
-        clearInterval(t)
-        clearInterval(timer)
+        if (t) clearInterval(t)
+        if (timer) clearInterval(timer)
       })
       .catch((err) => {
-        if (err?.name === "AbortError") return
-        fetched.current = false
+        clearTimeout(timeout)
+        if (err?.name === "AbortError" && !hasStale) {
+          // Timeout with no stale data — allow retry
+          fetched.current = false
+        }
         setLoading(false)
-        clearInterval(t)
-        clearInterval(timer)
+        if (t) clearInterval(t)
+        if (timer) clearInterval(timer)
       })
 
-    return () => { abort.abort(); clearInterval(t); clearInterval(timer) }
+    return () => { abort.abort(); clearTimeout(timeout); if (t) clearInterval(t); if (timer) clearInterval(timer) }
   }, [articles, retryCount]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Week range for header

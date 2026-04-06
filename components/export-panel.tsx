@@ -65,7 +65,7 @@ function ChipGroup<T extends string>({ label, options, value, onChange }: {
               onClick={() => onChange(opt.id)}
               title={opt.description}
               style={{
-                ...TYPE.sm, padding: "5px 14px", borderRadius: 9999, border: "none",
+                ...TYPE.sm, padding: "5px 14px", borderRadius: 8, border: "none",
                 background: isActive ? "var(--accent-primary)" : "transparent",
                 color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
                 fontWeight: isActive ? 600 : 400,

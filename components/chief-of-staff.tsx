@@ -9,7 +9,8 @@ import { renderCitedBody } from "@/components/citation"
 // ─── Chief of Staff — data hook ─────────────────────────────────────────────
 
 const BRIEF_CACHE_KEY = "dispatch-dcos-brief"
-const BRIEF_TTL = 30 * 60 * 1000 // 30 min — matches ISR cycle
+const BRIEF_TTL = 4 * 60 * 60 * 1000 // 4 hours — resilient to weak connections
+const FETCH_TIMEOUT = 10_000 // 10s — fail fast on slow networks
 
 export function useChiefOfStaff(articles: Article[]) {
   const [signals, setSignals] = useState<Signal[]>([])
@@ -21,26 +22,35 @@ export function useChiefOfStaff(articles: Article[]) {
     if (articles.length > 0 && !fetched.current) {
       fetched.current = true
 
-      // Check localStorage cache
+      // Stale-while-revalidate: show cached data immediately, even if expired
+      let hasStale = false
       try {
         const raw = localStorage.getItem(BRIEF_CACHE_KEY)
         if (raw) {
           const { ts, signals: cached } = JSON.parse(raw)
-          if (Date.now() - ts < BRIEF_TTL && Array.isArray(cached) && cached.length > 0) {
+          if (Array.isArray(cached) && cached.length > 0) {
             setSignals(cached)
-            return // cache hit — skip API call
+            hasStale = true
+            // Fresh cache — skip API call entirely
+            if (Date.now() - ts < BRIEF_TTL) return
           }
         }
       } catch { /* */ }
 
-      setBriefLoading(true)
+      // Fetch with timeout — show stale data while loading if available
+      if (!hasStale) setBriefLoading(true)
       setBriefError(false)
+      const abort = new AbortController()
+      const timeout = setTimeout(() => abort.abort(), FETCH_TIMEOUT)
+
       fetch("/api/brief", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ articles: articles.slice(0, 25) }),
+        signal: abort.signal,
       })
         .then(r => {
+          clearTimeout(timeout)
           if (!r.ok) throw new Error(`${r.status}`)
           return r.json()
         })
@@ -48,13 +58,14 @@ export function useChiefOfStaff(articles: Article[]) {
           const sigs = data.signals || []
           setSignals(sigs)
           setBriefLoading(false)
-          // Cache to localStorage
           if (sigs.length > 0) {
             try { localStorage.setItem(BRIEF_CACHE_KEY, JSON.stringify({ ts: Date.now(), signals: sigs })) } catch { /* */ }
           }
         })
         .catch(() => {
-          setBriefError(true)
+          clearTimeout(timeout)
+          // If we have stale data, silently keep it — no error state
+          if (!hasStale) setBriefError(true)
           setBriefLoading(false)
         })
     }

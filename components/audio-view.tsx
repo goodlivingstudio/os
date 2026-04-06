@@ -13,7 +13,8 @@ interface AudioSignal {
 }
 
 const AUDIO_BRIEF_CACHE_KEY = "dispatch-dcos-audio-brief"
-const AUDIO_BRIEF_TTL = 30 * 60 * 1000 // 30 min — matches ISR cycle
+const AUDIO_BRIEF_TTL = 4 * 60 * 60 * 1000 // 4 hours — resilient to weak connections
+const FETCH_TIMEOUT = 10_000 // 10s — fail fast on slow networks
 
 const AUDIO_SCAN_STATUSES = [
   "$ dispatch --sound",
@@ -39,19 +40,24 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episode
     if (episodes.length === 0 || fetched.current || !visible) return
     fetched.current = true
 
-    // Check localStorage cache
+    // Stale-while-revalidate: show cached data immediately, even if expired
+    let hasStale = false
     try {
       const raw = localStorage.getItem(AUDIO_BRIEF_CACHE_KEY)
       if (raw) {
         const { ts, signals: cached } = JSON.parse(raw)
-        if (Date.now() - ts < AUDIO_BRIEF_TTL && Array.isArray(cached) && cached.length > 0) {
+        if (Array.isArray(cached) && cached.length > 0) {
           setSignals(cached)
-          return
+          hasStale = true
+          if (Date.now() - ts < AUDIO_BRIEF_TTL) return // fresh — skip fetch
         }
       }
     } catch { /* */ }
 
-    setLoading(true)
+    if (!hasStale) setLoading(true)
+    const abort = new AbortController()
+    const timeout = setTimeout(() => abort.abort(), FETCH_TIMEOUT)
+
     fetch("/api/audio-brief", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -60,8 +66,9 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episode
           title: e.title, showName: e.showName, category: e.category, summary: e.summary,
         })),
       }),
+      signal: abort.signal,
     })
-      .then(r => r.json())
+      .then(r => { clearTimeout(timeout); return r.json() })
       .then(data => {
         const sigs = data.signals || []
         setSignals(sigs)
@@ -70,7 +77,7 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episode
           try { localStorage.setItem(AUDIO_BRIEF_CACHE_KEY, JSON.stringify({ ts: Date.now(), signals: sigs })) } catch { /* */ }
         }
       })
-      .catch(() => setLoading(false))
+      .catch(() => { clearTimeout(timeout); setLoading(false) })
   }, [episodes, visible])
 
   // Advance status text while fetching
@@ -567,7 +574,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", p
 
   useEffect(() => {
     const ANNOTATION_CACHE_KEY = "dispatch-audio-annotations"
-    const ANNOTATION_TTL = 30 * 60 * 1000 // 30 min — matches ISR cycle
+    const ANNOTATION_TTL = 4 * 60 * 60 * 1000 // 4 hours — resilient to weak connections
 
     fetch("/api/podcasts")
       .then(r => r.json())
@@ -670,7 +677,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", p
                 onClick={() => setActiveLayer(layer.id)}
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 4,
-                  padding: "4px 12px", borderRadius: 9999, border: "none",
+                  padding: "4px 12px", borderRadius: 8, border: "none",
                   background: isActive ? "var(--accent-primary)" : "transparent",
                   cursor: "pointer", transition: "all 0.15s",
                 }}

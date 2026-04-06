@@ -225,7 +225,7 @@ function SourcePulse({ articles, feedHealth }: {
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
               <span style={{ ...TYPE.sm, fontWeight: 600, color: "var(--text-primary)" }}>Source Pulse</span>
               <span style={{
-                ...TYPE.xs, padding: "1px 8px", borderRadius: 9999,
+                ...TYPE.xs, padding: "1px 8px", borderRadius: 8,
                 background: `${healthColor}22`, color: healthColor, fontWeight: 600,
               }}>
                 {healthPct}%
@@ -609,10 +609,10 @@ export function LeftRail({
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                     onClick={() => { if (isExternal) window.open(article.url, "_blank", "noopener,noreferrer") }}
                   >
-                    <TypeIcon size={14} strokeWidth={1.5} style={{ flexShrink: 0, marginTop: 1, color: "var(--text-tertiary)" }} />
+                    <TypeIcon size={16} strokeWidth={1.5} style={{ flexShrink: 0, marginTop: 2, color: "var(--text-tertiary)" }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{
-                        ...TYPE.sm,
+                        ...TYPE.body,
                         color: "var(--text-secondary)",
                         display: "-webkit-box",
                         WebkitLineClamp: 2,
@@ -620,8 +620,8 @@ export function LeftRail({
                         overflow: "hidden",
                         lineHeight: 1.4,
                       }}>
-                        <span style={{ color: "var(--text-tertiary)", fontWeight: 400 }}>{article.source}: </span>
-                        <span style={{ fontWeight: 500 }}>{article.title}</span>
+                        <span style={{ color: "var(--text-tertiary)" }}>{article.source}: </span>
+                        {article.title}
                       </div>
                     </div>
                     <button

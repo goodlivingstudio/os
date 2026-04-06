@@ -227,6 +227,22 @@ html, body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes gallery-reveal {
+  0%   { opacity: 0; translate: 0 20px; scale: 0.96; }
+  60%  { opacity: 1; translate: 0 -2px; scale: 1.005; }
+  100% { opacity: 1; translate: 0 0; scale: 1; }
+}
+
+/* Hue concentration cluster glow — breathing energy */
+.hue-glow {
+  animation: hue-breathe 2.8s ease-in-out infinite;
+}
+@keyframes hue-breathe {
+  0%   { opacity: 0.6; box-shadow: 0 0 8px currentColor, 0 0 16px currentColor; transform: translateX(-50%) scale(1); }
+  50%  { opacity: 0.95; box-shadow: 0 0 14px currentColor, 0 0 28px currentColor, 0 0 40px currentColor; transform: translateX(-50%) scale(1.15); }
+  100% { opacity: 0.6; box-shadow: 0 0 8px currentColor, 0 0 16px currentColor; transform: translateX(-50%) scale(1); }
+}
+
 @keyframes focus-enter {
   from { opacity: 0; transform: scale(0.985) translateY(6px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }

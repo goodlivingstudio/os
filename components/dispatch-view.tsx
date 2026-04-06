@@ -248,7 +248,7 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
               {pitch.mode === "thought_leadership" ? "Thought Leadership" : "Creative"}
             </span>
             {pitch.wildcard && (
-              <span style={{ ...TYPE.xs, padding: "2px 8px", borderRadius: 9999, background: "rgba(184, 150, 106, 0.12)", color: "var(--accent-secondary)", fontWeight: 600, letterSpacing: "0.03em" }}>
+              <span style={{ ...TYPE.xs, padding: "2px 8px", borderRadius: 8, background: "rgba(184, 150, 106, 0.12)", color: "var(--accent-secondary)", fontWeight: 600, letterSpacing: "0.03em" }}>
                 WILDCARD
               </span>
             )}
@@ -358,7 +358,7 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
               key={s}
               onClick={() => onSetStatus(status === s ? null : s)}
               style={{
-                ...TYPE.xs, padding: "3px 10px", borderRadius: 9999,
+                ...TYPE.xs, padding: "3px 10px", borderRadius: 8,
                 border: `1px solid ${status === s ? STATUS_COLORS[s] : "var(--border)"}`,
                 background: status === s ? `${STATUS_COLORS[s]}18` : "transparent",
                 color: status === s ? STATUS_COLORS[s] : "var(--text-tertiary)",
@@ -696,7 +696,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                           )}
                           {pitch.wildcard && (
                             <span style={{
-                              padding: "1px 6px", borderRadius: 9999, fontSize: 9,
+                              padding: "1px 6px", borderRadius: 8, fontSize: 9,
                               background: "rgba(184, 150, 106, 0.12)",
                               color: "var(--accent-secondary)",
                               fontWeight: 600, letterSpacing: "0.03em",
@@ -706,7 +706,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                           )}
                           {pitchStatuses[pitchKey(pitch.title)] && (
                             <span style={{
-                              padding: "1px 6px", borderRadius: 9999, fontSize: 9,
+                              padding: "1px 6px", borderRadius: 8, fontSize: 9,
                               background: `${STATUS_COLORS[pitchStatuses[pitchKey(pitch.title)]]}18`,
                               color: STATUS_COLORS[pitchStatuses[pitchKey(pitch.title)]],
                               textTransform: "capitalize", fontWeight: 500,
