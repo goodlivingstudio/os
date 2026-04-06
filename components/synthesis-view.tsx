@@ -31,6 +31,7 @@ interface BlindSpot {
 
 interface CerebroTopic {
   title: string
+  body?: string
   prompt: string
 }
 
@@ -457,7 +458,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     Ask Cerebro
                   </span>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {cerebroTopics.slice(0, 4).map((topic, i) => (
                     <div
                       key={i}
@@ -472,9 +473,18 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     >
-                      <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.5 }}>
+                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, marginBottom: topic.body ? 6 : 0, fontSize: 14 }}>
                         {topic.title}
                       </div>
+                      {topic.body && (
+                        <div style={{
+                          ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.6,
+                          display: "-webkit-box", WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical" as const, overflow: "hidden",
+                        }}>
+                          {topic.body}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

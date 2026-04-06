@@ -46,6 +46,7 @@ PRODUCE:
 
 5. CEREBRO TOPICS (exactly 4): Four distinct conversation starters for the Cerebro intelligence panel — questions or provocations that would produce genuinely different strategic conversations. Each should be grounded in this week's data. One should be a wildcard: unexpected, cross-domain, the kind of question that connects signals most analysts would keep separate.
    - title: Short label (3-6 words) for the card
+   - body: 1-2 sentences explaining why this topic matters right now — what makes it worth exploring this week specifically
    - prompt: The full question or provocation to send to Cerebro
 
 CRITICAL RULES:
@@ -72,10 +73,10 @@ Return JSON:
     { "type": "assumption", "title": "Short label", "body": "What belief might be weaker than it appears." }
   ],
   "cerebroTopics": [
-    { "title": "Short card label", "prompt": "Full question for Cerebro." },
-    { "title": "Short card label", "prompt": "Full question for Cerebro." },
-    { "title": "Short card label", "prompt": "Full question for Cerebro." },
-    { "title": "Wildcard label", "prompt": "Cross-domain wildcard question." }
+    { "title": "Short card label", "body": "Why this matters this week.", "prompt": "Full question for Cerebro." },
+    { "title": "Short card label", "body": "Why this matters this week.", "prompt": "Full question for Cerebro." },
+    { "title": "Short card label", "body": "Why this matters this week.", "prompt": "Full question for Cerebro." },
+    { "title": "Wildcard label", "body": "Why this unexpected connection matters.", "prompt": "Cross-domain wildcard question." }
   ]
 }
 
