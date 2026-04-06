@@ -707,8 +707,8 @@ export default function Page() {
         background: "var(--bg-primary)",
       }}
     >
-      {/* Signal ticker — full width, pinned top */}
-      <Ticker isDay={isDay} onToggle={toggleMode} skin={skin} onSkinChange={setSkin} />
+      {/* Signal ticker — full width, pinned top (desktop only) */}
+      {!isMobile && <Ticker isDay={isDay} onToggle={toggleMode} skin={skin} onSkinChange={setSkin} />}
 
       {/* Focus Mode — DCOS strip + full-width Cerebro */}
       {focusMode && !isMobile && (

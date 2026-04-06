@@ -169,11 +169,30 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
               </div>
 
               {/* Headline + summary + bullets */}
-              <div style={{ padding: "28px 28px 32px" }}>
+              <div style={{ padding: "32px 32px 36px" }}>
+                {/* Eyebrow */}
+                <div style={{
+                  ...TYPE.xs, color: "var(--text-tertiary)",
+                  textTransform: "uppercase", letterSpacing: "0.08em",
+                  marginBottom: 12,
+                }}>
+                  Weekly Intelligence · {(() => {
+                    const now = new Date()
+                    const day = now.getDay()
+                    const monday = new Date(now)
+                    monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1))
+                    const sunday = new Date(monday)
+                    sunday.setDate(monday.getDate() + 6)
+                    const fmt = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+                    return `${fmt(monday)} – ${fmt(sunday)}`
+                  })()}
+                </div>
                 {/* Headline */}
                 <div style={{
-                  fontSize: 19, fontWeight: 500, color: "var(--text-primary)",
-                  lineHeight: 1.45, letterSpacing: "-0.015em",
+                  fontSize: 24, fontWeight: 400,
+                  fontFamily: "var(--font-grenette), Georgia, serif",
+                  color: "var(--text-primary)",
+                  lineHeight: 1.4, letterSpacing: "-0.01em",
                   marginBottom: isTriage ? 0 : 14,
                 }}>
                   {data.headline || data.briefing.split(/[.!?]\s/)[0]}
@@ -211,10 +230,10 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ CONVERGENCES — cards ─ */}
             {data.patterns.length > 0 && (
               <div style={{ animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 150ms both" }}>
-                <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14 }}>
                   Convergences
                 </div>
-                <div style={{
+                <div className="convergence-grid" style={{
                   display: "grid",
                   gridTemplateColumns: data.patterns.length === 1 ? "1fr" : "1fr 1fr",
                   gap: 16,
@@ -244,9 +263,9 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                         )}
                       </div>
                       {/* Card content */}
-                      <div style={{ padding: "20px 24px 24px" }}>
+                      <div style={{ padding: "24px 28px 28px" }}>
                         {/* Layer eyebrow */}
-                        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
                           {pattern.layers.map((l, li) => (
                             <span key={l} style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
                               {li > 0 && <span style={{ opacity: 0.4, margin: "0 4px" }}>·</span>}
@@ -256,8 +275,10 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                         </div>
                         {/* Title */}
                         <div style={{
-                          ...TYPE.heading,
+                          fontSize: 17, fontWeight: 400,
+                          fontFamily: "var(--font-grenette), Georgia, serif",
                           color: hoveredCard === i ? "var(--text-primary)" : "var(--text-secondary)",
+                          lineHeight: 1.35, letterSpacing: "-0.01em",
                           transition: "color 0.15s",
                           marginBottom: pattern.description ? 10 : 0,
                         }}>
@@ -292,10 +313,10 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             )}
 
             {/* ─ BOTTOM — Blind Spots + Ask Cerebro ─ */}
-            <div style={{
+            <div className="blindspots-grid" style={{
               display: "grid",
               gridTemplateColumns: (data.blindSpots || data.blindSpotNote) && data.cerebroProvocation ? "1fr 1fr" : "1fr",
-              gap: 16,
+              gap: 20,
               animation: "signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 500ms both",
             }}>
               {/* Blind Spots — structured cards */}
@@ -326,7 +347,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                                 {typeLabels[spot.type] || "Blind Spot"}
                               </span>
                             </div>
-                            <div style={{ ...TYPE.body, color: "var(--text-primary)", fontWeight: 500, marginBottom: 4, lineHeight: 1.5 }}>
+                            <div style={{ fontSize: 14, fontWeight: 400, fontFamily: "var(--font-grenette), Georgia, serif", color: "var(--text-primary)", marginBottom: 4, lineHeight: 1.4, letterSpacing: "-0.01em" }}>
                               {spot.title}
                             </div>
                             <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7 }}>

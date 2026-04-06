@@ -544,7 +544,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                 New ideas and opportunities for week of {formatWeekRange(data.generatedAt)}
               </div>
               {/* Headline — Grenette Pro display serif, centered */}
-              <div style={{
+              <div className="dispatch-headline" style={{
                 fontSize: 34,
                 fontWeight: 400,
                 fontFamily: "var(--font-grenette), Georgia, serif",
@@ -618,7 +618,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                 borderBottom: "1px solid var(--border)",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
-                <div style={{
+                <div className="perspectives-grid" style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
                   gap: 12,
@@ -655,8 +655,8 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
                     <div style={{ display: "flex", gap: 20 }}>
-                      {/* Image thumbnail — left side */}
-                      <div style={{
+                      {/* Image thumbnail — left side (hidden on mobile) */}
+                      <div className="pitch-thumb" style={{
                         width: 140, height: 100, borderRadius: 8, overflow: "hidden", flexShrink: 0,
                         background: pitch.imageUrl ? "transparent" : `linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)`,
                       }}>
