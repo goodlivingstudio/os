@@ -62,10 +62,8 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
   const isTriage = sortBy === "urgency"
 
   useEffect(() => {
-    console.log("[synthesis] effect: articles=", articles.length, "fetched=", fetched.current, "retryCount=", retryCount)
     if (articles.length === 0 || fetched.current) return
     const annotated = articles.filter(a => a.synopsis || a.relevance)
-    console.log("[synthesis] annotated:", annotated.length)
     if (annotated.length < 3) return
     fetched.current = true
     setLoading(true)

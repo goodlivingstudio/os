@@ -35,6 +35,7 @@ function applyThemeClasses(skin: Skin, day: boolean) {
 function useTheme() {
   const [skin, setSkinState] = useState<Skin>("mineral")
   const [isDay, setIsDay]     = useState(false)
+  const [mounted, setMounted] = useState(false)
   const skinRef               = useRef<Skin>("mineral")
 
   useEffect(() => {
@@ -46,6 +47,7 @@ function useTheme() {
     setSkinState(storedSkin)
     setIsDay(day)
     applyThemeClasses(storedSkin, day)
+    setMounted(true)
   }, [])
 
   const toggleMode = useCallback(() => {
@@ -64,7 +66,7 @@ function useTheme() {
     setIsDay(prev => { applyThemeClasses(newSkin, prev); return prev })
   }, [])
 
-  return { skin, isDay, toggleMode, setSkin }
+  return { skin, isDay, toggleMode, setSkin, mounted }
 }
 
 // ─── Annotation cache helpers ─────────────────────────────────────────────────
@@ -171,7 +173,7 @@ function useMobile() {
 }
 
 export default function Page() {
-  const { skin, isDay, toggleMode, setSkin } = useTheme()
+  const { skin, isDay, toggleMode, setSkin, mounted } = useTheme()
   const isMobile = useMobile()
   const [articles,       setArticles]       = useState<Article[]>([])
   const [isLive,         setIsLive]         = useState(false)
@@ -662,6 +664,11 @@ export default function Page() {
       </div>
     </main>
   )
+
+  // Prevent hydration mismatch — don't render until client-side theme/layout is resolved
+  if (!mounted) {
+    return <div style={{ height: "100vh", background: "var(--bg-primary)" }} />
+  }
 
   if (isMobile) {
     return (

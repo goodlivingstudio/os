@@ -10,8 +10,7 @@ import { TYPE, labelStyle, bodyStyle, metaStyle } from "@/lib/styles"
 export function SignalCard({ x, y, article }: { x: number; y: number; article: Article | null }) {
   if (!article) return null
 
-  const vw          = typeof window !== "undefined" ? window.innerWidth : 1200
-  const left        = Math.min(x + 18, vw - 276)
+  const left        = Math.min(x + 18, (typeof window !== "undefined" ? window.innerWidth : 1200) - 276)
   const top         = Math.max(8, y - 44)
   const lens        = article.signalLens || ""
   const accentColor = LENS_COLOR[lens] || "var(--border)"
