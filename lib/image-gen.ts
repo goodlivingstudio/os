@@ -64,6 +64,12 @@ function buildPrompt(
 
 // ─── Image Generation ───────────────────────────────────────────────────────
 
+const SURFACE_ASPECT: Record<Surface, string> = {
+  synthesis: "3:2",
+  dispatch: "16:9",
+  audio: "1:1",
+}
+
 export async function generateCardImage(
   title: string,
   layers?: string[],
@@ -88,7 +94,7 @@ export async function generateCardImage(
           input: {
             prompt,
             num_outputs: 1,
-            aspect_ratio: "16:9",
+            aspect_ratio: SURFACE_ASPECT[surface] || "16:9",
             output_format: "webp",
             output_quality: 85,
           },

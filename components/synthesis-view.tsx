@@ -310,6 +310,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     onClick={() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`)}
                     onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
                     style={{
+                      display: "flex", gap: 16,
                       padding: "14px 0", borderBottom: "1px solid var(--border)",
                       cursor: "pointer", transition: "background 0.15s", outline: "none",
                       margin: "0 -8px", paddingLeft: 8, paddingRight: 8, borderRadius: 6,
@@ -317,31 +318,44 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
-                    {/* Top line: layers + signal count */}
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                      <div style={{ display: "flex", gap: 5 }}>
-                        {pattern.layers.map(l => (
-                          <span key={l} style={{ width: 7, height: 7, borderRadius: "50%", background: LAYER_DOT[l] || "var(--text-tertiary)" }} />
-                        ))}
-                      </div>
-                      <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--text-tertiary)" }}>
-                        {pattern.signalCount} signals
-                      </span>
-                    </div>
-                    {/* Title */}
-                    <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, letterSpacing: "-0.01em", marginBottom: 6 }}>
-                      {pattern.title}
-                    </div>
-                    {/* Description — capped to 2 lines for scanability */}
-                    {pattern.description && (
-                      <div style={{
-                        ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.6,
-                        display: "-webkit-box", WebkitLineClamp: isTriage ? 1 : 2,
-                        WebkitBoxOrient: "vertical" as const, overflow: "hidden",
-                      }}>
-                        {pattern.description}
-                      </div>
+                    {/* 3:2 image thumbnail */}
+                    {pattern.imageUrl && (
+                      <img
+                        src={pattern.imageUrl}
+                        alt=""
+                        style={{
+                          width: 96, height: 64, borderRadius: 8,
+                          objectFit: "cover", flexShrink: 0, background: "var(--bg-elevated)",
+                        }}
+                      />
                     )}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      {/* Eyebrow: layers + signal count */}
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                        <div style={{ display: "flex", gap: 5 }}>
+                          {pattern.layers.map(l => (
+                            <span key={l} style={{ width: 7, height: 7, borderRadius: "50%", background: LAYER_DOT[l] || "var(--text-tertiary)" }} />
+                          ))}
+                        </div>
+                        <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+                          {pattern.signalCount} Signals
+                        </span>
+                      </div>
+                      {/* Title */}
+                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, letterSpacing: "-0.01em", marginBottom: 6 }}>
+                        {pattern.title}
+                      </div>
+                      {/* Description — capped to 2 lines for scanability */}
+                      {pattern.description && (
+                        <div style={{
+                          ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.6,
+                          display: "-webkit-box", WebkitLineClamp: isTriage ? 1 : 2,
+                          WebkitBoxOrient: "vertical" as const, overflow: "hidden",
+                        }}>
+                          {pattern.description}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
