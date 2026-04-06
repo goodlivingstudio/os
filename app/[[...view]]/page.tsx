@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { createPortal } from "react-dom"
-import { Radio, AudioLines, Blend, Send, Brain, Settings, ChevronRight, ChevronLeft, Minimize2 } from "lucide-react"
+import { Radio, AudioLines, Blend, Send, Brain, Settings, ChevronRight, ChevronLeft, Minimize2, Aperture } from "lucide-react"
 import { Ticker } from "@/components/ticker"
 import { LeftRail } from "@/components/left-rail"
 import { useChiefOfStaff, ChiefOfStaffBand } from "@/components/chief-of-staff"
@@ -191,8 +191,9 @@ export default function Page() {
   useEffect(() => { setCerebroMounted(true) }, [])
   const [activeLayers,   setActiveLayers]   = useState<Set<string>>(new Set())
   const [sortBy,         setSortBy]         = useState<"urgency" | "layer">("layer")
-  const [mobileTab,      setMobileTab]      = useState<"signal" | "audio" | "synthesis" | "dispatch" | "cerebro" | "config">("signal")
+  const [mobileTab,      setMobileTab]      = useState<"signal" | "audio" | "synthesis" | "gallery" | "cerebro" | "config">("signal")
   const [excludedSources, setExcludedSources] = useState<Set<string>>(new Set())
+  const [mobileDcosIdx, setMobileDcosIdx] = useState(0)
 
   // ── URL ↔ State sync ───────────────────────────────────────────────────────
   const VALID_VIEWS = ["signal", "audio", "synthesis", "dispatch", "config", "pulse"] as const
@@ -363,7 +364,7 @@ export default function Page() {
       }
 
       const savedTab = localStorage.getItem("dispatch-mobile-tab")
-      if (savedTab === "signal" || savedTab === "audio" || savedTab === "synthesis" || savedTab === "dispatch" || savedTab === "cerebro" || savedTab === "config") setMobileTab(savedTab)
+      if (savedTab === "signal" || savedTab === "audio" || savedTab === "synthesis" || savedTab === "gallery" || savedTab === "cerebro" || savedTab === "config") setMobileTab(savedTab as typeof mobileTab)
 
       const savedExcluded = localStorage.getItem("dispatch-excluded-sources")
       if (savedExcluded) setExcludedSources(new Set(JSON.parse(savedExcluded)))
@@ -595,7 +596,74 @@ export default function Page() {
   if (isMobile) {
     return (
       <div style={{ display: "flex", flexDirection: "column", height: "100dvh", overflow: "hidden", background: "var(--bg-primary)", position: "fixed", inset: 0 }}>
-        <Ticker isDay={isDay} onToggle={toggleMode} skin={skin} onSkinChange={setSkin} />
+        {/* Mobile header — replaces ticker, has skin/theme controls */}
+        <div style={{
+          flexShrink: 0, height: 36, display: "flex", alignItems: "center",
+          justifyContent: "space-between", padding: "0 16px",
+          borderBottom: "1px solid var(--border)", background: "var(--bg-surface)",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--live)" }} />
+            <span style={{ fontSize: 10, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase" }}>Dispatch</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {/* Skin dots */}
+            {(["mineral", "slate", "forest"] as Skin[]).map(s => (
+              <button
+                key={s}
+                onClick={() => setSkin(s)}
+                style={{
+                  width: 14, height: 14, borderRadius: "50%", border: "none", cursor: "pointer", padding: 0,
+                  background: s === "mineral" ? "#B8966A" : s === "slate" ? "#4A7A9B" : "#5C8A6E",
+                  opacity: skin === s ? 1 : 0.3, transition: "opacity 0.15s",
+                }}
+              />
+            ))}
+            {/* Day/night toggle */}
+            <button
+              onClick={toggleMode}
+              style={{ width: 24, height: 24, borderRadius: 6, border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0 }}
+            >
+              <span style={{ fontSize: 14 }}>{isDay ? "☀" : "☽"}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* DCOS swipeable card — visible on Signal tab */}
+        {mobileTab === "signal" && signals.filter(s => s.body).length > 0 && (() => {
+          const filtered = signals.filter(s => s.body)
+          const current = filtered[mobileDcosIdx]
+          if (!current) return null
+          return (
+            <div style={{ flexShrink: 0, borderBottom: "1px solid var(--border)", padding: "12px 16px" }}>
+              <button
+                onClick={() => handleDeliberate(current)}
+                style={{ display: "block", width: "100%", background: "transparent", border: "none", cursor: "pointer", textAlign: "left", padding: 0 }}
+              >
+                <div style={{ fontSize: 10, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.04em", marginBottom: 4 }}>
+                  {current.label}
+                </div>
+                <div style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.6 }}>
+                  {current.body.replace(/\[\d+\]/g, "").slice(0, 120)}{current.body.length > 120 ? "..." : ""}
+                </div>
+              </button>
+              {/* Dots */}
+              <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 10 }}>
+                {filtered.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setMobileDcosIdx(i)}
+                    style={{
+                      width: mobileDcosIdx === i ? 16 : 6, height: 6, borderRadius: 3, border: "none", padding: 0,
+                      background: mobileDcosIdx === i ? "var(--accent-secondary)" : "var(--border)",
+                      cursor: "pointer", transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          )
+        })()}
 
         {/* Mobile: show active tab panel with transition */}
         <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
@@ -603,7 +671,7 @@ export default function Page() {
             {mobileTab === "signal" && feedContent}
             {mobileTab === "synthesis" && <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} sortBy={sortBy} />}
             {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} />}
-            {mobileTab === "dispatch"  && <DispatchView onDeliberate={handleSynthesisDeliberate} />}
+            {mobileTab === "gallery"   && <GalleryOverlay onClose={() => setMobileTab("signal")} excludedSources={excludedSources} />}
             {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} /></div>}
             {mobileTab === "config"    && <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} />}
           </div>
@@ -615,7 +683,7 @@ export default function Page() {
             { id: "signal" as const,    Icon: Radio,      label: "Signal"    },
             { id: "audio" as const,     Icon: AudioLines, label: "Sound"     },
             { id: "synthesis" as const, Icon: Blend,      label: "Synthesis" },
-            { id: "dispatch" as const,  Icon: Send,       label: "Dispatch"  },
+            { id: "gallery" as const,   Icon: Aperture,   label: "Gallery"   },
             { id: "cerebro" as const,   Icon: Brain,      label: "Cerebro"   },
           ]
           const activeIdx = tabs.findIndex(t => t.id === mobileTab)
