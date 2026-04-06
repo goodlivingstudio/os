@@ -415,7 +415,7 @@ export function GalleryOverlay({ onClose, excludedSources, isDay, onToggleMode, 
       {/* Masonry grid — hidden when trends is active */}
       {!showTrends && <div style={{
         flex: 1, overflowY: "auto", overflowX: "hidden",
-        padding: galleryCols === 1 ? "16px 8px" : "24px 16px",
+        padding: "24px 16px",
       }}>
         {loading ? (
           <div style={{ ...TYPE.body, color: "var(--text-tertiary)", padding: 32 }}>
@@ -431,7 +431,7 @@ export function GalleryOverlay({ onClose, excludedSources, isDay, onToggleMode, 
           images.forEach((img, i) => idxMap.set(img.id, i))
           const cols: typeof images[] = Array.from({ length: galleryCols }, () => [])
           images.forEach((img, i) => cols[i % galleryCols].push(img))
-          const gridGap = galleryCols === 1 ? 8 : galleryCols === 2 ? 10 : 14
+          const gridGap = galleryCols === 2 ? 10 : 14
 
           return (
             <div key={`${shuffleKey}-${activeMood ?? "all"}`} style={{ display: "flex", gap: gridGap, alignItems: "flex-start" }}>
