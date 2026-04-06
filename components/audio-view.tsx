@@ -71,7 +71,7 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episode
         onClick={() => setExpanded(e => !e)}
         style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          width: "100%", padding: "0 20px", height: 36,
+          width: "100%", padding: "0 20px", height: 40,
           background: "none", border: "none", borderBottom: "1px solid var(--border)",
           cursor: "pointer", transition: "background 0.15s",
         }}
@@ -167,7 +167,7 @@ const LAYER_LABELS: Record<string, string> = {
 
 // ─── Episode Modal ──────────────────────────────────────────────────────────
 
-function EpisodeModal({ episode, onClose, onDeliberate, artworkMode = "generated" }: { episode: Episode; onClose: () => void; onDeliberate?: (text: string) => void; artworkMode?: "generated" | "source" }) {
+function EpisodeModal({ episode, onClose, onDeliberate, artworkMode = "off" }: { episode: Episode; onClose: () => void; onDeliberate?: (text: string) => void; artworkMode?: "off" | "source" }) {
   return (
     <div
       style={{
@@ -196,28 +196,23 @@ function EpisodeModal({ episode, onClose, onDeliberate, artworkMode = "generated
           borderBottom: "1px solid var(--border)",
           flexShrink: 0,
         }}>
-          {episode.artworkUrl ? (
-            <img
-              src={artworkMode === "source" && episode.originalArtworkUrl ? episode.originalArtworkUrl : episode.artworkUrl}
-              alt={episode.showName}
-              onError={(e) => {
-                const img = e.currentTarget
-                if (episode.originalArtworkUrl && img.src !== episode.originalArtworkUrl) {
-                  img.src = episode.originalArtworkUrl
-                } else {
-                  img.style.display = "none"
-                }
-              }}
-              style={{ width: 96, height: 96, borderRadius: 14, objectFit: "cover", flexShrink: 0, background: "var(--bg-elevated)" }}
-            />
-          ) : (
-            <div style={{
-              width: 96, height: 96, borderRadius: 14, background: "var(--bg-elevated)",
-              flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 28, color: "var(--text-tertiary)",
-            }}>
-              ◉
-            </div>
+          {artworkMode === "source" && (
+            (episode.originalArtworkUrl || episode.artworkUrl) ? (
+              <img
+                src={episode.originalArtworkUrl || episode.artworkUrl}
+                alt={episode.showName}
+                onError={(e) => { e.currentTarget.style.display = "none" }}
+                style={{ width: 96, height: 96, borderRadius: 14, objectFit: "cover", flexShrink: 0, background: "var(--bg-elevated)" }}
+              />
+            ) : (
+              <div style={{
+                width: 96, height: 96, borderRadius: 14, background: "var(--bg-elevated)",
+                flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 28, color: "var(--text-tertiary)",
+              }}>
+                ◉
+              </div>
+            )
           )}
           <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
             <div style={{ ...TYPE.body, color: "var(--text-tertiary)", marginBottom: 6 }}>
@@ -352,12 +347,12 @@ function EpisodeModal({ episode, onClose, onDeliberate, artworkMode = "generated
 
 // ─── Episode Card ────────────────────────────────────────────────────────────
 
-function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onSignalLeave, artworkMode = "generated" }: {
+function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onSignalLeave, artworkMode = "off" }: {
   episode: Episode; index?: number; onClick: () => void
   onSignalEnter?: (ep: Episode, x: number, y: number) => void
   onSignalMove?: (x: number, y: number) => void
   onSignalLeave?: () => void
-  artworkMode?: "generated" | "source"
+  artworkMode?: "off" | "source"
 }) {
   const [hovered, setHovered] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
@@ -413,34 +408,29 @@ function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onS
         animation: index !== undefined ? `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${Math.min(index * 60, 600)}ms both` : undefined,
       }}
     >
-      {/* Artwork */}
-      {episode.artworkUrl ? (
-        <img
-          src={artworkMode === "source" && episode.originalArtworkUrl ? episode.originalArtworkUrl : episode.artworkUrl}
-          alt={episode.showName}
-          onError={(e) => {
-            const img = e.currentTarget
-            if (episode.originalArtworkUrl && img.src !== episode.originalArtworkUrl) {
-              img.src = episode.originalArtworkUrl
-            } else {
-              img.style.display = "none"
-            }
-          }}
-          style={{
-            width: 64, height: 64, borderRadius: 8,
-            objectFit: "cover", flexShrink: 0, background: "var(--bg-elevated)",
-          }}
-        />
-      ) : (
-        <div
-          style={{
-            width: 64, height: 64, borderRadius: 8, background: "var(--bg-elevated)",
-            flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 20, color: "var(--text-tertiary)",
-          }}
-        >
-          ◉
-        </div>
+      {/* Artwork — hidden when artworkMode is "off" */}
+      {artworkMode === "source" && (
+        episode.originalArtworkUrl || episode.artworkUrl ? (
+          <img
+            src={episode.originalArtworkUrl || episode.artworkUrl}
+            alt={episode.showName}
+            onError={(e) => { e.currentTarget.style.display = "none" }}
+            style={{
+              width: 64, height: 64, borderRadius: 8,
+              objectFit: "cover", flexShrink: 0, background: "var(--bg-elevated)",
+            }}
+          />
+        ) : (
+          <div
+            style={{
+              width: 64, height: 64, borderRadius: 8, background: "var(--bg-elevated)",
+              flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 20, color: "var(--text-tertiary)",
+            }}
+          >
+            ◉
+          </div>
+        )
       )}
 
       {/* Content */}
@@ -495,7 +485,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
   const [activeEpisode, setActiveEpisode] = useState<Episode | null>(null)
   const [activeLayer, setActiveLayer] = useState("all")
   const [signal, setSignal] = useState<{ episode: Episode; x: number; y: number } | null>(null)
-  const [artworkMode, setArtworkMode] = useState<"generated" | "source">("generated")
+  const [artworkMode, setArtworkMode] = useState<"off" | "source">("off")
   const annotated = useRef(false)
   const [annotating, setAnnotating] = useState(false)
 
@@ -629,8 +619,8 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
               </button>
             )
           })}
-          {/* Artwork switcher */}
-          {episodes.some(ep => ep.originalArtworkUrl) && (
+          {/* Artwork switcher — Off removes images, Source shows podcast artwork */}
+          {episodes.length > 0 && (
             <div style={{
               marginLeft: "auto",
               display: "flex",
@@ -640,7 +630,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
               padding: 3,
             }}>
               {([
-                { id: "generated" as const, label: "Generated" },
+                { id: "off" as const, label: "Off" },
                 { id: "source" as const, label: "Source" },
               ]).map(mode => (
                 <button
@@ -665,31 +655,40 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
       )}
 
       <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
-      {/* Loading state */}
+      {/* Loading state — matches Signal feed skeleton pattern */}
       {loading ? (
-        <div className="episode-grid" style={{ gap: 8, padding: "8px 16px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "8px 16px" }}>
           {[...Array(8)].map((_, i) => (
             <div
               key={i}
               className="loading-pulse"
               style={{
-                display: "flex", gap: 16, padding: 16,
-                background: "var(--bg-surface)", borderRadius: 14,
+                padding: "16px 20px",
+                borderRadius: 12,
+                background: "var(--bg-surface)",
               }}
             >
-              <div style={{ width: 64, height: 64, borderRadius: 8, background: "var(--bg-elevated)", flexShrink: 0 }} />
-              <div style={{ flex: 1 }}>
-                <div style={{ height: 10, width: "60%", background: "var(--bg-elevated)", borderRadius: 4, marginBottom: 8 }} />
-                <div style={{ height: 14, width: "90%", background: "var(--bg-elevated)", borderRadius: 4 }} />
-              </div>
+              <div style={{ height: 10, width: `${60 + (i % 3) * 15}%`, background: "var(--border)", borderRadius: 4, marginBottom: 8 }} />
+              <div style={{ height: 13, width: `${70 + (i % 4) * 8}%`, background: "var(--bg-elevated)", borderRadius: 4 }} />
             </div>
           ))}
         </div>
       ) : triageWaiting ? (
-        <div style={{ padding: "32px 20px" }}>
-          <div style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)" }}>
-            ▸ scoring episodes<span className="loading-pulse" style={{ marginLeft: 4, ...TYPE.xs, opacity: 0.6 }}>...</span>
-          </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "8px 16px" }}>
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="loading-pulse"
+              style={{
+                padding: "16px 20px",
+                borderRadius: 12,
+                background: "var(--bg-surface)",
+              }}
+            >
+              <div style={{ height: 10, width: `${55 + (i % 3) * 12}%`, background: "var(--border)", borderRadius: 4, marginBottom: 8 }} />
+              <div style={{ height: 13, width: `${65 + (i % 4) * 10}%`, background: "var(--bg-elevated)", borderRadius: 4 }} />
+            </div>
+          ))}
         </div>
       ) : episodes.length === 0 ? (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 200, ...TYPE.reading, color: "var(--text-tertiary)" }}>
