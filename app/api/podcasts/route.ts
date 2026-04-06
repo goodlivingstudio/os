@@ -10,6 +10,7 @@ interface Episode {
   title: string
   showName: string
   url: string
+  hasEpisodePage?: boolean
   publishedAt: string
   summary: string
   duration: string
@@ -70,26 +71,43 @@ async function fetchPodcastFeed(feed: PodcastFeed): Promise<Episode[]> {
     if (!res.ok) return []
     const xml = await res.text()
 
-    // Extract show-level artwork
+    // Extract show-level artwork + link
     const showArtwork = extractAttr(xml, "itunes:image", "href")
       || extractAttr(xml, "image", "href")
       || ""
 
     // Parse items
     const items = xml.match(/<item[\s\S]*?<\/item>/gi) || []
-    return items.slice(0, 5).map((item, i) => {
+    return items.slice(0, 5).map((item) => {
       const title = stripHTML(extractTag(item, "title"))
-      const link = extractTag(item, "link") || extractAttr(item, "enclosure", "url") || ""
+      const guid = extractTag(item, "guid")
       const pubDate = extractTag(item, "pubDate")
+
+      // URL priority: episode page link > guid (if URL-shaped) > enclosure (audio file)
+      const link = extractTag(item, "link")
+      const enclosureUrl = extractAttr(item, "enclosure", "url")
+      const guidUrl = guid && guid.startsWith("http") ? guid : ""
+      const episodeUrl = link || guidUrl || ""
+      const audioUrl = enclosureUrl || ""
+
+      // Skip episodes that only have audio file URLs and no episode page
+      // These are likely aggregator feeds or low-quality sources
+      const url = episodeUrl || audioUrl
+
       const desc = stripHTML(extractTag(item, "description") || extractTag(item, "itunes:summary") || "")
       const duration = formatDuration(extractTag(item, "itunes:duration"))
       const episodeArt = extractAttr(item, "itunes:image", "href")
 
+      // Generate stable ID from title + show (not index position)
+      const titleSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 60)
+      const showSlug = feed.show.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+
       return {
-        id: `${feed.show.toLowerCase().replace(/\s+/g, "-")}-${i}`,
+        id: `${showSlug}-${titleSlug}`,
         title: title || "Untitled Episode",
         showName: feed.show,
-        url: link,
+        url,
+        hasEpisodePage: !!episodeUrl,
         publishedAt: pubDate ? new Date(pubDate).toISOString() : new Date().toISOString(),
         summary: desc.slice(0, 200),
         duration,
@@ -111,15 +129,34 @@ export async function GET() {
     PODCAST_FEEDS.map(feed => fetchPodcastFeed(feed))
   )
 
-  const episodes: Episode[] = []
+  const allEpisodes: Episode[] = []
   let liveSources = 0
 
   for (const result of results) {
     if (result.status === "fulfilled" && result.value.length > 0) {
-      episodes.push(...result.value)
+      allEpisodes.push(...result.value)
       liveSources++
     }
   }
+
+  // Deduplicate by normalized title — if two shows cover the same topic
+  // with near-identical titles, keep the one from the more credible source
+  // (the one with an episode page URL, or the first one encountered)
+  const seen = new Map<string, Episode>()
+  for (const ep of allEpisodes) {
+    // Normalize: lowercase, strip punctuation, collapse whitespace
+    const norm = ep.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ").trim()
+    const existing = seen.get(norm)
+    if (!existing) {
+      seen.set(norm, ep)
+    } else {
+      // Keep the one with an episode page, or the first
+      if (!existing.hasEpisodePage && (ep as Episode & { hasEpisodePage?: boolean }).hasEpisodePage) {
+        seen.set(norm, ep)
+      }
+    }
+  }
+  const episodes = [...seen.values()]
 
   // Sort by most recent
   episodes.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
