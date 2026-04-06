@@ -238,7 +238,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
 
             {/* ─ IMAGE BAND ─ */}
             <div style={{
-              height: 140, overflow: "hidden",
+              height: 200, overflow: "hidden",
               background: data.patterns[0]?.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
             }}>
               {data.patterns[0]?.imageUrl && (
@@ -331,10 +331,14 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, letterSpacing: "-0.01em", marginBottom: 6 }}>
                       {pattern.title}
                     </div>
-                    {/* Description — readable size, not cramped */}
-                    {!isTriage && pattern.description && (
-                      <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>
-                        {renderCitedBody(pattern.description)}
+                    {/* Description — capped to 2 lines for scanability */}
+                    {pattern.description && (
+                      <div style={{
+                        ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.6,
+                        display: "-webkit-box", WebkitLineClamp: isTriage ? 1 : 2,
+                        WebkitBoxOrient: "vertical" as const, overflow: "hidden",
+                      }}>
+                        {pattern.description}
                       </div>
                     )}
                   </div>
@@ -370,16 +374,20 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       </div>
                       {layer.data.map((val, di) => {
                         const maxVal = 10
-                        const opacity = val > 0 ? Math.max(0.1, (val / maxVal) * 0.65) : 0.04
+                        const bgOpacity = val > 0 ? Math.max(0.1, (val / maxVal) * 0.6) : 0.04
                         return (
                           <div key={di} style={{ flex: 1, padding: "0 2px" }}>
                             <div style={{
-                              height: 30, borderRadius: 4,
-                              background: layer.color, opacity,
+                              height: 32, borderRadius: 4, position: "relative",
                               display: "flex", alignItems: "center", justifyContent: "center",
                             }}>
+                              {/* Background with opacity — separate from text */}
+                              <div style={{
+                                position: "absolute", inset: 0, borderRadius: 4,
+                                background: layer.color, opacity: bgOpacity,
+                              }} />
                               {val > 0 && (
-                                <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--text-primary)" }}>
+                                <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--text-primary)", position: "relative", zIndex: 1 }}>
                                   {val}
                                 </span>
                               )}
@@ -424,8 +432,12 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, marginBottom: 8, fontSize: 14 }}>
                         {spot.title}
                       </div>
-                      <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.6 }}>
-                        {isTriage && spot.body.length > 100 ? spot.body.slice(0, 97) + "..." : spot.body}
+                      <div style={{
+                        ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.6,
+                        display: "-webkit-box", WebkitLineClamp: 3,
+                        WebkitBoxOrient: "vertical" as const, overflow: "hidden",
+                      }}>
+                        {spot.body}
                       </div>
                     </div>
                   ))}
