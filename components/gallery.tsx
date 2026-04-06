@@ -369,7 +369,7 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
           images.forEach((img, i) => cols[i % 3].push(img))
 
           return (
-            <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+            <div className="gallery-masonry" style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
               {cols.map((col, colIdx) => (
                 <div key={colIdx} style={{ flex: 1, display: "flex", flexDirection: "column", gap: 14, minWidth: 0 }}>
                   {col.map((img) => {

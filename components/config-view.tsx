@@ -412,7 +412,7 @@ function SourceGrid({ sources, type, excludedSources, onToggleSource }: {
                 ({items.filter(f => !excludedSources.has(getName(f))).length})
               </span>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+            <div className="source-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
               {items.map(feed => {
                 const name = getName(feed)
                 const active = !excludedSources.has(name)
@@ -529,7 +529,7 @@ export function ConfigView({ excludedSources, onToggleSource }: ConfigViewProps)
               </span>
             </div>
             <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+              <div className="gallery-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
                 {GALLERY_SOURCES.map(src => {
                   const active = !excludedSources.has(src.name)
                   return (

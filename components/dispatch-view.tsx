@@ -239,6 +239,7 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
     >
       <div
         onClick={e => e.stopPropagation()}
+        className="pitch-overlay-inner"
         style={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "32px 36px", width: 600, maxHeight: "85vh", overflowY: "auto" }}
       >
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
@@ -529,7 +530,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             </div>
 
             {/* ─ EDITORIAL HEADER — centered broadsheet ─ */}
-            <div style={{
+            <div className="dispatch-header-content" style={{
               padding: "36px 48px 32px",
               borderBottom: "1px solid var(--border)",
               textAlign: "center",

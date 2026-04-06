@@ -90,6 +90,7 @@ export function Ticker({
 
   return (
     <div
+      className="ticker-bar"
       style={{
         flexShrink: 0,
         height: 52,

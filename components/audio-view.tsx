@@ -264,7 +264,7 @@ function EpisodeModal({ episode, onClose, onDeliberate, artworkMode = "generated
               }}>
                 Details
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
+              <div className="episode-details-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
                 <div>
                   <div style={{ ...metaStyle, marginBottom: 3 }}>Show</div>
                   <div style={{ ...TYPE.reading, color: "var(--text-primary)", fontWeight: 500 }}>{episode.showName}</div>

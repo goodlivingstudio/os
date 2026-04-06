@@ -121,13 +121,38 @@ html, body {
   }
 }
 
-/* ─── Mobile responsive grids ──────────────────────────────────── */
+/* ─── Mobile responsive grids + layout ─────────────────────────── */
 @media (max-width: 768px) {
+  /* Grids → single column */
   .perspectives-grid { grid-template-columns: 1fr !important; }
   .convergence-grid { grid-template-columns: 1fr !important; }
   .blindspots-grid { grid-template-columns: 1fr !important; }
+  .source-grid { grid-template-columns: 1fr !important; }
+  .gallery-grid { grid-template-columns: 1fr !important; }
+
+  /* Dispatch */
   .pitch-thumb { display: none !important; }
   .dispatch-headline { font-size: 24px !important; }
+  .dispatch-header-content { padding: 24px 16px 20px !important; }
+  .pitch-overlay-inner { width: 92vw !important; max-width: none !important; padding: 24px 20px !important; }
+
+  /* Pulse — stack metric/API/cache rows */
+  .metric-row { flex-wrap: wrap !important; }
+  .metric-row > * { flex: 1 1 45% !important; min-width: 140px !important; }
+  .api-row { flex-wrap: wrap !important; }
+  .api-row > * { flex: 1 1 45% !important; min-width: 140px !important; }
+  .cache-row { flex-wrap: wrap !important; }
+  .cache-row > * { flex: 1 1 45% !important; min-width: 140px !important; }
+
+  /* Gallery — 2 columns on mobile, not 3 */
+  .gallery-masonry { gap: 8px !important; }
+  .gallery-masonry > * { flex: 1 1 45% !important; }
+
+  /* Audio modal details */
+  .episode-details-grid { grid-template-columns: 1fr !important; }
+
+  /* Ticker — CSS fallback for hiding */
+  .ticker-bar { display: none !important; }
 }
 
 /* ─── Live beacon ───────────────────────────────────────────────── */

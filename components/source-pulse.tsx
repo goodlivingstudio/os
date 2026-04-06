@@ -301,7 +301,7 @@ function CacheManagement() {
       <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
         Cache Management
       </div>
-      <div style={{ display: "flex", gap: 8 }}>
+      <div className="cache-row" style={{ display: "flex", gap: 8 }}>
         {actions.map(a => (
           <button
             key={a.label}
@@ -489,7 +489,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
 
           {/* ── Top metrics row ── */}
-          <div style={{ display: "flex", gap: 8 }}>
+          <div className="metric-row" style={{ display: "flex", gap: 8 }}>
             <MetricCard label="Sources" value={`${liveSources}/${totalSources}`} sub={failedSources > 0 ? `${failedSources} failed` : "all healthy"} color={failedSources > 0 ? "#D4A05A" : "var(--live)"} />
             <MetricCard label="Articles" value={pipeline.totalArticles} sub={`${sourceStats.length} sources reporting`} />
             <MetricCard label="Annotated" value={`${annotationPct}%`} sub={`${pipeline.annotatedServer} server · ${pipeline.annotatedClient} client`} color={annotationPct >= 80 ? "var(--live)" : annotationPct >= 50 ? "#D4A05A" : "#ef4444"} />
@@ -501,7 +501,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
             <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
               API Connections
             </div>
-            <div style={{ display: "flex", gap: 8 }}>
+            <div className="api-row" style={{ display: "flex", gap: 8 }}>
               {[
                 { name: "Anthropic", key: "anthropic" },
                 { name: "Exa Search", key: "exa" },
