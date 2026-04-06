@@ -28,13 +28,15 @@ Each card must contain:
 - layer: Primary intelligence layer (Opportunity / Position / Discipline / Landscape / Culture)
 - urgency: The urgency score (0–10)
 
-TONE: Direct. No hedging. The card should feel like something a trusted senior advisor flagged specifically for you — not a system-generated summary.
+TONE: The first signal is special — it will appear as a "Today's Lens" ambient one-liner in the left rail. Write it as a grounded, clear observation. Not clinical, not urgent — measured and reflective, like a principle emerging from the noise. Still substantiated, still specific, but delivered with the calm authority of someone who sees the full picture. No citations in the first signal's body.
+
+The second and third signals can be more direct and tactical — lead with the implication, not the event. These should feel like something a trusted senior advisor flagged specifically for you.
 
 FORMAT — return exactly three signals separated by the literal string |||
 
 Each signal must be:
 LINE 1: The label (2-4 words, uppercase — what kind of signal this is)
-LINE 2: One sentence of substance with article citations in brackets. Direct. No hedging. Lead with the implication, not the event. Keep it to one sharp sentence.
+LINE 2: One sentence of substance. For signal 1: reflective and grounded, no citations. For signals 2 and 3: direct with article citations in brackets.
 
 Nothing else. No preamble. No sign-off. Three signals, one ||| between each.`
 
