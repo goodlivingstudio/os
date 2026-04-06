@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, useMemo } from "react"
 import { X, ChevronLeft, ChevronRight, Shuffle } from "lucide-react"
 import { TYPE, MONO } from "@/lib/styles"
 import type { GalleryImage, ColorMood } from "@/lib/gallery"
+import type { Skin } from "@/lib/types"
+import { Ticker } from "@/components/ticker"
 import { SurfaceTrends } from "@/components/surface-trends"
 
 // ─── Color Mood Display ─────────────────────────────────────────────────────
@@ -169,7 +171,7 @@ const GALLERY_FETCH_TIMEOUT = 10_000
 
 // ─── Gallery Overlay ────────────────────────────────────────────────────────
 
-export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => void; excludedSources?: Set<string> }) {
+export function GalleryOverlay({ onClose, excludedSources, isDay, onToggleMode, skin, onSkinChange }: { onClose: () => void; excludedSources?: Set<string>; isDay?: boolean; onToggleMode?: () => void; skin?: Skin; onSkinChange?: (s: Skin) => void }) {
   const [allImages, setAllImages] = useState<GalleryImage[]>([])
   const [loading, setLoading] = useState(true)
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
@@ -277,6 +279,9 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
       display: "flex", flexDirection: "column",
       overflow: "hidden",
     }}>
+      {/* Ticker — matches main layout */}
+      {onToggleMode && <Ticker isDay={isDay} onToggle={onToggleMode} skin={skin} onSkinChange={onSkinChange} />}
+
       {/* Header */}
       <div style={{
         flexShrink: 0, display: "flex", flexDirection: "column",

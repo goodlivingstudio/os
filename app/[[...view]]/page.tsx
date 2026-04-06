@@ -1198,7 +1198,7 @@ export default function Page() {
       />
 
       {/* Gallery overlay */}
-      {galleryOpen && <GalleryOverlay onClose={() => setGalleryOpenWithUrl(false)} excludedSources={excludedSources} />}
+      {galleryOpen && <GalleryOverlay onClose={() => setGalleryOpenWithUrl(false)} excludedSources={excludedSources} isDay={isDay} onToggleMode={toggleMode} skin={skin} onSkinChange={setSkin} />}
 
       {/* Hotkeys overlay */}
       {hotkeysOpen && <HotkeysOverlay onClose={() => setHotkeysOpen(false)} />}
