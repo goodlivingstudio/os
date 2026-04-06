@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { createPortal } from "react-dom"
-import { Radio, AudioLines, Blend, Send, Brain, Settings, ChevronRight, ChevronLeft, Minimize2, Aperture, SunMedium, MoonStar, MoreHorizontal, ChevronDown, Activity } from "lucide-react"
+import { Radio, AudioLines, Blend, Send, Brain, Settings, ChevronRight, ChevronLeft, Minimize2, Aperture, SunMedium, MoonStar, Menu, ChevronDown, Activity } from "lucide-react"
 import { Ticker } from "@/components/ticker"
 import { LeftRail } from "@/components/left-rail"
 import { useChiefOfStaff, ChiefOfStaffBand } from "@/components/chief-of-staff"
@@ -714,7 +714,7 @@ export default function Page() {
                 onClick={() => { setMobileMenuOpen(v => !v); setMobileFilterOpen(false) }}
                 style={{ width: 36, height: 36, borderRadius: 8, border: "none", background: mobileMenuOpen ? "var(--bg-elevated)" : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, color: "var(--text-tertiary)", transition: "all 0.15s" }}
               >
-                <MoreHorizontal size={18} strokeWidth={1.5} />
+                <Menu size={18} strokeWidth={1.5} />
               </button>
               {mobileMenuOpen && (
                 <div style={{
@@ -753,7 +753,7 @@ export default function Page() {
                     <Settings size={14} strokeWidth={1.5} /> Configuration
                   </button>
                   <button
-                    onClick={() => { setMobileTab("config" as typeof mobileTab); setMobileMenuOpen(false) }}
+                    onClick={() => { setMobileTab("signal"); setMobileMenuOpen(false); /* Pulse not a mobile tab — navigate via config */ }}
                     style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer", ...TYPE.sm, color: "var(--text-secondary)", textAlign: "left" }}
                   >
                     <Activity size={14} strokeWidth={1.5} /> Source Pulse
@@ -764,8 +764,8 @@ export default function Page() {
           </div>
         </div>
 
-        {/* ── DCOS swipeable card — Signal tab only ── */}
-        {mobileTab === "signal" && signals.filter(s => s.body).length > 0 && (() => {
+        {/* ── DCOS swipeable card — Signal + Sound tabs, hidden in triage ── */}
+        {(mobileTab === "signal" || mobileTab === "audio") && sortBy !== "urgency" && signals.filter(s => s.body).length > 0 && (() => {
           const dcosSignals = signals.filter(s => s.body)
           const current = dcosSignals[mobileDcosIdx]
           if (!current) return null
