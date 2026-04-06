@@ -85,7 +85,8 @@ const LAYER_DOT: Record<string, string> = {
 
 // ─── Synthesis View ────────────────────────────────────────────────────────
 
-export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
+export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: SynthesisViewProps) {
+  const isTriage = sortBy === "urgency"
   const [data, setData] = useState<SynthesisData | null>(null)
   const [loading, setLoading] = useState(false)
   const [statusIdx, setStatusIdx] = useState(0)
@@ -219,20 +220,25 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
 
             {/* ─ WEEKLY SHIFT banner ─ */}
             <div style={{
-              background: "var(--bg-surface)", padding: "14px 20px",
+              background: "var(--bg-surface)", padding: "20px 24px",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
-              <div style={{ ...TYPE.xs, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 6 }}>
+              <div style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 10 }}>
                 Weekly Shift
               </div>
-              <div style={{ ...TYPE.body, color: "var(--text-primary)", fontWeight: 500, lineHeight: 1.5 }}>
+              <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.5 }}>
                 {data.headline || data.briefing.split(/[.!?]\s/)[0]}
               </div>
+              {data.headline && data.briefing && (
+                <div style={{ ...TYPE.reading, color: "var(--text-secondary)", lineHeight: 1.7, marginTop: 10 }}>
+                  {data.briefing}
+                </div>
+              )}
             </div>
 
             {/* ─ IMAGE BAND ─ */}
             <div style={{
-              height: 130, overflow: "hidden",
+              height: 140, overflow: "hidden",
               background: data.patterns[0]?.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
             }}>
               {data.patterns[0]?.imageUrl && (
@@ -243,65 +249,58 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
             {/* ─ SIGNAL VELOCITY ─ */}
             {data.velocity && (data.velocity.accelerating.length > 0 || data.velocity.decelerating.length > 0) && (
               <div style={{
-                padding: "16px 20px",
+                padding: "24px 24px",
                 borderBottom: "1px solid var(--border)",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 12, fontSize: 11 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
                   Signal Velocity
                 </div>
                 <div style={{ display: "flex", gap: 12 }}>
                   {/* Accelerating */}
-                  <div style={{ flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "14px 16px" }}>
-                    <div style={{ ...TYPE.xs, color: "#61BF6B", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 10 }}>
+                  <div style={{ flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "16px 20px" }}>
+                    <div style={{ ...TYPE.sm, color: "#61BF6B", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 12 }}>
                       Accelerating
                     </div>
                     {data.velocity.accelerating.length > 0 ? data.velocity.accelerating.map((item, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, padding: "3px 0" }}>
-                        <span style={{ ...TYPE.sm, color: "#61BF6B" }}>↑</span>
-                        <span style={{ flex: 1, ...TYPE.sm, color: "var(--text-primary)" }}>{item.topic}</span>
-                        <span style={{ ...TYPE.xs, fontFamily: MONO, color: "#61BF6B", fontWeight: 600 }}>{item.delta}</span>
+                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "5px 0" }}>
+                        <span style={{ ...TYPE.body, color: "#61BF6B" }}>↑</span>
+                        <span style={{ flex: 1, ...TYPE.body, color: "var(--text-primary)" }}>{item.topic}</span>
+                        <span style={{ ...TYPE.sm, fontFamily: MONO, color: "#61BF6B", fontWeight: 600 }}>{item.delta}</span>
                       </div>
                     )) : (
-                      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>No accelerating signals</div>
+                      <div style={{ ...TYPE.body, color: "var(--text-tertiary)" }}>No accelerating signals</div>
                     )}
                   </div>
                   {/* Decelerating */}
-                  <div style={{ flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "14px 16px" }}>
-                    <div style={{ ...TYPE.xs, color: "#BF6161", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 10 }}>
+                  <div style={{ flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "16px 20px" }}>
+                    <div style={{ ...TYPE.sm, color: "#BF6161", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 12 }}>
                       Decelerating
                     </div>
                     {data.velocity.decelerating.length > 0 ? data.velocity.decelerating.map((item, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, padding: "3px 0" }}>
-                        <span style={{ ...TYPE.sm, color: "#BF6161" }}>↓</span>
-                        <span style={{ flex: 1, ...TYPE.sm, color: "var(--text-primary)" }}>{item.topic}</span>
-                        <span style={{ ...TYPE.xs, fontFamily: MONO, color: "#BF6161", fontWeight: 600 }}>{item.delta}</span>
+                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "5px 0" }}>
+                        <span style={{ ...TYPE.body, color: "#BF6161" }}>↓</span>
+                        <span style={{ flex: 1, ...TYPE.body, color: "var(--text-primary)" }}>{item.topic}</span>
+                        <span style={{ ...TYPE.sm, fontFamily: MONO, color: "#BF6161", fontWeight: 600 }}>{item.delta}</span>
                       </div>
                     )) : (
-                      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>No decelerating signals</div>
+                      <div style={{ ...TYPE.body, color: "var(--text-tertiary)" }}>No decelerating signals</div>
                     )}
                   </div>
                 </div>
               </div>
             )}
 
-            {/* ─ CONVERGENCES table ─ */}
+            {/* ─ CONVERGENCES ─ */}
             {data.patterns.length > 0 && (
               <div style={{
-                padding: "16px 20px",
+                padding: "24px 24px",
                 borderBottom: "1px solid var(--border)",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 200ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 12, fontSize: 11 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
                   Convergences
                 </div>
-                {/* Table header */}
-                <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "0 0 6px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-                  <span style={{ flex: 1, ...TYPE.xs, color: "var(--text-tertiary)", fontWeight: 600 }}>Pattern</span>
-                  <span style={{ width: 36, textAlign: "right", ...TYPE.xs, color: "var(--text-tertiary)", fontWeight: 600 }}>Sig.</span>
-                  <span style={{ width: 60, ...TYPE.xs, color: "var(--text-tertiary)", fontWeight: 600 }}>Layers</span>
-                </div>
-                {/* Table rows */}
                 {data.patterns.map((pattern, i) => (
                   <div
                     key={i}
@@ -310,73 +309,77 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                     onClick={() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`)}
                     onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
                     style={{
-                      display: "flex", alignItems: "flex-start", gap: 8,
-                      padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,0.04)",
+                      padding: "14px 0", borderBottom: "1px solid var(--border)",
                       cursor: "pointer", transition: "background 0.15s", outline: "none",
-                      margin: "0 -4px", paddingLeft: 4, paddingRight: 4, borderRadius: 4,
+                      margin: "0 -8px", paddingLeft: 8, paddingRight: 8, borderRadius: 6,
                     }}
                     onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ ...TYPE.body, color: "var(--text-primary)", fontWeight: 500, lineHeight: 1.4, letterSpacing: "-0.01em" }}>
-                        {pattern.title}
+                    {/* Top line: layers + signal count */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                      <div style={{ display: "flex", gap: 5 }}>
+                        {pattern.layers.map(l => (
+                          <span key={l} style={{ width: 7, height: 7, borderRadius: "50%", background: LAYER_DOT[l] || "var(--text-tertiary)" }} />
+                        ))}
                       </div>
-                      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", lineHeight: 1.5, marginTop: 2 }}>
+                      <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--text-tertiary)" }}>
+                        {pattern.signalCount} signals
+                      </span>
+                    </div>
+                    {/* Title */}
+                    <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, letterSpacing: "-0.01em", marginBottom: 6 }}>
+                      {pattern.title}
+                    </div>
+                    {/* Description — readable size, not cramped */}
+                    {!isTriage && pattern.description && (
+                      <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>
                         {renderCitedBody(pattern.description)}
                       </div>
-                    </div>
-                    <span style={{ width: 36, textAlign: "right", ...TYPE.sm, fontFamily: MONO, color: "var(--text-secondary)", flexShrink: 0, paddingTop: 2 }}>
-                      {pattern.signalCount}
-                    </span>
-                    <div style={{ width: 60, display: "flex", gap: 4, flexShrink: 0, paddingTop: 4 }}>
-                      {pattern.layers.map(l => (
-                        <span key={l} style={{ width: 7, height: 7, borderRadius: "50%", background: LAYER_DOT[l] || "var(--text-tertiary)" }} />
-                      ))}
-                    </div>
+                    )}
                   </div>
                 ))}
               </div>
             )}
 
             {/* ─ URGENCY HEATMAP ─ */}
-            {data.heatmap && data.heatmap.layers.length > 0 && (
+            {!isTriage && data.heatmap && data.heatmap.layers.length > 0 && (
               <div style={{
-                padding: "16px 20px",
+                padding: "24px 24px",
                 borderBottom: "1px solid var(--border)",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 300ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 12, fontSize: 11 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
                   Urgency Heatmap
                 </div>
-                <div style={{ background: "var(--bg-surface)", borderRadius: 8, padding: "14px 16px", overflow: "hidden" }}>
+                <div style={{ background: "var(--bg-surface)", borderRadius: 8, padding: "18px 20px", overflow: "hidden" }}>
                   {/* Day headers */}
-                  <div style={{ display: "flex", marginBottom: 6 }}>
-                    <div style={{ width: 80, flexShrink: 0 }} />
+                  <div style={{ display: "flex", marginBottom: 8 }}>
+                    <div style={{ width: 96, flexShrink: 0 }} />
                     {data.heatmap.days.map((day, i) => (
-                      <div key={i} style={{ flex: 1, textAlign: "center", ...TYPE.xs, color: "var(--text-tertiary)", fontWeight: 500 }}>
+                      <div key={i} style={{ flex: 1, textAlign: "center", ...TYPE.sm, color: "var(--text-tertiary)", fontWeight: 500 }}>
                         {day}
                       </div>
                     ))}
                   </div>
                   {/* Layer rows */}
                   {data.heatmap.layers.map((layer, li) => (
-                    <div key={li} style={{ display: "flex", alignItems: "center", marginBottom: 4 }}>
-                      <div style={{ width: 80, flexShrink: 0, ...TYPE.xs, color: layer.color, fontWeight: 500 }}>
+                    <div key={li} style={{ display: "flex", alignItems: "center", marginBottom: 6 }}>
+                      <div style={{ width: 96, flexShrink: 0, ...TYPE.sm, color: layer.color, fontWeight: 500 }}>
                         {layer.name}
                       </div>
                       {layer.data.map((val, di) => {
                         const maxVal = 10
-                        const opacity = val > 0 ? Math.max(0.08, (val / maxVal) * 0.65) : 0.03
+                        const opacity = val > 0 ? Math.max(0.1, (val / maxVal) * 0.65) : 0.04
                         return (
-                          <div key={di} style={{ flex: 1, padding: "0 1px" }}>
+                          <div key={di} style={{ flex: 1, padding: "0 2px" }}>
                             <div style={{
-                              height: 24, borderRadius: 3,
+                              height: 30, borderRadius: 4,
                               background: layer.color, opacity,
                               display: "flex", alignItems: "center", justifyContent: "center",
                             }}>
                               {val > 0 && (
-                                <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-secondary)", fontSize: 9 }}>
+                                <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--text-primary)" }}>
                                   {val}
                                 </span>
                               )}
@@ -393,14 +396,14 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
             {/* ─ BLIND SPOTS — 3 cards ─ */}
             {data.blindSpots && data.blindSpots.length > 0 && (
               <div style={{
-                padding: "16px 20px",
+                padding: "24px 24px",
                 borderBottom: "1px solid var(--border)",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 400ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 12, fontSize: 11 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
                   Blind Spots
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
                   {data.blindSpots.map((spot, i) => (
                     <div
                       key={i}
@@ -409,20 +412,20 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                       onClick={() => onDeliberate(`Explore this blind spot:\n\n**${BLIND_SPOT_LABELS[spot.type] || "Blind Spot"}: ${spot.title}**\n\n${spot.body}\n\nWhat am I missing and what should I do about it?`)}
                       onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`Explore this blind spot: ${spot.title}`) } }}
                       style={{
-                        background: "var(--bg-surface)", borderRadius: 8, padding: "14px 16px",
+                        background: "var(--bg-surface)", borderRadius: 10, padding: "18px 20px",
                         cursor: "pointer", transition: "background 0.15s", outline: "none",
                       }}
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     >
-                      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600, marginBottom: 8 }}>
+                      <div style={{ ...TYPE.sm, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600, marginBottom: 10 }}>
                         {BLIND_SPOT_LABELS[spot.type] || "Blind Spot"}
                       </div>
-                      <div style={{ ...TYPE.sm, color: "var(--text-primary)", fontWeight: 500, lineHeight: 1.4, marginBottom: 6 }}>
+                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, marginBottom: 8, fontSize: 14 }}>
                         {spot.title}
                       </div>
-                      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", lineHeight: 1.5 }}>
-                        {spot.body.length > 120 ? spot.body.slice(0, 117) + "..." : spot.body}
+                      <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.6 }}>
+                        {isTriage && spot.body.length > 100 ? spot.body.slice(0, 97) + "..." : spot.body}
                       </div>
                     </div>
                   ))}
@@ -433,16 +436,16 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
             {/* ─ ASK CEREBRO — 4 cards ─ */}
             {cerebroTopics.length > 0 && (
               <div style={{
-                padding: "16px 20px",
+                padding: "24px 24px",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 500ms both",
               }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
-                  <ArrowUpRight size={11} style={{ color: "var(--accent-secondary)" }} />
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 14 }}>
+                  <ArrowUpRight size={12} style={{ color: "var(--accent-secondary)" }} />
                   <span style={{ ...labelStyle, letterSpacing: "0.04em", fontSize: 11, color: "var(--accent-secondary)" }}>
                     Ask Cerebro
                   </span>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 10 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12 }}>
                   {cerebroTopics.slice(0, 4).map((topic, i) => (
                     <div
                       key={i}
@@ -451,13 +454,13 @@ export function SynthesisView({ articles, onDeliberate }: SynthesisViewProps) {
                       onClick={() => onDeliberate(topic.prompt)}
                       onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(topic.prompt) } }}
                       style={{
-                        background: "var(--bg-surface)", borderRadius: 8, padding: "14px 16px",
+                        background: "var(--bg-surface)", borderRadius: 10, padding: "18px 20px",
                         cursor: "pointer", transition: "background 0.15s", outline: "none",
                       }}
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     >
-                      <div style={{ ...TYPE.sm, color: "var(--text-secondary)", lineHeight: 1.4 }}>
+                      <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.5 }}>
                         {topic.title}
                       </div>
                     </div>
