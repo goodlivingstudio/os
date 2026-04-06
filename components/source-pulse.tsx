@@ -446,10 +446,18 @@ function UsagePanel() {
   const isWarning = monthlyProjection >= 40 && monthlyProjection < 80
   const costColor = isHealthy ? "var(--live)" : isWarning ? "#D4A05A" : "#ef4444"
 
-  // Endpoint breakdown sorted by cost desc
-  const endpoints = today?.byEndpoint
-    ? Object.entries(today.byEndpoint).sort(([, a], [, b]) => b.cost - a.cost)
-    : []
+  // Endpoint breakdown — always show all endpoints, active ones sorted by cost desc
+  const ALL_ENDPOINTS = ["news-annotate", "annotate", "brief", "audio-brief", "chat", "synthesis", "dispatch", "image-gen", "regen-audio-images"] as const
+  const ENDPOINT_MODELS: Record<string, string> = {
+    "news-annotate": "claude-haiku-4-5-20251001", "annotate": "claude-haiku-4-5-20251001",
+    "brief": "claude-haiku-4-5-20251001", "audio-brief": "claude-haiku-4-5-20251001",
+    "chat": "claude-sonnet-4-20250514", "synthesis": "claude-haiku-4-5-20251001",
+    "dispatch": "claude-sonnet-4-20250514", "image-gen": "flux-schnell", "regen-audio-images": "flux-schnell",
+  }
+  const emptyStats = { calls: 0, inputTokens: 0, outputTokens: 0, imageCount: 0, cost: 0 }
+  const endpoints: [string, typeof emptyStats][] = ALL_ENDPOINTS.map(ep =>
+    [ep, today?.byEndpoint?.[ep] || emptyStats] as [string, typeof emptyStats]
+  ).sort(([, a], [, b]) => b.cost - a.cost)
 
   // Sparkline data: daily history + today
   const sparkValues = data?.dailyHistory
@@ -497,32 +505,29 @@ function UsagePanel() {
 
       <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
         {/* Endpoint breakdown */}
-        {endpoints.length > 0 ? (
+        {endpoints.length > 0 && (
           <>
             {endpoints.map(([ep, stats]) => {
-              const epModel = data?.recentEvents.find(e => e.endpoint === ep)?.model || ""
+              const model = ENDPOINT_MODELS[ep] || ""
+              const inactive = stats.calls === 0
               return (
-                <div key={ep} style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 0" }}>
+                <div key={ep} style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 0", opacity: inactive ? 0.4 : 1 }}>
                   <span style={{ flex: 1, ...TYPE.sm, fontFamily: MONO, color: "var(--text-secondary)" }}>
                     {ENDPOINT_LABELS[ep] || ep}
                   </span>
                   <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", width: 24, textAlign: "right" }}>
-                    {stats.calls}x
+                    {stats.calls > 0 ? `${stats.calls}x` : "—"}
                   </span>
                   <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", width: 44 }}>
-                    {MODEL_LABELS[epModel] || (stats.imageCount > 0 ? "Flux" : "—")}
+                    {MODEL_LABELS[model] || "—"}
                   </span>
                   <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", width: 54, textAlign: "right" }}>
-                    ${stats.cost.toFixed(4)}
+                    {stats.cost > 0 ? `$${stats.cost.toFixed(4)}` : "—"}
                   </span>
                 </div>
               )
             })}
           </>
-        ) : (
-          <div style={{ ...TYPE.sm, color: "var(--text-tertiary)", padding: "8px 0" }}>
-            No usage tracked yet. Data appears after API calls are made.
-          </div>
         )}
 
         {/* Provider split */}
@@ -560,8 +565,8 @@ function UsagePanel() {
             <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.04em" }}>
               Recent
             </div>
-            <div style={{ maxHeight: 160, overflowY: "auto" }}>
-              {data.recentEvents.slice(0, 15).map((event, i) => {
+            <div>
+              {data.recentEvents.map((event, i) => {
                 const ago = Math.round((Date.now() - new Date(event.ts).getTime()) / 60000)
                 const timeLabel = ago < 1 ? "now" : ago < 60 ? `${ago}m` : `${Math.round(ago / 60)}h`
                 const tokens = (event.inputTokens || 0) + (event.outputTokens || 0)

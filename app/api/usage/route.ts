@@ -11,8 +11,8 @@ export async function GET(req: Request) {
   try {
     const { events, summary } = await getTodayUsage()
 
-    // Recent events for the live feed (last 20, newest first)
-    const recentEvents: UsageEvent[] = events.slice(-20).reverse()
+    // All events for the live feed, newest first
+    const recentEvents: UsageEvent[] = [...events].reverse()
 
     const result: {
       today: DailyRollup
