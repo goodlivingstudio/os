@@ -8,16 +8,16 @@ const SHORTCUTS = [
   { section: "Navigation", items: [
     { keys: ["←", "→"], desc: "Cycle views (Signal / Audio / Synthesis)" },
     { keys: ["1"], desc: "Signal" },
-    { keys: ["2"], desc: "Audio" },
+    { keys: ["2"], desc: "Sound" },
     { keys: ["3"], desc: "Synthesis" },
-    { keys: ["4"], desc: "Gallery" },
+    { keys: ["4"], desc: "Surface" },
     { keys: ["F"], desc: "Focus mode (Cerebro full-width)" },
-    { keys: ["G"], desc: "Gallery" },
+    { keys: ["G"], desc: "Surface" },
     { keys: ["C", "/"], desc: "Focus Cerebro input" },
   ]},
-  { section: "Gallery", items: [
+  { section: "Surface", items: [
     { keys: ["←", "→"], desc: "Previous / next image" },
-    { keys: ["Esc"], desc: "Close lightbox or gallery" },
+    { keys: ["Esc"], desc: "Close lightbox or surface" },
   ]},
   { section: "General", items: [
     { keys: ["?"], desc: "Toggle this panel" },

@@ -1,10 +1,10 @@
 "use client"
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react"
-import { Radio, AudioLines, Blend, Newspaper, Settings, Aperture, Keyboard, FileDown, Activity } from "lucide-react"
+import { Radio, AudioLines, Blend, Newspaper, Settings, Aperture, Keyboard, FileDown, Activity, X } from "lucide-react"
 import type { Article, FeedHealth, ViewMode } from "@/lib/types"
-import { CATEGORY_CONFIG } from "@/lib/types"
-import { TYPE, metaStyle } from "@/lib/styles"
+import { CATEGORY_CONFIG, LAYER_COLOR } from "@/lib/types"
+import { TYPE, metaStyle, labelStyle } from "@/lib/styles"
 
 // ─── Live Clock — 24hr with seconds ──────────────────────────────────────────
 
@@ -297,6 +297,9 @@ export function LeftRail({
   onHotkeysOpen,
   onExportOpen,
   feedHealth,
+  dailyBrief,
+  pinnedArticles,
+  onUnpinArticle,
 }: {
   articles: Article[]
   activeLayers: Set<string>
@@ -314,6 +317,9 @@ export function LeftRail({
   onGalleryOpen?: () => void
   onHotkeysOpen?: () => void
   onExportOpen?: () => void
+  dailyBrief?: string
+  pinnedArticles?: Article[]
+  onUnpinArticle?: (articleId: string) => void
 }) {
   const time = useClock()
   const now  = new Date()
@@ -442,12 +448,13 @@ export function LeftRail({
               { id: "signal" as const,    Icon: Radio,      title: "Signal",    action: null },
               { id: "audio" as const,     Icon: AudioLines, title: "Sound",     action: null },
               { id: "synthesis" as const, Icon: Blend,      title: "Synthesis", action: null },
-              { id: "gallery" as const,   Icon: Aperture,   title: "Gallery",   action: "gallery" },
+              { id: "gallery" as const,   Icon: Aperture,   title: "Surface",   action: "gallery" },
             ]).map(tab => {
               const isActive = tab.action === "gallery" ? false : viewMode === tab.id
               return (
                 <button
                   key={tab.id}
+                  className="toggle-btn"
                   onClick={() => tab.action === "gallery" && onGalleryOpen ? onGalleryOpen() : onViewChange(tab.id as ViewMode)}
                   title={tab.title}
                   aria-label={tab.title}
@@ -481,7 +488,6 @@ export function LeftRail({
         {/* Triage/Explore toggle — visible for Signal, Audio, and Synthesis */}
         {(viewMode === "signal" || viewMode === "audio" || viewMode === "synthesis") && (
           <div style={{ padding: "0 16px" }}>
-            <div style={{ height: 1, background: "var(--border)", margin: "20px 0" }} />
             {/* Mode switch — Triage / Explore — same visual language as the view toggle above */}
             <div
               style={{
@@ -491,7 +497,8 @@ export function LeftRail({
                 padding: 3,
                 position: "relative",
                 overflow: "hidden",
-                marginBottom: 16,
+                marginTop: 12,
+                marginBottom: 0,
               }}
             >
               {/* Sliding indicator */}
@@ -499,8 +506,8 @@ export function LeftRail({
                 style={{
                   position: "absolute",
                   top: 3,
-                  left: sortBy === "urgency" ? "3px" : "calc(50% + 1px)",
-                  width: "calc(50% - 4px)",
+                  left: sortBy === "urgency" ? "3px" : "calc(50% + 2px)",
+                  width: "calc(50% - 5px)",
                   height: "calc(100% - 6px)",
                   background: "var(--bg-surface)",
                   borderRadius: 8,
@@ -516,13 +523,16 @@ export function LeftRail({
                 return (
                   <button
                     key={mode.id}
+                    className="toggle-btn"
+                    aria-pressed={isActive}
                     onClick={() => onSortChange(mode.id)}
                     style={{
                       flex: 1,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      padding: "8px 0",
+                      padding: "10px 0",
+                      minHeight: 42,
                       background: "transparent",
                       border: "none",
                       borderRadius: 8,
@@ -532,10 +542,12 @@ export function LeftRail({
                       ...TYPE.sm,
                       fontWeight: isActive ? 600 : 400,
                       color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
-                      transition: "color 0.3s ease",
+                      transition: "background 0.2s ease, color 0.3s ease",
                       textTransform: "uppercase",
                       letterSpacing: "0.04em",
                     }}
+                    onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-surface)" }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
                     {mode.label}
                   </button>
@@ -544,6 +556,94 @@ export function LeftRail({
             </div>
 
             {/* Layer pills moved to Signal feed area */}
+          </div>
+        )}
+
+        {/* ── Daily Brief — ambient one-liner ── */}
+        {dailyBrief && (
+          <div style={{ padding: "0 16px" }}>
+            <div style={{ height: 1, background: "var(--border)", margin: "20px 0" }} />
+            <div style={{ padding: "0 0 0" }}>
+              <div style={{ ...labelStyle, marginBottom: 6 }}>
+                Today&apos;s Lens
+              </div>
+              <div style={{
+                ...TYPE.body,
+                color: "var(--text-tertiary)",
+                fontStyle: "italic",
+                lineHeight: 1.7,
+                opacity: 0.8,
+              }}>
+                {dailyBrief}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Pinned Signals ── */}
+        {pinnedArticles && pinnedArticles.length > 0 && (
+          <div style={{ padding: "0 16px" }}>
+            <div style={{ height: 1, background: "var(--border)", margin: "16px 0" }} />
+            <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 8 }}>
+              <span style={{ ...labelStyle }}>Pinned</span>
+              <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>({pinnedArticles.length})</span>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              {pinnedArticles.map(article => {
+                const isExternal = article.url !== "#"
+                const isPodcast = article.signalType === "podcast"
+                const TypeIcon = isPodcast ? AudioLines : Radio
+                return (
+                  <div
+                    key={article.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: 8,
+                      padding: "6px 4px",
+                      borderRadius: 6,
+                      transition: "background 0.15s",
+                      cursor: isExternal ? "pointer" : "default",
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+                    onClick={() => { if (isExternal) window.open(article.url, "_blank", "noopener,noreferrer") }}
+                  >
+                    <TypeIcon size={14} strokeWidth={1.5} style={{ flexShrink: 0, marginTop: 1, color: "var(--text-tertiary)" }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{
+                        ...TYPE.sm,
+                        color: "var(--text-secondary)",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical" as const,
+                        overflow: "hidden",
+                        lineHeight: 1.4,
+                      }}>
+                        <span style={{ color: "var(--text-tertiary)", fontWeight: 400 }}>{article.source}: </span>
+                        <span style={{ fontWeight: 500 }}>{article.title}</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={e => { e.stopPropagation(); onUnpinArticle?.(article.id) }}
+                      title="Unpin"
+                      style={{
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        width: 18, height: 18, flexShrink: 0, marginTop: 0,
+                        background: "transparent", border: "none", borderRadius: 4,
+                        color: "var(--text-tertiary)", cursor: "pointer",
+                        transition: "all 0.15s",
+                        padding: 0,
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-surface)" }}
+                      onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
+                    >
+                      <X size={11} strokeWidth={2} />
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         )}
 
@@ -563,6 +663,8 @@ export function LeftRail({
           return (
             <button
               key={item.id}
+              className="toggle-btn"
+              aria-pressed={isActive}
               onClick={() => {
                 if (item.id === "shortcuts" && onHotkeysOpen) onHotkeysOpen()
                 else if (item.id === "export" && onExportOpen) onExportOpen()

@@ -243,31 +243,40 @@ export function Ticker({
 
       {/* Day / night toggle */}
       {onToggle && (
-        <button
-          onClick={onToggle}
-          title={isDay ? "Switch to night mode" : "Switch to day mode"}
-          aria-label={isDay ? "Switch to night mode" : "Switch to day mode"}
-          aria-pressed={isDay}
-          style={{
-            flexShrink: 0,
-            width: 42,
-            height: 52,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "transparent",
-            border: "none",
-            borderLeft: "1px solid var(--border)",
-            cursor: "pointer",
-            fontSize: 17,
-            color: "var(--text-tertiary)",
-            transition: "all 0.15s",
-          }}
-          onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.background = "var(--bg-elevated)" }}
-          onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
-        >
-          {isDay ? <MoonStar size={17} strokeWidth={1.5} /> : <SunMedium size={17} strokeWidth={1.5} />}
-        </button>
+        <div style={{
+          flexShrink: 0,
+          width: 42,
+          height: 52,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          borderLeft: "1px solid var(--border)",
+        }}>
+          <button
+            onClick={onToggle}
+            title={isDay ? "Switch to night mode" : "Switch to day mode"}
+            aria-label={isDay ? "Switch to night mode" : "Switch to day mode"}
+            aria-pressed={isDay}
+            style={{
+              width: 28,
+              height: 28,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "transparent",
+              border: "none",
+              borderRadius: 8,
+              cursor: "pointer",
+              color: "var(--text-tertiary)",
+              transition: "all 0.15s",
+              padding: 0,
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.background = "var(--bg-elevated)" }}
+            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
+          >
+            {isDay ? <MoonStar size={16} strokeWidth={1.5} /> : <SunMedium size={16} strokeWidth={1.5} />}
+          </button>
+        </div>
       )}
 
       <style>{`

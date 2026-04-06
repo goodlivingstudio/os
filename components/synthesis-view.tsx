@@ -173,27 +173,34 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
 
         {/* ── Loading ── */}
         {loading && (
-          <div role="status" aria-live="polite" style={{ padding: "32px 20px" }}>
-            {SYNTHESIS_STATUSES.slice(0, statusIdx + 1).map((line, i) => (
-              <div
-                key={i}
-                style={{
-                  ...TYPE.sm, fontFamily: MONO,
-                  color: i === statusIdx ? "var(--accent-muted)" : "var(--text-tertiary)",
-                  opacity: i === statusIdx ? 1 : 0.5,
-                  animation: i === statusIdx ? "status-fade 0.2s ease both" : "none",
-                  marginBottom: 4,
-                }}
-              >
-                {line}{i === statusIdx && i < SYNTHESIS_STATUSES.length - 1 && <span className="cursor-blink" style={{ marginLeft: 2 }}>_</span>}
-                {i === statusIdx && i === SYNTHESIS_STATUSES.length - 1 && <span className="loading-pulse" style={{ marginLeft: 4, ...TYPE.xs, opacity: 0.6 }}>...</span>}
-              </div>
-            ))}
-            {elapsed > 3 && (
-              <div style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", marginTop: 12, opacity: 0.6 }}>
-                {elapsed < 10 ? "analyzing patterns" : elapsed < 30 ? "composing images" : "finishing up"} · {elapsed}s
-              </div>
-            )}
+          <div role="status" aria-live="polite" style={{ position: "relative", overflow: "hidden" }}>
+            <div style={{ padding: "32px 20px" }}>
+              {SYNTHESIS_STATUSES.slice(0, statusIdx + 1).map((line, i) => (
+                <div
+                  key={i}
+                  style={{
+                    ...TYPE.sm, fontFamily: MONO,
+                    color: i === statusIdx ? "var(--accent-muted)" : "var(--text-tertiary)",
+                    opacity: i === statusIdx ? 1 : 0.5,
+                    animation: i === statusIdx ? "status-fade 0.2s ease both" : "none",
+                    marginBottom: 4,
+                  }}
+                >
+                  {line}{i === statusIdx && i < SYNTHESIS_STATUSES.length - 1 && <span className="cursor-blink" style={{ marginLeft: 2 }}>_</span>}
+                  {i === statusIdx && i === SYNTHESIS_STATUSES.length - 1 && <span className="loading-pulse" style={{ marginLeft: 4, ...TYPE.xs, opacity: 0.6 }}>…</span>}
+                </div>
+              ))}
+              {elapsed > 3 && (
+                <div style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", marginTop: 12, opacity: 0.6 }}>
+                  {elapsed < 10 ? "analyzing patterns" : elapsed < 30 ? "composing images" : "finishing up"} · {elapsed}s
+                </div>
+              )}
+            </div>
+            <div style={{
+              position: "absolute", bottom: 0, left: 0, width: "25%", height: 1,
+              background: "var(--accent-secondary)", opacity: 0.4,
+              animation: "band-scan 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            }} />
           </div>
         )}
 

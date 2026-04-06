@@ -255,7 +255,7 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
             color: "var(--accent-muted)", textTransform: "uppercase",
             letterSpacing: "0.08em", flexShrink: 0,
           }}>
-            Gallery
+            Surface
           </span>
 
           {/* Color mood filters */}

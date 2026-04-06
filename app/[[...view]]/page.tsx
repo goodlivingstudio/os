@@ -199,6 +199,7 @@ export default function Page() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [feedImageMode, setFeedImageMode] = useState<"off" | "source">("off")
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
+  const [pinnedArticles, setPinnedArticles] = useState<Article[]>([])
 
   // ── URL ↔ State sync ───────────────────────────────────────────────────────
   const VALID_VIEWS = ["signal", "audio", "synthesis", "dispatch", "config", "pulse"] as const
@@ -373,6 +374,12 @@ export default function Page() {
 
       const savedExcluded = localStorage.getItem("dispatch-excluded-sources")
       if (savedExcluded) setExcludedSources(new Set(JSON.parse(savedExcluded)))
+
+      const savedPinned = localStorage.getItem("dispatch-pinned-articles")
+      if (savedPinned) {
+        const parsed = JSON.parse(savedPinned)
+        if (Array.isArray(parsed)) setPinnedArticles(parsed)
+      }
     } catch { /* localStorage unavailable — use defaults */ }
   }, [])
 
@@ -391,6 +398,23 @@ export default function Page() {
   useEffect(() => {
     try { localStorage.setItem("dispatch-mobile-tab", mobileTab) } catch {}
   }, [mobileTab])
+
+  // Persist pinned articles
+  useEffect(() => {
+    try { localStorage.setItem("dispatch-pinned-articles", JSON.stringify(pinnedArticles)) } catch {}
+  }, [pinnedArticles])
+
+  const handlePinArticle = useCallback((article: Article) => {
+    setPinnedArticles(prev => {
+      if (prev.some(a => a.id === article.id)) return prev.filter(a => a.id !== article.id)
+      return [article, ...prev].slice(0, 7)
+    })
+  }, [])
+
+  const handleUnpinArticle = useCallback((articleId: string) => {
+    setPinnedArticles(prev => prev.filter(a => a.id !== articleId))
+  }, [])
+
   const [cerebroPrompt,  setCerebroPrompt]  = useState<{ text: string; id: number } | null>(null)
   const { signals, briefLoading, briefError } = useChiefOfStaff(articles)
 
@@ -637,24 +661,30 @@ export default function Page() {
               {([
                 { id: "off" as const, label: "Off" },
                 { id: "source" as const, label: "Source" },
-              ]).map(mode => (
-                <button
-                  key={mode.id}
-                  aria-pressed={feedImageMode === mode.id}
-                  onClick={() => setFeedImageMode(mode.id)}
-                  style={{
-                    padding: "4px 12px", border: "none",
-                    borderRadius: 6, cursor: "pointer",
-                    background: feedImageMode === mode.id ? "var(--bg-surface)" : "transparent",
-                    ...TYPE.xs,
-                    fontWeight: feedImageMode === mode.id ? 600 : 400,
-                    color: feedImageMode === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
-                    transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-                  }}
-                >
-                  {mode.label}
-                </button>
-              ))}
+              ]).map(mode => {
+                const isActive = feedImageMode === mode.id
+                return (
+                  <button
+                    key={mode.id}
+                    className="toggle-btn"
+                    aria-pressed={isActive}
+                    onClick={() => setFeedImageMode(mode.id)}
+                    style={{
+                      padding: "4px 12px", border: "none",
+                      borderRadius: 6, cursor: "pointer",
+                      background: isActive ? "var(--bg-surface)" : "transparent",
+                      ...TYPE.xs,
+                      fontWeight: isActive ? 600 : 400,
+                      color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
+                      transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                    }}
+                    onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.color = "var(--text-secondary)" } }}
+                    onMouseLeave={e => { e.currentTarget.style.background = isActive ? "var(--bg-surface)" : "transparent"; e.currentTarget.style.color = isActive ? "var(--text-primary)" : "var(--text-tertiary)" }}
+                  >
+                    {mode.label}
+                  </button>
+                )
+              })}
             </div>
           </div>
         )}
@@ -691,6 +721,8 @@ export default function Page() {
               onSignalEnter={handleSignalEnter}
               onSignalMove={handleSignalMove}
               onSignalLeave={handleSignalLeave}
+              isPinned={pinnedArticles.some(p => p.id === a.id)}
+              onTogglePin={handlePinArticle}
             />
           ))
         )}
@@ -844,7 +876,7 @@ export default function Page() {
           <div key={mobileTab} className="mobile-tab-content" style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
             {mobileTab === "signal" && feedContent}
             {mobileTab === "synthesis" && <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} sortBy={sortBy} />}
-            {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} />}
+            {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} pinnedArticleIds={new Set(pinnedArticles.map(a => a.id))} onPinArticle={handlePinArticle} />}
             {mobileTab === "gallery"   && <GalleryOverlay onClose={() => setMobileTab("signal")} excludedSources={excludedSources} />}
             {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} /></div>}
             {mobileTab === "config"    && <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} />}
@@ -857,7 +889,7 @@ export default function Page() {
             { id: "signal" as const,    Icon: Radio,      label: "Signal"    },
             { id: "audio" as const,     Icon: AudioLines, label: "Sound"     },
             { id: "synthesis" as const, Icon: Blend,      label: "Synthesis" },
-            { id: "gallery" as const,   Icon: Aperture,   label: "Gallery"   },
+            { id: "gallery" as const,   Icon: Aperture,   label: "Surface"   },
             { id: "cerebro" as const,   Icon: Brain,      label: "Cerebro"   },
           ]
           const activeIdx = tabs.findIndex(t => t.id === mobileTab)
@@ -1086,6 +1118,9 @@ export default function Page() {
                 onHotkeysOpen={() => setHotkeysOpen(true)}
                 onExportOpen={() => setExportOpen(true)}
                 feedHealth={feedHealth}
+                dailyBrief={signals.length > 0 && signals[0].body ? signals[0].body.replace(/\[\d+\]/g, "").replace(/\s+[A-Z]+\s*\/\s*[A-Z]+\s*\d*\s*$/, "").trim() : undefined}
+                pinnedArticles={pinnedArticles}
+                onUnpinArticle={handleUnpinArticle}
               />
             </>
           )}
@@ -1100,7 +1135,7 @@ export default function Page() {
           : viewMode === "synthesis"
           ? <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} sortBy={sortBy} />
           : viewMode === "audio"
-          ? <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} />
+          ? <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} pinnedArticleIds={new Set(pinnedArticles.map(a => a.id))} onPinArticle={handlePinArticle} />
           : feedContent}
         <Divider onMouseDown={e => startResize("right", e)} />
         <div
@@ -1138,10 +1173,10 @@ export default function Page() {
                 onClick={() => setCerebroCollapsed(true)}
                 title="Collapse Cerebro"
                 style={{
-                  position: "absolute", top: 0, right: 0, zIndex: 2,
-                  width: 40, height: 40,
+                  position: "absolute", top: 8, right: 8, zIndex: 2,
+                  width: 28, height: 28,
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  background: "transparent", border: "none",
+                  background: "transparent", border: "none", borderRadius: 6,
                   cursor: "pointer", transition: "background 0.15s",
                 }}
                 onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}

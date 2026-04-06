@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, memo } from "react"
+import { Bookmark } from "lucide-react"
 import type { Article } from "@/lib/types"
 import { timeAgo, LENS_COLOR } from "@/lib/types"
 import { TYPE, labelStyle, bodyStyle, metaStyle } from "@/lib/styles"
@@ -27,6 +28,7 @@ export function SignalCard({ x, y, article }: { x: number; y: number; article: A
       borderRadius: 8,
       border: "1px solid var(--border)",
       overflow: "hidden",
+      boxShadow: "var(--shadow-tooltip)",
     }}>
       {/* Synopsis — Cerebro: what this article is about */}
       {article.synopsis && (
@@ -79,7 +81,7 @@ export type SignalCallbacks = {
   onSignalLeave: () => void
 }
 
-export const FeedCard = memo(function FeedCard({ article, index, onSignalEnter, onSignalMove, onSignalLeave, imageMode = "off" }: { article: Article; index?: number; imageMode?: "off" | "source" } & SignalCallbacks) {
+export const FeedCard = memo(function FeedCard({ article, index, onSignalEnter, onSignalMove, onSignalLeave, imageMode = "off", isPinned, onTogglePin }: { article: Article; index?: number; imageMode?: "off" | "source"; isPinned?: boolean; onTogglePin?: (article: Article) => void } & SignalCallbacks) {
   const isExternal   = article.url !== "#"
   const hasSignal    = !!(article.synopsis || article.relevance)
   const [hovered, setHovered] = useState(false)
@@ -138,6 +140,7 @@ export const FeedCard = memo(function FeedCard({ article, index, onSignalEnter, 
         transition: "background 0.15s",
         animation: index !== undefined ? `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${Math.min(index * 50, 500)}ms both` : undefined,
         gap: imageMode === "source" && article.imageUrl ? 16 : 0,
+        position: "relative",
       }}
     >
       {/* Source image — shown only when imageMode is "source" */}
@@ -201,6 +204,25 @@ export const FeedCard = memo(function FeedCard({ article, index, onSignalEnter, 
           </div>
         )}
       </div>
+      {onTogglePin && (
+        <button
+          onClick={e => { e.preventDefault(); e.stopPropagation(); onTogglePin(article) }}
+          title={isPinned ? "Unpin" : "Pin for later"}
+          aria-label={isPinned ? "Unpin" : "Pin for later"}
+          style={{
+            position: "absolute", top: 12, right: 12,
+            width: 24, height: 24,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "transparent", border: "none", borderRadius: 4,
+            cursor: "pointer", padding: 0,
+            opacity: isPinned ? 1 : hovered ? 0.6 : 0,
+            color: isPinned ? "var(--accent-secondary)" : "var(--text-tertiary)",
+            transition: "opacity 0.15s, color 0.15s",
+          }}
+        >
+          <Bookmark size={14} strokeWidth={1.5} fill={isPinned ? "currentColor" : "none"} />
+        </button>
+      )}
     </div>
   )
 

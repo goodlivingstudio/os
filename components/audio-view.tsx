@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { ExternalLink, ArrowUpRight, ChevronUp } from "lucide-react"
+import { ExternalLink, ArrowUpRight, ChevronUp, Bookmark } from "lucide-react"
 import { TYPE, MONO, metaStyle } from "@/lib/styles"
+import type { Article } from "@/lib/types"
 
 // ─── Audio DCOS Band ────────────────────────────────────────────────────────
 
@@ -14,11 +15,22 @@ interface AudioSignal {
 const AUDIO_BRIEF_CACHE_KEY = "dispatch-dcos-audio-brief"
 const AUDIO_BRIEF_TTL = 30 * 60 * 1000 // 30 min — matches ISR cycle
 
+const AUDIO_SCAN_STATUSES = [
+  "$ dispatch --sound",
+  "▸ scanning podcast feeds",
+  "▸ clustering episodes",
+  "▸ cross-referencing mandate",
+  "▸ composing brief",
+]
+
 function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episodes: Episode[]; visible: boolean; defaultExpanded?: boolean }) {
   const [signals, setSignals] = useState<AudioSignal[]>([])
   const [loading, setLoading] = useState(false)
   const [expanded, setExpanded] = useState(defaultExpanded)
   const fetched = useRef(false)
+  const [statusIdx, setStatusIdx] = useState(0)
+  const [revealed, setRevealed] = useState(false)
+  const wasLoading = useRef(false)
 
   // Sync expanded state when toggle changes
   useEffect(() => { setExpanded(defaultExpanded) }, [defaultExpanded])
@@ -61,12 +73,31 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episode
       .catch(() => setLoading(false))
   }, [episodes, visible])
 
+  // Advance status text while fetching
+  useEffect(() => {
+    if (!loading) return
+    setStatusIdx(0)
+    wasLoading.current = true
+    const t = setInterval(() => setStatusIdx(i => Math.min(i + 1, AUDIO_SCAN_STATUSES.length - 1)), 900)
+    return () => clearInterval(t)
+  }, [loading])
+
+  // When real data arrives, reveal
+  useEffect(() => {
+    const hasRealData = !loading && signals.some(s => !!s.body)
+    if (hasRealData && wasLoading.current) {
+      wasLoading.current = false
+      const t = setTimeout(() => setRevealed(true), 100)
+      return () => clearTimeout(t)
+    }
+  }, [loading, signals])
+
   if (!visible) return null
 
   const realSignals = signals.filter(s => s.body)
 
   return (
-    <div style={{ flexShrink: 0 }}>
+    <div style={{ flexShrink: 0, position: "relative", overflow: "hidden" }}>
       <button
         onClick={() => setExpanded(e => !e)}
         style={{
@@ -92,12 +123,34 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episode
         maxHeight: expanded ? 400 : 0, overflow: "hidden",
         transition: "max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
       }}>
-        {loading ? (
-          <div style={{ padding: "12px 20px" }}>
-            <span className="loading-pulse" style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)" }}>
-              Analyzing episodes...
-            </span>
-          </div>
+        {loading || (wasLoading.current && !revealed) ? (
+          <>
+            <div style={{
+              padding: "16px 24px",
+              display: "flex", flexDirection: "column", gap: 4,
+              minHeight: 80, justifyContent: "center",
+            }}>
+              {AUDIO_SCAN_STATUSES.slice(0, statusIdx + 1).map((line, i) => (
+                <div
+                  key={i}
+                  style={{
+                    ...TYPE.sm, fontFamily: "var(--font-geist-mono), monospace",
+                    color: i === statusIdx ? "var(--accent-muted)" : "var(--text-tertiary)",
+                    opacity: i === statusIdx ? 1 : 0.5,
+                    animation: i === statusIdx ? "status-fade 0.2s ease both" : "none",
+                  }}
+                >
+                  {line}{i === statusIdx && i < AUDIO_SCAN_STATUSES.length - 1 && <span className="cursor-blink" style={{ marginLeft: 2 }}>_</span>}
+                  {i === statusIdx && i === AUDIO_SCAN_STATUSES.length - 1 && <span className="loading-pulse" style={{ marginLeft: 4, ...TYPE.xs, opacity: 0.6 }}>…</span>}
+                </div>
+              ))}
+            </div>
+            <div style={{
+              position: "absolute", bottom: 0, left: 0, width: "25%", height: 1,
+              background: "var(--accent-secondary)", opacity: 0.4,
+              animation: "band-scan 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            }} />
+          </>
         ) : realSignals.length > 0 ? (
           <div style={{ display: "grid", gridTemplateColumns: `repeat(${realSignals.length}, 1fr)`, gap: 8, padding: "8px 16px 16px" }}>
             {realSignals.map((signal, i) => (
@@ -347,12 +400,14 @@ function EpisodeModal({ episode, onClose, onDeliberate, artworkMode = "off" }: {
 
 // ─── Episode Card ────────────────────────────────────────────────────────────
 
-function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onSignalLeave, artworkMode = "off" }: {
+function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onSignalLeave, artworkMode = "off", isPinned, onTogglePin }: {
   episode: Episode; index?: number; onClick: () => void
   onSignalEnter?: (ep: Episode, x: number, y: number) => void
   onSignalMove?: (x: number, y: number) => void
   onSignalLeave?: () => void
   artworkMode?: "off" | "source"
+  isPinned?: boolean
+  onTogglePin?: (episode: Episode) => void
 }) {
   const [hovered, setHovered] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
@@ -406,8 +461,29 @@ function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onS
         cursor: "pointer",
         transition: "background 0.15s",
         animation: index !== undefined ? `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${Math.min(index * 60, 600)}ms both` : undefined,
+        position: "relative",
       }}
     >
+      {/* Pin button */}
+      {onTogglePin && (
+        <button
+          onClick={e => { e.stopPropagation(); onTogglePin(episode) }}
+          title={isPinned ? "Unpin" : "Pin for later"}
+          aria-label={isPinned ? "Unpin" : "Pin for later"}
+          style={{
+            position: "absolute", top: 10, right: 10,
+            width: 24, height: 24,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "transparent", border: "none", borderRadius: 4,
+            cursor: "pointer", padding: 0,
+            opacity: isPinned ? 1 : hovered ? 0.6 : 0,
+            color: isPinned ? "var(--accent-secondary)" : "var(--text-tertiary)",
+            transition: "opacity 0.15s, color 0.15s",
+          }}
+        >
+          <Bookmark size={14} strokeWidth={1.5} fill={isPinned ? "currentColor" : "none"} />
+        </button>
+      )}
       {/* Artwork — hidden when artworkMode is "off" */}
       {artworkMode === "source" && (
         episode.originalArtworkUrl || episode.artworkUrl ? (
@@ -478,7 +554,7 @@ const LAYER_FILTERS: { id: string; label: string }[] = [
   { id: "culture", label: "Culture" },
 ]
 
-export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }: { onDeliberate?: (text: string) => void; excludedSources?: Set<string>; sortBy?: "urgency" | "layer" }) {
+export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", pinnedArticleIds, onPinArticle }: { onDeliberate?: (text: string) => void; excludedSources?: Set<string>; sortBy?: "urgency" | "layer"; pinnedArticleIds?: Set<string>; onPinArticle?: (article: Article) => void }) {
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [loading, setLoading] = useState(true)
   const [showCount, setShowCount] = useState(0)
@@ -632,23 +708,30 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
               {([
                 { id: "off" as const, label: "Off" },
                 { id: "source" as const, label: "Source" },
-              ]).map(mode => (
-                <button
-                  key={mode.id}
-                  onClick={() => setArtworkMode(mode.id)}
-                  style={{
-                    padding: "4px 12px", border: "none",
-                    borderRadius: 6, cursor: "pointer",
-                    background: artworkMode === mode.id ? "var(--bg-surface)" : "transparent",
-                    ...TYPE.xs,
-                    fontWeight: artworkMode === mode.id ? 600 : 400,
-                    color: artworkMode === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
-                    transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-                  }}
-                >
-                  {mode.label}
-                </button>
-              ))}
+              ]).map(mode => {
+                const isActive = artworkMode === mode.id
+                return (
+                  <button
+                    key={mode.id}
+                    className="toggle-btn"
+                    aria-pressed={isActive}
+                    onClick={() => setArtworkMode(mode.id)}
+                    style={{
+                      padding: "4px 12px", border: "none",
+                      borderRadius: 6, cursor: "pointer",
+                      background: isActive ? "var(--bg-surface)" : "transparent",
+                      ...TYPE.xs,
+                      fontWeight: isActive ? 600 : 400,
+                      color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
+                      transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                    }}
+                    onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.color = "var(--text-secondary)" } }}
+                    onMouseLeave={e => { e.currentTarget.style.background = isActive ? "var(--bg-surface)" : "transparent"; e.currentTarget.style.color = isActive ? "var(--text-primary)" : "var(--text-tertiary)" }}
+                  >
+                    {mode.label}
+                  </button>
+                )
+              })}
             </div>
           )}
         </div>
@@ -706,6 +789,21 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
               onSignalMove={(x, y) => setSignal(s => s ? { ...s, x, y } : s)}
               onSignalLeave={() => setSignal(null)}
               artworkMode={artworkMode}
+              isPinned={pinnedArticleIds?.has(ep.id)}
+              onTogglePin={onPinArticle ? (episode) => {
+                const asArticle: Article = {
+                  id: episode.id,
+                  title: episode.title,
+                  source: episode.showName,
+                  url: episode.url,
+                  publishedAt: episode.publishedAt,
+                  summary: episode.summary,
+                  category: episode.category,
+                  tag: episode.tag,
+                  signalType: "podcast",
+                }
+                onPinArticle(asArticle)
+              } : undefined}
             />
           ))}
         </div>
@@ -720,6 +818,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency" }:
           width: 260, pointerEvents: "none", zIndex: 1000,
           background: "var(--bg-elevated)", borderRadius: 8,
           border: "1px solid var(--border)", overflow: "hidden",
+          boxShadow: "var(--shadow-tooltip)",
         }}>
           {signal.episode.synopsis && (
             <div style={{ padding: "12px 14px", borderBottom: signal.episode.relevance ? "1px solid var(--border)" : "none" }}>

@@ -55,11 +55,12 @@ function CitationChip({ num, src }: { num: string; src: CitationSource }) {
             top: Math.max(8, pos.y - 8),
             transform: "translateY(-100%)",
             width: 220,
-            background: "var(--bg-surface)",
+            background: "var(--bg-elevated)",
             border: "1px solid var(--border)",
             borderRadius: 8,
             padding: "10px 12px",
             zIndex: 1000,
+            boxShadow: "var(--shadow-tooltip)",
             animation: "status-fade 0.15s ease both",
           }}
         >
