@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { X, ChevronLeft, ChevronRight } from "lucide-react"
+import { X, ChevronLeft, ChevronRight, LayoutGrid, Columns2, Square } from "lucide-react"
 import { TYPE, MONO } from "@/lib/styles"
 import type { GalleryImage, ColorMood } from "@/lib/gallery"
 import { PaletteTrends } from "@/components/palette-trends"
@@ -171,6 +171,7 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
   const [activeMood, setActiveMood] = useState<ColorMood | null>(null)
   const [showTrends, setShowTrends] = useState(false)
+  const [galleryCols, setGalleryCols] = useState(typeof window !== "undefined" && window.innerWidth <= 768 ? 2 : 3)
   const [paletteIntel, setPaletteIntel] = useState<{
     trend: string
     moodShifts: { mood: string; direction: "rising" | "falling"; delta: number }[]
@@ -314,9 +315,28 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
             </button>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
-            <span style={{ ...TYPE.sm, color: "var(--text-tertiary)" }}>
-              {images.length} images
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+            {/* Column toggle */}
+            <div style={{ display: "flex", gap: 2, background: "var(--bg-elevated)", borderRadius: 6, padding: 2 }}>
+              {([1, 2, 3] as const).map(n => (
+                <button
+                  key={n}
+                  onClick={() => setGalleryCols(n)}
+                  title={`${n} column${n > 1 ? "s" : ""}`}
+                  style={{
+                    width: 26, height: 26, borderRadius: 4, border: "none",
+                    background: galleryCols === n ? "var(--bg-surface)" : "transparent",
+                    color: galleryCols === n ? "var(--text-primary)" : "var(--text-tertiary)",
+                    cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                    padding: 0, transition: "all 0.15s",
+                  }}
+                >
+                  {n === 1 ? <Square size={12} strokeWidth={1.5} /> : n === 2 ? <Columns2 size={12} strokeWidth={1.5} /> : <LayoutGrid size={12} strokeWidth={1.5} />}
+                </button>
+              ))}
+            </div>
+            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
+              {images.length}
             </span>
             <button
               onClick={onClose}
@@ -351,7 +371,7 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
       {/* Masonry grid — hidden when trends is active */}
       {!showTrends && <div style={{
         flex: 1, overflowY: "auto", overflowX: "hidden",
-        padding: 32,
+        padding: galleryCols === 1 ? "16px 8px" : "24px 16px",
       }}>
         {loading ? (
           <div style={{ ...TYPE.body, color: "var(--text-tertiary)", padding: 32 }}>
@@ -362,16 +382,17 @@ export function GalleryOverlay({ onClose, excludedSources }: { onClose: () => vo
             No images available.
           </div>
         ) : (() => {
-          // Build index lookup and distribute round-robin into 3 columns
+          // Build index lookup and distribute round-robin into N columns
           const idxMap = new Map<string, number>()
           images.forEach((img, i) => idxMap.set(img.id, i))
-          const cols: typeof images[] = [[], [], []]
-          images.forEach((img, i) => cols[i % 3].push(img))
+          const cols: typeof images[] = Array.from({ length: galleryCols }, () => [])
+          images.forEach((img, i) => cols[i % galleryCols].push(img))
+          const gridGap = galleryCols === 1 ? 8 : galleryCols === 2 ? 10 : 14
 
           return (
-            <div className="gallery-masonry" style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+            <div style={{ display: "flex", gap: gridGap, alignItems: "flex-start" }}>
               {cols.map((col, colIdx) => (
-                <div key={colIdx} style={{ flex: 1, display: "flex", flexDirection: "column", gap: 14, minWidth: 0 }}>
+                <div key={colIdx} style={{ flex: 1, display: "flex", flexDirection: "column", gap: gridGap, minWidth: 0 }}>
                   {col.map((img) => {
                     const globalIdx = idxMap.get(img.id) ?? 0
                     return (

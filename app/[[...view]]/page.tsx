@@ -668,16 +668,16 @@ export default function Page() {
       <div style={{ display: "flex", flexDirection: "column", height: "100dvh", overflow: "hidden", background: "var(--bg-primary)", position: "fixed", inset: 0 }}>
         {/* ── Mobile Header ── */}
         <div style={{
-          flexShrink: 0, height: 40, display: "flex", alignItems: "center",
+          flexShrink: 0, height: 48, display: "flex", alignItems: "center",
           justifyContent: "space-between", padding: "0 16px",
           borderBottom: "1px solid var(--border)",
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--live)" }} />
-            <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase", fontWeight: 500 }}>Dispatch</span>
+            <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase", fontWeight: 500 }}>Dispatch</span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            {/* Skin dots — matches desktop ticker pattern */}
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            {/* Skin dots — large touch targets */}
             {(["mineral", "slate", "forest"] as Skin[]).map(s => {
               const isActive = skin === s
               const color = s === "mineral" ? "#B8966A" : s === "slate" ? "#4A7A9B" : "#5C8A6E"
@@ -686,31 +686,35 @@ export default function Page() {
                   key={s}
                   onClick={() => setSkin(s)}
                   style={{
-                    width: isActive ? 8 : 5, height: isActive ? 8 : 5, borderRadius: "50%",
-                    border: "none", cursor: "pointer", padding: 0,
+                    width: 36, height: 36, borderRadius: 8, border: "none", cursor: "pointer",
+                    background: "transparent", display: "flex", alignItems: "center", justifyContent: "center", padding: 0,
+                  }}
+                >
+                  <span style={{
+                    width: isActive ? 10 : 6, height: isActive ? 10 : 6, borderRadius: "50%",
                     background: color,
                     outline: isActive ? `1.5px solid ${color}` : "none",
                     outlineOffset: isActive ? 2 : 0,
                     opacity: isActive ? 1 : 0.35,
-                    transition: "all 0.2s",
-                  }}
-                />
+                    transition: "all 0.2s", display: "block",
+                  }} />
+                </button>
               )
             })}
-            {/* Day/night toggle — Lucide icons */}
+            {/* Day/night toggle */}
             <button
               onClick={toggleMode}
-              style={{ width: 28, height: 28, borderRadius: 6, border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, color: "var(--text-tertiary)", transition: "color 0.15s" }}
+              style={{ width: 36, height: 36, borderRadius: 8, border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, color: "var(--text-tertiary)", transition: "color 0.15s" }}
             >
-              {isDay ? <SunMedium size={16} strokeWidth={1.5} /> : <MoonStar size={16} strokeWidth={1.5} />}
+              {isDay ? <SunMedium size={18} strokeWidth={1.5} /> : <MoonStar size={18} strokeWidth={1.5} />}
             </button>
             {/* Overflow menu */}
             <div style={{ position: "relative" }}>
               <button
                 onClick={() => { setMobileMenuOpen(v => !v); setMobileFilterOpen(false) }}
-                style={{ width: 28, height: 28, borderRadius: 6, border: "none", background: mobileMenuOpen ? "var(--bg-elevated)" : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, color: "var(--text-tertiary)", transition: "all 0.15s" }}
+                style={{ width: 36, height: 36, borderRadius: 8, border: "none", background: mobileMenuOpen ? "var(--bg-elevated)" : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, color: "var(--text-tertiary)", transition: "all 0.15s" }}
               >
-                <MoreHorizontal size={16} strokeWidth={1.5} />
+                <MoreHorizontal size={18} strokeWidth={1.5} />
               </button>
               {mobileMenuOpen && (
                 <div style={{
