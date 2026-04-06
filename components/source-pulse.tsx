@@ -438,10 +438,12 @@ function UsagePanel() {
   }, [range])
 
   const today = data?.today
-  const mtdCost = data?.dailyHistory
+  const periodCost = data?.dailyHistory
     ? data.dailyHistory.reduce((sum, d) => sum + d.totalCost, 0) + (today?.totalCost || 0)
     : today?.totalCost || 0
-  const monthlyProjection = range === "today" ? mtdCost * 30 : mtdCost
+  // Project monthly cost from whatever period we have
+  const periodDays = range === "today" ? 1 : range === "7d" ? Math.max(1, (data?.dailyHistory?.length || 0) + 1) : Math.max(1, (data?.dailyHistory?.length || 0) + 1)
+  const monthlyProjection = (periodCost / periodDays) * 30
   const isHealthy = monthlyProjection < 40
   const isWarning = monthlyProjection >= 40 && monthlyProjection < 80
   const costColor = isHealthy ? "var(--live)" : isWarning ? "#D4A05A" : "#ef4444"
@@ -494,7 +496,7 @@ function UsagePanel() {
       <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
         <MetricCard label="Today" value={`$${(today?.totalCost || 0).toFixed(3)}`} color={costColor} />
         <MetricCard
-          label={range === "today" ? "Projected/mo" : "Period"}
+          label="Projected/mo"
           value={`$${monthlyProjection.toFixed(2)}`}
           color={costColor}
           sub={!isHealthy ? (isWarning ? "WATCH" : "HIGH") : undefined}

@@ -99,8 +99,12 @@ export async function POST(req: Request) {
     const match = text.match(/\[[\s\S]*\]/)
     if (!match) return Response.json({ annotations: [] })
 
-    const raw: { synopsis?: string; hook?: string; type?: string; lens?: string; scores?: { opportunity: number; position: number; discipline: number; landscape: number; culture: number; urgency: number } }[] =
-      JSON.parse(match[0])
+    let raw: { synopsis?: string; hook?: string; type?: string; lens?: string; scores?: { opportunity: number; position: number; discipline: number; landscape: number; culture: number; urgency: number } }[]
+    try {
+      raw = JSON.parse(match[0])
+    } catch {
+      return Response.json({ annotations: [] })
+    }
 
     const annotations: Annotation[] = articles.map((a, i) => ({
       id:           a.id,

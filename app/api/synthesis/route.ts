@@ -143,8 +143,8 @@ function computeVelocityAndHeatmap(
     else decelerating.push(item)
   }
 
-  accelerating.sort((a, b) => parseInt(b.delta) - parseInt(a.delta))
-  decelerating.sort((a, b) => parseInt(a.delta) - parseInt(b.delta))
+  accelerating.sort((a, b) => (b.curr - b.prev) - (a.curr - a.prev))
+  decelerating.sort((a, b) => (a.curr - a.prev) - (b.curr - b.prev))
 
   // ── Heatmap: per-day × per-layer average urgency ──
   const dayLabels = dates.map(d => {

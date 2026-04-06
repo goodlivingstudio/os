@@ -54,6 +54,7 @@ interface SynthesisData {
   patterns: AIPattern[]
   blindSpotNote: string
   blindSpots?: BlindSpot[]
+  /** @deprecated Use cerebroTopics instead. Kept for backward compat with cached data. */
   cerebroProvocation?: string
   cerebroTopics?: CerebroTopic[]
   headerImageUrl?: string
@@ -104,6 +105,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
     setStatusIdx(0)
     setElapsed(0)
 
+    const abort = new AbortController()
     const t = setInterval(() => setStatusIdx(i => Math.min(i + 1, SYNTHESIS_STATUSES.length - 1)), 1200)
     const timer = setInterval(() => setElapsed(e => e + 1), 1000)
 
@@ -111,6 +113,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ articles: annotated.slice(0, 25) }),
+      signal: abort.signal,
     })
       .then(r => r.json())
       .then(result => {
@@ -120,14 +123,15 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
         clearInterval(t)
         clearInterval(timer)
       })
-      .catch(() => {
+      .catch((err) => {
+        if (err?.name === "AbortError") return
         fetched.current = false
         setLoading(false)
         clearInterval(t)
         clearInterval(timer)
       })
 
-    return () => { clearInterval(t); clearInterval(timer) }
+    return () => { abort.abort(); clearInterval(t); clearInterval(timer) }
   }, [articles, retryCount]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Week range for header
@@ -381,37 +385,39 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       </div>
                     ))}
                   </div>
-                  {/* Layer rows */}
-                  {data.heatmap.layers.map((layer, li) => (
-                    <div key={li} style={{ display: "flex", alignItems: "center", marginBottom: 6 }}>
-                      <div style={{ width: 96, flexShrink: 0, ...TYPE.sm, color: layer.color, fontWeight: 500 }}>
-                        {layer.name}
-                      </div>
-                      {layer.data.map((val, di) => {
-                        const maxVal = 10
-                        const bgOpacity = val > 0 ? Math.max(0.1, (val / maxVal) * 0.6) : 0.04
-                        return (
-                          <div key={di} style={{ flex: 1, padding: "0 2px" }}>
-                            <div style={{
-                              height: 32, borderRadius: 4, position: "relative",
-                              display: "flex", alignItems: "center", justifyContent: "center",
-                            }}>
-                              {/* Background with opacity — separate from text */}
+                  {/* Layer rows — dynamic max for better contrast */}
+                  {(() => {
+                    const allVals = data.heatmap!.layers.flatMap(l => l.data).filter(v => v > 0)
+                    const maxVal = allVals.length > 0 ? Math.max(...allVals, 1) : 10
+                    return data.heatmap!.layers.map((layer, li) => (
+                      <div key={li} style={{ display: "flex", alignItems: "center", marginBottom: 6 }}>
+                        <div style={{ width: 96, flexShrink: 0, ...TYPE.sm, color: layer.color, fontWeight: 500 }}>
+                          {layer.name}
+                        </div>
+                        {layer.data.map((val, di) => {
+                          const bgOpacity = val > 0 ? Math.max(0.12, (val / maxVal) * 0.65) : 0.04
+                          return (
+                            <div key={di} style={{ flex: 1, padding: "0 2px" }}>
                               <div style={{
-                                position: "absolute", inset: 0, borderRadius: 4,
-                                background: layer.color, opacity: bgOpacity,
-                              }} />
-                              {val > 0 && (
-                                <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--text-primary)", position: "relative", zIndex: 1 }}>
-                                  {val}
-                                </span>
-                              )}
+                                height: 32, borderRadius: 4, position: "relative",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                              }}>
+                                <div style={{
+                                  position: "absolute", inset: 0, borderRadius: 4,
+                                  background: layer.color, opacity: bgOpacity,
+                                }} />
+                                {val > 0 && (
+                                  <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--text-primary)", position: "relative", zIndex: 1 }}>
+                                    {val}
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  ))}
+                          )
+                        })}
+                      </div>
+                    ))
+                  })()}
                 </div>
               </div>
             )}

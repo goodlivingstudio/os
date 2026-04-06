@@ -87,6 +87,9 @@ export function computeCost(
 
 /**
  * Log a single API usage event. Fire-and-forget — never throws, never blocks.
+ * NOTE: Uses read-append-write on KV which is not atomic. Under concurrent API
+ * calls (e.g., annotation + brief firing simultaneously), one event may be dropped.
+ * Acceptable for a single-user tool — the cost tracking is approximate, not billing-grade.
  */
 export async function trackUsage(event: Omit<UsageEvent, "ts" | "cost"> & { cost?: number }): Promise<void> {
   if (!KV_AVAILABLE) return

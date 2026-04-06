@@ -626,7 +626,7 @@ export default function Page() {
               )
             })}
             {/* Image toggle — Off / Source */}
-            <div style={{
+            <div role="group" aria-label="Article image display" style={{
               marginLeft: "auto",
               display: "flex",
               gap: 2,
@@ -640,6 +640,7 @@ export default function Page() {
               ]).map(mode => (
                 <button
                   key={mode.id}
+                  aria-pressed={feedImageMode === mode.id}
                   onClick={() => setFeedImageMode(mode.id)}
                   style={{
                     padding: "4px 12px", border: "none",
