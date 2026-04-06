@@ -257,7 +257,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
                   Signal Velocity
                 </div>
-                <div style={{ display: "flex", gap: 12 }}>
+                <div className="synthesis-velocity" style={{ display: "flex", gap: 12 }}>
                   {/* Accelerating */}
                   <div style={{ flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "16px 20px" }}>
                     <div style={{ ...TYPE.sm, color: "#61BF6B", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 12 }}>
@@ -357,7 +357,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
                   Urgency Heatmap
                 </div>
-                <div style={{ background: "var(--bg-surface)", borderRadius: 8, padding: "18px 20px", overflow: "hidden" }}>
+                <div className="synthesis-heatmap" style={{ background: "var(--bg-surface)", borderRadius: 8, padding: "18px 20px", overflowX: "auto" }}>
                   {/* Day headers */}
                   <div style={{ display: "flex", marginBottom: 8 }}>
                     <div style={{ width: 96, flexShrink: 0 }} />
@@ -412,7 +412,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
                   Blind Spots
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+                <div className="synthesis-blindspots" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
                   {data.blindSpots.map((spot, i) => (
                     <div
                       key={i}
@@ -458,7 +458,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     Ask Cerebro
                   </span>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div className="synthesis-cerebro" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {cerebroTopics.slice(0, 4).map((topic, i) => (
                     <div
                       key={i}

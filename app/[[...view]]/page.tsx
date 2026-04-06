@@ -197,6 +197,7 @@ export default function Page() {
   const [excludedSources, setExcludedSources] = useState<Set<string>>(new Set())
   const [mobileDcosIdx, setMobileDcosIdx] = useState(0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [feedImageMode, setFeedImageMode] = useState<"off" | "source">("off")
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
 
   // ── URL ↔ State sync ───────────────────────────────────────────────────────
@@ -624,6 +625,36 @@ export default function Page() {
                 </button>
               )
             })}
+            {/* Image toggle — Off / Source */}
+            <div style={{
+              marginLeft: "auto",
+              display: "flex",
+              gap: 2,
+              background: "var(--bg-elevated)",
+              borderRadius: 8,
+              padding: 3,
+            }}>
+              {([
+                { id: "off" as const, label: "Off" },
+                { id: "source" as const, label: "Source" },
+              ]).map(mode => (
+                <button
+                  key={mode.id}
+                  onClick={() => setFeedImageMode(mode.id)}
+                  style={{
+                    padding: "4px 12px", border: "none",
+                    borderRadius: 6, cursor: "pointer",
+                    background: feedImageMode === mode.id ? "var(--bg-surface)" : "transparent",
+                    ...TYPE.xs,
+                    fontWeight: feedImageMode === mode.id ? 600 : 400,
+                    color: feedImageMode === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
+                    transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                  }}
+                >
+                  {mode.label}
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -655,6 +686,7 @@ export default function Page() {
               key={a.id}
               article={a}
               index={i}
+              imageMode={feedImageMode}
               onSignalEnter={handleSignalEnter}
               onSignalMove={handleSignalMove}
               onSignalLeave={handleSignalLeave}

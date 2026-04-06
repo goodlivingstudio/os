@@ -128,6 +128,12 @@ html, body {
   .convergence-grid { grid-template-columns: 1fr !important; }
   .blindspots-grid { grid-template-columns: 1fr !important; }
   .source-grid { grid-template-columns: 1fr !important; }
+
+  /* Synthesis — stack grids on mobile */
+  .synthesis-velocity { flex-direction: column !important; }
+  .synthesis-blindspots { grid-template-columns: 1fr !important; }
+  .synthesis-cerebro { grid-template-columns: 1fr !important; }
+  .synthesis-heatmap { min-width: 520px; }
   .gallery-grid { grid-template-columns: 1fr !important; }
 
   /* Dispatch */

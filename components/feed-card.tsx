@@ -79,7 +79,7 @@ export type SignalCallbacks = {
   onSignalLeave: () => void
 }
 
-export const FeedCard = memo(function FeedCard({ article, index, onSignalEnter, onSignalMove, onSignalLeave }: { article: Article; index?: number } & SignalCallbacks) {
+export const FeedCard = memo(function FeedCard({ article, index, onSignalEnter, onSignalMove, onSignalLeave, imageMode = "off" }: { article: Article; index?: number; imageMode?: "off" | "source" } & SignalCallbacks) {
   const isExternal   = article.url !== "#"
   const hasSignal    = !!(article.synopsis || article.relevance)
   const [hovered, setHovered] = useState(false)
@@ -137,9 +137,21 @@ export const FeedCard = memo(function FeedCard({ article, index, onSignalEnter, 
         cursor: isExternal ? "pointer" : "default",
         transition: "background 0.15s",
         animation: index !== undefined ? `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${Math.min(index * 50, 500)}ms both` : undefined,
-        gap: 0,
+        gap: imageMode === "source" && article.imageUrl ? 16 : 0,
       }}
     >
+      {/* Source image — shown only when imageMode is "source" */}
+      {imageMode === "source" && article.imageUrl && (
+        <img
+          src={article.imageUrl}
+          alt=""
+          onError={(e) => { e.currentTarget.style.display = "none" }}
+          style={{
+            width: 64, height: 64, borderRadius: 8,
+            objectFit: "cover", flexShrink: 0, background: "var(--bg-elevated)",
+          }}
+        />
+      )}
       <div style={{ flex: 1, minWidth: 0 }}>
         {/* Eyebrow */}
         <div

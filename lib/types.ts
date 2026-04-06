@@ -7,6 +7,7 @@ export interface Article {
   url: string
   publishedAt: string
   summary: string       // raw RSS description — used in feed row only
+  imageUrl?: string     // RSS source image (media:content, enclosure, etc.)
   synopsis?: string     // AI-generated: what it's about, mandate-framed
   category: string
   tag: string
