@@ -622,7 +622,7 @@ export default function Page() {
                       background: isActive ? "var(--bg-surface)" : "transparent",
                       ...TYPE.xs, fontWeight: isActive ? 600 : 400,
                       color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
-                      textTransform: "uppercase", letterSpacing: "0.04em",
+                      letterSpacing: "0.01em",
                       transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                     }}
                   >

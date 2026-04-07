@@ -543,8 +543,7 @@ export function LeftRail({
                       fontWeight: isActive ? 600 : 400,
                       color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
                       transition: "background 0.2s ease, color 0.3s ease",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.04em",
+                      letterSpacing: "0.01em",
                     }}
                     onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-surface)" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
