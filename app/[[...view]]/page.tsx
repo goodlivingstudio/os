@@ -835,8 +835,8 @@ export default function Page() {
                     <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Images</div>
                     <div style={{ display: "flex", background: "var(--bg-elevated)", borderRadius: 6, padding: 2 }}>
                       {([
-                        { id: "off" as const, label: "Off" },
                         { id: "source" as const, label: "Source" },
+                        { id: "off" as const, label: "Off" },
                       ]).map(mode => (
                         <button
                           key={mode.id}
