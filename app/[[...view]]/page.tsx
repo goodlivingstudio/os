@@ -1076,37 +1076,6 @@ export default function Page() {
       {/* Signal ticker — full width, pinned top (desktop only) */}
       {!isMobile && <Ticker isDay={isDay} onToggle={toggleMode} skin={skin} onSkinChange={setSkin} />}
 
-      {/* DCOS intelligence band — desktop, non-focus mode */}
-      {!isMobile && !focusMode && signals.filter(s => s.body).length > 0 && (
-        <div style={{
-          flexShrink: 0, borderBottom: "1px solid var(--border)",
-          display: "flex", alignItems: "stretch", gap: 0,
-          minHeight: 48,
-        }}>
-          {signals.filter(s => s.body).map((signal, i) => (
-            <button
-              key={i}
-              onClick={() => handleDeliberate(signal)}
-              style={{
-                flex: 1, display: "flex", flexDirection: "column", gap: 2,
-                padding: "8px 16px", background: "transparent",
-                border: "none", borderRight: i < signals.filter(s => s.body).length - 1 ? "1px solid var(--border)" : "none",
-                cursor: "pointer", textAlign: "left", transition: "background 0.15s",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
-              onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
-            >
-              <span style={{ ...TYPE.xs, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.04em" }}>
-                {signal.layer || signal.label}
-              </span>
-              <span style={{ ...TYPE.sm, color: "var(--text-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {signal.headline}
-              </span>
-            </button>
-          ))}
-        </div>
-      )}
-
       {/* Focus Mode — DCOS strip + full-width Cerebro */}
       {focusMode && !isMobile && (
         <div style={{

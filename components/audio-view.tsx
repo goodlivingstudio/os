@@ -659,6 +659,9 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
   return (
     <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}>
 
+      {/* Audio DCOS Band — desktop only */}
+      {!isMobile && <AudioBriefBand episodes={episodes} visible={!loading} defaultExpanded={sortBy === "urgency"} />}
+
       {/* Layer filters + artwork toggle — dropdown on mobile, pills on desktop */}
       {!loading && (() => {
         const pool = sortBy === "urgency" && hasScores
