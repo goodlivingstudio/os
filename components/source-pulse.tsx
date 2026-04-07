@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react"
 import { RefreshCw } from "lucide-react"
 import { TYPE, MONO, metaStyle, labelStyle } from "@/lib/styles"
-import { storageKey } from "@/lib/config"
+import instanceConfig, { storageKey } from "@/lib/config"
 import type { Article, FeedHealth } from "@/lib/types"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -850,13 +850,12 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
               Intelligence Layers
             </div>
             <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px", display: "flex", flexDirection: "column", gap: 16 }}>
-              {([
-                { layer: "Opportunity", color: "#D4A05A", what: "Healthcare, pharma, AI-health signal", why: "Direct relevance to the Lilly engagement and the broader healthcare transformation thesis. Signals here inform positioning for healthcare design leadership." },
-                { layer: "Position", color: "#5A9EB0", what: "Career trajectory — hiring, comp, competitive positioning", why: "Tracks the market for senior design leadership roles. CDO/Head of Design hiring patterns, agency-to-in-house transitions, what organizations are hiring to solve." },
-                { layer: "Discipline", color: "#7BAF6A", what: "How design leadership is evolving as a function", why: "The profession is changing — CDO role scope, AI impact on practice, design-engineering convergence, org design. Staying current here is non-negotiable." },
-                { layer: "Landscape", color: "#9A85B8", what: "Broader forces shaping the operating environment", why: "AI policy, healthcare regulation, economic shifts affecting hiring and investment. The macro context that every other layer operates within." },
-                { layer: "Culture", color: "#C87A6A", what: "Taste, criticism, creative practice", why: "Architecture, film, music, cultural theory. A design leader who only reads industry publications is a technician. Formation signals develop the judgment that separates leaders from practitioners." },
-              ]).map(item => (
+              {instanceConfig.layers.map((l, i) => ({
+                layer: l.label,
+                color: ["#D4A05A", "#5A9EB0", "#7BAF6A", "#9A85B8", "#C87A6A"][i] || "#888",
+                what: l.description.split(". ")[0],
+                why: l.description,
+              })).map(item => (
                 <div key={item.layer}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
                     <span style={{ width: 8, height: 8, borderRadius: 3, background: item.color, flexShrink: 0 }} />

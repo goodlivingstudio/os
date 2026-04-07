@@ -31,7 +31,10 @@ function hasSpeechSupport() {
 
 // ─── Provocations — rotating prompts ────────────────────────────────────────
 
-const PROVOCATIONS = [
+// Provocations are instance-specific — loaded from config
+import instanceConfig from "@/lib/config"
+
+const DISPATCH_PROVOCATIONS = [
   "What's the sharpest thing you read today?",
   "What would Rau ask you in the first five minutes?",
   "Where does design sit in Lilly's AI stack?",
@@ -51,6 +54,29 @@ const PROVOCATIONS = [
   "How do you talk about AI without sounding like everyone else?",
   "What's the organizational layer no one is designing?",
 ]
+
+const EXPLORE_PROVOCATIONS = [
+  "What's the sharpest signal from this week's feed?",
+  "Where does the discovery experience break down first?",
+  "What would Gebbia push back on?",
+  "What's the accessibility gap no one is talking about?",
+  "How is AllTrails solving a problem we haven't named yet?",
+  "What's the Burgum frame doing to this decision?",
+  "Who is the platform leaving out right now?",
+  "What does the July 4 deadline actually require?",
+  "What would GOV.UK do differently here?",
+  "Where is the billboard critique still valid?",
+  "What's the difference between a reservation system and a discovery platform?",
+  "What signal are we ignoring?",
+  "What does offline-first actually mean for this feature?",
+  "What's the weakest assumption in our current direction?",
+  "How does this serve a first-time visitor from Detroit?",
+  "What would the NPS ranger say about this?",
+  "What's the stewardship decision hiding behind the 90-day urgency?",
+  "What's the equity case for this design choice?",
+]
+
+const PROVOCATIONS = instanceConfig.id === "explore" ? EXPLORE_PROVOCATIONS : DISPATCH_PROVOCATIONS
 
 // ─── Cerebro — strategic intelligence advisor ───────────────────────────────
 
@@ -376,10 +402,12 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
                 lineHeight: 1.8,
               }}
             >
-              Strategic intelligence ready.
+              {instanceConfig.id === "explore" ? "Field intelligence ready." : "Strategic intelligence ready."}
               <br />
               <span style={{ color: "var(--accent-muted)" }}>
-                Feed analysis, Lilly positioning, career trajectory.
+                {instanceConfig.id === "explore"
+                  ? "Signal analysis, platform intelligence, civic design."
+                  : "Feed analysis, Lilly positioning, career trajectory."}
               </span>
             </div>
           </div>

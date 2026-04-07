@@ -160,31 +160,17 @@ async function fetchFeed(feed: FeedDef): Promise<Article[]> {
 
 const ALL_LAYERS = instanceConfig.layers.map(l => l.id)
 
-const STUBS: Record<string, Article[]> = {
-  opportunity: [
-    { id: "opp-1", title: "LillyDirect's second year: what the access data is showing", source: "STAT News", url: "#", publishedAt: new Date().toISOString(), summary: "Eli Lilly's direct pharmacy platform is showing meaningful improvement in prescription fulfillment times for GLP-1 medications. The design team is now focused on refill experience and adherence flows.", category: "Healthcare & Pharma", tag: "opportunity" },
-    { id: "opp-2", title: "Healthcare AI funding doubles in Q1 as pharma bets on diagnostic automation", source: "BioPharma Dive", url: "#", publishedAt: new Date().toISOString(), summary: "Venture capital investment in healthcare AI reached $4.2B in Q1, with diagnostic imaging and patient access tools drawing the most capital. Design experience at the human-AI interface is the scarce resource.", category: "Healthcare & Pharma", tag: "opportunity" },
-    { id: "opp-3", title: "Digital health UX is still failing patients — and the data shows it", source: "Fierce Healthcare", url: "#", publishedAt: new Date().toISOString(), summary: "A new analysis finds that most pharmaceutical digital touchpoints score below average on usability benchmarks. The gap between clinical excellence and patient-facing experience is widening.", category: "Healthcare & Pharma", tag: "opportunity" },
-  ],
-  position: [
-    { id: "pos-1", title: "VP of Design compensation benchmarks: what the data shows", source: "Levels.fyi", url: "#", publishedAt: new Date().toISOString(), summary: "Median VP Design compensation at public tech companies reached $620K total. Healthcare tech and pharma are paying 20-30% above median to attract design leaders with domain fluency.", category: "Design Leadership", tag: "position" },
-    { id: "pos-2", title: "CDO roles are proliferating in regulated industries — and the specs are changing", source: "Core77", url: "#", publishedAt: new Date().toISOString(), summary: "Healthcare, finance, and pharma are creating Chief Design Officer roles at a faster rate than tech. The job descriptions emphasize systems thinking, regulatory fluency, and cross-functional alignment.", category: "Design Leadership", tag: "position" },
-  ],
-  discipline: [
-    { id: "dis-1", title: "Design leadership is being redefined around judgment, not craft", source: "Eye on Design", url: "#", publishedAt: new Date().toISOString(), summary: "The most valued design leaders today are not the best practitioners — they are the best decision-makers. The ability to brief, evaluate, and redirect AI output is becoming the core leadership competency.", category: "Design Practice", tag: "discipline" },
-    { id: "dis-2", title: "The rise of the design engineer: the most valuable hire in product", source: "Linear Blog", url: "#", publishedAt: new Date().toISOString(), summary: "Design engineers who translate visual vision into working code are becoming the highest-leverage hire in product-led companies. The role didn't exist as a category five years ago.", category: "Product Engineering", tag: "discipline" },
-    { id: "dis-3", title: "The briefing gap: why AI-assisted design fails before it starts", source: "IBM Design", url: "#", publishedAt: new Date().toISOString(), summary: "Output quality correlates strongly with input precision. Design teams investing in briefing discipline outperform those focused on tool adoption by 3x.", category: "Enterprise Design", tag: "discipline" },
-  ],
-  landscape: [
-    { id: "lan-1", title: "FTC moves to define AI accountability standards for consumer-facing products", source: "Politico", url: "#", publishedAt: new Date().toISOString(), summary: "The Federal Trade Commission has issued preliminary guidance on how companies must disclose AI-generated content to consumers. Design and product teams are scrambling to interpret implementation requirements.", category: "Policy & Regulation", tag: "landscape" },
-    { id: "lan-2", title: "The agency model is under structural pressure from in-house AI teams", source: "The Verge", url: "#", publishedAt: new Date().toISOString(), summary: "Large brands are building internal AI-assisted creative capabilities, reducing reliance on external agencies for production work. Agencies that survive will offer judgment and strategy, not execution.", category: "Technology", tag: "landscape" },
-    { id: "lan-3", title: "From prototypes to predictive: how design and ML are converging at scale", source: "MIT Tech Review", url: "#", publishedAt: new Date().toISOString(), summary: "The most sophisticated product teams are building design systems that generate data for model training, and models that generate inputs for design iteration. The loop is closing.", category: "Deep Technology", tag: "landscape" },
-  ],
-  culture: [
-    { id: "cul-1", title: "Brutalism in architecture is back. The moral questions it raised never left.", source: "Architectural Review", url: "#", publishedAt: new Date().toISOString(), summary: "A wave of neo-brutalist buildings is emerging from young studios in Berlin, Seoul, and Mexico City. Unlike the 1970s movement, this version is obsessed with material honesty rather than social ideology.", category: "Architecture Criticism", tag: "culture" },
-    { id: "cul-2", title: "The Brutalist is not a film about architecture. It's about what outlasts you.", source: "The Atlantic", url: "#", publishedAt: new Date().toISOString(), summary: "Brady Corbet's film uses architecture as a frame for the question of authorship — who gets credit for vision and who absorbs the labor. It's the most relevant film about creative work in years.", category: "Ideas & Culture", tag: "culture" },
-  ],
+// Stubs are instance-specific — generate from config layers with neutral content
+function buildStubs(): Record<string, Article[]> {
+  const stubs: Record<string, Article[]> = {}
+  // Only generate stubs for instances that define them; otherwise use empty arrays
+  // so the feed shows "loading" rather than misleading placeholder content
+  for (const layer of ALL_LAYERS) {
+    stubs[layer] = []
+  }
+  return stubs
 }
+const STUBS = buildStubs()
 
 // ─── Interleave ───────────────────────────────────────────────────────────────
 // Prevent same-source runs in the feed

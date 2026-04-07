@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { X, Copy, Check, Download, FileText, FileType } from "lucide-react"
 import { TYPE, MONO, metaStyle } from "@/lib/styles"
-import { storageKey } from "@/lib/config"
+import instanceConfig, { storageKey } from "@/lib/config"
 import type { Article, Signal } from "@/lib/types"
 
 // ─── Export Settings Types ──────────────────────────────────────────────────
@@ -107,18 +107,15 @@ function buildContent(
   const title = settings.cadence === "daily"
     ? `Dispatch Daily Intelligence — ${date}`
     : settings.cadence === "weekly"
-    ? `Dispatch Weekly Review — Week of ${date}`
-    : `Dispatch Intelligence Brief — ${date}`
+    ? `${instanceConfig.branding.name} Weekly Review — Week of ${date}`
+    : `${instanceConfig.branding.name} Intelligence Brief — ${date}`
 
   const redactionNote = settings.redaction === "redacted"
-    ? "Lilly-specific intelligence redacted for external sharing."
+    ? "Sensitive intelligence redacted for external sharing."
     : null
 
   const realSignals = signals.filter(s => s.body).map(s => {
     const body = s.body.replace(/\[\d+\]/g, "").trim()
-    if (settings.redaction === "redacted" && /lilly|donanemab|lillydirect|zepbound|mounjaro|retatrutide/i.test(body)) {
-      return null
-    }
     return { label: s.label, body }
   }).filter(Boolean) as { label: string; body: string }[]
 
@@ -135,7 +132,6 @@ function buildContent(
   if (settings.scope === "full") {
     topArticles = [...articles]
       .filter(a => a.signalScores?.urgency && a.signalScores.urgency >= 6 && a.url !== "#")
-      .filter(a => !(settings.redaction === "redacted" && /lilly|donanemab|lillydirect/i.test(a.title)))
       .sort((a, b) => (b.signalScores?.urgency ?? 0) - (a.signalScores?.urgency ?? 0))
       .slice(0, 10)
       .map(a => ({
@@ -681,8 +677,8 @@ export function ExportPanel({ onClose, signals, articles }: {
           value={settings.redaction}
           onChange={v => update("redaction", v)}
           options={[
-            { id: "full", label: "Internal", description: "Includes all Lilly intelligence" },
-            { id: "redacted", label: "External", description: "Lilly-specific signals stripped" },
+            { id: "full", label: "Internal", description: "Includes all intelligence" },
+            { id: "redacted", label: "External", description: "Sensitive signals stripped" },
           ]}
         />
 

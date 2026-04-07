@@ -339,7 +339,7 @@ export function SurfaceTrends({ articles, onDeliberate }: SurfaceTrendsProps) {
                     <div
                       role="button"
                       tabIndex={0}
-                      onClick={scroll.guardedClick(() => onDeliberate(`I want to explore this color direction:\n\n"${direction.title}"\n\n${direction.description}\n\nWhat does this mean for design leadership and healthcare? How should I think about this shift?`))}
+                      onClick={scroll.guardedClick(() => onDeliberate(`I want to explore this color direction:\n\n"${direction.title}"\n\n${direction.description}\n\nWhat does this mean for the current engagement? How should the team think about this shift?`))}
                       onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`Explore this color direction: "${direction.title}" — ${direction.description}`) } }}
                       style={{
                         ...TYPE.heading, color: "var(--text-primary)",
