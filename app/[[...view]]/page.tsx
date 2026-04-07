@@ -782,7 +782,9 @@ export default function Page() {
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--live)" }} />
-            <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase", fontWeight: 500 }}>Dispatch</span>
+            <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.06em" }}>
+              {{ signal: "Signal", audio: "Sound", synthesis: "Synthesis", gallery: "Surface", cerebro: "Cerebro", config: "Config" }[mobileTab] || "Dispatch"}
+            </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             {/* Skin dots — large touch targets */}
@@ -1073,6 +1075,37 @@ export default function Page() {
     >
       {/* Signal ticker — full width, pinned top (desktop only) */}
       {!isMobile && <Ticker isDay={isDay} onToggle={toggleMode} skin={skin} onSkinChange={setSkin} />}
+
+      {/* DCOS intelligence band — desktop, non-focus mode */}
+      {!isMobile && !focusMode && signals.filter(s => s.body).length > 0 && (
+        <div style={{
+          flexShrink: 0, borderBottom: "1px solid var(--border)",
+          display: "flex", alignItems: "stretch", gap: 0,
+          minHeight: 48,
+        }}>
+          {signals.filter(s => s.body).map((signal, i) => (
+            <button
+              key={i}
+              onClick={() => handleDeliberate(signal)}
+              style={{
+                flex: 1, display: "flex", flexDirection: "column", gap: 2,
+                padding: "8px 16px", background: "transparent",
+                border: "none", borderRight: i < signals.filter(s => s.body).length - 1 ? "1px solid var(--border)" : "none",
+                cursor: "pointer", textAlign: "left", transition: "background 0.15s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+            >
+              <span style={{ ...TYPE.xs, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.04em" }}>
+                {signal.layer || signal.label}
+              </span>
+              <span style={{ ...TYPE.sm, color: "var(--text-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {signal.headline}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Focus Mode — DCOS strip + full-width Cerebro */}
       {focusMode && !isMobile && (
