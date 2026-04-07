@@ -431,14 +431,11 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                 })}
               </>
             )}
-            {/* Source type filter — only when instance has UGC */}
+            {/* Source type chips — Explore only, after mood filters with hairline separator */}
             {hasUgc && !isMobile && (
-              <div style={{
-                display: "inline-flex", borderRadius: 8, border: "1px solid var(--border)",
-                overflow: "hidden", marginLeft: 4,
-              }}>
+              <>
+                <span style={{ width: 1, height: 16, background: "var(--border)", flexShrink: 0, margin: "0 4px" }} />
                 {([
-                  { id: "all" as const, label: "All", count: sourceFiltered.length },
                   { id: "curated" as const, label: "Curated", count: curatedCount },
                   { id: "ugc" as const, label: "UGC", count: ugcCount },
                 ] as const).map(opt => {
@@ -446,22 +443,24 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                   return (
                     <button
                       key={opt.id}
-                      onClick={() => setSourceType(isActive && opt.id !== "all" ? "all" : opt.id)}
+                      onClick={() => setSourceType(isActive ? "all" : opt.id)}
                       style={{
-                        ...TYPE.xs, padding: "3px 10px", border: "none",
+                        ...TYPE.sm, padding: "3px 10px", borderRadius: 8, border: "none",
+                        display: "inline-flex", alignItems: "center", gap: 5,
                         background: isActive ? "var(--accent-primary)" : "transparent",
                         color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
                         fontWeight: isActive ? 600 : 400,
                         cursor: "pointer", transition: "all 0.15s",
-                        display: "inline-flex", alignItems: "center", gap: 4,
                       }}
+                      onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
+                      onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = "transparent" }}
                     >
                       {opt.label}
-                      <span style={{ opacity: 0.5 }}>{opt.count}</span>
+                      {opt.count > 0 && <span style={{ opacity: 0.5 }}>{opt.count}</span>}
                     </button>
                   )
                 })}
-              </div>
+              </>
             )}
 
             {/* Trends + Sources — desktop only */}
