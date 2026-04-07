@@ -874,8 +874,8 @@ export default function Page() {
           </div>
         </div>
 
-        {/* ── DCOS swipeable carousel — Signal + Sound tabs ── */}
-        {(mobileTab === "signal" || mobileTab === "audio") && signals.filter(s => s.body).length > 0 && (() => {
+        {/* ── DCOS swipeable carousel — Signal + Sound tabs, hidden in triage ── */}
+        {(mobileTab === "signal" || mobileTab === "audio") && sortBy !== "urgency" && signals.filter(s => s.body).length > 0 && (() => {
           const dcosSignals = signals.filter(s => s.body)
           return (
             <div style={{ flexShrink: 0, borderBottom: "1px solid var(--border)" }}>
