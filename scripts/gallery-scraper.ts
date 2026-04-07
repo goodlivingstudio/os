@@ -21,16 +21,18 @@ import { chromium } from "playwright"
 
 // ─── Instance Config ───────────────────────────────────────────────────────
 
-// Dynamically load config based on --instance flag
+// Parse args early — before any imports that depend on env
 const args = process.argv.slice(2)
 const instanceArg = args.find(a => a.startsWith("--instance="))?.split("=")[1] || "dispatch"
-
-// Set env var so config/index.ts picks up the right instance
 process.env.NEXT_PUBLIC_INSTANCE = instanceArg
 
-// Dynamic import after env var is set
-const { default: config } = await import("../lib/config/index.js")
-import type { ScrapeTarget } from "../lib/config/types.js"
+// Direct config import — reads the right instance based on env var
+import dispatchConfig from "../lib/config/dispatch.js"
+import exploreConfig from "../lib/config/explore.js"
+import type { InstanceConfig, ScrapeTarget } from "../lib/config/types.js"
+
+const CONFIGS: Record<string, InstanceConfig> = { dispatch: dispatchConfig, explore: exploreConfig }
+const config = CONFIGS[instanceArg] || dispatchConfig
 
 if (!config.galleryScraper) {
   console.error(`Instance "${instanceArg}" has no galleryScraper config.`)
