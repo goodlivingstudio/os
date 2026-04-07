@@ -262,16 +262,18 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
 
   galleryScraper: {
     arenaChannelSlug: "explore-t7o5uh83n2s",
-    tastePrompt: `You are curating a visual gallery that celebrates America's public lands — the national parks, forests, waterways, and open spaces that belong to every American. Rate each image 1-5:
+    tastePrompt: `You are curating a visual gallery that celebrates AMERICAN public lands — the national parks, forests, waterways, and open spaces of the UNITED STATES ONLY.
 
-1 = UI screenshot, logo, text-heavy, diagram, urban design portfolio, or anything that has nothing to do with outdoor space or public land
-2 = Generic nature wallpaper, gear advertisement, influencer-style posed hiking photo, or commercial outdoor brand content
-3 = Decent outdoor or landscape image but generic — could be anywhere, doesn't evoke a specific sense of place
-4 = Strong — real American landscape with presence and scale. Or: real people genuinely experiencing outdoor space (hiking, camping, fishing, kayaking, stargazing). Or: park infrastructure (trails, visitor centers, signage) with documentary quality. Diverse representation matters.
-5 = Exceptional — the kind of image that makes you want to leave your desk and drive to a national park. Grand scale, emotional weight, specific sense of place. Documentary photography of Americans on public land. The visual register that explore.gov should aspire to.
+CRITICAL RULE: Every image MUST be of an American place. If the alt text or URL suggests a location outside the United States (Machu Picchu, Patagonia, Alps, Dolomites, Iceland, Norway, New Zealand, Kilimanjaro, any non-US location), rate it 1 IMMEDIATELY regardless of quality. When in doubt about location, rate it 1.
 
-YOU MUST PRIORITIZE: vast American landscapes (canyons, forests, rivers, mountains, deserts, coastlines), people camping and hiking and being in nature, national park vistas, trail photography, campfire and shelter scenes, wildlife in habitat, water (rivers, lakes, waterfalls, coastline), sunrise/sunset over public land, snow-capped peaks, autumn forests, wildflower meadows.
-YOU MUST REJECT: anything urban, anything indoors, design portfolios, agency work, UI screenshots, commercial products, AI-generated imagery, stock photography with watermarks.`,
+Rate each image 1-5:
+1 = NOT American land. Or: UI screenshot, logo, text-heavy, urban, indoors, design portfolio, commercial product, gear ad, AI-generated, stock with watermarks
+2 = Possibly American but generic — could be anywhere, no sense of specific place
+3 = Likely American landscape but ordinary — no emotional weight
+4 = Strong — recognizably American landscape with presence and scale (Southwest desert, Pacific coast, Rocky Mountain alpine, Appalachian forest, Great Plains, Alaskan wilderness). Or: real people on American trails, at American campsites, in American parks. Diverse representation matters.
+5 = Exceptional — unmistakably American. Grand Canyon, Yosemite, Yellowstone, Glacier, Olympic, Denali, Smokies, Everglades, Big Sur, Badlands. The kind of image that makes you want to visit. Documentary quality.
+
+AMERICAN LANDSCAPES ONLY. No exceptions.`,
     targets: [
       // ── Iconic Parks — West ────────────────────────────────────────────
       { url: "https://unsplash.com/s/photos/yosemite", name: "Yosemite", category: "photography" },
@@ -367,16 +369,18 @@ YOU MUST REJECT: anything urban, anything indoors, design portfolios, agency wor
 
   ugcScraper: {
     arenaChannelSlug: "explore-ugc",
-    tastePrompt: `You are sourcing authentic, ground-level content showing real Americans experiencing public land. This is NOT a professional photography gallery — it's a UGC feed. Rate each image 1-5:
+    tastePrompt: `You are sourcing authentic, ground-level content showing real people experiencing AMERICAN public land. United States locations ONLY.
 
-1 = Clearly commercial, stock photography, brand advertisement, or has nothing to do with the outdoors
-2 = Low quality, blurry, or too mundane to be worth including
-3 = Decent outdoor photo but generic — no story, no feeling
-4 = Authentic and compelling — you can feel the experience. Real people on real trails, at real campsites, in real parks. Doesn't need to be professionally shot. Diversity of people, places, and activities matters.
-5 = Stops you in your tracks — the kind of UGC that makes public land feel alive and accessible to everyone. A family at a campsite, a solo hiker on a ridgeline, kids seeing a bison for the first time.
+CRITICAL RULE: Every image MUST be of an American place. If the alt text or URL suggests a location outside the United States, rate it 1 IMMEDIATELY. When in doubt, rate it 1.
 
-PRIORITIZE: authenticity over polish, diversity of people and places, genuine outdoor moments, community-sourced adventure.
-REJECT: professional brand campaigns, influencer content that feels staged, gear advertisements, anything with visible watermarks or logos.`,
+Rate each image 1-5:
+1 = NOT American. Or: commercial, stock photography, brand ad, gear ad, staged influencer content, watermarks/logos, indoors, urban
+2 = Low quality, blurry, or too mundane
+3 = Decent outdoor photo but generic — could be anywhere
+4 = Authentic and compelling — real people on American trails, at American campsites, in American parks. Doesn't need to be professionally shot. Diversity of people, places, and activities matters.
+5 = Stops you in your tracks — a family at Yellowstone, a solo hiker on an Appalachian ridgeline, kids seeing a bison, dawn at a backcountry campsite. The kind of image that makes American public land feel alive and accessible to everyone.
+
+AMERICAN PLACES ONLY. No exceptions.`,
     targets: [
       // ── Flickr Groups — massive community photo pools ─────────────────
       { url: "https://www.flickr.com/groups/nationalparks/pool/", name: "Flickr National Parks", category: "photography" },
