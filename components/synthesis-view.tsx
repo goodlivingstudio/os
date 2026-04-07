@@ -93,6 +93,7 @@ const LAYER_DOT: Record<string, string> = {
 
 export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: SynthesisViewProps) {
   const isTriage = sortBy === "urgency"
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768
   const [data, setData] = useState<SynthesisData | null>(null)
   const [loading, setLoading] = useState(false)
   const [statusIdx, setStatusIdx] = useState(0)
@@ -379,12 +380,11 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, letterSpacing: "-0.01em", marginBottom: 6 }}>
                         {pattern.title}
                       </div>
-                      {/* Description — capped to 2 lines for scanability */}
+                      {/* Description — capped on desktop, full on mobile */}
                       {pattern.description && (
                         <div style={{
                           ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.6,
-                          display: "-webkit-box", WebkitLineClamp: isTriage ? 1 : 2,
-                          WebkitBoxOrient: "vertical" as const, overflow: "hidden",
+                          ...(!isMobile ? { display: "-webkit-box", WebkitLineClamp: isTriage ? 1 : 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {}),
                         }}>
                           {pattern.description}
                         </div>
@@ -460,7 +460,11 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
                   Blind Spots
                 </div>
-                <div className="synthesis-blindspots" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+                <div className="synthesis-blindspots" style={isMobile ? {
+                  display: "flex", gap: 12, overflowX: "auto", overflowY: "hidden",
+                  WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory",
+                  paddingBottom: 4, msOverflowStyle: "none", scrollbarWidth: "none",
+                } as React.CSSProperties : { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
                   {data.blindSpots.map((spot, i) => (
                     <div
                       key={i}
@@ -471,6 +475,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       style={{
                         background: "var(--bg-surface)", borderRadius: 10, padding: "18px 20px",
                         cursor: "pointer", transition: "background 0.15s", outline: "none",
+                        ...(isMobile ? { flex: "0 0 80%", scrollSnapAlign: "start" } : {}),
                       }}
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
@@ -483,8 +488,6 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       </div>
                       <div style={{
                         ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.6,
-                        display: "-webkit-box", WebkitLineClamp: 3,
-                        WebkitBoxOrient: "vertical" as const, overflow: "hidden",
                       }}>
                         {spot.body}
                       </div>
@@ -506,7 +509,11 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     Ask Cerebro
                   </span>
                 </div>
-                <div className="synthesis-cerebro" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div className="synthesis-cerebro" style={isMobile ? {
+                  display: "flex", gap: 12, overflowX: "auto", overflowY: "hidden",
+                  WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory",
+                  paddingBottom: 4, msOverflowStyle: "none", scrollbarWidth: "none",
+                } as React.CSSProperties : { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {cerebroTopics.slice(0, 4).map((topic, i) => (
                     <div
                       key={i}
@@ -517,6 +524,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       style={{
                         background: "var(--bg-surface)", borderRadius: 10, padding: "18px 20px",
                         cursor: "pointer", transition: "background 0.15s", outline: "none",
+                        ...(isMobile ? { flex: "0 0 80%", scrollSnapAlign: "start" } : {}),
                       }}
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
@@ -527,8 +535,6 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       {topic.body && (
                         <div style={{
                           ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.6,
-                          display: "-webkit-box", WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical" as const, overflow: "hidden",
                         }}>
                           {topic.body}
                         </div>
