@@ -305,7 +305,7 @@ export function GalleryOverlay({ onClose, excludedSources, isDay, onToggleMode, 
           </div>
 
           {/* Color mood filters — dropdown on mobile, pills on desktop */}
-          <div style={{ display: "flex", alignItems: "center", gap: 4, flex: 1, justifyContent: isMobile ? "flex-start" : "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 4, flex: 1, justifyContent: "center" }}>
             {isMobile ? (
               /* ── Mobile: dropdown for mood filters ── */
               <div style={{ position: "relative" }}>
