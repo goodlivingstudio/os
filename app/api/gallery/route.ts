@@ -1,6 +1,5 @@
 // Gallery API — aggregates images from Are.na and RSS feeds
-import { GALLERY_SOURCES, type GalleryImage, type ColorMood, type ColorSwatch } from "@/lib/gallery"
-import { storePaletteSnapshot, loadPaletteHistory, type PaletteSnapshot, type TrendingPalette } from "@/lib/article-store"
+import { GALLERY_SOURCES, type GalleryImage, type ColorMood } from "@/lib/gallery"
 import sharp from "sharp"
 
 export const revalidate = 1800 // 30 min cache
@@ -186,74 +185,6 @@ interface ColorAnalysis {
   hue: number
   saturation: number
   lightness: number
-  palette: ColorSwatch[]
-}
-
-function rgbToHex(r: number, g: number, b: number): string {
-  return "#" + [r, g, b].map(c => c.toString(16).padStart(2, "0")).join("")
-}
-
-// Median-cut-style clustering: quantize pixels into perceptually distinct buckets
-function extractPalette(pixelData: Buffer, channels: number, pixelCount: number): ColorSwatch[] {
-  // Sample pixels into color buckets (quantize to 16-step per channel for finer resolution)
-  const buckets = new Map<string, { r: number; g: number; b: number; count: number }>()
-
-  for (let i = 0; i < pixelCount * channels; i += channels) {
-    const r = pixelData[i]
-    const g = pixelData[i + 1]
-    const b = pixelData[i + 2]
-    // Finer quantization: 16-step (16 values per channel = 4096 possible colors)
-    const qr = Math.round(r / 16) * 16
-    const qg = Math.round(g / 16) * 16
-    const qb = Math.round(b / 16) * 16
-    const key = `${qr},${qg},${qb}`
-    const existing = buckets.get(key)
-    if (existing) {
-      existing.r += r
-      existing.g += g
-      existing.b += b
-      existing.count++
-    } else {
-      buckets.set(key, { r, g, b, count: 1 })
-    }
-  }
-
-  // Sort by frequency
-  const sorted = [...buckets.values()]
-    .sort((a, b) => b.count - a.count)
-
-  // Deduplicate: skip colors too similar to already-selected ones
-  const selected: typeof sorted = []
-  for (const b of sorted) {
-    if (selected.length >= 5) break
-    const avgR = Math.round(b.r / b.count)
-    const avgG = Math.round(b.g / b.count)
-    const avgB = Math.round(b.b / b.count)
-    const tooClose = selected.some(s => {
-      const sr = Math.round(s.r / s.count)
-      const sg = Math.round(s.g / s.count)
-      const sb = Math.round(s.b / s.count)
-      const dist = Math.sqrt((avgR - sr) ** 2 + (avgG - sg) ** 2 + (avgB - sb) ** 2)
-      return dist < 45 // minimum perceptual distance between palette entries
-    })
-    if (!tooClose) selected.push(b)
-  }
-
-  const totalPixels = sorted.reduce((s, b) => s + b.count, 0)
-
-  return selected.map(b => {
-    const r = Math.round(b.r / b.count)
-    const g = Math.round(b.g / b.count)
-    const bl = Math.round(b.b / b.count)
-    const [h, s, l] = rgbToHsl(r, g, bl)
-    return {
-      hex: rgbToHex(r, g, bl),
-      hue: Math.round(h),
-      saturation: Math.round(s * 100) / 100,
-      lightness: Math.round(l * 100) / 100,
-      percentage: Math.round((b.count / totalPixels) * 100),
-    }
-  })
 }
 
 async function analyzeImageColor(url: string): Promise<ColorAnalysis | undefined> {
@@ -264,30 +195,31 @@ async function analyzeImageColor(url: string): Promise<ColorAnalysis | undefined
     })
     if (!res.ok) return undefined
     const buffer = Buffer.from(await res.arrayBuffer())
-    // Resize to 32x32 grid for palette extraction (1024 pixels)
+    // Resize to 8x8 for fast mood classification (no palette extraction needed)
     const { data, info } = await sharp(buffer)
-      .resize(32, 32, { fit: "cover" })
+      .resize(8, 8, { fit: "cover" })
       .raw()
       .toBuffer({ resolveWithObject: true })
     if (info.channels < 3) return undefined
 
-    const palette = extractPalette(data, info.channels, 1024)
-
-    // Overall mood from the dominant color
-    const dominant = palette[0]
-    if (!dominant) return undefined
-    const hexToRgb = (hex: string) => {
-      const m = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i)
-      return m ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] as const : [0, 0, 0] as const
+    // Average color across all pixels for mood classification
+    let rSum = 0, gSum = 0, bSum = 0
+    const pixels = 64
+    for (let i = 0; i < pixels * info.channels; i += info.channels) {
+      rSum += data[i]
+      gSum += data[i + 1]
+      bSum += data[i + 2]
     }
-    const [dr, dg, db] = hexToRgb(dominant.hex)
+    const r = Math.round(rSum / pixels)
+    const g = Math.round(gSum / pixels)
+    const b = Math.round(bSum / pixels)
+    const [h, s, l] = rgbToHsl(r, g, b)
 
     return {
-      mood: classifyMood(dr, dg, db),
-      hue: dominant.hue,
-      saturation: dominant.saturation,
-      lightness: dominant.lightness,
-      palette,
+      mood: classifyMood(r, g, b),
+      hue: Math.round(h),
+      saturation: Math.round(s * 100) / 100,
+      lightness: Math.round(l * 100) / 100,
     }
   } catch {
     return undefined
@@ -311,7 +243,7 @@ async function classifyBatch(images: GalleryImage[]): Promise<GalleryImage[]> {
     analyses.forEach((result, j) => {
       if (result.status === "fulfilled" && result.value) {
         const a = result.value
-        results[i + j] = { ...results[i + j], mood: a.mood, hue: a.hue, saturation: a.saturation, lightness: a.lightness, palette: a.palette }
+        results[i + j] = { ...results[i + j], mood: a.mood, hue: a.hue, saturation: a.saturation, lightness: a.lightness }
       }
     })
   }
@@ -344,145 +276,9 @@ export async function GET() {
     ;[classified[i], classified[j]] = [classified[j], classified[i]]
   }
 
-  // ── Capture palette snapshot for trend detection ──────────────────────────
-  const today = new Date().toISOString().slice(0, 10)
-  const moods: Record<string, number> = { warm: 0, cool: 0, earth: 0, vivid: 0, neutral: 0 }
-  let hueSum = 0, satSum = 0, lightSum = 0, colorCount = 0
-  const sourceData: Record<string, { count: number; hueSum: number; moods: Record<string, number> }> = {}
-
-  for (const img of classified) {
-    if (img.mood) moods[img.mood]++
-    if (img.hue !== undefined) {
-      hueSum += img.hue
-      satSum += (img.saturation ?? 0)
-      lightSum += (img.lightness ?? 0)
-      colorCount++
-    }
-    if (!sourceData[img.source]) sourceData[img.source] = { count: 0, hueSum: 0, moods: {} }
-    sourceData[img.source].count++
-    if (img.hue !== undefined) sourceData[img.source].hueSum += img.hue
-    if (img.mood) sourceData[img.source].moods[img.mood] = (sourceData[img.source].moods[img.mood] || 0) + 1
-  }
-
-  // Detect trending palettes — find recurring color combinations across images
-  const trendingPalettes: TrendingPalette[] = (() => {
-    // Group images by their quantized dominant+secondary color pair
-    const pairMap = new Map<string, { colors: string[]; sources: Set<string>; count: number }>()
-    for (const img of classified) {
-      if (!img.palette || img.palette.length < 2) continue
-      // Use top 2 colors as the "pair signature" (quantized to reduce noise)
-      const top2 = img.palette.slice(0, 2).map(c => {
-        const qh = Math.round(c.hue / 30) * 30
-        const qs = Math.round(c.saturation * 4) / 4
-        const ql = Math.round(c.lightness * 4) / 4
-        return { qKey: `${qh}-${qs}-${ql}`, hex: c.hex }
-      })
-      const pairKey = top2.map(c => c.qKey).sort().join("|")
-      const existing = pairMap.get(pairKey)
-      if (existing) {
-        existing.count++
-        existing.sources.add(img.source)
-      } else {
-        pairMap.set(pairKey, {
-          colors: top2.map(c => c.hex),
-          sources: new Set([img.source]),
-          count: 1,
-        })
-      }
-    }
-    // Return top 5 most recurring pairs that appear across 2+ sources
-    return [...pairMap.values()]
-      .filter(p => p.sources.size >= 2 || p.count >= 3)
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 5)
-      .map(p => ({
-        colors: p.colors,
-        sources: [...p.sources],
-        frequency: p.count,
-      }))
-  })()
-
-  const snapshot: PaletteSnapshot = {
-    date: today,
-    totalImages: classified.length,
-    moods,
-    avgHue: colorCount > 0 ? Math.round(hueSum / colorCount) : 0,
-    avgSaturation: colorCount > 0 ? Math.round((satSum / colorCount) * 100) / 100 : 0,
-    avgLightness: colorCount > 0 ? Math.round((lightSum / colorCount) * 100) / 100 : 0,
-    trendingPalettes,
-    sourceBreakdown: Object.fromEntries(
-      Object.entries(sourceData).map(([name, data]) => {
-        const topMood = Object.entries(data.moods).sort((a, b) => b[1] - a[1])[0]
-        return [name, {
-          count: data.count,
-          dominantMood: topMood?.[0] || "neutral",
-          avgHue: data.count > 0 ? Math.round(data.hueSum / data.count) : 0,
-        }]
-      })
-    ),
-  }
-
-  storePaletteSnapshot(snapshot).catch(() => {})
-
-  // ── Load history for trend analysis ─────────────────────────────────────
-  const history = await loadPaletteHistory(7).catch(() => [])
-
-  // Calculate trends: compare today vs 7-day average
-  let paletteIntel: {
-    trend: string
-    moodShifts: { mood: string; direction: "rising" | "falling"; delta: number }[]
-    hueShift: number
-    saturationShift: number
-  } | null = null
-
-  const priorDays = history.filter(h => h.date !== today)
-  if (priorDays.length >= 1) {
-    // Average mood percentages across prior days
-    const avgMoods: Record<string, number> = {}
-    for (const day of priorDays) {
-      const dayTotal = day.totalImages || 1
-      for (const [mood, count] of Object.entries(day.moods)) {
-        avgMoods[mood] = (avgMoods[mood] || 0) + (count / dayTotal) / priorDays.length
-      }
-    }
-
-    const todayTotal = classified.length || 1
-    const moodShifts: { mood: string; direction: "rising" | "falling"; delta: number }[] = []
-    for (const mood of Object.keys(moods)) {
-      const todayPct = (moods[mood] || 0) / todayTotal
-      const avgPct = avgMoods[mood] || 0
-      const delta = Math.round((todayPct - avgPct) * 100)
-      if (Math.abs(delta) >= 3) {
-        moodShifts.push({ mood, direction: delta > 0 ? "rising" : "falling", delta: Math.abs(delta) })
-      }
-    }
-    moodShifts.sort((a, b) => b.delta - a.delta)
-
-    const avgHue = priorDays.reduce((s, d) => s + d.avgHue, 0) / priorDays.length
-    const avgSat = priorDays.reduce((s, d) => s + d.avgSaturation, 0) / priorDays.length
-
-    // Build trend description
-    const rising = moodShifts.filter(m => m.direction === "rising")
-    const falling = moodShifts.filter(m => m.direction === "falling")
-    let trend = ""
-    if (rising.length > 0) trend += `${rising.map(m => `${m.mood} +${m.delta}%`).join(", ")} rising`
-    if (rising.length > 0 && falling.length > 0) trend += ". "
-    if (falling.length > 0) trend += `${falling.map(m => `${m.mood} -${m.delta}%`).join(", ")} falling`
-    if (!trend) trend = "Palette stable — no significant shifts from the weekly average"
-
-    paletteIntel = {
-      trend,
-      moodShifts,
-      hueShift: Math.round(snapshot.avgHue - avgHue),
-      saturationShift: Math.round((snapshot.avgSaturation - avgSat) * 100),
-    }
-  }
-
   return Response.json({
     images: classified,
     count: classified.length,
     sources: GALLERY_SOURCES.length,
-    paletteIntel,
-    snapshot: { moods, avgHue: snapshot.avgHue, avgSaturation: snapshot.avgSaturation, avgLightness: snapshot.avgLightness, trendingPalettes },
   })
 }

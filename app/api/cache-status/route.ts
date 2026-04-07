@@ -11,13 +11,14 @@ function getWeekKey(): string {
 
 export async function GET() {
   if (!process.env.KV_REST_API_URL) {
-    return Response.json({ synthesis: null, dispatch: null })
+    return Response.json({ synthesis: null, dispatch: null, colorIntelligence: null })
   }
 
   try {
-    const [synthTTL, dispatchTTL] = await Promise.all([
+    const [synthTTL, dispatchTTL, colorTTL] = await Promise.all([
       kv.ttl("synthesis:weekly"),
       kv.ttl(getWeekKey()),
+      kv.ttl("color-intelligence:weekly"),
     ])
 
     // Convert TTL (seconds remaining) to approximate "last refreshed" timestamp
@@ -30,8 +31,9 @@ export async function GET() {
     return Response.json({
       synthesis: ttlToAge(synthTTL, 60 * 60 * 12),         // 12-hour TTL
       dispatch: ttlToAge(dispatchTTL, 60 * 60 * 24 * 7),   // 7-day TTL
+      colorIntelligence: ttlToAge(colorTTL, 60 * 60 * 12), // 12-hour TTL
     })
   } catch {
-    return Response.json({ synthesis: null, dispatch: null })
+    return Response.json({ synthesis: null, dispatch: null, colorIntelligence: null })
   }
 }

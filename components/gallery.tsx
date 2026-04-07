@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from "react"
 import { X, ChevronLeft, ChevronRight, Shuffle } from "lucide-react"
 import { TYPE, MONO } from "@/lib/styles"
 import type { GalleryImage, ColorMood } from "@/lib/gallery"
-import type { Skin } from "@/lib/types"
+import type { Skin, Article } from "@/lib/types"
 import { Ticker } from "@/components/ticker"
 import { SurfaceTrends } from "@/components/surface-trends"
 
@@ -171,7 +171,7 @@ const GALLERY_FETCH_TIMEOUT = 10_000
 
 // ─── Gallery Overlay ────────────────────────────────────────────────────────
 
-export function GalleryOverlay({ onClose, excludedSources, isDay, onToggleMode, skin, onSkinChange }: { onClose: () => void; excludedSources?: Set<string>; isDay?: boolean; onToggleMode?: () => void; skin?: Skin; onSkinChange?: (s: Skin) => void }) {
+export function GalleryOverlay({ onClose, excludedSources, isDay, onToggleMode, skin, onSkinChange, articles, onDeliberate }: { onClose: () => void; excludedSources?: Set<string>; isDay?: boolean; onToggleMode?: () => void; skin?: Skin; onSkinChange?: (s: Skin) => void; articles?: Article[]; onDeliberate?: (text: string) => void }) {
   const [allImages, setAllImages] = useState<GalleryImage[]>([])
   const [loading, setLoading] = useState(true)
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
@@ -179,19 +179,6 @@ export function GalleryOverlay({ onClose, excludedSources, isDay, onToggleMode, 
   const [showTrends, setShowTrends] = useState(false)
   const [shuffleKey, setShuffleKey] = useState(0)
   const galleryCols = typeof window !== "undefined" && window.innerWidth <= 768 ? 2 : 3
-  const [paletteIntel, setPaletteIntel] = useState<{
-    trend: string
-    moodShifts: { mood: string; direction: "rising" | "falling"; delta: number }[]
-    hueShift: number
-    saturationShift: number
-  } | null>(null)
-  const [snapshot, setSnapshot] = useState<{
-    moods: Record<string, number>
-    avgHue: number
-    avgSaturation: number
-    avgLightness: number
-    trendingPalettes: { colors: string[]; sources: string[]; frequency: number }[]
-  } | null>(null)
 
   useEffect(() => {
     // Stale-while-revalidate
@@ -202,8 +189,6 @@ export function GalleryOverlay({ onClose, excludedSources, isDay, onToggleMode, 
         const { ts, data } = JSON.parse(raw)
         if (data?.images?.length) {
           setAllImages(data.images)
-          if (data.paletteIntel) setPaletteIntel(data.paletteIntel)
-          if (data.snapshot) setSnapshot(data.snapshot)
           setLoading(false)
           hasStale = true
           if (Date.now() - ts < GALLERY_TTL) return // fresh — skip fetch
@@ -219,8 +204,6 @@ export function GalleryOverlay({ onClose, excludedSources, isDay, onToggleMode, 
       .then(r => { clearTimeout(timeout); return r.json() })
       .then(data => {
         setAllImages(data.images || [])
-        if (data.paletteIntel) setPaletteIntel(data.paletteIntel)
-        if (data.snapshot) setSnapshot(data.snapshot)
         setLoading(false)
         try { localStorage.setItem(GALLERY_CACHE_KEY, JSON.stringify({ ts: Date.now(), data })) } catch { /* */ }
       })
@@ -405,9 +388,8 @@ export function GalleryOverlay({ onClose, excludedSources, isDay, onToggleMode, 
       {showTrends && (
         <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
           <SurfaceTrends
-            images={allImages}
-            paletteIntel={paletteIntel}
-            snapshot={snapshot}
+            articles={articles || []}
+            onDeliberate={onDeliberate || (() => {})}
           />
         </div>
       )}

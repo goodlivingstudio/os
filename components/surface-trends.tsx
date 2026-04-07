@@ -1,571 +1,390 @@
 "use client"
 
-import { useState, useMemo } from "react"
-import { Copy, Check, Upload } from "lucide-react"
-import { TYPE, MONO } from "@/lib/styles"
-import type { GalleryImage, ColorMood, ColorSwatch } from "@/lib/gallery"
+import { useState, useEffect, useRef } from "react"
+import { ArrowUpRight } from "lucide-react"
+import type { Article } from "@/lib/types"
+import { TYPE, MONO, labelStyle } from "@/lib/styles"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
-interface SurfaceTrendsProps {
-  images: GalleryImage[]
-  paletteIntel: {
-    trend: string
-    moodShifts: { mood: string; direction: "rising" | "falling"; delta: number }[]
-    hueShift: number
-    saturationShift: number
-  } | null
-  snapshot: {
-    moods: Record<string, number>
-    avgHue: number
-    avgSaturation: number
-    avgLightness: number
-    trendingPalettes: { colors: string[]; sources: string[]; frequency: number }[]
-  } | null
+interface ColorDirection {
+  title: string
+  description: string
+  palette?: string[]
 }
 
-const MOOD_COLORS: Record<string, string> = {
-  warm: "#D4A05A", cool: "#5A9EB0", earth: "#7BAF6A", vivid: "#C87A6A", neutral: "#888888",
+interface ForecastHighlight {
+  authority: string
+  insight: string
+  timeframe?: string
 }
-const MOOD_NAMES: Record<string, string> = {
-  warm: "Warm", cool: "Cool", earth: "Earth", vivid: "Vivid", neutral: "Neutral",
+
+interface CerebroTopic {
+  title: string
+  body?: string
+  prompt: string
 }
-const HUE_SPECTRUM = [
-  { name: "Red", hue: 0, color: "#C85050" },
-  { name: "Orange", hue: 30, color: "#D4A05A" },
-  { name: "Yellow", hue: 60, color: "#C8C85A" },
-  { name: "Green", hue: 120, color: "#7BAF6A" },
-  { name: "Blue", hue: 210, color: "#5A9EB0" },
-  { name: "Purple", hue: 270, color: "#8C64B0" },
-  { name: "Magenta", hue: 330, color: "#B05A8C" },
+
+interface ColorIntelligenceData {
+  headline?: string
+  briefing: string
+  colorDirections: ColorDirection[]
+  forecastHighlights: ForecastHighlight[]
+  cerebroTopics?: CerebroTopic[]
+  headerImageUrl?: string
+}
+
+interface SurfaceTrendsProps {
+  articles: Article[]
+  onDeliberate: (text: string) => void
+}
+
+const CACHE_KEY = "dispatch-color-intel"
+const CACHE_TTL = 4 * 60 * 60 * 1000 // 4 hours
+const FETCH_TIMEOUT = 45_000
+
+const LOADING_STATUSES = [
+  "$ color-intelligence --analyze",
+  "▸ scanning visual culture feeds",
+  "▸ loading 7-day color history",
+  "▸ detecting directional shifts",
+  "▸ composing briefing",
 ]
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
+// ─── Color Intelligence View ──────────────────────────────────────────────
 
-function hexToRgb(hex: string): [number, number, number] {
-  const m = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i)
-  return m ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] : [0, 0, 0]
-}
+export function SurfaceTrends({ articles, onDeliberate }: SurfaceTrendsProps) {
+  const [data, setData] = useState<ColorIntelligenceData | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [statusIdx, setStatusIdx] = useState(0)
+  const [elapsed, setElapsed] = useState(0)
+  const [retryCount, setRetryCount] = useState(0)
+  const fetched = useRef(false)
 
-function relativeLuminance(r: number, g: number, b: number): number {
-  const [rs, gs, bs] = [r, g, b].map(c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4) })
-  return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs
-}
+  useEffect(() => {
+    if (articles.length === 0 || fetched.current) return
+    const annotated = articles.filter(a => a.synopsis || a.relevance)
+    if (annotated.length < 3) return
+    fetched.current = true
 
-function deriveDarkAccessible(hex: string): string {
-  const [r, g, b] = hexToRgb(hex)
-  const lum = relativeLuminance(r, g, b)
-  let dr: number, dg: number, db: number
-  if (lum > 0.7) { dr = Math.round(255 - r * 0.7); dg = Math.round(255 - g * 0.7); db = Math.round(255 - b * 0.7) }
-  else if (lum < 0.05) { dr = Math.min(255, r + 200); dg = Math.min(255, g + 200); db = Math.min(255, b + 200) }
-  else if (lum < 0.2) { dr = Math.min(255, Math.round(r * 1.5 + 40)); dg = Math.min(255, Math.round(g * 1.5 + 40)); db = Math.min(255, Math.round(b * 1.5 + 40)) }
-  else { dr = Math.max(0, Math.round(r * 0.82)); dg = Math.max(0, Math.round(g * 0.82)); db = Math.max(0, Math.round(b * 0.82)) }
-  return `#${[dr, dg, db].map(c => Math.min(255, Math.max(0, c)).toString(16).padStart(2, "0")).join("")}`
-}
-
-function deriveLightAccessible(hex: string): string {
-  const [r, g, b] = hexToRgb(hex)
-  const lum = relativeLuminance(r, g, b)
-  let lr: number, lg: number, lb: number
-  if (lum < 0.1) { lr = Math.min(255, r + 60); lg = Math.min(255, g + 60); lb = Math.min(255, b + 60) }
-  else if (lum > 0.8) { lr = Math.round(r * 0.3); lg = Math.round(g * 0.3); lb = Math.round(b * 0.3) }
-  else if (lum > 0.5) { lr = Math.round(r * 0.5); lg = Math.round(g * 0.5); lb = Math.round(b * 0.5) }
-  else { lr = Math.max(0, Math.round(r * 1.15)); lg = Math.max(0, Math.round(g * 1.15)); lb = Math.max(0, Math.round(b * 1.15)) }
-  return `#${[lr, lg, lb].map(c => Math.min(255, Math.max(0, c)).toString(16).padStart(2, "0")).join("")}`
-}
-
-// ─── Section Label ──────────────────────────────────────────────────────────
-
-function SectionLabel({ title, subtitle }: { title: string; subtitle?: string }) {
-  return (
-    <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 16 }}>
-      <span style={{
-        ...TYPE.sm, fontWeight: 600, color: "var(--accent-secondary)",
-        textTransform: "uppercase", letterSpacing: "0.04em",
-      }}>
-        {title}
-      </span>
-      {subtitle && <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>{subtitle}</span>}
-    </div>
-  )
-}
-
-// ─── 1. Global Mood Distribution ───────────────────────────────────────────
-
-function GlobalMoodDistribution({ images }: { images: GalleryImage[] }) {
-  const data = useMemo(() => {
-    const counts: Record<string, number> = { warm: 0, cool: 0, earth: 0, vivid: 0, neutral: 0 }
-    let total = 0
-    for (const img of images) {
-      if (!img.mood) continue
-      counts[img.mood]++
-      total++
-    }
-    if (total === 0) return null
-    return {
-      total,
-      moods: Object.entries(counts)
-        .map(([mood, count]) => ({ mood, count, pct: Math.round((count / total) * 100) }))
-        .sort((a, b) => b.count - a.count),
-    }
-  }, [images])
-
-  if (!data) return null
-
-  return (
-    <div>
-      <SectionLabel title="Mood Distribution" subtitle={`${data.total} images classified`} />
-      {/* Stacked bar */}
-      <div style={{ display: "flex", height: 40, borderRadius: 12, overflow: "hidden", marginBottom: 14 }}>
-        {data.moods.filter(m => m.pct > 0).map(m => (
-          <div
-            key={m.mood}
-            style={{
-              flex: m.pct,
-              background: MOOD_COLORS[m.mood],
-              opacity: 0.7,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              transition: "flex 0.3s",
-            }}
-          >
-            {m.pct >= 8 && (
-              <span style={{ ...TYPE.xs, color: "#000", fontWeight: 600, opacity: 0.8 }}>
-                {m.pct}%
-              </span>
-            )}
-          </div>
-        ))}
-      </div>
-      {/* Legend */}
-      <div style={{ display: "flex", gap: 16 }}>
-        {data.moods.map(m => (
-          <div key={m.mood} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: MOOD_COLORS[m.mood] }} />
-            <span style={{ ...TYPE.xs, color: "var(--text-secondary)" }}>
-              {MOOD_NAMES[m.mood]} ({m.count})
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ─── 2. Mood Velocity ───────────────────────────────────────────────────────
-
-function MoodVelocity({ moodShifts }: { moodShifts: { mood: string; direction: "rising" | "falling"; delta: number }[] }) {
-  if (!moodShifts || moodShifts.length === 0) return null
-
-  // Ensure all 5 moods are represented
-  const allMoods = ["warm", "cool", "earth", "vivid", "neutral"]
-  const shiftMap = new Map(moodShifts.map(s => [s.mood, s]))
-  const display = allMoods.map(m => {
-    const shift = shiftMap.get(m)
-    return {
-      mood: m,
-      arrow: shift ? (shift.direction === "rising" ? "↑" : "↓") : "→",
-      delta: shift ? `${shift.direction === "rising" ? "+" : "−"}${shift.delta}%` : "0%",
-      color: MOOD_COLORS[m] || "var(--text-tertiary)",
-    }
-  })
-
-  return (
-    <div>
-      <SectionLabel title="Mood Velocity" subtitle="7-day directional shifts" />
-      <div style={{ display: "flex", gap: 8 }}>
-        {display.map((v, i) => (
-          <div
-            key={v.mood}
-            style={{
-              flex: 1, padding: "12px 14px",
-              background: "var(--bg-surface)", borderRadius: 8,
-              animation: `signal-reveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${i * 50}ms both`,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: v.color }} />
-              <span style={{ ...TYPE.xs, color: "var(--text-secondary)" }}>{MOOD_NAMES[v.mood]}</span>
-            </div>
-            <span style={{ ...TYPE.body, fontWeight: 600, color: v.color }}>
-              {v.arrow} {v.delta}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ─── 3. Hue Concentration ───────────────────────────────────────────────────
-
-function HueConcentration({ images }: { images: GalleryImage[] }) {
-  const clusters = useMemo(() => {
-    const buckets = new Array(7).fill(0)
-    for (const img of images) {
-      if (img.hue === undefined) continue
-      // Map hue (0-360) to bucket index
-      const normalized = ((img.hue % 360) + 360) % 360
-      if (normalized < 15 || normalized >= 345) buckets[0]++      // Red
-      else if (normalized < 45) buckets[1]++   // Orange
-      else if (normalized < 75) buckets[2]++   // Yellow
-      else if (normalized < 165) buckets[3]++  // Green
-      else if (normalized < 255) buckets[4]++  // Blue
-      else if (normalized < 315) buckets[5]++  // Purple
-      else buckets[6]++                         // Magenta
-    }
-    const max = Math.max(...buckets, 1)
-    return buckets.map(b => b / max)
-  }, [images])
-
-  return (
-    <div>
-      <SectionLabel title="Hue Concentration" subtitle="Spectral clusters in current feed" />
-      <div style={{ display: "flex", gap: 2, marginBottom: 6 }}>
-        {HUE_SPECTRUM.map((seg, i) => (
-          <div key={seg.name} style={{ flex: 1 }}>
-            <div style={{
-              height: 12, borderRadius: 4,
-              background: seg.color,
-              opacity: 0.2 + clusters[i] * 0.6,
-            }} />
-          </div>
-        ))}
-      </div>
-      <div style={{ display: "flex" }}>
-        {HUE_SPECTRUM.map(seg => (
-          <div key={seg.name} style={{ flex: 1 }}>
-            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", fontSize: 8 }}>{seg.name}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-
-// ─── 5. Palette Extraction ──────────────────────────────────────────────────
-
-function PaletteExtraction({ images, selectedPalettes, onTogglePalette }: {
-  images: GalleryImage[]
-  selectedPalettes: Set<number>
-  onTogglePalette: (idx: number) => void
-}) {
-  const [copiedIdx, setCopiedIdx] = useState<number | null>(null)
-
-  const palettes = useMemo(() => {
-    // Collect all colors across all images globally
-    const allColors: { hex: string; hue: number; sat: number; light: number; count: number }[] = []
-    const colorMap = new Map<string, { hex: string; hue: number; sat: number; light: number; count: number }>()
-
-    for (const img of images) {
-      if (!img.palette) continue
-      for (const sw of img.palette) {
-        const existing = colorMap.get(sw.hex)
-        if (existing) {
-          existing.count++
-        } else {
-          const entry = { hex: sw.hex, hue: sw.hue, sat: sw.saturation, light: sw.lightness, count: 1 }
-          colorMap.set(sw.hex, entry)
-          allColors.push(entry)
+    // Stale-while-revalidate
+    let hasStale = false
+    try {
+      const raw = localStorage.getItem(CACHE_KEY)
+      if (raw) {
+        const { ts, data: cached } = JSON.parse(raw)
+        if (cached?.briefing) {
+          setData(cached)
+          hasStale = true
+          if (Date.now() - ts < CACHE_TTL) return
         }
       }
+    } catch { /* */ }
+
+    if (!hasStale) {
+      setLoading(true)
+      setStatusIdx(0)
+      setElapsed(0)
     }
 
-    if (allColors.length < 10) return []
+    const abort = new AbortController()
+    const timeout = setTimeout(() => abort.abort(), FETCH_TIMEOUT)
+    const t = !hasStale ? setInterval(() => setStatusIdx(i => Math.min(i + 1, LOADING_STATUSES.length - 1)), 1200) : undefined
+    const timer = !hasStale ? setInterval(() => setElapsed(e => e + 1), 1000) : undefined
 
-    // Filter out very dark (<15% lightness) and very light (>85% lightness) colors — these are backgrounds
-    const chromatic = allColors.filter(c => c.light > 0.15 && c.light < 0.85 && c.sat > 0.08)
-    if (chromatic.length < 5) return []
-
-    // Sort by frequency
-    chromatic.sort((a, b) => b.count - a.count)
-
-    const result: { label: string; colors: string[]; count: number }[] = []
-
-    // Palette 1: Top 5 most frequent chromatic colors (global dominant)
-    const dominant5: typeof chromatic = []
-    for (const c of chromatic) {
-      if (dominant5.length >= 5) break
-      const [r1, g1, b1] = hexToRgb(c.hex)
-      const tooClose = dominant5.some(d => {
-        const [r2, g2, b2] = hexToRgb(d.hex)
-        return Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2) < 50
-      })
-      if (!tooClose) dominant5.push(c)
-    }
-    if (dominant5.length >= 3) {
-      result.push({
-        label: "Dominant Palette",
-        colors: dominant5.map(c => c.hex),
-        count: dominant5.reduce((s, c) => s + c.count, 0),
-      })
-    }
-
-    // Palette 2: Most saturated colors (vivid/bold)
-    const bySat = [...chromatic].sort((a, b) => b.sat - a.sat)
-    const vivid5: typeof chromatic = []
-    for (const c of bySat) {
-      if (vivid5.length >= 5) break
-      const [r1, g1, b1] = hexToRgb(c.hex)
-      const tooClose = vivid5.some(d => {
-        const [r2, g2, b2] = hexToRgb(d.hex)
-        return Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2) < 50
-      })
-      if (!tooClose) vivid5.push(c)
-    }
-    if (vivid5.length >= 3) {
-      result.push({
-        label: "Vivid Palette",
-        colors: vivid5.map(c => c.hex),
-        count: vivid5.reduce((s, c) => s + c.count, 0),
-      })
-    }
-
-    // Palette 3: Warm/earth tones (hue 0-60 or 330-360)
-    const warm = chromatic.filter(c => c.hue <= 60 || c.hue >= 330)
-    const warm5: typeof chromatic = []
-    for (const c of warm) {
-      if (warm5.length >= 5) break
-      const [r1, g1, b1] = hexToRgb(c.hex)
-      const tooClose = warm5.some(d => {
-        const [r2, g2, b2] = hexToRgb(d.hex)
-        return Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2) < 50
-      })
-      if (!tooClose) warm5.push(c)
-    }
-    if (warm5.length >= 3) {
-      result.push({
-        label: "Warm Palette",
-        colors: warm5.map(c => c.hex),
-        count: warm5.reduce((s, c) => s + c.count, 0),
-      })
-    }
-
-    return result
-  }, [images])
-
-  const handleCopy = (idx: number, format: string) => {
-    const pal = palettes[idx]
-    if (!pal) return
-    let text = ""
-    if (format === "hex") text = pal.colors.join(", ")
-    else if (format === "css") text = pal.colors.map((c, i) => `--palette-${idx + 1}-${i + 1}: ${c};`).join("\n")
-    navigator.clipboard.writeText(text).then(() => {
-      setCopiedIdx(idx)
-      setTimeout(() => setCopiedIdx(null), 2000)
+    fetch("/api/color-intelligence", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ articles: annotated.slice(0, 25) }),
+      signal: abort.signal,
     })
-  }
+      .then(r => { clearTimeout(timeout); return r.json() })
+      .then(result => {
+        if (result.briefing) {
+          setData(result)
+          try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: result })) } catch { /* */ }
+        } else if (!hasStale) {
+          fetched.current = false
+        }
+        setLoading(false)
+        if (t) clearInterval(t)
+        if (timer) clearInterval(timer)
+      })
+      .catch((err) => {
+        clearTimeout(timeout)
+        if (err?.name === "AbortError" && !hasStale) {
+          fetched.current = false
+        }
+        setLoading(false)
+        if (t) clearInterval(t)
+        if (timer) clearInterval(timer)
+      })
 
-  if (palettes.length === 0) return null
+    return () => { abort.abort(); clearTimeout(timeout); if (t) clearInterval(t); if (timer) clearInterval(timer) }
+  }, [articles, retryCount]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Week range for header
+  const weekRange = (() => {
+    const now = new Date()
+    const day = now.getDay()
+    const monday = new Date(now)
+    monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1))
+    const sunday = new Date(monday)
+    sunday.setDate(monday.getDate() + 6)
+    const fmt = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    return `${fmt(monday)} – ${fmt(sunday)}`
+  })()
 
   return (
-    <div>
-      <SectionLabel title="Palette Extraction" subtitle="Select palettes to build moodboard" />
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {palettes.map((pal, idx) => {
-          const isSelected = selectedPalettes.has(idx)
-          const darkColors = pal.colors.map(deriveDarkAccessible)
-          const lightColors = pal.colors.map(deriveLightAccessible)
+    <div style={{ display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
-          return (
-            <div
-              key={idx}
-              style={{
-                background: "var(--bg-surface)", borderRadius: 8, padding: "16px 20px",
-                animation: `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${idx * 80}ms both`,
-              }}
-            >
-              {/* Header: checkbox + source + export */}
-              <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
-                <button
-                  onClick={() => onTogglePalette(idx)}
+      {/* Header bar */}
+      <div style={{
+        flexShrink: 0, height: 40, display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "0 20px", borderBottom: "1px solid var(--border)",
+      }}>
+        <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase" }}>
+          Color Intelligence
+        </span>
+        <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)" }}>
+          {weekRange}
+        </span>
+      </div>
+
+      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
+
+        {/* ── Loading ── */}
+        {loading && (
+          <div role="status" aria-live="polite" style={{ position: "relative", overflow: "hidden" }}>
+            <div style={{ padding: "32px 20px" }}>
+              {LOADING_STATUSES.slice(0, statusIdx + 1).map((line, i) => (
+                <div
+                  key={i}
                   style={{
-                    width: 18, height: 18, borderRadius: 4, border: "none", cursor: "pointer",
-                    background: isSelected ? "var(--accent-secondary)" : "var(--bg-elevated)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    marginRight: 10, flexShrink: 0, transition: "background 0.15s",
+                    ...TYPE.sm, fontFamily: MONO,
+                    color: i === statusIdx ? "var(--accent-muted)" : "var(--text-tertiary)",
+                    opacity: i === statusIdx ? 1 : 0.5,
+                    animation: i === statusIdx ? "status-fade 0.2s ease both" : "none",
+                    marginBottom: 4,
                   }}
                 >
-                  {isSelected && <Check size={11} strokeWidth={2.5} style={{ color: "var(--bg-primary)" }} />}
-                </button>
-                <div style={{ flex: 1 }}>
-                  <div style={{ ...TYPE.sm, color: "var(--text-secondary)", fontWeight: 500 }}>{pal.label}</div>
-                  <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>{pal.count} occurrences across feed</div>
+                  {line}{i === statusIdx && i < LOADING_STATUSES.length - 1 && <span className="cursor-blink" style={{ marginLeft: 2 }}>_</span>}
+                  {i === statusIdx && i === LOADING_STATUSES.length - 1 && <span className="loading-pulse" style={{ marginLeft: 4, ...TYPE.xs, opacity: 0.6 }}>…</span>}
                 </div>
-                <div style={{ display: "flex", gap: 4 }}>
-                  {["CSS", "HEX"].map(fmt => (
-                    <button
-                      key={fmt}
-                      onClick={() => handleCopy(idx, fmt.toLowerCase())}
+              ))}
+              {elapsed > 3 && (
+                <div style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", marginTop: 12, opacity: 0.6 }}>
+                  {elapsed < 10 ? "analyzing patterns" : elapsed < 30 ? "composing images" : "finishing up"} · {elapsed}s
+                </div>
+              )}
+            </div>
+            <div style={{
+              position: "absolute", bottom: 0, left: 0, width: "25%", height: 1,
+              background: "var(--accent-secondary)", opacity: 0.4,
+              animation: "band-scan 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            }} />
+          </div>
+        )}
+
+        {/* ── Empty ── */}
+        {!loading && !data && (
+          <div style={{ padding: "48px 20px", maxWidth: 520 }}>
+            <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.8, marginBottom: 16 }}>
+              Color intelligence will appear when annotated articles are available.
+            </div>
+            <button
+              onClick={() => { fetched.current = false; setRetryCount(c => c + 1) }}
+              aria-label="Retry loading color intelligence"
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 6,
+                padding: "6px 14px", borderRadius: 6,
+                border: "1px solid var(--border)", background: "transparent",
+                ...TYPE.sm, color: "var(--text-tertiary)", cursor: "pointer",
+              }}
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
+        {/* ── Content ── */}
+        {!loading && data && (
+          <div>
+
+            {/* ─ WEEKLY COLOR SHIFT banner ─ */}
+            <div style={{
+              background: "var(--bg-surface)", padding: "20px 24px",
+              animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
+            }}>
+              <div style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 10 }}>
+                Weekly Color Shift
+              </div>
+              <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.5 }}>
+                {data.headline || data.briefing.split(/[.!?]\s/)[0]}
+              </div>
+              {data.headline && data.briefing && (
+                <div style={{ ...TYPE.reading, color: "var(--text-secondary)", lineHeight: 1.7, marginTop: 10 }}>
+                  {data.briefing}
+                </div>
+              )}
+            </div>
+
+            {/* ─ HERO IMAGE — 21:9 cinematic ─ */}
+            <div style={{
+              position: "relative", width: "100%", paddingTop: `${(9 / 21) * 100}%`, overflow: "hidden",
+              background: data.headerImageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
+            }}>
+              {data.headerImageUrl && (
+                <img src={data.headerImageUrl} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+              )}
+            </div>
+
+            {/* ─ COLOR DIRECTIONS ─ */}
+            {data.colorDirections.length > 0 && (
+              <div style={{
+                animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 200ms both",
+              }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", padding: "24px 24px 14px", fontSize: 11 }}>
+                  Color Directions
+                </div>
+                {data.colorDirections.map((direction, i) => (
+                  <div
+                    key={i}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => onDeliberate(`I want to explore this color direction:\n\n"${direction.title}"\n\n${direction.description}\n\nWhat does this mean for design leadership and healthcare? How should I think about this shift?`)}
+                    onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`Explore this color direction: "${direction.title}" — ${direction.description}`) } }}
+                    style={{
+                      display: "flex", gap: 20,
+                      padding: "16px 24px",
+                      cursor: "pointer", transition: "background 0.15s", outline: "none",
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+                  >
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      {/* Palette dots */}
+                      {direction.palette && direction.palette.length > 0 && (
+                        <div style={{ display: "flex", gap: 5, marginBottom: 8 }}>
+                          {direction.palette.map((hex, j) => (
+                            <span key={j} style={{ width: 14, height: 14, borderRadius: "50%", background: hex, border: "1px solid rgba(255,255,255,0.1)" }} />
+                          ))}
+                        </div>
+                      )}
+                      {/* Title */}
+                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, letterSpacing: "-0.01em", marginBottom: 6 }}>
+                        {direction.title}
+                      </div>
+                      {/* Description */}
+                      {direction.description && (
+                        <div style={{
+                          ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.6,
+                          display: "-webkit-box", WebkitLineClamp: 3,
+                          WebkitBoxOrient: "vertical" as const, overflow: "hidden",
+                        }}>
+                          {direction.description}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* ─ FORECAST HIGHLIGHTS ─ */}
+            {data.forecastHighlights.length > 0 && (
+              <div style={{
+                padding: "24px 24px",
+                animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 300ms both",
+              }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
+                  Forecast Highlights
+                </div>
+                <div className="color-intel-forecasts" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+                  {data.forecastHighlights.map((highlight, i) => (
+                    <div
+                      key={i}
                       style={{
-                        ...TYPE.xs, padding: "3px 10px", borderRadius: 6, border: "none",
-                        background: copiedIdx === idx ? "var(--accent-secondary)" : "var(--bg-elevated)",
-                        color: copiedIdx === idx ? "var(--bg-primary)" : "var(--text-tertiary)",
-                        cursor: "pointer", transition: "all 0.15s", fontWeight: 500,
+                        background: "var(--bg-surface)", borderRadius: 10, padding: "18px 20px",
                       }}
                     >
-                      {copiedIdx === idx ? "Copied" : fmt}
-                    </button>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                        <div style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>
+                          {highlight.authority}
+                        </div>
+                        {highlight.timeframe && (
+                          <span style={{
+                            ...TYPE.xs, padding: "2px 8px", borderRadius: 8,
+                            background: "rgba(184, 150, 106, 0.12)", color: "var(--accent-secondary)",
+                            fontWeight: 500, letterSpacing: "0.03em",
+                          }}>
+                            {highlight.timeframe}
+                          </span>
+                        )}
+                      </div>
+                      <div style={{
+                        ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.6,
+                        display: "-webkit-box", WebkitLineClamp: 4,
+                        WebkitBoxOrient: "vertical" as const, overflow: "hidden",
+                      }}>
+                        {highlight.insight}
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
+            )}
 
-              {/* Swatches: Source | Dark | Light */}
-              <div style={{ display: "flex", gap: 24 }}>
-                {/* Source — large swatches */}
-                <div style={{ flex: 1 }}>
-                  <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", fontWeight: 500, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.03em" }}>Source</div>
-                  <div style={{ display: "flex", gap: 6 }}>
-                    {pal.colors.map((hex, i) => (
-                      <div key={i} style={{ flex: 1 }}>
-                        <div style={{ paddingTop: "100%", borderRadius: 8, background: hex, position: "relative" }} />
-                        <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginTop: 4, fontSize: 7 }}>{hex.toUpperCase()}</div>
-                      </div>
-                    ))}
-                  </div>
+            {/* ─ ASK CEREBRO ─ */}
+            {data.cerebroTopics && data.cerebroTopics.length > 0 && (
+              <div style={{
+                padding: "24px 24px",
+                animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 400ms both",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 14 }}>
+                  <ArrowUpRight size={12} style={{ color: "var(--accent-secondary)" }} />
+                  <span style={{ ...labelStyle, letterSpacing: "0.04em", fontSize: 11, color: "var(--accent-secondary)" }}>
+                    Ask Cerebro
+                  </span>
                 </div>
-
-                {/* Dark + Light — stacked chips on native BGs */}
-                <div style={{ flex: 1 }}>
-                  <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", fontWeight: 500, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.03em" }}>Dark</div>
-                  <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
-                    {darkColors.map((hex, i) => (
-                      <div key={i} style={{
-                        flex: 1, aspectRatio: "1", borderRadius: 8,
-                        background: "var(--bg-primary)",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                      }}>
-                        <div style={{ width: "55%", height: "55%", borderRadius: "50%", background: hex }} />
+                <div className="color-intel-cerebro" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  {data.cerebroTopics.slice(0, 4).map((topic, i) => (
+                    <div
+                      key={i}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => onDeliberate(topic.prompt)}
+                      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(topic.prompt) } }}
+                      style={{
+                        background: "var(--bg-surface)", borderRadius: 10, padding: "18px 20px",
+                        cursor: "pointer", transition: "background 0.15s", outline: "none",
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
+                    >
+                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, marginBottom: topic.body ? 6 : 0, fontSize: 14 }}>
+                        {topic.title}
                       </div>
-                    ))}
-                  </div>
-                  <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", fontWeight: 500, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.03em" }}>Light</div>
-                  <div style={{ display: "flex", gap: 6 }}>
-                    {lightColors.map((hex, i) => (
-                      <div key={i} style={{
-                        flex: 1, aspectRatio: "1", borderRadius: 8,
-                        background: "#F7F4EF",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                      }}>
-                        <div style={{ width: "55%", height: "55%", borderRadius: "50%", background: hex }} />
-                      </div>
-                    ))}
-                  </div>
-                  <div style={{ ...TYPE.xs, color: "#7BAF6A", fontWeight: 500, marginTop: 6 }}>AA 4.5:1+ compliant</div>
+                      {topic.body && (
+                        <div style={{
+                          ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.6,
+                          display: "-webkit-box", WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical" as const, overflow: "hidden",
+                        }}>
+                          {topic.body}
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
-          )
-        })}
+            )}
+
+            {/* Bottom padding */}
+            <div style={{ height: 48 }} />
+          </div>
+        )}
       </div>
-    </div>
-  )
-}
-
-// ─── 6. Moodboard Export ────────────────────────────────────────────────────
-
-function MoodboardExport({ selectedCount, matchingCount, onExport, exported }: {
-  selectedCount: number
-  matchingCount: number
-  onExport: () => void
-  exported: boolean
-}) {
-  if (selectedCount === 0) return null
-
-  return (
-    <div style={{
-      background: "var(--bg-surface)", borderRadius: 8, padding: "14px 20px",
-      display: "flex", alignItems: "center", justifyContent: "space-between",
-      marginTop: 12,
-    }}>
-      <div>
-        <div style={{ ...TYPE.sm, color: "var(--text-secondary)", fontWeight: 500 }}>
-          {selectedCount} palette{selectedCount !== 1 ? "s" : ""} selected · {matchingCount} images
-        </div>
-        <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
-          Copy palette data + image URLs as JSON
-        </div>
-      </div>
-      <button
-        onClick={onExport}
-        style={{
-          ...TYPE.xs, fontWeight: 600, padding: "8px 20px", borderRadius: 6, border: "none",
-          background: exported ? "var(--accent-secondary)" : "var(--accent-primary)",
-          color: exported ? "var(--bg-primary)" : "var(--accent-secondary)",
-          cursor: "pointer",
-          transition: "all 0.15s", textTransform: "uppercase", letterSpacing: "0.04em",
-        }}
-      >
-        {exported ? "COPIED" : "COPY DATA"}
-      </button>
-    </div>
-  )
-}
-
-// ─── Main Component ─────────────────────────────────────────────────────────
-
-export function SurfaceTrends({ images, paletteIntel, snapshot }: SurfaceTrendsProps) {
-  const [selectedPalettes, setSelectedPalettes] = useState<Set<number>>(new Set())
-  const [exported, setExported] = useState(false)
-
-  const togglePalette = (idx: number) => {
-    setSelectedPalettes(prev => {
-      const next = new Set(prev)
-      if (next.has(idx)) next.delete(idx)
-      else next.add(idx)
-      return next
-    })
-  }
-
-  const handleExport = async () => {
-    const matchingImages = images.filter(img => img.url)
-    const data = {
-      images: matchingImages.slice(0, 20).map(img => ({ url: img.url, source: img.source, title: img.title })),
-      palettes: [...selectedPalettes],
-    }
-    try {
-      await navigator.clipboard.writeText(JSON.stringify(data, null, 2))
-      setExported(true)
-      setTimeout(() => setExported(false), 2000)
-    } catch { /* */ }
-  }
-
-  const classifiedCount = images.filter(img => img.mood).length
-
-  if (classifiedCount < 5) {
-    return (
-      <div style={{ padding: "48px 32px", textAlign: "center" }}>
-        <div style={{ ...TYPE.body, color: "var(--text-tertiary)", maxWidth: 400, margin: "0 auto", lineHeight: 1.7 }}>
-          Visual intelligence will emerge as gallery images are classified. Check back after the next refresh cycle.
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 0, padding: "24px 24px 48px" }}>
-      {/* Each section separated by consistent dividers */}
-      <GlobalMoodDistribution images={images} />
-
-      <div style={{ height: 1, background: "var(--border)", margin: "24px 0" }} />
-      <MoodVelocity moodShifts={paletteIntel?.moodShifts || []} />
-
-      <div style={{ height: 1, background: "var(--border)", margin: "24px 0" }} />
-      <HueConcentration images={images} />
-
-      <div style={{ height: 1, background: "var(--border)", margin: "24px 0" }} />
-      {/* Palette Extraction + Moodboard — shared feature, no separator between them */}
-      <PaletteExtraction
-        images={images}
-        selectedPalettes={selectedPalettes}
-        onTogglePalette={togglePalette}
-      />
-      <MoodboardExport
-        selectedCount={selectedPalettes.size}
-        matchingCount={images.length}
-        onExport={handleExport}
-        exported={exported}
-      />
     </div>
   )
 }

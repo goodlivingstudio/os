@@ -62,6 +62,12 @@ export const FEEDS: FeedDef[] = [
   { url: "https://news.google.com/rss/search?q=site:reuters.com&hl=en-US&gl=US", source: "Reuters", category: "Global Wire", tag: "landscape", layer: "landscape" },
   { url: "https://news.google.com/rss/search?q=site:economist.com&hl=en-US&gl=US", source: "The Economist", category: "Global Analysis", tag: "landscape", layer: "landscape" },
 
+  // ── COLOR INTELLIGENCE — Visual culture, color forecasting ────────────────
+  { url: "https://heuritech.com/blog/feed/",                      source: "Heuritech",         category: "Color & Fashion Intelligence", tag: "culture", layer: "culture" },
+  { url: "https://www.itsnicethat.com/feed",                       source: "It's Nice That",    category: "Visual Culture",               tag: "culture", layer: "culture" },
+  { url: "https://www.creativeboom.com/feed",                      source: "Creative Boom",     category: "Creative Industry",            tag: "culture", layer: "culture" },
+  { url: "https://www.canva.com/newsroom/feed/",                   source: "Canva Newsroom",    category: "Design Platform",              tag: "culture", layer: "culture" },
+
   // ── CULTURE — Taste, criticism, creative practice ─────────────────────────
   { url: "https://www.theatlantic.com/feed/all/",                source: "The Atlantic",      category: "Ideas & Culture",      tag: "culture",      layer: "culture" },
   { url: "https://rss.nytimes.com/services/xml/rss/nyt/Arts.xml", source: "New York Times",   category: "Arts & Culture",       tag: "culture",      layer: "culture" },
