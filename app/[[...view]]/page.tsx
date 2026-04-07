@@ -41,8 +41,12 @@ function useTheme() {
   useEffect(() => {
     const storedSkin = (localStorage.getItem("dispatch-skin") as Skin) || "mineral"
     const storedMode = localStorage.getItem("dispatch-theme")
+    const storedModeTs = localStorage.getItem("dispatch-theme-ts")
+    const THEME_SESSION_TTL = 4 * 60 * 60 * 1000 // 4 hours
+    const modeExpired = !storedModeTs || (Date.now() - parseInt(storedModeTs, 10)) > THEME_SESSION_TTL
     const h   = new Date().getHours()
-    const day = storedMode === "day" ? true : storedMode === "night" ? false : h >= 6 && h < 20
+    const day = storedMode && !modeExpired ? (storedMode === "day") : h >= 6 && h < 20
+    if (modeExpired) { localStorage.removeItem("dispatch-theme"); localStorage.removeItem("dispatch-theme-ts") }
     skinRef.current = storedSkin
     setSkinState(storedSkin)
     setIsDay(day)
@@ -55,6 +59,7 @@ function useTheme() {
       const next = !prev
       applyThemeClasses(skinRef.current, next)
       localStorage.setItem("dispatch-theme", next ? "day" : "night")
+      localStorage.setItem("dispatch-theme-ts", String(Date.now()))
       return next
     })
   }, [])
