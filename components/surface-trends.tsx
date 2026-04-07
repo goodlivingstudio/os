@@ -90,79 +90,60 @@ function SectionLabel({ title, subtitle }: { title: string; subtitle?: string })
   )
 }
 
-// ─── 1. Source × Mood Matrix ────────────────────────────────────────────────
+// ─── 1. Global Mood Distribution ───────────────────────────────────────────
 
-function SourceMoodMatrix({ images }: { images: GalleryImage[] }) {
+function GlobalMoodDistribution({ images }: { images: GalleryImage[] }) {
   const data = useMemo(() => {
-    const sourceMap: Record<string, Record<string, number>> = {}
-    const sourceTotals: Record<string, number> = {}
+    const counts: Record<string, number> = { warm: 0, cool: 0, earth: 0, vivid: 0, neutral: 0 }
+    let total = 0
     for (const img of images) {
-      if (!img.source || !img.mood) continue
-      if (!sourceMap[img.source]) sourceMap[img.source] = {}
-      sourceMap[img.source][img.mood] = (sourceMap[img.source][img.mood] || 0) + 1
-      sourceTotals[img.source] = (sourceTotals[img.source] || 0) + 1
+      if (!img.mood) continue
+      counts[img.mood]++
+      total++
     }
-    return Object.entries(sourceTotals)
-      .sort((a, b) => b[1] - a[1])
-      .map(([source, total]) => ({
-        source,
-        total,
-        moods: Object.fromEntries(
-          ["warm", "cool", "earth", "vivid", "neutral"].map(m => [
-            m,
-            Math.round(((sourceMap[source][m] || 0) / total) * 100),
-          ])
-        ),
-      }))
+    if (total === 0) return null
+    return {
+      total,
+      moods: Object.entries(counts)
+        .map(([mood, count]) => ({ mood, count, pct: Math.round((count / total) * 100) }))
+        .sort((a, b) => b.count - a.count),
+    }
   }, [images])
 
-  if (data.length === 0) return null
-  const moods = ["warm", "cool", "earth", "vivid", "neutral"]
+  if (!data) return null
 
   return (
     <div>
-      <SectionLabel title="Source × Mood Matrix" subtitle={`${data.length} active sources`} />
-      {/* Column headers */}
-      <div style={{ display: "flex", paddingLeft: 140, marginBottom: 8 }}>
-        {moods.map(m => (
-          <div key={m} style={{ flex: 1, display: "flex", alignItems: "center", gap: 4 }}>
-            <span style={{ width: 5, height: 5, borderRadius: "50%", background: MOOD_COLORS[m] }} />
-            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>{MOOD_NAMES[m]}</span>
+      <SectionLabel title="Mood Distribution" subtitle={`${data.total} images classified`} />
+      {/* Stacked bar */}
+      <div style={{ display: "flex", height: 40, borderRadius: 12, overflow: "hidden", marginBottom: 14 }}>
+        {data.moods.filter(m => m.pct > 0).map(m => (
+          <div
+            key={m.mood}
+            style={{
+              flex: m.pct,
+              background: MOOD_COLORS[m.mood],
+              opacity: 0.7,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              transition: "flex 0.3s",
+            }}
+          >
+            {m.pct >= 8 && (
+              <span style={{ ...TYPE.xs, color: "#000", fontWeight: 600, opacity: 0.8 }}>
+                {m.pct}%
+              </span>
+            )}
           </div>
         ))}
       </div>
-      {/* Rows */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {data.map((row, i) => (
-          <div
-            key={row.source}
-            style={{
-              display: "flex", alignItems: "center",
-              animation: `signal-reveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${Math.min(i * 30, 400)}ms both`,
-            }}
-          >
-            <span style={{
-              ...TYPE.xs, color: "var(--text-secondary)", width: 136,
-              flexShrink: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-            }}>
-              {row.source}
+      {/* Legend */}
+      <div style={{ display: "flex", gap: 16 }}>
+        {data.moods.map(m => (
+          <div key={m.mood} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: MOOD_COLORS[m.mood] }} />
+            <span style={{ ...TYPE.xs, color: "var(--text-secondary)" }}>
+              {MOOD_NAMES[m.mood]} ({m.count})
             </span>
-            {moods.map(m => (
-              <div key={m} style={{ flex: 1, paddingRight: 3 }}>
-                <div style={{
-                  height: 22, borderRadius: 6,
-                  background: MOOD_COLORS[m],
-                  opacity: Math.max(0.06, (row.moods[m] || 0) / 100 * 0.85),
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  {(row.moods[m] || 0) > 0 && (
-                    <span style={{ ...TYPE.xs, color: "var(--text-secondary)", fontWeight: 500 }}>
-                      {row.moods[m]}%
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
           </div>
         ))}
       </div>
@@ -236,42 +217,19 @@ function HueConcentration({ images }: { images: GalleryImage[] }) {
     return buckets.map(b => b / max)
   }, [images])
 
-  // Top 3 clusters for glow effect
-  const topClusters = clusters
-    .map((v, i) => ({ i, v }))
-    .sort((a, b) => b.v - a.v)
-    .slice(0, 3)
-    .map(c => c.i)
-
   return (
     <div>
       <SectionLabel title="Hue Concentration" subtitle="Spectral clusters in current feed" />
       <div style={{ display: "flex", gap: 2, marginBottom: 6 }}>
-        {HUE_SPECTRUM.map((seg, i) => {
-          const isCluster = topClusters.includes(i)
-          return (
-            <div key={seg.name} style={{ flex: 1, position: "relative" }}>
-              <div style={{
-                height: 12, borderRadius: 4,
-                background: seg.color,
-                opacity: 0.2 + clusters[i] * 0.6,
-                transition: "opacity 0.3s",
-              }} />
-              {isCluster && (
-                <div
-                  className="hue-glow"
-                  style={{
-                    position: "absolute",
-                    top: -4, left: "50%",
-                    width: 12, height: 20, borderRadius: 6,
-                    background: seg.color,
-                    color: seg.color,
-                  }}
-                />
-              )}
-            </div>
-          )
-        })}
+        {HUE_SPECTRUM.map((seg, i) => (
+          <div key={seg.name} style={{ flex: 1 }}>
+            <div style={{
+              height: 12, borderRadius: 4,
+              background: seg.color,
+              opacity: 0.2 + clusters[i] * 0.6,
+            }} />
+          </div>
+        ))}
       </div>
       <div style={{ display: "flex" }}>
         {HUE_SPECTRUM.map(seg => (
@@ -284,70 +242,6 @@ function HueConcentration({ images }: { images: GalleryImage[] }) {
   )
 }
 
-// ─── 4. Visual Outliers ─────────────────────────────────────────────────────
-
-function VisualOutliers({ images }: { images: GalleryImage[] }) {
-  const outliers = useMemo(() => {
-    const classified = images.filter(img => img.hue !== undefined && img.saturation !== undefined && img.lightness !== undefined)
-    if (classified.length < 10) return []
-
-    const avgHue = classified.reduce((s, img) => s + (img.hue || 0), 0) / classified.length
-    const avgSat = classified.reduce((s, img) => s + (img.saturation || 0), 0) / classified.length
-    const avgLight = classified.reduce((s, img) => s + (img.lightness || 0), 0) / classified.length
-
-    return classified
-      .map(img => {
-        const hueDist = Math.min(Math.abs((img.hue || 0) - avgHue), 360 - Math.abs((img.hue || 0) - avgHue)) / 180
-        const satDist = Math.abs((img.saturation || 0) - avgSat)
-        const lightDist = Math.abs((img.lightness || 0) - avgLight)
-        const distance = Math.sqrt(hueDist * hueDist + satDist * satDist + lightDist * lightDist)
-        const dimension = hueDist > satDist && hueDist > lightDist ? "Hue" : satDist > lightDist ? "Saturation" : "Lightness"
-        return { ...img, distance, dimension }
-      })
-      .sort((a, b) => b.distance - a.distance)
-      .slice(0, 5)
-  }, [images])
-
-  if (outliers.length === 0) return null
-
-  return (
-    <div>
-      <SectionLabel title="Visual Outliers" subtitle="Pattern breakers — furthest from visual center" />
-      <div style={{ display: "flex", gap: 10 }}>
-        {outliers.map((img, i) => (
-          <div
-            key={img.id}
-            style={{
-              flex: 1, borderRadius: 8, overflow: "hidden",
-              background: "var(--bg-elevated)",
-              animation: `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${i * 60}ms both`,
-            }}
-          >
-            <div style={{ position: "relative", paddingTop: "66.67%", background: "var(--bg-surface)" }}>
-              <img
-                src={img.url}
-                alt=""
-                loading="lazy"
-                referrerPolicy="no-referrer"
-                onError={e => { e.currentTarget.style.display = "none" }}
-                style={{
-                  position: "absolute", inset: 0, width: "100%", height: "100%",
-                  objectFit: "cover",
-                }}
-              />
-            </div>
-            <div style={{ padding: "8px 10px" }}>
-              <div style={{ ...TYPE.xs, color: "var(--accent-secondary)", fontWeight: 500 }}>{img.source}</div>
-              <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
-                {img.dimension} · {Math.round(img.distance * 100)}%
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
 
 // ─── 5. Palette Extraction ──────────────────────────────────────────────────
 
@@ -359,34 +253,92 @@ function PaletteExtraction({ images, selectedPalettes, onTogglePalette }: {
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null)
 
   const palettes = useMemo(() => {
-    // Group images by source, extract dominant palettes per source-group
-    const sourceColors: Record<string, { hex: string; count: number }[]> = {}
+    // Collect all colors across all images globally
+    const allColors: { hex: string; hue: number; sat: number; light: number; count: number }[] = []
+    const colorMap = new Map<string, { hex: string; hue: number; sat: number; light: number; count: number }>()
+
     for (const img of images) {
-      if (!img.palette || !img.source) continue
-      if (!sourceColors[img.source]) sourceColors[img.source] = []
+      if (!img.palette) continue
       for (const sw of img.palette) {
-        const existing = sourceColors[img.source].find(c => c.hex === sw.hex)
-        if (existing) existing.count++
-        else sourceColors[img.source].push({ hex: sw.hex, count: 1 })
+        const existing = colorMap.get(sw.hex)
+        if (existing) {
+          existing.count++
+        } else {
+          const entry = { hex: sw.hex, hue: sw.hue, sat: sw.saturation, light: sw.lightness, count: 1 }
+          colorMap.set(sw.hex, entry)
+          allColors.push(entry)
+        }
       }
     }
 
-    // Find source pairs with similar palettes
-    const sources = Object.entries(sourceColors)
-      .filter(([, colors]) => colors.length >= 5)
-      .sort((a, b) => b[1].reduce((s, c) => s + c.count, 0) - a[1].reduce((s, c) => s + c.count, 0))
+    if (allColors.length < 10) return []
 
-    const result: { sources: string[]; colors: string[]; count: number }[] = []
-    const used = new Set<string>()
+    // Filter out very dark (<15% lightness) and very light (>85% lightness) colors — these are backgrounds
+    const chromatic = allColors.filter(c => c.light > 0.15 && c.light < 0.85 && c.sat > 0.08)
+    if (chromatic.length < 5) return []
 
-    for (const [source, colors] of sources) {
-      if (used.has(source)) continue
-      const top5 = colors.sort((a, b) => b.count - a.count).slice(0, 5).map(c => c.hex)
-      if (top5.length < 5) continue
-      used.add(source)
-      const count = colors.reduce((s, c) => s + c.count, 0)
-      result.push({ sources: [source], colors: top5, count })
-      if (result.length >= 3) break
+    // Sort by frequency
+    chromatic.sort((a, b) => b.count - a.count)
+
+    const result: { label: string; colors: string[]; count: number }[] = []
+
+    // Palette 1: Top 5 most frequent chromatic colors (global dominant)
+    const dominant5: typeof chromatic = []
+    for (const c of chromatic) {
+      if (dominant5.length >= 5) break
+      const [r1, g1, b1] = hexToRgb(c.hex)
+      const tooClose = dominant5.some(d => {
+        const [r2, g2, b2] = hexToRgb(d.hex)
+        return Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2) < 50
+      })
+      if (!tooClose) dominant5.push(c)
+    }
+    if (dominant5.length >= 3) {
+      result.push({
+        label: "Dominant Palette",
+        colors: dominant5.map(c => c.hex),
+        count: dominant5.reduce((s, c) => s + c.count, 0),
+      })
+    }
+
+    // Palette 2: Most saturated colors (vivid/bold)
+    const bySat = [...chromatic].sort((a, b) => b.sat - a.sat)
+    const vivid5: typeof chromatic = []
+    for (const c of bySat) {
+      if (vivid5.length >= 5) break
+      const [r1, g1, b1] = hexToRgb(c.hex)
+      const tooClose = vivid5.some(d => {
+        const [r2, g2, b2] = hexToRgb(d.hex)
+        return Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2) < 50
+      })
+      if (!tooClose) vivid5.push(c)
+    }
+    if (vivid5.length >= 3) {
+      result.push({
+        label: "Vivid Palette",
+        colors: vivid5.map(c => c.hex),
+        count: vivid5.reduce((s, c) => s + c.count, 0),
+      })
+    }
+
+    // Palette 3: Warm/earth tones (hue 0-60 or 330-360)
+    const warm = chromatic.filter(c => c.hue <= 60 || c.hue >= 330)
+    const warm5: typeof chromatic = []
+    for (const c of warm) {
+      if (warm5.length >= 5) break
+      const [r1, g1, b1] = hexToRgb(c.hex)
+      const tooClose = warm5.some(d => {
+        const [r2, g2, b2] = hexToRgb(d.hex)
+        return Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2) < 50
+      })
+      if (!tooClose) warm5.push(c)
+    }
+    if (warm5.length >= 3) {
+      result.push({
+        label: "Warm Palette",
+        colors: warm5.map(c => c.hex),
+        count: warm5.reduce((s, c) => s + c.count, 0),
+      })
     }
 
     return result
@@ -437,8 +389,8 @@ function PaletteExtraction({ images, selectedPalettes, onTogglePalette }: {
                   {isSelected && <Check size={11} strokeWidth={2.5} style={{ color: "var(--bg-primary)" }} />}
                 </button>
                 <div style={{ flex: 1 }}>
-                  <div style={{ ...TYPE.sm, color: "var(--text-secondary)", fontWeight: 500 }}>{pal.sources.join(", ")}</div>
-                  <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>{pal.count} occurrences</div>
+                  <div style={{ ...TYPE.sm, color: "var(--text-secondary)", fontWeight: 500 }}>{pal.label}</div>
+                  <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>{pal.count} occurrences across feed</div>
                 </div>
                 <div style={{ display: "flex", gap: 4 }}>
                   {["CSS", "HEX"].map(fmt => (
@@ -512,12 +464,14 @@ function PaletteExtraction({ images, selectedPalettes, onTogglePalette }: {
 
 // ─── 6. Moodboard Export ────────────────────────────────────────────────────
 
-function MoodboardExport({ selectedCount, matchingCount, onGenerate, generating }: {
+function MoodboardExport({ selectedCount, matchingCount, onExport, exported }: {
   selectedCount: number
   matchingCount: number
-  onGenerate: () => void
-  generating: boolean
+  onExport: () => void
+  exported: boolean
 }) {
+  if (selectedCount === 0) return null
+
   return (
     <div style={{
       background: "var(--bg-surface)", borderRadius: 8, padding: "14px 20px",
@@ -526,24 +480,23 @@ function MoodboardExport({ selectedCount, matchingCount, onGenerate, generating 
     }}>
       <div>
         <div style={{ ...TYPE.sm, color: "var(--text-secondary)", fontWeight: 500 }}>
-          {selectedCount} palette{selectedCount !== 1 ? "s" : ""} selected · {matchingCount} matching images
+          {selectedCount} palette{selectedCount !== 1 ? "s" : ""} selected · {matchingCount} images
         </div>
         <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
-          Generates a Figma frame with image grid + palette reference
+          Copy palette data + image URLs as JSON
         </div>
       </div>
       <button
-        onClick={onGenerate}
-        disabled={selectedCount === 0 || generating}
+        onClick={onExport}
         style={{
           ...TYPE.xs, fontWeight: 600, padding: "8px 20px", borderRadius: 6, border: "none",
-          background: selectedCount > 0 ? "var(--accent-primary)" : "var(--bg-elevated)",
-          color: selectedCount > 0 ? "var(--accent-secondary)" : "var(--text-tertiary)",
-          cursor: selectedCount > 0 ? "pointer" : "default",
+          background: exported ? "var(--accent-secondary)" : "var(--accent-primary)",
+          color: exported ? "var(--bg-primary)" : "var(--accent-secondary)",
+          cursor: "pointer",
           transition: "all 0.15s", textTransform: "uppercase", letterSpacing: "0.04em",
         }}
       >
-        {generating ? "Generating..." : "GENERATE →"}
+        {exported ? "COPIED" : "COPY DATA"}
       </button>
     </div>
   )
@@ -553,7 +506,7 @@ function MoodboardExport({ selectedCount, matchingCount, onGenerate, generating 
 
 export function SurfaceTrends({ images, paletteIntel, snapshot }: SurfaceTrendsProps) {
   const [selectedPalettes, setSelectedPalettes] = useState<Set<number>>(new Set())
-  const [generating, setGenerating] = useState(false)
+  const [exported, setExported] = useState(false)
 
   const togglePalette = (idx: number) => {
     setSelectedPalettes(prev => {
@@ -564,10 +517,7 @@ export function SurfaceTrends({ images, paletteIntel, snapshot }: SurfaceTrendsP
     })
   }
 
-  const handleGenerate = async () => {
-    setGenerating(true)
-    // TODO: Figma plugin API integration for moodboard generation
-    // For now, copy matching image URLs to clipboard
+  const handleExport = async () => {
     const matchingImages = images.filter(img => img.url)
     const data = {
       images: matchingImages.slice(0, 20).map(img => ({ url: img.url, source: img.source, title: img.title })),
@@ -575,8 +525,9 @@ export function SurfaceTrends({ images, paletteIntel, snapshot }: SurfaceTrendsP
     }
     try {
       await navigator.clipboard.writeText(JSON.stringify(data, null, 2))
+      setExported(true)
+      setTimeout(() => setExported(false), 2000)
     } catch { /* */ }
-    setGenerating(false)
   }
 
   const classifiedCount = images.filter(img => img.mood).length
@@ -594,16 +545,13 @@ export function SurfaceTrends({ images, paletteIntel, snapshot }: SurfaceTrendsP
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 0, padding: "24px 24px 48px" }}>
       {/* Each section separated by consistent dividers */}
-      <SourceMoodMatrix images={images} />
+      <GlobalMoodDistribution images={images} />
 
       <div style={{ height: 1, background: "var(--border)", margin: "24px 0" }} />
       <MoodVelocity moodShifts={paletteIntel?.moodShifts || []} />
 
       <div style={{ height: 1, background: "var(--border)", margin: "24px 0" }} />
       <HueConcentration images={images} />
-
-      <div style={{ height: 1, background: "var(--border)", margin: "24px 0" }} />
-      <VisualOutliers images={images} />
 
       <div style={{ height: 1, background: "var(--border)", margin: "24px 0" }} />
       {/* Palette Extraction + Moodboard — shared feature, no separator between them */}
@@ -615,8 +563,8 @@ export function SurfaceTrends({ images, paletteIntel, snapshot }: SurfaceTrendsP
       <MoodboardExport
         selectedCount={selectedPalettes.size}
         matchingCount={images.length}
-        onGenerate={handleGenerate}
-        generating={generating}
+        onExport={handleExport}
+        exported={exported}
       />
     </div>
   )

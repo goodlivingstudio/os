@@ -193,19 +193,19 @@ function rgbToHex(r: number, g: number, b: number): string {
   return "#" + [r, g, b].map(c => c.toString(16).padStart(2, "0")).join("")
 }
 
-// Simple k-means-like clustering: quantize pixels into buckets
+// Median-cut-style clustering: quantize pixels into perceptually distinct buckets
 function extractPalette(pixelData: Buffer, channels: number, pixelCount: number): ColorSwatch[] {
-  // Sample pixels into color buckets (quantize to 4-bit per channel)
+  // Sample pixels into color buckets (quantize to 16-step per channel for finer resolution)
   const buckets = new Map<string, { r: number; g: number; b: number; count: number }>()
 
   for (let i = 0; i < pixelCount * channels; i += channels) {
     const r = pixelData[i]
     const g = pixelData[i + 1]
     const b = pixelData[i + 2]
-    // Quantize to reduce color space
-    const qr = Math.round(r / 32) * 32
-    const qg = Math.round(g / 32) * 32
-    const qb = Math.round(b / 32) * 32
+    // Finer quantization: 16-step (16 values per channel = 4096 possible colors)
+    const qr = Math.round(r / 16) * 16
+    const qg = Math.round(g / 16) * 16
+    const qb = Math.round(b / 16) * 16
     const key = `${qr},${qg},${qb}`
     const existing = buckets.get(key)
     if (existing) {
@@ -218,14 +218,30 @@ function extractPalette(pixelData: Buffer, channels: number, pixelCount: number)
     }
   }
 
-  // Sort by frequency, take top 5
+  // Sort by frequency
   const sorted = [...buckets.values()]
     .sort((a, b) => b.count - a.count)
-    .slice(0, 5)
+
+  // Deduplicate: skip colors too similar to already-selected ones
+  const selected: typeof sorted = []
+  for (const b of sorted) {
+    if (selected.length >= 5) break
+    const avgR = Math.round(b.r / b.count)
+    const avgG = Math.round(b.g / b.count)
+    const avgB = Math.round(b.b / b.count)
+    const tooClose = selected.some(s => {
+      const sr = Math.round(s.r / s.count)
+      const sg = Math.round(s.g / s.count)
+      const sb = Math.round(s.b / s.count)
+      const dist = Math.sqrt((avgR - sr) ** 2 + (avgG - sg) ** 2 + (avgB - sb) ** 2)
+      return dist < 45 // minimum perceptual distance between palette entries
+    })
+    if (!tooClose) selected.push(b)
+  }
 
   const totalPixels = sorted.reduce((s, b) => s + b.count, 0)
 
-  return sorted.map(b => {
+  return selected.map(b => {
     const r = Math.round(b.r / b.count)
     const g = Math.round(b.g / b.count)
     const bl = Math.round(b.b / b.count)
@@ -248,14 +264,14 @@ async function analyzeImageColor(url: string): Promise<ColorAnalysis | undefined
     })
     if (!res.ok) return undefined
     const buffer = Buffer.from(await res.arrayBuffer())
-    // Resize to 8x8 grid for palette extraction (64 pixels)
+    // Resize to 32x32 grid for palette extraction (1024 pixels)
     const { data, info } = await sharp(buffer)
-      .resize(8, 8, { fit: "cover" })
+      .resize(32, 32, { fit: "cover" })
       .raw()
       .toBuffer({ resolveWithObject: true })
     if (info.channels < 3) return undefined
 
-    const palette = extractPalette(data, info.channels, 64)
+    const palette = extractPalette(data, info.channels, 1024)
 
     // Overall mood from the dominant color
     const dominant = palette[0]
