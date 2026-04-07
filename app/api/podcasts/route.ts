@@ -1,7 +1,6 @@
 export const revalidate = 1800 // 30 min cache
 
 import { PODCAST_FEEDS, type PodcastFeed } from "@/lib/podcasts"
-import { kv } from "@vercel/kv"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -160,29 +159,6 @@ export async function GET() {
 
   // Sort by most recent
   episodes.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-
-  // Podcast annotation is lazy — runs client-side when Audio tab is visited
-  // Removed from ISR to avoid competing with news annotation on page load
-
-  // Check which shows have generated artwork in KV, serve via /api/audio-image endpoint
-  if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
-    try {
-      const uniqueShows = [...new Set(episodes.map(e => e.showName))]
-      const keys = uniqueShows.map(s => `audio-image:${s.replace(/[^a-zA-Z0-9]/g, "_")}`)
-      // Just check existence via TTL (cheap — no data transfer)
-      const ttls = await Promise.all(keys.map(k => kv.ttl(k).catch(() => -2)))
-      const showsWithArt = new Set<string>()
-      uniqueShows.forEach((show, i) => { if (ttls[i] > 0 || ttls[i] === -1) showsWithArt.add(show) })
-
-      for (const ep of episodes) {
-        if (showsWithArt.has(ep.showName)) {
-          const slug = ep.showName.replace(/[^a-zA-Z0-9]/g, "_")
-          ;(ep as Episode & { originalArtworkUrl?: string }).originalArtworkUrl = ep.artworkUrl
-          ep.artworkUrl = `/api/audio-image?show=${encodeURIComponent(slug)}`
-        }
-      }
-    } catch { /* KV read failure — keep original artwork */ }
-  }
 
   return Response.json({
     episodes,

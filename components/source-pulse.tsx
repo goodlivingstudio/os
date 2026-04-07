@@ -215,16 +215,14 @@ function formatCacheAge(iso: string | null): string {
 }
 
 function CacheManagement() {
-  const [audioStatus, setAudioStatus] = useState<"idle" | "running" | "done" | "error">("idle")
-  const [audioResult, setAudioResult] = useState<string>("")
   const [synthStatus, setSynthStatus] = useState<"idle" | "running" | "done" | "error">("idle")
   const [dispatchStatus, setDispatchStatus] = useState<"idle" | "running" | "done" | "error">("idle")
   const [purgeStatus, setPurgeStatus] = useState<"idle" | "running" | "done" | "error">("idle")
-  const [cacheAges, setCacheAges] = useState<{ audio: string | null; synthesis: string | null; dispatch: string | null }>({ audio: null, synthesis: null, dispatch: null })
+  const [cacheAges, setCacheAges] = useState<{ synthesis: string | null; dispatch: string | null }>({ synthesis: null, dispatch: null })
 
   useEffect(() => {
     fetch("/api/cache-status").then(r => r.json()).then(setCacheAges).catch(() => {})
-  }, [audioStatus, synthStatus, dispatchStatus, purgeStatus]) // refetch after any action
+  }, [synthStatus, dispatchStatus, purgeStatus]) // refetch after any action
 
   const purge = async (
     endpoint: string,
@@ -240,39 +238,7 @@ function CacheManagement() {
     setTimeout(() => setStatus("idle"), 3000)
   }
 
-  const regenAudio = async () => {
-    setAudioStatus("running")
-    let totalGen = 0, totalFail = 0, batch = 0
-    try {
-      while (true) {
-        setAudioResult(`Batch ${batch + 1} — generating...`)
-        const res = await fetch(`/api/regen-audio-images?batch=${batch}`, { method: "POST" })
-        if (!res.ok) { setAudioStatus("error"); setAudioResult("Failed"); return }
-        const data = await res.json()
-        totalGen += data.generated
-        totalFail += data.failed
-        if (data.done) break
-        batch++
-      }
-      setAudioStatus("done")
-      setAudioResult(`${totalGen} generated${totalFail ? `, ${totalFail} failed` : ""}`)
-      setTimeout(() => { setAudioStatus("idle"); setAudioResult("") }, 5000)
-    } catch {
-      setAudioStatus("error")
-      setAudioResult("Check Replicate connection")
-      setTimeout(() => { setAudioStatus("idle"); setAudioResult("") }, 5000)
-    }
-  }
-
   const actions = [
-    {
-      label: "Audio Artwork",
-      desc: "Regenerate podcast watercolors",
-      status: audioStatus,
-      sub: audioResult,
-      action: regenAudio,
-      age: cacheAges.audio,
-    },
     {
       label: "Synthesis",
       desc: "Clear cache — regenerates on next visit",
@@ -332,7 +298,7 @@ function CacheManagement() {
               </span>
             </div>
             <span style={{ ...TYPE.xs, color: a.status === "error" ? "#D4A05A" : "var(--text-tertiary)", textAlign: "left" }}>
-              {a.status === "running" ? (a.sub || "Working...") : a.status === "done" ? (a.sub || "Done") : a.status === "error" ? (a.sub || "Issue — try again") : a.desc}
+              {a.status === "running" ? "Working..." : a.status === "done" ? "Done" : a.status === "error" ? "Issue — try again" : a.desc}
             </span>
             {a.status === "idle" && (
               <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", opacity: 0.6, marginTop: 2 }}>
@@ -412,7 +378,6 @@ const ENDPOINT_LABELS: Record<string, string> = {
   "synthesis": "Synthesis",
   "dispatch": "Dispatch",
   "image-gen": "Image gen",
-  "regen-audio-images": "Audio artwork",
 }
 
 function formatTokens(n: number): string {
@@ -449,12 +414,12 @@ function UsagePanel() {
   const costColor = isHealthy ? "var(--live)" : isWarning ? "#D4A05A" : "#ef4444"
 
   // Endpoint breakdown — always show all endpoints, active ones sorted by cost desc
-  const ALL_ENDPOINTS = ["news-annotate", "annotate", "brief", "audio-brief", "chat", "synthesis", "dispatch", "image-gen", "regen-audio-images"] as const
+  const ALL_ENDPOINTS = ["news-annotate", "annotate", "brief", "audio-brief", "chat", "synthesis", "dispatch", "image-gen"] as const
   const ENDPOINT_MODELS: Record<string, string> = {
     "news-annotate": "claude-haiku-4-5-20251001", "annotate": "claude-haiku-4-5-20251001",
     "brief": "claude-haiku-4-5-20251001", "audio-brief": "claude-haiku-4-5-20251001",
     "chat": "claude-sonnet-4-20250514", "synthesis": "claude-haiku-4-5-20251001",
-    "dispatch": "claude-sonnet-4-20250514", "image-gen": "flux-schnell", "regen-audio-images": "flux-schnell",
+    "dispatch": "claude-sonnet-4-20250514", "image-gen": "flux-schnell",
   }
   const emptyStats = { calls: 0, inputTokens: 0, outputTokens: 0, imageCount: 0, cost: 0 }
   const endpoints: [string, typeof emptyStats][] = ALL_ENDPOINTS.map(ep =>

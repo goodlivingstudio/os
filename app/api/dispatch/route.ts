@@ -216,16 +216,17 @@ export async function GET(request: Request) {
     let headerImageUrl: string | undefined
     if (process.env.REPLICATE_API_TOKEN) {
       try {
-        const allCards = [
-          { title: result.weekSummary?.split(/[.!?]/)[0] || "Weekly dispatch", layers: ["landscape"] },
-          ...pitches.map((p: { title: string; layers?: string[] }) => ({
-            title: p.title,
-            layers: p.layers,
-          }))
-        ]
-        const imageUrls = await generateCardImages(allCards, "dispatch")
-        headerImageUrl = imageUrls[0] || undefined
-        const pitchImageUrls = imageUrls.slice(1)
+        // Hero image at 21:9 cinematic ratio
+        const heroCard = [{ title: result.weekSummary?.split(/[.!?]/)[0] || "Weekly dispatch", layers: ["landscape"] }]
+        const heroUrls = await generateCardImages(heroCard, "dispatch", "21:9")
+        headerImageUrl = heroUrls[0] || undefined
+
+        // Pitch thumbnails at 3:2
+        const pitchCards = pitches.map((p: { title: string; layers?: string[] }) => ({
+          title: p.title,
+          layers: p.layers,
+        }))
+        const pitchImageUrls = pitchCards.length > 0 ? await generateCardImages(pitchCards, "dispatch", "3:2") : []
         pitches = pitches.map((p: Record<string, unknown>, i: number) => ({
           ...p,
           imageUrl: pitchImageUrls[i] || undefined,

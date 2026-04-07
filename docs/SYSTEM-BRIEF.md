@@ -37,7 +37,7 @@ Dispatch operates at the intersection of two voices — the world coming in and 
 
 **Signal** — raw intelligence from the world. Articles, podcasts, trends, data points. The voice of sources, journalists, analysts, researchers. Signal enters the system unprocessed and is presented in the operator's reading voice. Signal is the *input*.
 
-**Synthesis** — the machine's analysis, classification, and challenge. Cerebro (the Chief of Staff) processes signal through five intelligence layers and produces briefings, provocations, pattern detection, and strategic recommendations. Synthesis is the *output*.
+**Synthesis** — the machine's analysis, classification, and challenge. Cerebro (the Station Chief) processes signal through five intelligence layers and produces briefings, provocations, pattern detection, and strategic recommendations. Synthesis is the *output*.
 
 The design system makes this distinction visible through typography, color, and spatial organization. A user should be able to scan any screen and immediately sense which content arrived from the world and which was produced by the machine.
 
@@ -192,7 +192,7 @@ Derived through split-complementary color theory anchored to Mineral's warm ambe
 **Primitives** — Status dots, layer dots, category badges, layer pills, skin dots, dividers
 **Buttons** — Primary (send), Listen, Bump, Pill filter, Close, New Session, Text Link
 **Cards** — Feed Card, Signal Tooltip, Episode Card, Synthesis Card, Provocation Card, Pattern Card
-**Compound** — Ticker Bar, Left Rail (identity + status + toggle + pills), Chief of Staff Band, Chat Input
+**Compound** — Ticker Bar, Left Rail (identity + status + toggle + pills), Station Chief Band, Chat Input
 **Layout** — Signal View, Audio View, Synthesis View, Zen View
 
 ### Component conventions
@@ -234,7 +234,7 @@ The Wise Counselor voice governs all machine-generated content:
 
 When generating new components or modifying existing ones:
 
-1. **Read this brief first. Every time.** Then read the relevant component brief in `COMPONENT_BRIEFS.md`, then check `ANTI_PATTERNS.md`.
+1. **Read this brief first. Every time.** Then check `ANTI-PATTERNS.md` for prohibited patterns before writing any code.
 2. **Internalize the duality.** Signal (the world arriving) and Synthesis (the machine processing) must both be present and visually distinct. If your output makes it hard to tell which is which, it fails.
 3. **Default to restraint.** When in doubt, the more restrained option is correct. Composed, direct, unhurried.
 4. **Never invent new tokens.** If the token doesn't exist for what you need, flag it for human review.

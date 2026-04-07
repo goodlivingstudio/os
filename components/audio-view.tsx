@@ -191,7 +191,6 @@ interface Episode {
   summary: string
   duration: string
   artworkUrl: string
-  originalArtworkUrl?: string
   category: string
   tag: string
   layer: string
@@ -257,9 +256,9 @@ function EpisodeModal({ episode, onClose, onDeliberate, artworkMode = "off" }: {
           flexShrink: 0,
         }}>
           {artworkMode === "source" && (
-            (episode.originalArtworkUrl || episode.artworkUrl) ? (
+            (episode.artworkUrl) ? (
               <img
-                src={episode.originalArtworkUrl || episode.artworkUrl}
+                src={episode.artworkUrl}
                 alt={episode.showName}
                 onError={(e) => { e.currentTarget.style.display = "none" }}
                 style={{ width: 96, height: 96, borderRadius: 14, objectFit: "cover", flexShrink: 0, background: "var(--bg-elevated)" }}
@@ -493,9 +492,9 @@ function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onS
       )}
       {/* Artwork — hidden when artworkMode is "off" */}
       {artworkMode === "source" && (
-        episode.originalArtworkUrl || episode.artworkUrl ? (
+        episode.artworkUrl ? (
           <img
-            src={episode.originalArtworkUrl || episode.artworkUrl}
+            src={episode.artworkUrl}
             alt={episode.showName}
             onError={(e) => { e.currentTarget.style.display = "none" }}
             style={{

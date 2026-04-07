@@ -277,13 +277,13 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
               )}
             </div>
 
-            {/* ─ IMAGE BAND ─ */}
+            {/* ─ IMAGE BAND — 21:9 cinematic hero ─ */}
             <div style={{
-              height: 200, overflow: "hidden",
-              background: data.patterns[0]?.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
+              position: "relative", width: "100%", paddingTop: `${(9 / 21) * 100}%`, overflow: "hidden",
+              background: data.headerImageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
             }}>
-              {data.patterns[0]?.imageUrl && (
-                <img src={data.patterns[0].imageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              {data.headerImageUrl && (
+                <img src={data.headerImageUrl} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
               )}
             </div>
 
@@ -291,7 +291,6 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {data.velocity && (data.velocity.accelerating.length > 0 || data.velocity.decelerating.length > 0) && (
               <div style={{
                 padding: "24px 24px",
-                borderBottom: "1px solid var(--border)",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
@@ -335,11 +334,9 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ CONVERGENCES ─ */}
             {data.patterns.length > 0 && (
               <div style={{
-                padding: "24px 24px",
-                borderBottom: "1px solid var(--border)",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 200ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", padding: "24px 24px 14px", fontSize: 11 }}>
                   Convergences
                 </div>
                 {data.patterns.map((pattern, i) => (
@@ -350,25 +347,22 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     onClick={() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`)}
                     onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
                     style={{
-                      display: "flex", gap: 16,
-                      padding: "14px 0", borderBottom: "1px solid var(--border)",
+                      display: "flex", gap: 20,
+                      padding: "16px 24px",
                       cursor: "pointer", transition: "background 0.15s", outline: "none",
-                      margin: "0 -8px", paddingLeft: 8, paddingRight: 8, borderRadius: 6,
                     }}
                     onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
-                    {/* 3:2 image thumbnail */}
-                    {pattern.imageUrl && (
-                      <img
-                        src={pattern.imageUrl}
-                        alt=""
-                        style={{
-                          width: 96, height: 64, borderRadius: 8,
-                          objectFit: "cover", flexShrink: 0, background: "var(--bg-elevated)",
-                        }}
-                      />
-                    )}
+                    {/* Image thumbnail — matches Dispatch size */}
+                    <div style={{
+                      width: 150, height: 100, borderRadius: 8, overflow: "hidden", flexShrink: 0,
+                      background: pattern.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
+                    }}>
+                      {pattern.imageUrl && (
+                        <img src={pattern.imageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      )}
+                    </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       {/* Eyebrow: layers + signal count */}
                       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
@@ -405,7 +399,6 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {!isTriage && data.heatmap && data.heatmap.layers.length > 0 && (
               <div style={{
                 padding: "24px 24px",
-                borderBottom: "1px solid var(--border)",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 300ms both",
               }}>
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
@@ -462,7 +455,6 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {data.blindSpots && data.blindSpots.length > 0 && (
               <div style={{
                 padding: "24px 24px",
-                borderBottom: "1px solid var(--border)",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 400ms both",
               }}>
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>

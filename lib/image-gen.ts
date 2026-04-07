@@ -13,17 +13,12 @@ export const REPLICATE_MODEL = "black-forest-labs/flux-schnell"
 // The unified visual language across all Dispatch surfaces.
 // Every generated image inherits this foundation.
 
-export const GLOBAL_STYLE = `Painterly abstract. Wet-on-wet watercolor technique with visible paper texture. Pigment bleeding organically across damp surface. Translucent layered washes. Precise edges where color meets untouched paper. No text, no people, no logos, no icons, no UI elements, no objects, no literal depictions. Purely abstract — evocative, not illustrative. Horizontal 16:9 format.`
+export const GLOBAL_STYLE = `Painterly abstract. Wet-on-wet watercolor technique with visible paper texture. Pigment bleeding organically across damp surface. Translucent layered washes. Precise edges where color meets untouched paper. No text, no people, no logos, no icons, no UI elements, no objects, no literal depictions. Purely abstract — evocative, not illustrative.`
 
 // ─── Surface Substyles ──────────────────────────────────────────────────────
 // Each surface has a distinct character within the global language.
 
 export const SURFACE_STYLES: Record<string, string> = {
-  // AUDIO — warm, intimate, resonant. The feeling of sound as texture.
-  // Darker, richer tones. Deep pools of color. Vibration implied through
-  // organic bleeding patterns. Like listening in a quiet room.
-  audio: `Warm and intimate. Deep indigo, burnt umber, and muted gold. Rich pigment density — less white paper showing. Darker atmospheric washes suggesting depth and resonance. The visual equivalent of a voice in a quiet room. Soft pooling, no sharp edges.`,
-
   // SYNTHESIS — analytical, layered, convergent. The feeling of patterns
   // emerging from data. Cooler palette. Multiple wash layers visible.
   // Structure implied through overlapping translucent planes.
@@ -49,36 +44,34 @@ export const LAYER_PALETTES: Record<string, string> = {
 
 // ─── Prompt Assembly ────────────────────────────────────────────────────────
 
-type Surface = "audio" | "synthesis" | "dispatch"
+type Surface = "synthesis" | "dispatch"
+type AspectRatio = "3:2" | "21:9"
 
 function buildPrompt(
   surface: Surface,
   concept: string,
   layers?: string[],
+  aspect?: AspectRatio,
 ): string {
   const surfaceStyle = SURFACE_STYLES[surface] || SURFACE_STYLES.synthesis
   const layerHint = layers?.[0] ? LAYER_PALETTES[layers[0]] || "" : ""
+  const formatHint = aspect === "21:9" ? "Ultra-wide cinematic panoramic composition." : "Horizontal 3:2 landscape composition."
 
-  return `${GLOBAL_STYLE} ${surfaceStyle} Evoking: "${concept}". ${layerHint}`.trim()
+  return `${GLOBAL_STYLE} ${formatHint} ${surfaceStyle} Evoking: "${concept}". ${layerHint}`.trim()
 }
 
 // ─── Image Generation ───────────────────────────────────────────────────────
-
-const SURFACE_ASPECT: Record<Surface, string> = {
-  synthesis: "3:2",
-  dispatch: "16:9",
-  audio: "1:1",
-}
 
 export async function generateCardImage(
   title: string,
   layers?: string[],
   surface: Surface = "synthesis",
+  aspect: AspectRatio = "3:2",
 ): Promise<string | undefined> {
   const token = process.env.REPLICATE_API_TOKEN
   if (!token) return undefined
 
-  const prompt = buildPrompt(surface, title, layers)
+  const prompt = buildPrompt(surface, title, layers, aspect)
 
   try {
     // Submit prediction with retry on rate limit
@@ -94,7 +87,7 @@ export async function generateCardImage(
           input: {
             prompt,
             num_outputs: 1,
-            aspect_ratio: SURFACE_ASPECT[surface] || "16:9",
+            aspect_ratio: aspect,
             output_format: "webp",
             output_quality: 85,
           },
@@ -144,11 +137,12 @@ export async function generateCardImage(
 export async function generateCardImages(
   cards: { title: string; layers?: string[] }[],
   surface: Surface = "synthesis",
+  aspect: AspectRatio = "3:2",
 ): Promise<(string | undefined)[]> {
   const results: (string | undefined)[] = []
 
   for (let i = 0; i < cards.length; i++) {
-    const url = await generateCardImage(cards[i].title, cards[i].layers, surface)
+    const url = await generateCardImage(cards[i].title, cards[i].layers, surface, aspect)
     results.push(url)
     if (i < cards.length - 1) {
       await new Promise(r => setTimeout(r, 3000))

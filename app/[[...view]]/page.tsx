@@ -424,7 +424,7 @@ export default function Page() {
   const { signals, briefLoading, briefError } = useChiefOfStaff(articles)
 
   const handleDeliberate = useCallback((signal: Signal) => {
-    const text = `I want to deliberate on this signal from the brief:\n\n"${signal.label}"\n\n${signal.body}\n\nWalk me through the strategic implications. What should I be thinking about, and what questions should I be exploring?`
+    const text = `I want to deliberate on this signal from the brief:\n\n"${signal.headline}"\n\n${signal.body}\n\nWalk me through the strategic implications. What should I be thinking about, and what questions should I be exploring?`
     setCerebroPrompt({ text, id: Date.now() })
     setMobileTab("cerebro")
   }, [])
@@ -1031,10 +1031,10 @@ export default function Page() {
                 onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
               >
                 <span style={{ ...TYPE.xs, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.04em" }}>
-                  {signal.label}
+                  {signal.layer || signal.label}
                 </span>
                 <span style={{ ...TYPE.sm, color: "var(--text-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {signal.body.replace(/\[\d+\]/g, "").slice(0, 80)}
+                  {signal.headline}
                 </span>
               </button>
             )) : (
@@ -1123,7 +1123,7 @@ export default function Page() {
                 onHotkeysOpen={() => setHotkeysOpen(true)}
                 onExportOpen={() => setExportOpen(true)}
                 feedHealth={feedHealth}
-                dailyBrief={signals.length > 0 && signals[0].body ? signals[0].body.replace(/\[\d+\]/g, "").replace(/\s+[A-Z]+\s*\/\s*[A-Z]+\s*\d*\s*$/, "").trim() : undefined}
+                dailyBrief={signals.length > 0 && signals[0].headline && signals[0].headline !== "—" ? signals[0].headline : undefined}
                 pinnedArticles={pinnedArticles}
                 onUnpinArticle={handleUnpinArticle}
               />

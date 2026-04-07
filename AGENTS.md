@@ -13,6 +13,10 @@ This is the **DISPATCH** project.
 3. If a screenshot shows "Eli Lilly", "Extraordinary medicine", or anything Lilly-branded: STOP. You are on the wrong server.
 4. The dev identity badge "DISPATCH · :3001" appears bottom-left in dev mode. If you don't see it, you're on the wrong project.
 
+## SESSION LOGS
+
+At the end of each working session (or on request), produce a commit log and summary: what shipped, what's open, what's next. Logs live in conversation, not as committed files.
+
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
 

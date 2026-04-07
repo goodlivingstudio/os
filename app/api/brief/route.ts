@@ -10,35 +10,29 @@ function getClient() {
 
 const BRIEF_SYSTEM = `${DISPATCH_PREAMBLE}
 
-Your task: generate exactly 3 signal cards from today's annotated feed. These are not headlines. They are deliberation triggers — each one surfaces a signal that specifically matters and frames why it demands attention.
+Your task: generate exactly 3 signal cards from today's annotated feed. These are not headlines. They are deliberation triggers — each one surfaces a signal that specifically matters to this operator and frames why it demands attention.
 
 SELECTION CRITERIA:
 Sort the feed by urgency score first. From the highest-urgency signals, select 3 that:
-- Are directly relevant to the immediate context (Lilly engagement, CDO positioning, or professional evolution thesis)
+- Are directly relevant to the operator's immediate context (Lilly engagement, CDO positioning, or professional evolution thesis)
 - Represent distinct territory — do not pick three signals from the same layer
 - Prefer multi-layer signals (scoring high on 2+ layers simultaneously)
-- Have a clear "so what" — not just interesting in the abstract
+- Have a clear "so what" for this operator specifically — not just interesting in the abstract
 
 CARD FORMAT:
 Each card must contain:
 - headline: A sharp declarative statement of the signal (not a news headline — a synthesis statement). Max 12 words.
-- body: ONE sentence only. Max 30 words. Lead with the implication, not the event. What this demands, not what happened.
+- body: 2–3 sentences. What the signal is. Why it matters to this operator specifically. What it might demand of him.
 - source: Article title and source name
-- citation: [1], [2], [3] inline references
+- citation: [1], [2], [3] inline references in the body text, where numbers refer to the article indices in the feed
 - layer: Primary intelligence layer (Opportunity / Position / Discipline / Landscape / Culture)
 - urgency: The urgency score (0–10)
 
-TONE: The first signal is special — it will appear as a "Today's Lens" ambient one-liner in the left rail. Write it as a grounded, clear observation. Not clinical, not urgent — measured and reflective, like a principle emerging from the noise. Still substantiated, still specific, but delivered with the calm authority of someone who sees the full picture. No citations in the first signal's body.
+TONE: The first signal is special — its headline will appear as a "Today's Lens" ambient one-liner in the left rail. Write the first headline as a grounded, clear observation — measured and reflective, like a principle emerging from the noise. The body of the first signal should still be substantive and specific.
 
 The second and third signals can be more direct and tactical — lead with the implication, not the event. These should feel like something a trusted senior advisor flagged specifically for you.
 
-FORMAT — return exactly three signals separated by the literal string |||
-
-Each signal must be:
-LINE 1: The label (2-4 words, uppercase — what kind of signal this is)
-LINE 2: One sentence of substance. For signal 1: reflective and grounded, no citations. For signals 2 and 3: direct with article citations in brackets.
-
-Nothing else. No preamble. No sign-off. Three signals, one ||| between each.`
+Return as a JSON array with exactly 3 items. No preamble. No sign-off. Valid JSON only.`
 
 interface ArticleInput {
   title: string
@@ -55,9 +49,9 @@ export async function POST(req: Request) {
     if (!articles?.length) {
       return Response.json({
         signals: [
-          { label: "FEED UNAVAILABLE", body: "No articles to analyze.", sources: [] },
-          { label: "—", body: "", sources: [] },
-          { label: "—", body: "", sources: [] },
+          { headline: "FEED UNAVAILABLE", label: "FEED UNAVAILABLE", body: "No articles to analyze.", layer: "", urgency: 0, sources: [] },
+          { headline: "—", label: "—", body: "", layer: "", urgency: 0, sources: [] },
+          { headline: "—", label: "—", body: "", layer: "", urgency: 0, sources: [] },
         ],
       })
     }
@@ -83,12 +77,25 @@ export async function POST(req: Request) {
 
     const text = response.content[0]?.type === "text" ? response.content[0].text.trim() : ""
 
-    // Parse three signals separated by |||
-    const parts = text.split("|||").map(s => s.trim()).filter(Boolean)
-    const signals = parts.slice(0, 3).map(part => {
-      const lines = part.split("\n").map(l => l.trim()).filter(Boolean)
-      const label = lines[0] || "SIGNAL"
-      const rawBody = lines.slice(1).join(" ").trim() || ""
+    // Parse JSON array from model response
+    let parsed: Array<{ headline?: string; body?: string; source?: string; citation?: string; layer?: string; urgency?: number }> = []
+    try {
+      // Strip markdown code fences if present
+      const jsonText = text.replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/, "")
+      parsed = JSON.parse(jsonText)
+    } catch {
+      // Fallback: try to extract JSON array from response
+      const match = text.match(/\[[\s\S]*\]/)
+      if (match) {
+        try { parsed = JSON.parse(match[0]) } catch { /* */ }
+      }
+    }
+
+    const signals = parsed.slice(0, 3).map(card => {
+      const headline = card.headline || "SIGNAL"
+      const rawBody = card.body || ""
+      const layer = card.layer || "Landscape"
+      const urgency = typeof card.urgency === "number" ? card.urgency : 5
 
       // Extract citation indices [1], [3], [15] from body text
       const citationMatches = rawBody.match(/\[(\d+)\]/g) || []
@@ -112,7 +119,6 @@ export async function POST(req: Request) {
           })
           .slice(0, 3)
           .map(a => ({ title: a.title, url: a.url || "#", source: a.source }))
-        // Deduplicate by source name
         const seen = new Set<string>()
         sources = matched.filter(s => { if (seen.has(s.source)) return false; seen.add(s.source); return true })
       }
@@ -126,12 +132,12 @@ export async function POST(req: Request) {
         return newNum ? `[${newNum}]` : match
       })
 
-      return { label, body, sources }
+      return { headline, label: headline, body, layer, urgency, sources }
     })
 
     // Pad to exactly 3
     while (signals.length < 3) {
-      signals.push({ label: "—", body: "", sources: [] })
+      signals.push({ headline: "—", label: "—", body: "", layer: "", urgency: 0, sources: [] })
     }
 
     return Response.json({ signals })
@@ -140,9 +146,9 @@ export async function POST(req: Request) {
     console.error("Brief error:", message)
     return Response.json({
       signals: [
-        { label: "BRIEF ERROR", body: message, sources: [] },
-        { label: "—", body: "", sources: [] },
-        { label: "—", body: "", sources: [] },
+        { headline: "BRIEF ERROR", label: "BRIEF ERROR", body: message, layer: "", urgency: 0, sources: [] },
+        { headline: "—", label: "—", body: "", layer: "", urgency: 0, sources: [] },
+        { headline: "—", label: "—", body: "", layer: "", urgency: 0, sources: [] },
       ],
     })
   }

@@ -516,7 +516,7 @@ export function PaletteTrends({ snapshot, paletteIntel, totalImages, images }: P
           {paletteIntel.moodShifts.map(shift => (
             <div key={shift.mood} style={{
               display: "flex", alignItems: "center", gap: 8,
-              background: "var(--bg-surface)", borderRadius: 9999, padding: "6px 14px",
+              background: "var(--bg-surface)", borderRadius: 8, padding: "6px 14px",
             }}>
               <span style={{ width: 8, height: 8, borderRadius: 3, background: MOOD_COLORS[shift.mood] || "var(--text-tertiary)" }} />
               <span style={{ ...TYPE.sm, color: "var(--text-secondary)", textTransform: "capitalize" }}>{shift.mood}</span>

@@ -1,7 +1,6 @@
-// Purge generated images from KV — clears audio artwork, synthesis, and dispatch caches
+// Purge generated images from KV — clears synthesis and dispatch caches
 // Use when exploring new art direction or cleaning up stale images
 import { kv } from "@vercel/kv"
-import { PODCAST_FEEDS } from "@/lib/podcasts"
 
 export async function POST(req: Request) {
   if (!process.env.KV_REST_API_URL) {
@@ -9,21 +8,11 @@ export async function POST(req: Request) {
   }
 
   const { searchParams } = new URL(req.url)
-  const target = searchParams.get("target") || "all" // "audio" | "synthesis" | "dispatch" | "all"
+  const target = searchParams.get("target") || "all" // "synthesis" | "dispatch" | "all"
 
   const deleted: string[] = []
 
   try {
-    // Audio artwork — one key per podcast show
-    if (target === "audio" || target === "all") {
-      const shows = [...new Set(PODCAST_FEEDS.map(f => f.show))]
-      const keys = shows.map(s => `audio-image:${s.replace(/[^a-zA-Z0-9]/g, "_")}`)
-      for (const key of keys) {
-        const result = await kv.del(key)
-        if (result > 0) deleted.push(key)
-      }
-    }
-
     // Synthesis cache (includes embedded images)
     if (target === "synthesis" || target === "all") {
       const result = await kv.del("synthesis:weekly")

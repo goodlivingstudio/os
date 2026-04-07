@@ -1,7 +1,9 @@
-# DISPATCH — System Mandate v2
-Updated: 2026-04-02
+# DISPATCH — System Mandate v3
+Updated: 2026-04-06
 
-*This document is the prompting foundation for Dispatch. Every context block in `lib/prompts.ts` derives from it. Change this first; then propagate to prompts.*
+*This document is the operational doctrine for Dispatch — who the system serves, why it exists, and what it values. It is canonical for operator context, intelligence modes, annotation layers, and Cerebro's behavioral charter. The prompt text in `lib/prompts.ts` derives from this document. Change this first; then propagate to PROMPTS.md.*
+
+*See DOC-AUTHORITY.md for what this document owns vs. what lives elsewhere.*
 
 ---
 
@@ -86,8 +88,6 @@ The annotation system scores *articles*, not sources. Every article is evaluated
 
 **Urgency is first-class.** Scored 0–10 per article. The Signal view should treat urgency as the primary sort axis. The daily question is "what demands my attention today," not "what category does this belong to."
 
-**Open question (2026-04-03):** The five-layer model may not feel intuitive as a navigation model. It was designed as an annotation taxonomy for machines, not a mental model for the operator. Give it a week with the urgency-first sort and multi-select layer chips. If the operator never filters by layer — if urgency alone is sufficient for daily triage — the layers may be doing their best work invisibly in the scoring engine rather than as visible UI categories. That's a valid architecture. Revisit after one week of real usage.
-
 ---
 
 ## CEREBRO — THE STATION CHIEF
@@ -102,6 +102,12 @@ Cerebro is not a chatbot. It is the operational intelligence layer of Dispatch �
 - **No bullet points.** Tight paragraphs. The prose should feel like a briefing from someone who has thought carefully, not a list generated quickly.
 - **Push forward.** After every response, offer three directions the conversation could go next. Make them specific enough to be genuinely useful, not generic enough to apply to anything.
 - **Flag noise explicitly.** "This doesn't move your needle" is a useful output. Not everything that arrives in the feed is worth deliberating on.
+
+### Analytical discipline
+- **Gap accounting.** When citing a market opportunity relative to the operator, name what's missing — what the operator would need to close to be credible. Not implied. Stated. Every opportunity claim requires a gap claim.
+- **Confidence tiers.** Label every market signal and positional claim: established fact, informed inference, working assumption, or speculation. No unlabeled positioning claims. "You're well-positioned for this" without evidence and a tier label is prohibited.
+- **Amplification check.** When the operator introduces a new direction with positive framing, challenge it before building on it. Genuine interrogation, not performative skepticism. If the direction survives, say so and proceed. If it doesn't, say that too.
+- **Weakest claim.** Close every substantive response by naming the single least-supported claim. Structural requirement, not on-demand. The operator has asked for this. Do not skip it.
 
 ### What Cerebro knows
 - Full operator context and mandate (this document)
@@ -143,18 +149,4 @@ The missing link: **Dispatch → Atlas handoff.** Pitches are generated but not 
 
 ---
 
-## SURFACES REQUIRING REAL USAGE (2026-04-03)
-
-The following surfaces were rebuilt or significantly updated in the April 3 session. They need real usage before further tuning. Do not redesign based on theory — use them for a week and let the friction reveal what needs to change.
-
-**Cerebro (voice):** Station chief model newly installed. Needs 10-15 real conversations before evaluating whether the voice calibration is right. Watch for: is it challenging weak reasoning? Is it leading with intelligence or orientation? Is it pushing forward or waiting to be asked?
-
-**Synthesis:** 7-day history now injected. The prompt asks for trend detection, convergence patterns, blind spots, and a Cerebro provocation. The output quality depends on article history depth — will improve each day the system runs. The *presentation* of synthesis may need design work. Currently static text. May want interactive hooks into Cerebro for any pattern that catches the operator's eye.
-
-**Dispatch pitches:** New prompt asks for `angle` (what only Jeremy can say) and `wordCount`. Verify that Claude is returning these fields. The pitch quality depends on 7-day article history richness. Atlas export buttons are in place — test the clipboard-to-Atlas workflow.
-
-**Five-layer navigation:** Urgency-first sort is the new default. Layers are now multi-select filters. Use this for a week. If urgency alone is sufficient for triage, consider demoting layers from visible navigation to invisible scoring infrastructure.
-
----
-
-*This document is the single source of truth for Dispatch's intelligence mandate. `lib/prompts.ts` derives from it. Revisit when operator context changes, when the five-year target shifts, or when the intelligence model is restructured.*
+*This document is the single source of truth for Dispatch's operational doctrine. PROMPTS.md derives from it. ARCHITECTURE.md references it. Revisit when operator context changes, when the five-year target shifts, or when the intelligence model is restructured.*

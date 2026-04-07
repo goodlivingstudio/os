@@ -323,7 +323,7 @@ function VisualOutliers({ images }: { images: GalleryImage[] }) {
               animation: `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${i * 60}ms both`,
             }}
           >
-            <div style={{ position: "relative", paddingTop: "60%", background: "var(--bg-surface)" }}>
+            <div style={{ position: "relative", paddingTop: "66.67%", background: "var(--bg-surface)" }}>
               <img
                 src={img.url}
                 alt=""

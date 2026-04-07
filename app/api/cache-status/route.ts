@@ -1,6 +1,5 @@
 // Returns TTL / age info for cached surfaces
 import { kv } from "@vercel/kv"
-import { PODCAST_FEEDS } from "@/lib/podcasts"
 
 function getWeekKey(): string {
   const now = new Date()
@@ -12,20 +11,14 @@ function getWeekKey(): string {
 
 export async function GET() {
   if (!process.env.KV_REST_API_URL) {
-    return Response.json({ audio: null, synthesis: null, dispatch: null })
+    return Response.json({ synthesis: null, dispatch: null })
   }
 
   try {
-    // Check TTLs — TTL returns seconds remaining, -2 = key missing, -1 = no expiry
     const [synthTTL, dispatchTTL] = await Promise.all([
       kv.ttl("synthesis:weekly"),
       kv.ttl(getWeekKey()),
     ])
-
-    // For audio, spot-check one show
-    const firstShow = PODCAST_FEEDS[0]
-    const audioKey = `audio-image:${firstShow.show.replace(/[^a-zA-Z0-9]/g, "_")}`
-    const audioTTL = await kv.ttl(audioKey)
 
     // Convert TTL (seconds remaining) to approximate "last refreshed" timestamp
     const ttlToAge = (ttl: number, maxTTL: number) => {
@@ -35,11 +28,10 @@ export async function GET() {
     }
 
     return Response.json({
-      audio: ttlToAge(audioTTL, 60 * 60 * 24 * 14),      // 14-day TTL
       synthesis: ttlToAge(synthTTL, 60 * 60 * 12),         // 12-hour TTL
       dispatch: ttlToAge(dispatchTTL, 60 * 60 * 24 * 7),   // 7-day TTL
     })
   } catch {
-    return Response.json({ audio: null, synthesis: null, dispatch: null })
+    return Response.json({ synthesis: null, dispatch: null })
   }
 }

@@ -72,11 +72,9 @@ export function useChiefOfStaff(articles: Article[]) {
   }, [articles.length]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const placeholder: Signal[] = [
-    { label: "ANALYZING FEED", body: "" },
-    { label: "—", body: "" },
-    { label: "—", body: "" },
-    { label: "—", body: "" },
-    { label: "—", body: "" },
+    { headline: "ANALYZING FEED", label: "ANALYZING FEED", body: "", layer: "", urgency: 0 },
+    { headline: "—", label: "—", body: "", layer: "", urgency: 0 },
+    { headline: "—", label: "—", body: "", layer: "", urgency: 0 },
   ]
 
   return {
@@ -189,17 +187,12 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
       ) : (
         <>
           {/* ── COS drawer handle ── */}
-          <button
-            onClick={() => setExpanded(e => !e)}
+          <div
             style={{
               display: "flex", alignItems: "center", justifyContent: "space-between",
               width: "100%", padding: "0 20px", height: 40,
-              background: "none", border: "none",
               borderBottom: "1px solid var(--border)",
-              cursor: "pointer", transition: "background 0.15s",
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-            onMouseLeave={e => { e.currentTarget.style.background = "none" }}
           >
             <span style={{
               ...TYPE.sm, fontFamily: "var(--font-geist-mono), monospace",
@@ -207,16 +200,29 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
             }}>
               DCOS
             </span>
-            <ChevronUp
-              size={14}
-              strokeWidth={1.5}
+            <button
+              onClick={() => setExpanded(e => !e)}
+              aria-label={expanded ? "Collapse brief" : "Expand brief"}
               style={{
-                color: "var(--text-tertiary)",
-                transition: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-                transform: expanded ? "rotate(0)" : "rotate(180deg)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                width: 28, height: 28, borderRadius: 6,
+                background: "none", border: "none",
+                cursor: "pointer", transition: "background 0.15s",
               }}
-            />
-          </button>
+              onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+              onMouseLeave={e => { e.currentTarget.style.background = "none" }}
+            >
+              <ChevronUp
+                size={14}
+                strokeWidth={1.5}
+                style={{
+                  color: "var(--text-tertiary)",
+                  transition: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                  transform: expanded ? "rotate(0)" : "rotate(180deg)",
+                }}
+              />
+            </button>
+          </div>
 
           {/* ── Expanded: horizontal scrollable carousel ── */}
           <div style={{
@@ -242,11 +248,22 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
                       transition: "background 0.15s",
                     }}
                   >
+                    {signal.layer && (
+                      <div style={{
+                        ...labelStyle,
+                        marginBottom: 4,
+                      }}>
+                        {signal.layer}
+                      </div>
+                    )}
                     <div style={{
-                      ...labelStyle,
-                      marginBottom: 10,
+                      ...TYPE.body,
+                      color: "var(--text-primary)",
+                      fontWeight: 500,
+                      lineHeight: 1.5,
+                      marginBottom: signal.body ? 8 : 0,
                     }}>
-                      {signal.label}
+                      {signal.headline}
                     </div>
                     {signal.body && (
                       <div style={{
@@ -283,13 +300,18 @@ export function AnalysisPanelMobile({ signals, briefLoading }: { signals: Signal
             background: "var(--accent-primary)",
           }}
         >
+          {signal.layer && (
+            <div style={{ ...labelStyle, marginBottom: 4 }}>
+              {signal.layer}
+            </div>
+          )}
           <div
             style={{
-              ...labelStyle, marginBottom: 8,
+              ...TYPE.body, fontWeight: 500, color: "var(--text-primary)", lineHeight: 1.5, marginBottom: 8,
             }}
             className={briefLoading && i === 0 ? "loading-pulse" : ""}
           >
-            {signal.label}
+            {signal.headline}
           </div>
           {signal.body ? (
             <div style={{ ...TYPE.body, color: "var(--text-primary)", lineHeight: 1.7 }}>

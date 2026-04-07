@@ -1,5 +1,7 @@
 # DISPATCH — Architecture Brief v4
-Updated: 2026-04-02
+Updated: 2026-04-06
+
+*This document is canonical for how Dispatch is built — tech stack, API routes, data flow, navigation, and AI surface specifications. Operator context, Lilly intelligence, annotation layers, and Cerebro behavioral directives that appear here are summaries derived from MANDATE.md. See DOC-AUTHORITY.md for the full ownership map.*
 
 ---
 
@@ -27,6 +29,8 @@ These modes are not tabs or filters. They describe the operator's relationship t
 
 ## THE OPERATOR
 
+*Derived from MANDATE.md. See DOC-AUTHORITY.md for canonical ownership.*
+
 Jeremy Grant. Design Director, 15 years agency experience. Senior Design Director at Code and Theory. Founder, Good Living Studio.
 
 ### Immediate context
@@ -44,6 +48,9 @@ The role is no longer design leader alone. It is design leader + product leader 
 The most important design problems of the next decade live at the intersection of AI capability, healthcare delivery, and human experience. Organizations are hiring CDOs not to defend aesthetic territory but to resolve structural friction between functions that AI has thrown into disarray. The design leader who survives this moment is one who can architect cross-functional decision-making, not one who advocates for design's traditional scope.
 
 ### Lilly context
+
+*Derived from MANDATE.md. See DOC-AUTHORITY.md for canonical ownership.*
+
 - 51M patients, $80–83B projected 2026 revenue
 - Diogo Rau (EVP & CIDO): mandated every employee engage with AI daily
 - $1B NVIDIA AI partnership, active OpenAI collaboration

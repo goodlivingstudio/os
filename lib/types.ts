@@ -29,8 +29,13 @@ export interface SignalSource {
 }
 
 export interface Signal {
-  label: string
+  headline: string
   body: string
+  layer: string
+  urgency: number
+  source?: string
+  /** @deprecated Use headline instead — kept for backward compat during transition */
+  label: string
   sources?: SignalSource[]
 }
 

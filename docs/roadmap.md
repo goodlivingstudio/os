@@ -14,7 +14,7 @@ Updated: 2026-04-02
 ## Priority 1 — Prompt Architecture Update
 *Highest leverage. Changes what the system says without touching infrastructure.*
 
-4. **Update `lib/prompts.ts` from PROMPTS.md v2** — Propagate station chief voice directive, updated OPERATOR block with professional evolution thesis, SOURCE_MODES block, and all six surface prompts. This is the single most impactful change available.
+4. **Update `lib/prompts.ts` from PROMPTS.md v3** — Propagate station chief voice directive with analytical discipline (gap accounting, confidence tiers, amplification check, weakest claim), updated OPERATOR block with professional evolution thesis, SOURCE_MODES block, and all six surface prompts. This is the single most impactful change available.
 5. **Urgency-first Signal view** — Reorder Signal view to sort by urgency score as primary axis. Layers become secondary filters. The daily question is "what demands my attention today," not "what category is this."
 6. **DCOS brief framing** — Update card copy format: each card should frame "what this demands of the operator," not just what the signal is.
 
