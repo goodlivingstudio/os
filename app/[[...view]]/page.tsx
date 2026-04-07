@@ -780,8 +780,7 @@ export default function Page() {
           justifyContent: "space-between", padding: "0 16px",
           borderBottom: "1px solid var(--border)",
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--live)" }} />
+          <div style={{ display: "flex", alignItems: "center" }}>
             <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.06em" }}>
               {{ signal: "Signal", audio: "Sound", synthesis: "Synthesis", gallery: "Surface", cerebro: "Cerebro", config: "Config" }[mobileTab] || "Dispatch"}
             </span>
