@@ -189,20 +189,23 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
     { url: "https://feeds.simplecast.com/kEKXbjuJ",                                 show: "Ezra Klein Show",         category: "Policy & Ideas",          tag: "policy",   layer: "policy" },
   ],
 
-  // ─── Gallery — Are.na curation + public domain + landscape photography ────
+  // ─── Gallery — American wilderness, adventure, wildlife ────────────────────
 
   gallerySources: [
-    // Are.na — team-curated visual intelligence channel
+    // Are.na — scraper-populated visual intelligence (parks, wildlife, adventure)
     { url: "https://api.are.na/v2/channels/explore-t7o5uh83n2s/contents?per=200", name: "Are.na", type: "arena" },
-    // Architecture & landscape
-    { url: "https://www.dezeen.com/architecture/feed/",       name: "Dezeen",              type: "rss" },
-    { url: "https://www.archdaily.com/feed",                  name: "ArchDaily",           type: "rss" },
-    { url: "https://www.designboom.com/feed/",                name: "Designboom",          type: "rss" },
-    // Photography
-    { url: "https://www.thisiscolossal.com/category/photography/feed/", name: "Colossal Photography", type: "rss" },
-    { url: "https://www.featureshoot.com/feed/",              name: "Feature Shoot",       type: "rss" },
-    { url: "https://www.ignant.com/feed/",                    name: "IGNANT",              type: "rss" },
-    { url: "https://leibal.com/feed/",                        name: "Leibal",              type: "rss" },
+    // Outdoor editorial — adventure photography, expedition stories
+    { url: "https://www.outsideonline.com/feed/all/",                              name: "Outside",              type: "rss" },
+    { url: "https://adventure-journal.com/feed/",                                  name: "Adventure Journal",    type: "rss" },
+    { url: "https://www.backpacker.com/feed/",                                     name: "Backpacker",           type: "rss" },
+    { url: "https://gearjunkie.com/feed",                                          name: "GearJunkie",           type: "rss" },
+    // Landscape & nature photography
+    { url: "https://www.thisiscolossal.com/category/photography/feed/",            name: "Colossal Photography", type: "rss" },
+    { url: "https://www.featureshoot.com/feed/",                                   name: "Feature Shoot",        type: "rss" },
+    // Conservation & public lands visual culture
+    { url: "https://www.nationalparkstraveler.org/feed",                           name: "NP Traveler",          type: "rss" },
+    { url: "https://www.hcn.org/rss.xml",                                         name: "High Country News",    type: "rss" },
+    { url: "https://orionmagazine.org/feed/",                                      name: "Orion",                type: "rss" },
   ],
 
   // ─── Ticker — rewritten for Platform/Policy/Culture/Industry/Craft ────────
