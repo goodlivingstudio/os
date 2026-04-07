@@ -264,7 +264,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
 
             {/* ─ WEEKLY SHIFT banner ─ */}
             <div style={{
-              background: "var(--bg-surface)", padding: "20px 24px",
+              background: "var(--bg-surface)", padding: "16px 16px",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
               <div style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 10 }}>
@@ -293,7 +293,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ SIGNAL VELOCITY ─ */}
             {data.velocity && (data.velocity.accelerating.length > 0 || data.velocity.decelerating.length > 0) && (
               <div style={{
-                padding: "24px 24px",
+                padding: "16px 16px",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
@@ -339,7 +339,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
               <div style={{
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 200ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", padding: "24px 24px 14px", fontSize: 11 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", padding: "16px 16px 14px", fontSize: 11 }}>
                   Convergences
                 </div>
                 {data.patterns.map((pattern, i) => (
@@ -351,7 +351,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
                     style={{
                       display: "flex", gap: 20,
-                      padding: "16px 24px",
+                      padding: "12px 16px",
                       cursor: "pointer", transition: "background 0.15s", outline: "none",
                     }}
                     onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
@@ -400,7 +400,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ URGENCY HEATMAP ─ */}
             {!isTriage && data.heatmap && data.heatmap.layers.length > 0 && (
               <div style={{
-                padding: "24px 24px",
+                padding: "16px 16px",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 300ms both",
               }}>
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
@@ -459,7 +459,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ BLIND SPOTS — 3 cards ─ */}
             {data.blindSpots && data.blindSpots.length > 0 && (
               <div style={{
-                padding: isMobile ? "24px 0 24px 16px" : "24px 24px",
+                padding: isMobile ? "16px 0 16px 16px" : "16px 16px",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 400ms both",
               }}>
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11, paddingLeft: isMobile ? 4 : 0 }}>
@@ -504,7 +504,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ ASK CEREBRO — 4 cards ─ */}
             {cerebroTopics.length > 0 && (
               <div style={{
-                padding: "24px 24px",
+                padding: "16px 16px",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 500ms both",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 14 }}>
