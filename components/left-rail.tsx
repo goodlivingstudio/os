@@ -439,7 +439,7 @@ export function LeftRail({
                     borderRadius: 8,
                     transition: "left 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s",
                     zIndex: 0,
-                    opacity: viewMode === "config" ? 0 : 1,
+                    opacity: idx >= 0 ? 1 : 0,
                   }}
                 />
               )
