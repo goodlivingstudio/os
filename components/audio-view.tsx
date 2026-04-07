@@ -560,7 +560,7 @@ const LAYER_FILTERS: { id: string; label: string }[] = [
   { id: "culture", label: "Culture" },
 ]
 
-export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", pinnedArticleIds, onPinArticle }: { onDeliberate?: (text: string) => void; excludedSources?: Set<string>; sortBy?: "urgency" | "layer"; pinnedArticleIds?: Set<string>; onPinArticle?: (article: Article) => void }) {
+export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", onSortChange, pinnedArticleIds, onPinArticle }: { onDeliberate?: (text: string) => void; excludedSources?: Set<string>; sortBy?: "urgency" | "layer"; onSortChange?: (mode: "urgency" | "layer") => void; pinnedArticleIds?: Set<string>; onPinArticle?: (article: Article) => void }) {
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [loading, setLoading] = useState(true)
   const [showCount, setShowCount] = useState(0)
@@ -668,9 +668,10 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", p
         const activeCount = activeLayer === "all" ? pool.length : pool.filter(ep => ep.layer === activeLayer).length
 
         return (
-          <div style={{ flexShrink: 0, padding: "10px 16px", display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+          <div style={{ flexShrink: 0, padding: "12px 16px 0" }}>
             {isMobile ? (
-              /* ── Mobile: dropdown ── */
+              /* ── Mobile: dropdown + triage/explore toggle — matches Signal ── */
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <div style={{ position: "relative" }}>
                 <button
                   onClick={() => setMobileFilterOpen(v => !v)}
@@ -716,9 +717,38 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", p
                   </div>
                 )}
               </div>
+              {/* Triage / Explore toggle — matches Signal */}
+              <div role="group" aria-label="Sort mode" style={{
+                marginLeft: "auto",
+                display: "flex", gap: 2,
+                background: "var(--bg-elevated)", borderRadius: 8, padding: 3,
+              }}>
+                {(["urgency", "layer"] as const).map(mode => {
+                  const isActive = sortBy === mode
+                  return (
+                    <button
+                      key={mode}
+                      className="toggle-btn"
+                      aria-pressed={isActive}
+                      onClick={() => onSortChange?.(mode)}
+                      style={{
+                        padding: "4px 12px", border: "none", borderRadius: 6, cursor: "pointer",
+                        background: isActive ? "var(--bg-surface)" : "transparent",
+                        ...TYPE.xs, fontWeight: isActive ? 600 : 400,
+                        color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
+                        textTransform: "uppercase", letterSpacing: "0.04em",
+                        transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                      }}
+                    >
+                      {mode === "urgency" ? "Triage" : "Explore"}
+                    </button>
+                  )
+                })}
+              </div>
+              </div>
             ) : (
-              /* ── Desktop: pills ── */
-              <>
+              /* ── Desktop: pills + artwork toggle ── */
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
                 {LAYER_FILTERS.map(layer => {
                   const isActive = activeLayer === layer.id
                   const count = layer.id === "all" ? pool.length : pool.filter(ep => ep.layer === layer.id).length
@@ -754,10 +784,8 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", p
                     </button>
                   )
                 })}
-              </>
-            )}
-            {/* Artwork switcher — Off removes images, Source shows podcast artwork */}
-            {episodes.length > 0 && (
+                {/* Artwork switcher — desktop only */}
+                {episodes.length > 0 && (
               <div style={{
                 marginLeft: "auto",
                 display: "flex",
@@ -793,6 +821,8 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", p
                     </button>
                   )
                 })}
+              </div>
+                )}
               </div>
             )}
           </div>

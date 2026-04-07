@@ -603,32 +603,30 @@ export default function Page() {
                 </div>
               )}
             </div>
-            {/* Off / Source toggle — mobile */}
-            <div role="group" aria-label="Article image display" style={{
+            {/* Triage / Explore toggle — mobile */}
+            <div role="group" aria-label="Sort mode" style={{
               marginLeft: "auto",
               display: "flex", gap: 2,
               background: "var(--bg-elevated)", borderRadius: 8, padding: 3,
             }}>
-              {([
-                { id: "off" as const, label: "Off" },
-                { id: "source" as const, label: "Source" },
-              ]).map(mode => {
-                const isActive = feedImageMode === mode.id
+              {(["urgency", "layer"] as const).map(mode => {
+                const isActive = sortBy === mode
                 return (
                   <button
-                    key={mode.id}
+                    key={mode}
                     className="toggle-btn"
                     aria-pressed={isActive}
-                    onClick={() => setFeedImageMode(mode.id)}
+                    onClick={() => setSortBy(mode)}
                     style={{
                       padding: "4px 12px", border: "none", borderRadius: 6, cursor: "pointer",
                       background: isActive ? "var(--bg-surface)" : "transparent",
                       ...TYPE.xs, fontWeight: isActive ? 600 : 400,
                       color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
+                      textTransform: "uppercase", letterSpacing: "0.04em",
                       transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                     }}
                   >
-                    {mode.label}
+                    {mode === "urgency" ? "Triage" : "Explore"}
                   </button>
                 )
               })}
@@ -831,24 +829,27 @@ export default function Page() {
                   background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 12,
                   padding: "8px 0", animation: "status-fade 0.15s ease both",
                 }}>
-                  {/* Triage / Explore toggle */}
+                  {/* Off / Source image toggle */}
                   <div style={{ padding: "8px 12px" }}>
-                    <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Sort Mode</div>
+                    <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Images</div>
                     <div style={{ display: "flex", background: "var(--bg-elevated)", borderRadius: 6, padding: 2 }}>
-                      {(["urgency", "layer"] as const).map(mode => (
+                      {([
+                        { id: "off" as const, label: "Off" },
+                        { id: "source" as const, label: "Source" },
+                      ]).map(mode => (
                         <button
-                          key={mode}
-                          onClick={() => { setSortBy(mode); setMobileMenuOpen(false) }}
+                          key={mode.id}
+                          onClick={() => { setFeedImageMode(mode.id); setMobileMenuOpen(false) }}
                           style={{
                             flex: 1, padding: "6px 0", borderRadius: 5, border: "none",
-                            background: sortBy === mode ? "var(--bg-surface)" : "transparent",
-                            ...TYPE.xs, fontWeight: sortBy === mode ? 600 : 400,
-                            color: sortBy === mode ? "var(--text-primary)" : "var(--text-tertiary)",
+                            background: feedImageMode === mode.id ? "var(--bg-surface)" : "transparent",
+                            ...TYPE.xs, fontWeight: feedImageMode === mode.id ? 600 : 400,
+                            color: feedImageMode === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
                             textTransform: "uppercase", letterSpacing: "0.04em",
                             cursor: "pointer", transition: "all 0.15s",
                           }}
                         >
-                          {mode === "urgency" ? "Triage" : "Explore"}
+                          {mode.label}
                         </button>
                       ))}
                     </div>
@@ -938,7 +939,7 @@ export default function Page() {
           <div key={mobileTab} className="mobile-tab-content" style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
             {mobileTab === "signal" && feedContent}
             {mobileTab === "synthesis" && <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} sortBy={sortBy} />}
-            {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} pinnedArticleIds={new Set(pinnedArticles.map(a => a.id))} onPinArticle={handlePinArticle} />}
+            {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} onSortChange={setSortBy} pinnedArticleIds={new Set(pinnedArticles.map(a => a.id))} onPinArticle={handlePinArticle} />}
             {mobileTab === "gallery"   && <GalleryOverlay onClose={() => setMobileTab("signal")} excludedSources={excludedSources} articles={articles} onDeliberate={handleSynthesisDeliberate} />}
             {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} /></div>}
             {mobileTab === "config"    && <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} />}
@@ -1197,7 +1198,7 @@ export default function Page() {
           : viewMode === "synthesis"
           ? <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} sortBy={sortBy} />
           : viewMode === "audio"
-          ? <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} pinnedArticleIds={new Set(pinnedArticles.map(a => a.id))} onPinArticle={handlePinArticle} />
+          ? <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} onSortChange={setSortBy} pinnedArticleIds={new Set(pinnedArticles.map(a => a.id))} onPinArticle={handlePinArticle} />
           : feedContent}
         <Divider onMouseDown={e => startResize("right", e)} />
         <div
