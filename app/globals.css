@@ -144,6 +144,7 @@ html, body {
   .synthesis-velocity { flex-direction: column !important; }
   .synthesis-blindspots::-webkit-scrollbar { display: none; }
   .synthesis-cerebro::-webkit-scrollbar { display: none; }
+  .dcos-carousel::-webkit-scrollbar { display: none; }
   .synthesis-heatmap { min-width: 520px; }
   .gallery-grid { grid-template-columns: 1fr !important; }
 

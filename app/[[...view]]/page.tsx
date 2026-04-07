@@ -873,37 +873,62 @@ export default function Page() {
           </div>
         </div>
 
-        {/* ── DCOS swipeable card — Signal + Sound tabs, hidden in triage ── */}
-        {(mobileTab === "signal" || mobileTab === "audio") && sortBy !== "urgency" && signals.filter(s => s.body).length > 0 && (() => {
+        {/* ── DCOS swipeable carousel — Signal + Sound tabs ── */}
+        {(mobileTab === "signal" || mobileTab === "audio") && signals.filter(s => s.body).length > 0 && (() => {
           const dcosSignals = signals.filter(s => s.body)
-          const current = dcosSignals[mobileDcosIdx]
-          if (!current) return null
           return (
-            <div style={{ flexShrink: 0, borderBottom: "1px solid var(--border)", padding: "14px 20px" }}>
-              <button
-                onClick={() => handleDeliberate(current)}
-                style={{ display: "block", width: "100%", background: "transparent", border: "none", cursor: "pointer", textAlign: "left", padding: 0 }}
+            <div style={{ flexShrink: 0, borderBottom: "1px solid var(--border)" }}>
+              <div
+                className="dcos-carousel"
+                style={{
+                  display: "flex", overflowX: "auto", overflowY: "hidden",
+                  WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory",
+                  msOverflowStyle: "none", scrollbarWidth: "none",
+                } as React.CSSProperties}
+                onScroll={e => {
+                  const el = e.currentTarget
+                  const idx = Math.round(el.scrollLeft / el.clientWidth)
+                  if (idx !== mobileDcosIdx && idx >= 0 && idx < dcosSignals.length) setMobileDcosIdx(idx)
+                }}
               >
-                <div style={{ ...TYPE.xs, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.04em", marginBottom: 6 }}>
-                  {current.label}
-                </div>
-                <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.65, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
-                  {current.body.replace(/\[\d+\]/g, "")}
-                </div>
-              </button>
-              <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 14 }}>
-                {dcosSignals.map((_, i) => (
+                {dcosSignals.map((sig, i) => (
                   <button
                     key={i}
-                    onClick={() => setMobileDcosIdx(i)}
+                    onClick={() => handleDeliberate(sig)}
                     style={{
-                      width: mobileDcosIdx === i ? 16 : 6, height: 6, borderRadius: 3, border: "none", padding: 0,
-                      background: mobileDcosIdx === i ? "var(--accent-secondary)" : "var(--border)",
-                      cursor: "pointer", transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+                      flex: "0 0 100%", scrollSnapAlign: "start",
+                      display: "block", width: "100%", background: "transparent", border: "none",
+                      cursor: "pointer", textAlign: "left", padding: "14px 20px",
                     }}
-                  />
+                  >
+                    <div style={{ ...TYPE.xs, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.04em", marginBottom: 6 }}>
+                      {sig.label}
+                    </div>
+                    <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.65 }}>
+                      {sig.body.replace(/\[\d+\]/g, "")}
+                    </div>
+                  </button>
                 ))}
               </div>
+              {dcosSignals.length > 1 && (
+                <div style={{ display: "flex", justifyContent: "center", gap: 6, padding: "0 20px 14px" }}>
+                  {dcosSignals.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setMobileDcosIdx(i)
+                        const carousel = document.querySelector('.dcos-carousel') as HTMLElement
+                        if (carousel) carousel.scrollTo({ left: i * carousel.clientWidth, behavior: "smooth" })
+                      }}
+                      style={{
+                        width: mobileDcosIdx === i ? 16 : 6, height: 6, borderRadius: 3, border: "none", padding: 0,
+                        background: mobileDcosIdx === i ? "var(--accent-secondary)" : "var(--border)",
+                        cursor: "pointer", transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           )
         })()}
