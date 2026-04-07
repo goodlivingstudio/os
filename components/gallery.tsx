@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle } from "lucide-react"
 import { TYPE, MONO } from "@/lib/styles"
-import { storageKey } from "@/lib/config"
+import instanceConfig, { storageKey } from "@/lib/config"
 import { GALLERY_SOURCES, type GalleryImage, type ColorMood } from "@/lib/gallery"
 import type { Skin, Article } from "@/lib/types"
 import { Ticker } from "@/components/ticker"
@@ -177,8 +177,12 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
   const [loading, setLoading] = useState(true)
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
   const [activeMood, setActiveMood] = useState<ColorMood | null>(null)
+  const [sourceType, setSourceType] = useState<"all" | "curated" | "ugc">("all")
   const [showTrends, setShowTrends] = useState(false)
   const [showSources, setShowSources] = useState(false)
+
+  // Detect if this instance has UGC sources (Are.na UGC channel)
+  const hasUgc = instanceConfig.gallerySources.some(s => s.name.toLowerCase().includes("ugc"))
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
   const [shuffleKey, setShuffleKey] = useState(0)
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768
@@ -215,9 +219,20 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
   }, [])
 
   // Filter out excluded sources first
-  const includedImages = excludedSources?.size
+  const sourceFiltered = excludedSources?.size
     ? allImages.filter(img => !img.source || !excludedSources.has(img.source))
     : allImages
+
+  // Source type filter (curated vs UGC)
+  const includedImages = sourceType === "all"
+    ? sourceFiltered
+    : sourceType === "ugc"
+      ? sourceFiltered.filter(img => img.source?.toLowerCase().includes("ugc"))
+      : sourceFiltered.filter(img => !img.source?.toLowerCase().includes("ugc"))
+
+  // Source type counts
+  const ugcCount = sourceFiltered.filter(img => img.source?.toLowerCase().includes("ugc")).length
+  const curatedCount = sourceFiltered.length - ugcCount
 
   // Mood counts from server-classified data
   const moodCounts: Record<ColorMood, number> = { warm: 0, cool: 0, earth: 0, vivid: 0, neutral: 0 }
@@ -416,6 +431,39 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                 })}
               </>
             )}
+            {/* Source type filter — only when instance has UGC */}
+            {hasUgc && !isMobile && (
+              <div style={{
+                display: "inline-flex", borderRadius: 8, border: "1px solid var(--border)",
+                overflow: "hidden", marginLeft: 4,
+              }}>
+                {([
+                  { id: "all" as const, label: "All", count: sourceFiltered.length },
+                  { id: "curated" as const, label: "Curated", count: curatedCount },
+                  { id: "ugc" as const, label: "UGC", count: ugcCount },
+                ] as const).map(opt => {
+                  const isActive = sourceType === opt.id
+                  return (
+                    <button
+                      key={opt.id}
+                      onClick={() => setSourceType(isActive && opt.id !== "all" ? "all" : opt.id)}
+                      style={{
+                        ...TYPE.xs, padding: "3px 10px", border: "none",
+                        background: isActive ? "var(--accent-primary)" : "transparent",
+                        color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                        fontWeight: isActive ? 600 : 400,
+                        cursor: "pointer", transition: "all 0.15s",
+                        display: "inline-flex", alignItems: "center", gap: 4,
+                      }}
+                    >
+                      {opt.label}
+                      <span style={{ opacity: 0.5 }}>{opt.count}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+
             {/* Trends + Sources — desktop only */}
             {!isMobile && (
               <>
