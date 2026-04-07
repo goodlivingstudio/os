@@ -11,7 +11,7 @@ import { storageKey } from "@/lib/config"
 
 const BRIEF_CACHE_KEY = storageKey("dcos-brief")
 const BRIEF_TTL = 4 * 60 * 60 * 1000 // 4 hours — resilient to weak connections
-const FETCH_TIMEOUT = 10_000 // 10s — fail fast on slow networks
+const FETCH_TIMEOUT = 25_000 // 25s — allows for Vercel cold start + Anthropic latency
 
 export function useChiefOfStaff(articles: Article[]) {
   const [signals, setSignals] = useState<Signal[]>([])

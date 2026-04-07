@@ -9,8 +9,8 @@ const config: InstanceConfig = {
   id: "explore",
 
   branding: {
-    name: "Explore",
-    tagline: "Field Intelligence for the explore.gov Engagement",
+    name: "Thoreau",
+    tagline: "In wildness is the preservation of the world.",
     domain: "explore.goodliving.studio",
     port: 3002,
     favicon: { light: "/favicon-light.png", dark: "/favicon-dark.png", apple: "/apple-touch-icon.png" },
