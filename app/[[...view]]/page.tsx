@@ -1018,6 +1018,7 @@ export default function Page() {
                         fontSize: 10,
                         textTransform: "uppercase",
                         fontWeight: 500,
+                        letterSpacing: "0.06em",
                         color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
                         transition: "color 0.3s ease",
                       }}

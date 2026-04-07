@@ -409,11 +409,14 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                   Urgency Heatmap
                 </div>
                 <div className="synthesis-heatmap" style={{
-                  background: "var(--bg-surface)", borderRadius: 8, padding: "18px 20px",
-                  overflowX: "auto", WebkitOverflowScrolling: "touch",
+                  background: "var(--bg-surface)", borderRadius: 8,
+                  overflowX: "auto", overflowY: "hidden",
+                  WebkitOverflowScrolling: "touch",
+                  touchAction: "pan-x",
                 } as React.CSSProperties}>
+                  <div style={{ minWidth: 520, padding: "18px 20px" }}>
                   {/* Day headers */}
-                  <div style={{ display: "flex", marginBottom: 8, minWidth: 520 }}>
+                  <div style={{ display: "flex", marginBottom: 8 }}>
                     <div style={{ width: 96, flexShrink: 0 }} />
                     {data.heatmap.days.map((day, i) => (
                       <div key={i} style={{ flex: 1, textAlign: "center", ...TYPE.sm, color: "var(--text-tertiary)", fontWeight: 500 }}>
@@ -426,7 +429,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     const allVals = data.heatmap!.layers.flatMap(l => l.data).filter(v => v > 0)
                     const maxVal = allVals.length > 0 ? Math.max(...allVals, 1) : 10
                     return data.heatmap!.layers.map((layer, li) => (
-                      <div key={li} style={{ display: "flex", alignItems: "center", marginBottom: 6, minWidth: 520 }}>
+                      <div key={li} style={{ display: "flex", alignItems: "center", marginBottom: 6 }}>
                         <div style={{ width: 96, flexShrink: 0, ...TYPE.sm, color: layer.color, fontWeight: 500 }}>
                           {layer.name}
                         </div>
@@ -454,6 +457,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       </div>
                     ))
                   })()}
+                  </div>
                 </div>
               </div>
             )}
