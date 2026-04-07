@@ -117,7 +117,7 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episode
         onMouseLeave={e => { e.currentTarget.style.background = "none" }}
       >
         <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-secondary)", textTransform: "uppercase" }}>
-          DCOS
+          Sound
         </span>
         <ChevronUp size={14} strokeWidth={1.5} style={{
           color: "var(--text-tertiary)",

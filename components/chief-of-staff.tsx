@@ -198,7 +198,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
               ...TYPE.sm, fontFamily: "var(--font-geist-mono), monospace",
               color: "var(--accent-secondary)", textTransform: "uppercase",
             }}>
-              DCOS
+              Signal
             </span>
             <button
               onClick={() => setExpanded(e => !e)}
