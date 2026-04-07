@@ -78,6 +78,20 @@ export interface MandateConfig {
   sourceModes: string       // INTELLIGENCE / FORMATION / POSITIONING framing
 }
 
+// ─── Gallery Scraper ────────────────────────────────────────────────────────
+
+export interface ScrapeTarget {
+  url: string
+  name: string
+  category: "archive" | "photography" | "editorial" | "gallery" | "agency"
+}
+
+export interface GalleryScraperConfig {
+  arenaChannelSlug: string
+  targets: ScrapeTarget[]
+  tastePrompt: string        // Claude Vision curatorial mandate for this instance
+}
+
 // ─── Instance Config — the full contract ────────────────────────────────────
 
 export interface InstanceConfig {
@@ -105,4 +119,7 @@ export interface InstanceConfig {
   // Theme
   skins: SkinDef[]
   defaultSkin: string
+
+  // Gallery scraper (optional — instances that don't use the scraper can omit)
+  galleryScraper?: GalleryScraperConfig
 }

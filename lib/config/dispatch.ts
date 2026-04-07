@@ -325,6 +325,39 @@ When scoring and surfacing signals, weight INTELLIGENCE and POSITIONING sources 
     { id: "forest",  label: "Forest",  dot: "#5C8A6E" },
   ],
   defaultSkin: "mineral",
+
+  // ─── Gallery Scraper ──────────────────────────────────────────────────────
+
+  galleryScraper: {
+    arenaChannelSlug: "dispatch-zen",
+    tastePrompt: `You are a senior design director curating a visual inspiration gallery for a strategic intelligence tool. Rate each image 1-5:
+1 = UI screenshot, logo, text-heavy, diagram, wireframe, or low quality
+2 = Generic stock photography or mundane content
+3 = Decent design or photography but not exceptional
+4 = Strong visual work — good composition, interesting subject
+5 = Exceptional — the kind of image a design leader would save for reference`,
+    targets: [
+      { url: "https://savee.it/", name: "Savee", category: "gallery" },
+      { url: "https://godly.website/", name: "Godly", category: "gallery" },
+      { url: "https://www.siteinspire.com/", name: "Siteinspire", category: "gallery" },
+      { url: "https://dribbble.com/shots/popular", name: "Dribbble", category: "gallery" },
+      { url: "https://www.behance.net/", name: "Behance", category: "gallery" },
+      { url: "https://hoverstates.com/", name: "Hover States", category: "gallery" },
+      { url: "https://minimal.gallery/", name: "Minimal Gallery", category: "gallery" },
+      { url: "https://www.awwwards.com/websites/", name: "Awwwards", category: "gallery" },
+      { url: "https://www.searchsystem.co/", name: "SearchSystem", category: "gallery" },
+      { url: "https://www.designeverywhere.co/", name: "Design Everywhere", category: "gallery" },
+      { url: "https://www.curated.design/", name: "Curated Inspiration", category: "gallery" },
+      { url: "https://www.visualjournal.it/", name: "Visual Journal", category: "gallery" },
+      { url: "https://fantasy.co/", name: "Fantasy", category: "agency" },
+      { url: "https://www.monks.com/work", name: "Monks", category: "agency" },
+      { url: "https://erichu.info/", name: "Eric Hu", category: "agency" },
+      { url: "https://koto.studio/", name: "Koto", category: "agency" },
+      { url: "https://tendril.ca/", name: "Tendril", category: "agency" },
+      { url: "https://metalab.com/work", name: "Metalab", category: "agency" },
+      { url: "https://portorocha.com/", name: "Porto Rocha", category: "agency" },
+    ],
+  },
 }
 
 export default config

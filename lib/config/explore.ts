@@ -252,6 +252,57 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
     { id: "canyon",  label: "Canyon",  dot: "#C27046" },
   ],
   defaultSkin: "sequoia",
+
+  // ─── Gallery Scraper — Public lands imagery + civic design excellence ──────
+
+  galleryScraper: {
+    arenaChannelSlug: "explore-t7o5uh83n2s",
+    tastePrompt: `You are curating a visual intelligence gallery for a design team building explore.gov — a civic platform connecting Americans with public land. Rate each image 1-5:
+
+1 = UI screenshot, logo, text-heavy, diagram, low quality, or generic stock
+2 = Mundane outdoor content, gear advertisement, or influencer-style hiking photo
+3 = Decent landscape or design work but not exceptional
+4 = Strong work — evokes the experience of American public land, demonstrates civic design excellence, or captures genuine human connection with outdoor space. Diverse representation matters.
+5 = Exceptional — documentary-quality landscape photography, world-class civic/accessible interface design, or an image that captures what it feels like to discover public land. The kind of image that would stop a design team and change how they think about the platform.
+
+Prioritize: American landscape with presence (not pretty screensavers), diverse people genuinely experiencing outdoor space (not posed stock), civic infrastructure and wayfinding design, accessible interface patterns, and national park visual culture.
+Reject: commercial outdoor brand advertising, generic nature wallpaper, AI-generated landscape, influencer content.`,
+    targets: [
+      // ── American Landscape Photography ────────────────────────────────
+      { url: "https://unsplash.com/s/photos/national-parks", name: "Unsplash NPS", category: "photography" },
+      { url: "https://unsplash.com/s/photos/american-landscape", name: "Unsplash American Landscape", category: "photography" },
+      { url: "https://unsplash.com/s/photos/public-lands", name: "Unsplash Public Lands", category: "photography" },
+      { url: "https://www.featureshoot.com/category/landscape/", name: "Feature Shoot Landscape", category: "photography" },
+      { url: "https://www.thisiscolossal.com/category/photography/", name: "Colossal Photography", category: "photography" },
+      { url: "https://www.ignant.com/category/photography/", name: "IGNANT Photography", category: "photography" },
+
+      // ── NPS & Federal Archives ────────────────────────────────────────
+      { url: "https://www.nps.gov/media/photo/gallery.htm", name: "NPS Photo Gallery", category: "archive" },
+      { url: "https://www.flickr.com/photos/npsclimatechange/", name: "NPS Flickr", category: "archive" },
+      { url: "https://gallery.usgs.gov/", name: "USGS Gallery", category: "archive" },
+
+      // ── Outdoor Culture & Editorial ───────────────────────────────────
+      { url: "https://www.outsideonline.com/", name: "Outside", category: "editorial" },
+      { url: "https://adventure-journal.com/", name: "Adventure Journal", category: "editorial" },
+      { url: "https://orionmagazine.org/", name: "Orion Magazine", category: "editorial" },
+      { url: "https://www.hcn.org/", name: "High Country News", category: "editorial" },
+
+      // ── Civic & Accessible Design ─────────────────────────────────────
+      { url: "https://design-system.service.gov.uk/", name: "GOV.UK Design System", category: "gallery" },
+      { url: "https://designsystem.digital.gov/", name: "USWDS", category: "gallery" },
+      { url: "https://www.a11yproject.com/", name: "A11y Project", category: "gallery" },
+      { url: "https://www.canada.ca/en/government/about/design-system.html", name: "Canada Design System", category: "gallery" },
+
+      // ── National Park & Civic Identity ────────────────────────────────
+      { url: "https://www.dezeen.com/tag/national-parks/", name: "Dezeen National Parks", category: "editorial" },
+      { url: "https://www.archdaily.com/search/all?q=visitor%20center", name: "ArchDaily Visitor Centers", category: "editorial" },
+      { url: "https://placesjournal.org/", name: "Places Journal", category: "editorial" },
+
+      // ── Wayfinding & Environmental Graphics ───────────────────────────
+      { url: "https://sfrfrancisco.com/", name: "SEGD", category: "gallery" },
+      { url: "https://www.pentagram.com/work/archive?discipline=environmental-design", name: "Pentagram Environmental", category: "agency" },
+    ],
+  },
 }
 
 export default config

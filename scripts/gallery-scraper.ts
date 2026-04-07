@@ -1,13 +1,17 @@
 #!/usr/bin/env npx tsx
 // ─── Gallery Scraper — Visual Intelligence Agent ────────────────────────────
-// Visits a list of design sites, extracts quality images, optionally runs
+// Visits a list of sites, extracts quality images, optionally runs
 // Claude Vision taste filter, pushes to Are.na.
 //
+// Config-driven: reads targets and channel slug from instance config.
+//
 // Usage:
-//   npx tsx scripts/gallery-scraper.ts                    # scrape all sites
-//   npx tsx scripts/gallery-scraper.ts --dry-run          # preview without pushing
-//   npx tsx scripts/gallery-scraper.ts --site fantasy.co  # scrape one site
-//   npx tsx scripts/gallery-scraper.ts --taste            # enable Claude Vision filter
+//   npx tsx scripts/gallery-scraper.ts                         # dispatch (default)
+//   npx tsx scripts/gallery-scraper.ts --instance=explore      # explore instance
+//   npx tsx scripts/gallery-scraper.ts --dry-run               # preview without pushing
+//   npx tsx scripts/gallery-scraper.ts --site=unsplash         # scrape one site
+//   npx tsx scripts/gallery-scraper.ts --taste                 # enable Claude Vision filter
+//   npx tsx scripts/gallery-scraper.ts --instance=explore --taste --dry-run
 //
 // Requires:
 //   ARENA_ACCESS_TOKEN env var for Are.na API writes
@@ -15,57 +19,32 @@
 
 import { chromium } from "playwright"
 
-// ─── Configuration ──────────────────────────────────────────────────────────
+// ─── Instance Config ───────────────────────────────────────────────────────
 
-const ARENA_CHANNEL_SLUG = "dispatch-zen"
+// Dynamically load config based on --instance flag
+const args = process.argv.slice(2)
+const instanceArg = args.find(a => a.startsWith("--instance="))?.split("=")[1] || "dispatch"
+
+// Set env var so config/index.ts picks up the right instance
+process.env.NEXT_PUBLIC_INSTANCE = instanceArg
+
+// Dynamic import after env var is set
+const { default: config } = await import("../lib/config/index.js")
+import type { ScrapeTarget } from "../lib/config/types.js"
+
+if (!config.galleryScraper) {
+  console.error(`Instance "${instanceArg}" has no galleryScraper config.`)
+  process.exit(1)
+}
+
+const { arenaChannelSlug, targets: TARGETS, tastePrompt } = config.galleryScraper
+
+// ─── Settings ──────────────────────────────────────────────────────────────
+
 const ARENA_API = "https://api.are.na/v2"
 const MAX_IMAGES_PER_SITE = 8
 const SCROLL_PAUSE = 1500
 const MAX_SCROLLS = 5
-
-// ─── Shopping List ──────────────────────────────────────────────────────────
-
-interface ScrapeTarget {
-  url: string
-  name: string
-  category: "gallery" | "agency"
-}
-
-const TARGETS: ScrapeTarget[] = [
-  // Gallery aggregators
-  { url: "https://savee.it/", name: "Savee", category: "gallery" },
-  { url: "https://mobbin.com/browse/ios/apps", name: "Mobbin", category: "gallery" },
-  { url: "https://www.designspiration.com/", name: "Designspiration", category: "gallery" },
-  { url: "https://godly.website/", name: "Godly", category: "gallery" },
-  { url: "https://www.siteinspire.com/", name: "Siteinspire", category: "gallery" },
-  { url: "https://dribbble.com/shots/popular", name: "Dribbble", category: "gallery" },
-  { url: "https://www.behance.net/", name: "Behance", category: "gallery" },
-  { url: "https://hoverstates.com/", name: "Hover States", category: "gallery" },
-  { url: "https://minimal.gallery/", name: "Minimal Gallery", category: "gallery" },
-  { url: "https://www.awwwards.com/websites/", name: "Awwwards", category: "gallery" },
-  { url: "https://www.searchsystem.co/", name: "SearchSystem", category: "gallery" },
-  { url: "https://www.designeverywhere.co/", name: "Design Everywhere", category: "gallery" },
-  { url: "https://landing.love/", name: "Landing Love", category: "gallery" },
-  { url: "https://www.curated.design/", name: "Curated Inspiration", category: "gallery" },
-  { url: "https://www.visualjournal.it/", name: "Visual Journal", category: "gallery" },
-
-  // Design agencies
-  { url: "https://fantasy.co/", name: "Fantasy", category: "agency" },
-  { url: "https://www.monks.com/work", name: "Monks", category: "agency" },
-  { url: "https://erichu.info/", name: "Eric Hu", category: "agency" },
-  { url: "https://www.daisychainstudio.net/", name: "Daisy Chain", category: "agency" },
-  { url: "https://mouthwash.studio/", name: "Mouthwash Studio", category: "agency" },
-  { url: "https://koto.studio/", name: "Koto", category: "agency" },
-  { url: "https://dfrnt.com/", name: "DFRNT", category: "agency" },
-  { url: "https://tendril.ca/", name: "Tendril", category: "agency" },
-  { url: "https://watsondesign.com/", name: "Watson", category: "agency" },
-  { url: "https://locomotive.ca/en", name: "Locomotive", category: "agency" },
-  { url: "https://metalab.com/work", name: "Metalab", category: "agency" },
-  { url: "https://portorocha.com/", name: "Porto Rocha", category: "agency" },
-
-  // AI-generated visual art
-  { url: "https://www.lummi.ai/creator/ricardomatos", name: "Ricardo Matos (Lummi)", category: "gallery" },
-]
 
 // ─── Image Extraction ───────────────────────────────────────────────────────
 
@@ -94,7 +73,7 @@ async function scrapeImages(url: string, name: string): Promise<ExtractedImage[]
       await page.waitForTimeout(SCROLL_PAUSE)
     }
 
-    // Extract images — simple, robust approach
+    // Extract images
     const images: ExtractedImage[] = await page.evaluate(() => {
       const results: { url: string; width: number; height: number; alt: string }[] = []
       const seen = new Set<string>()
@@ -104,23 +83,19 @@ async function scrapeImages(url: string, name: string): Promise<ExtractedImage[]
         if (!src || !src.startsWith("http") || seen.has(src)) return
         seen.add(src)
 
-        // Get dimensions from any available source
         const rect = img.getBoundingClientRect()
         const w = Math.max(img.naturalWidth || 0, img.width || 0, rect.width || 0)
         const h = Math.max(img.naturalHeight || 0, img.height || 0, rect.height || 0)
 
-        // Basic quality gate
         if (w < 200 || h < 150) return
         if (w * h < 60000) return
 
-        // Reject by URL patterns
         const urlLow = src.toLowerCase()
         const bad = ["favicon", "logo", "icon", "avatar", "sprite", "pixel",
           "tracking", "1x1", "placeholder", "blank", "spacer",
           "badge", "client", "partner", "sponsor"]
         if (bad.some(b => urlLow.includes(b))) return
 
-        // Reject extreme aspect ratios
         if (w > 0 && h > 0) {
           const ratio = w / h
           if (ratio > 5 || ratio < 0.15) return
@@ -129,7 +104,6 @@ async function scrapeImages(url: string, name: string): Promise<ExtractedImage[]
         results.push({ url: src, width: Math.round(w), height: Math.round(h), alt: img.alt || "" })
       })
 
-      // Sort by area, largest first
       results.sort((a, b) => (b.width * b.height) - (a.width * a.height))
       return results
     })
@@ -210,13 +184,9 @@ async function filterByTaste(images: ExtractedImage[], siteName: string): Promis
           content: [
             {
               type: "text",
-              text: `You are a senior design director curating a visual inspiration gallery. I have ${images.length} candidate images from ${siteName}. Based on the URLs and alt text below, rate each 1-5:
+              text: `${tastePrompt}
 
-1 = UI screenshot, logo, text-heavy, diagram, wireframe, or low quality
-2 = Generic stock photography or mundane content
-3 = Decent design or photography but not exceptional
-4 = Strong visual work — good composition, interesting subject
-5 = Exceptional — the kind of image a design leader would save for reference
+I have ${images.length} candidate images from ${siteName}. Based on the URLs and alt text below, rate each 1-5 using the criteria above.
 
 ${images.map((img, i) => `${i + 1}. alt="${img.alt}" url=${img.url.slice(0, 100)} (${img.width}x${img.height})`).join("\n")}
 
@@ -241,9 +211,9 @@ Return only the JSON array, nothing else.`,
       .map(i => images[i - 1])
 
     console.log(`  Taste filter: ${filtered.length}/${images.length} approved`)
-    return filtered.length > 0 ? filtered : images.slice(0, 3) // fallback: keep top 3
+    return filtered.length > 0 ? filtered : images.slice(0, 3)
   } catch {
-    return images // graceful fallback
+    return images
   }
 }
 
@@ -256,7 +226,7 @@ async function loadExistingUrls(): Promise<Set<string>> {
     const urls = new Set<string>()
     let page = 1
     while (true) {
-      const res = await fetch(`${ARENA_API}/channels/${ARENA_CHANNEL_SLUG}/contents?per=100&page=${page}`, {
+      const res = await fetch(`${ARENA_API}/channels/${arenaChannelSlug}/contents?per=100&page=${page}`, {
         headers: { "Authorization": `Bearer ${token}` },
         signal: AbortSignal.timeout(10000),
       })
@@ -290,7 +260,7 @@ async function pushToArena(imageUrl: string, title: string, sourceUrl: string): 
   }
 
   try {
-    const res = await fetch(`${ARENA_API}/channels/${ARENA_CHANNEL_SLUG}/blocks`, {
+    const res = await fetch(`${ARENA_API}/channels/${arenaChannelSlug}/blocks`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -320,31 +290,31 @@ async function pushToArena(imageUrl: string, title: string, sourceUrl: string): 
 // ─── Main ───────────────────────────────────────────────────────────────────
 
 async function main() {
-  const args = process.argv.slice(2)
   const dryRun = args.includes("--dry-run") || !process.env.ARENA_ACCESS_TOKEN
   const useTaste = args.includes("--taste") && !!process.env.ANTHROPIC_API_KEY
   const siteFilter = args.find(a => a.startsWith("--site="))?.split("=")[1]
 
+  console.log(`\n🏔  Gallery Scraper — ${config.branding.name} (${instanceArg})`)
+  console.log(`   Channel: ${arenaChannelSlug}`)
   if (dryRun) {
-    console.log("🔍 DRY RUN — no images will be pushed to Are.na")
-    console.log("   Set ARENA_ACCESS_TOKEN to enable pushing\n")
+    console.log("   Mode: DRY RUN — no images will be pushed to Are.na")
+    console.log("   Set ARENA_ACCESS_TOKEN to enable pushing")
   }
   if (useTaste) {
-    console.log("🎨 TASTE FILTER enabled — Claude Vision will curate selections\n")
+    console.log("   Taste filter: ENABLED")
   }
 
   const targets = siteFilter
-    ? TARGETS.filter(t => t.url.includes(siteFilter) || t.name.toLowerCase().includes(siteFilter.toLowerCase()))
+    ? TARGETS.filter((t: ScrapeTarget) => t.url.includes(siteFilter) || t.name.toLowerCase().includes(siteFilter.toLowerCase()))
     : TARGETS
 
   if (targets.length === 0) {
-    console.log(`No targets matching "${siteFilter}"`)
+    console.log(`\nNo targets matching "${siteFilter}"`)
     process.exit(1)
   }
 
-  console.log(`\n📷 Gallery Scraper — ${targets.length} sites\n`)
+  console.log(`   Sites: ${targets.length}\n`)
 
-  // Load existing Are.na URLs to avoid duplicates
   const existingUrls = dryRun ? new Set<string>() : await loadExistingUrls()
 
   let totalFound = 0
@@ -362,7 +332,6 @@ async function main() {
       continue
     }
 
-    // Optional taste filter
     if (useTaste && images.length > 0) {
       const before = images.length
       images = await filterByTaste(images, target.name)
@@ -372,7 +341,6 @@ async function main() {
     for (const img of images) {
       const title = img.alt || `${target.name} — visual`
 
-      // Skip if URL or title already in Are.na
       if (existingUrls.has(img.url) || existingUrls.has(title)) {
         totalSkipped++
         continue
@@ -391,7 +359,7 @@ async function main() {
     }
   }
 
-  console.log(`\n── Summary ──`)
+  console.log(`\n── Summary (${config.branding.name}) ──`)
   console.log(`Sites visited: ${targets.length}`)
   console.log(`Images found: ${totalFound}`)
   console.log(`Skipped (already in Are.na): ${totalSkipped}`)
