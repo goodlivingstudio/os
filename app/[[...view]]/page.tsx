@@ -537,70 +537,102 @@ export default function Page() {
       {/* Layer filters — pills on desktop, dropdown on mobile */}
       <div style={{ flexShrink: 0, padding: "12px 16px 0" }}>
         {isMobile ? (
-          /* ── Mobile: dropdown select ── */
-          <div style={{ position: "relative", marginBottom: 8 }}>
-            <button
-              onClick={() => { setMobileFilterOpen(v => !v); setMobileMenuOpen(false) }}
-              style={{
-                display: "inline-flex", alignItems: "center", gap: 6,
-                padding: "6px 14px", borderRadius: 8, border: "1px solid var(--border)",
-                background: "transparent", cursor: "pointer", transition: "all 0.15s",
-              }}
-            >
-              <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 500 }}>
-                {activeLayers.size === 0 ? "All" : [...activeLayers].map(l => CATEGORY_CONFIG.find(c => c.id === l)?.label || l).join(", ")}
-              </span>
-              <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.6, fontVariantNumeric: "tabular-nums" }}>
-                {triagePool.length}
-              </span>
-              <ChevronDown size={12} style={{ color: "var(--text-tertiary)", transition: "transform 0.2s", transform: mobileFilterOpen ? "rotate(180deg)" : "none" }} />
-            </button>
-            {mobileFilterOpen && (
-              <div style={{
-                position: "absolute", top: 38, left: 0, zIndex: 100, minWidth: 180,
-                background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 10,
-                padding: "4px 0", animation: "status-fade 0.15s ease both",
-              }}>
-                <button
-                  onClick={() => { setActiveLayers(new Set()); setMobileFilterOpen(false) }}
-                  style={{
-                    display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
-                    padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                    ...TYPE.sm, color: activeLayers.size === 0 ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: activeLayers.size === 0 ? 600 : 400,
-                  }}
-                >
-                  <span>All</span>
-                  <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, fontVariantNumeric: "tabular-nums" }}>{triagePool.length}</span>
-                </button>
-                {CATEGORY_CONFIG.filter(cat => cat.id !== "all").map(cat => {
-                  const n = triagePool.filter(a => a.tag === cat.id).length
-                  if (n === 0 && !feedLoading) return null
-                  const isActive = activeLayers.has(cat.id)
-                  return (
-                    <button
-                      key={cat.id}
-                      onClick={() => {
-                        setActiveLayers(prev => {
-                          const next = new Set(prev)
-                          if (next.has(cat.id)) next.delete(cat.id)
-                          else next.add(cat.id)
-                          return next
-                        })
-                        setMobileFilterOpen(false)
-                      }}
-                      style={{
-                        display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
-                        padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                        ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: isActive ? 600 : 400,
-                      }}
-                    >
-                      <span>{cat.label}</span>
-                      <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, fontVariantNumeric: "tabular-nums" }}>{n}</span>
-                    </button>
-                  )
-                })}
-              </div>
-            )}
+          /* ── Mobile: dropdown select + Off/Source toggle ── */
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+            <div style={{ position: "relative" }}>
+              <button
+                onClick={() => { setMobileFilterOpen(v => !v); setMobileMenuOpen(false) }}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  padding: "6px 14px", borderRadius: 8, border: "1px solid var(--border)",
+                  background: "transparent", cursor: "pointer", transition: "all 0.15s",
+                }}
+              >
+                <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 500 }}>
+                  {activeLayers.size === 0 ? "All" : [...activeLayers].map(l => CATEGORY_CONFIG.find(c => c.id === l)?.label || l).join(", ")}
+                </span>
+                <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.6, fontVariantNumeric: "tabular-nums" }}>
+                  {triagePool.length}
+                </span>
+                <ChevronDown size={12} style={{ color: "var(--text-tertiary)", transition: "transform 0.2s", transform: mobileFilterOpen ? "rotate(180deg)" : "none" }} />
+              </button>
+              {mobileFilterOpen && (
+                <div style={{
+                  position: "absolute", top: 38, left: 0, zIndex: 100, minWidth: 180,
+                  background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 10,
+                  padding: "4px 0", animation: "status-fade 0.15s ease both",
+                }}>
+                  <button
+                    onClick={() => { setActiveLayers(new Set()); setMobileFilterOpen(false) }}
+                    style={{
+                      display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
+                      padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
+                      ...TYPE.sm, color: activeLayers.size === 0 ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: activeLayers.size === 0 ? 600 : 400,
+                    }}
+                  >
+                    <span>All</span>
+                    <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, fontVariantNumeric: "tabular-nums" }}>{triagePool.length}</span>
+                  </button>
+                  {CATEGORY_CONFIG.filter(cat => cat.id !== "all").map(cat => {
+                    const n = triagePool.filter(a => a.tag === cat.id).length
+                    if (n === 0 && !feedLoading) return null
+                    const isActive = activeLayers.has(cat.id)
+                    return (
+                      <button
+                        key={cat.id}
+                        onClick={() => {
+                          setActiveLayers(prev => {
+                            const next = new Set(prev)
+                            if (next.has(cat.id)) next.delete(cat.id)
+                            else next.add(cat.id)
+                            return next
+                          })
+                          setMobileFilterOpen(false)
+                        }}
+                        style={{
+                          display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
+                          padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
+                          ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: isActive ? 600 : 400,
+                        }}
+                      >
+                        <span>{cat.label}</span>
+                        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, fontVariantNumeric: "tabular-nums" }}>{n}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+            {/* Off / Source toggle — mobile */}
+            <div role="group" aria-label="Article image display" style={{
+              marginLeft: "auto",
+              display: "flex", gap: 2,
+              background: "var(--bg-elevated)", borderRadius: 8, padding: 3,
+            }}>
+              {([
+                { id: "off" as const, label: "Off" },
+                { id: "source" as const, label: "Source" },
+              ]).map(mode => {
+                const isActive = feedImageMode === mode.id
+                return (
+                  <button
+                    key={mode.id}
+                    className="toggle-btn"
+                    aria-pressed={isActive}
+                    onClick={() => setFeedImageMode(mode.id)}
+                    style={{
+                      padding: "4px 12px", border: "none", borderRadius: 6, cursor: "pointer",
+                      background: isActive ? "var(--bg-surface)" : "transparent",
+                      ...TYPE.xs, fontWeight: isActive ? 600 : 400,
+                      color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
+                      transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                    }}
+                  >
+                    {mode.label}
+                  </button>
+                )
+              })}
+            </div>
           </div>
         ) : (
           /* ── Desktop: pills ── */
@@ -882,7 +914,7 @@ export default function Page() {
             {mobileTab === "signal" && feedContent}
             {mobileTab === "synthesis" && <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} sortBy={sortBy} />}
             {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} pinnedArticleIds={new Set(pinnedArticles.map(a => a.id))} onPinArticle={handlePinArticle} />}
-            {mobileTab === "gallery"   && <GalleryOverlay onClose={() => setMobileTab("signal")} excludedSources={excludedSources} onToggleSource={handleToggleSource} articles={articles} onDeliberate={handleSynthesisDeliberate} />}
+            {mobileTab === "gallery"   && <GalleryOverlay onClose={() => setMobileTab("signal")} excludedSources={excludedSources} articles={articles} onDeliberate={handleSynthesisDeliberate} />}
             {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} /></div>}
             {mobileTab === "config"    && <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} />}
           </div>
@@ -1203,7 +1235,7 @@ export default function Page() {
       />
 
       {/* Gallery overlay */}
-      {galleryOpen && <GalleryOverlay onClose={() => setGalleryOpenWithUrl(false)} excludedSources={excludedSources} onToggleSource={handleToggleSource} isDay={isDay} onToggleMode={toggleMode} skin={skin} onSkinChange={setSkin} articles={articles} onDeliberate={handleSynthesisDeliberate} />}
+      {galleryOpen && <GalleryOverlay onClose={() => setGalleryOpenWithUrl(false)} excludedSources={excludedSources} isDay={isDay} onToggleMode={toggleMode} skin={skin} onSkinChange={setSkin} articles={articles} onDeliberate={handleSynthesisDeliberate} />}
 
       {/* Hotkeys overlay */}
       {hotkeysOpen && <HotkeysOverlay onClose={() => setHotkeysOpen(false)} />}
