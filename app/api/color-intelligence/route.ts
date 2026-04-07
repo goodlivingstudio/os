@@ -254,11 +254,11 @@ export async function POST(req: Request) {
       }
     }
 
-    // Generate hero image (21:9) via Replicate
+    // Generate hero image (3:2 — fits the narrow left column of the B2 broadsheet)
     if (process.env.REPLICATE_API_TOKEN) {
       try {
         const heroTitle = result.headline || result.briefing?.split(/[.!?]/)[0] || "Color intelligence"
-        const heroUrls = await generateCardImages([{ title: heroTitle, layers: ["culture"] }], "color-intelligence", "21:9")
+        const heroUrls = await generateCardImages([{ title: heroTitle, layers: ["culture"] }], "color-intelligence", "3:2")
         result.headerImageUrl = heroUrls[0] || undefined
       } catch (err) {
         console.error("[color-intelligence] Image generation failed:", err instanceof Error ? err.message : err)

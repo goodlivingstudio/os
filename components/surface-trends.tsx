@@ -258,10 +258,10 @@ export function SurfaceTrends({ articles, onDeliberate }: SurfaceTrendsProps) {
                   </div>
                 )}
 
-                {/* Hero image (21:9) */}
+                {/* Hero image (3:2 — matches narrower left column) */}
                 {data.headerImageUrl && (
                   <div style={{
-                    position: "relative", width: "100%", paddingTop: `${(9 / 21) * 100}%`,
+                    position: "relative", width: "100%", paddingTop: `${(2 / 3) * 100}%`,
                     overflow: "hidden", borderRadius: 8, marginBottom: 24,
                     background: "var(--bg-elevated)",
                   }}>
