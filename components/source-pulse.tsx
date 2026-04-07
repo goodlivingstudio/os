@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react"
 import { RefreshCw } from "lucide-react"
 import { TYPE, MONO, metaStyle, labelStyle } from "@/lib/styles"
+import { storageKey } from "@/lib/config"
 import type { Article, FeedHealth } from "@/lib/types"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -657,7 +658,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
   const cache = useMemo((): CacheStatus => {
     let annotationAge: string | null = null
     try {
-      const raw = localStorage.getItem("dispatch-annotations-v3")
+      const raw = localStorage.getItem(storageKey("annotations-v3"))
       if (raw) {
         const { ts } = JSON.parse(raw)
         const mins = Math.round((now - ts) / 60000)

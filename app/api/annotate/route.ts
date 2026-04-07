@@ -5,6 +5,7 @@
 import Anthropic from "@anthropic-ai/sdk"
 import { trackUsage } from "@/lib/usage-tracker"
 import { OPERATOR, FIVE_LAYERS } from "@/lib/prompts"
+import { layerLabelsSlash, scoreJsonExample, scoreJsonRange, layerIdsPipe } from "@/lib/config"
 
 interface ArticleInput {
   id: string
@@ -18,7 +19,7 @@ interface Annotation {
   relevance: string
   signalType: string
   signalLens: string
-  signalScores?: { opportunity: number; position: number; discipline: number; landscape: number; culture: number; urgency: number }
+  signalScores?: Record<string, number>
 }
 
 const SYSTEM_PROMPT = `${OPERATOR}
@@ -35,17 +36,10 @@ RELEVANCE_HOOK: 1 sentence. Why this specific article is relevant to the mandate
 
 SIGNAL_TYPE: One of: DATA / CASE / OPINION / TREND / RESEARCH / NEWS / CULTURAL
 
-PRIMARY_LAYER: The single most relevant intelligence layer: Opportunity / Position / Discipline / Landscape / Culture
+PRIMARY_LAYER: The single most relevant intelligence layer: ${layerLabelsSlash()}
 
 SCORES: JSON object with integer scores 0–10 for each layer:
-{
-  "opportunity": 0,
-  "position": 0,
-  "discipline": 0,
-  "landscape": 0,
-  "culture": 0,
-  "urgency": 0
-}
+${scoreJsonExample()}
 
 SCORING GUIDANCE:
 - Score generously for genuine relevance; score 0–2 for layers where relevance is a stretch
@@ -57,8 +51,8 @@ For each numbered headline, return a JSON array. One object per article, same or
   "synopsis": "1-2 sentence synopsis",
   "hook": "1 sentence relevance hook",
   "type": "DATA | CASE | OPINION | TREND | RESEARCH | NEWS | CULTURAL",
-  "lens": "OPPORTUNITY | POSITION | DISCIPLINE | LANDSCAPE | CULTURE",
-  "scores": { "opportunity": 0-10, "position": 0-10, "discipline": 0-10, "landscape": 0-10, "culture": 0-10, "urgency": 0-10 }
+  "lens": "${layerLabelsSlash().toUpperCase()}",
+  "scores": ${scoreJsonRange()}
 }
 
 Return only valid JSON array. No prose.`
@@ -99,7 +93,7 @@ export async function POST(req: Request) {
     const match = text.match(/\[[\s\S]*\]/)
     if (!match) return Response.json({ annotations: [] })
 
-    let raw: { synopsis?: string; hook?: string; type?: string; lens?: string; scores?: { opportunity: number; position: number; discipline: number; landscape: number; culture: number; urgency: number } }[]
+    let raw: { synopsis?: string; hook?: string; type?: string; lens?: string; scores?: Record<string, number> }[]
     try {
       raw = JSON.parse(match[0])
     } catch {

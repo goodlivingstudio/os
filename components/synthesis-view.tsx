@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useScrollGuard } from "@/lib/use-scroll-guard"
+import { storageKey } from "@/lib/config"
 import { ArrowUpRight } from "lucide-react"
 import type { Article } from "@/lib/types"
 import { TYPE, MONO, labelStyle } from "@/lib/styles"
@@ -63,7 +64,7 @@ interface SynthesisData {
   heatmap?: { days: string[]; layers: HeatmapLayer[] }
 }
 
-const SYNTHESIS_CACHE_KEY = "dispatch-synthesis"
+const SYNTHESIS_CACHE_KEY = storageKey("synthesis")
 const SYNTHESIS_TTL = 4 * 60 * 60 * 1000 // 4 hours
 const SYNTHESIS_FETCH_TIMEOUT = 45_000 // 45s — synthesis is heavier
 

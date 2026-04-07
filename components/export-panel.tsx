@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { X, Copy, Check, Download, FileText, FileType } from "lucide-react"
 import { TYPE, MONO, metaStyle } from "@/lib/styles"
+import { storageKey } from "@/lib/config"
 import type { Article, Signal } from "@/lib/types"
 
 // ─── Export Settings Types ──────────────────────────────────────────────────
@@ -31,7 +32,7 @@ const DEFAULTS: ExportSettings = {
   includeScores: false,
 }
 
-const SETTINGS_KEY = "dispatch-export-settings"
+const SETTINGS_KEY = storageKey("export-settings")
 
 function loadSettings(): ExportSettings {
   try {

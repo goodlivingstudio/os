@@ -5,19 +5,20 @@ import { loadArticleHistory } from "@/lib/article-store"
 import { generateCardImages } from "@/lib/image-gen"
 import { trackUsage } from "@/lib/usage-tracker"
 import { kv } from "@vercel/kv"
+import { kvKey } from "@/lib/config"
 
-const KV_KEY = "synthesis:weekly"
+const KV_KEY = kvKey("synthesis:weekly")
 const CACHE_TTL = 60 * 60 * 12 // 12 hours
 
-const LAYER_NAMES: Record<string, string> = {
-  opportunity: "Opportunity", position: "Position", discipline: "Discipline",
-  landscape: "Landscape", culture: "Culture",
-}
+import instanceConfig from "@/lib/config"
+
+const LAYER_NAMES: Record<string, string> = Object.fromEntries(
+  instanceConfig.layers.map(l => [l.id, l.label])
+)
 const LAYER_COLORS: Record<string, string> = {
-  opportunity: "#D4A05A", position: "#5A9EB0", discipline: "#7BAF6A",
-  landscape: "#9A85B8", culture: "#C87A6A",
+  ...Object.fromEntries(instanceConfig.layers.map((l, i) => [l.id, ["#D4A05A", "#5A9EB0", "#7BAF6A", "#9A85B8", "#C87A6A"][i] || "#888"]))
 }
-const ALL_LAYERS = ["opportunity", "position", "discipline", "landscape", "culture"]
+const ALL_LAYERS = instanceConfig.layers.map(l => l.id)
 
 const SYSTEM_PROMPT = `${DISPATCH_PREAMBLE}
 

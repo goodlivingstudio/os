@@ -18,7 +18,7 @@ interface Episode {
   tag: string
   layer: string
   urgency?: number
-  signalScores?: { opportunity: number; position: number; discipline: number; landscape: number; culture: number; urgency: number }
+  signalScores?: Record<string, number>
 }
 
 // ─── RSS Parser ──────────────────────────────────────────────────────────────

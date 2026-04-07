@@ -1,6 +1,7 @@
 // Purge generated images from KV — clears synthesis and dispatch caches
 // Use when exploring new art direction or cleaning up stale images
 import { kv } from "@vercel/kv"
+import { kvKey } from "@/lib/config"
 
 export async function POST(req: Request) {
   if (!process.env.KV_REST_API_URL) {
@@ -15,8 +16,9 @@ export async function POST(req: Request) {
   try {
     // Synthesis cache (includes embedded images)
     if (target === "synthesis" || target === "all") {
-      const result = await kv.del("synthesis:weekly")
-      if (result > 0) deleted.push("synthesis:weekly")
+      const synthKey = kvKey("synthesis:weekly")
+      const result = await kv.del(synthKey)
+      if (result > 0) deleted.push(synthKey)
     }
 
     // Dispatch cache (includes embedded images)
@@ -26,7 +28,7 @@ export async function POST(req: Request) {
       const start = new Date(now.getFullYear(), 0, 1)
       const diff = now.getTime() - start.getTime()
       const weekNum = Math.ceil((diff / 86400000 + start.getDay() + 1) / 7)
-      const weekKey = `dispatch:weekly:${now.getFullYear()}-w${weekNum}`
+      const weekKey = kvKey(`weekly:${now.getFullYear()}-w${weekNum}`)
       const result = await kv.del(weekKey)
       if (result > 0) deleted.push(weekKey)
     }

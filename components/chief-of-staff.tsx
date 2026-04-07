@@ -5,10 +5,11 @@ import { ChevronUp } from "lucide-react"
 import type { Article, Signal } from "@/lib/types"
 import { MONO, TYPE, labelStyle, bodyStyle, metaStyle } from "@/lib/styles"
 import { renderCitedBody } from "@/components/citation"
+import { storageKey } from "@/lib/config"
 
 // ─── Chief of Staff — data hook ─────────────────────────────────────────────
 
-const BRIEF_CACHE_KEY = "dispatch-dcos-brief"
+const BRIEF_CACHE_KEY = storageKey("dcos-brief")
 const BRIEF_TTL = 4 * 60 * 60 * 1000 // 4 hours — resilient to weak connections
 const FETCH_TIMEOUT = 10_000 // 10s — fail fast on slow networks
 

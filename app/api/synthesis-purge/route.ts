@@ -1,7 +1,8 @@
 // Purge the synthesis cache — forces regeneration on next visit
 import { kv } from "@vercel/kv"
+import { kvKey } from "@/lib/config"
 
-const KV_KEY = "synthesis:weekly"
+const KV_KEY = kvKey("synthesis:weekly")
 
 export async function POST() {
   if (!process.env.KV_REST_API_URL) {

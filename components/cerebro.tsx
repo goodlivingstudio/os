@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Paperclip, Mic, MicOff, ExternalLink, ArrowUpRight, Copy, Check, Flag, BookMarked, Maximize2, Square, RotateCcw } from "lucide-react"
 import type { Article, Message } from "@/lib/types"
+import { storageKey } from "@/lib/config"
 import { renderCitedBody, CitationSource } from "@/components/citation"
 
 // ─── Speech Recognition helpers ─────────────────────────────────────────────
@@ -78,10 +79,10 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
 
   // Generate or restore a persistent session ID
   useEffect(() => {
-    let id = localStorage.getItem("cerebro-session")
+    let id = localStorage.getItem(storageKey("cerebro-session"))
     if (!id) {
       id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
-      localStorage.setItem("cerebro-session", id)
+      localStorage.setItem(storageKey("cerebro-session"), id)
     }
     setSessionId(id)
   }, [])

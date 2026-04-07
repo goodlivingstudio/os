@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { ExternalLink, ArrowUpRight, ChevronUp, ChevronDown, Bookmark } from "lucide-react"
 import { TYPE, MONO, metaStyle } from "@/lib/styles"
 import type { Article } from "@/lib/types"
+import { storageKey } from "@/lib/config"
 
 // ─── Audio DCOS Band ────────────────────────────────────────────────────────
 
@@ -12,7 +13,7 @@ interface AudioSignal {
   body: string
 }
 
-const AUDIO_BRIEF_CACHE_KEY = "dispatch-dcos-audio-brief"
+const AUDIO_BRIEF_CACHE_KEY = storageKey("dcos-audio-brief")
 const AUDIO_BRIEF_TTL = 4 * 60 * 60 * 1000 // 4 hours — resilient to weak connections
 const FETCH_TIMEOUT = 10_000 // 10s — fail fast on slow networks
 
@@ -195,7 +196,7 @@ interface Episode {
   tag: string
   layer: string
   urgency?: number
-  signalScores?: { opportunity: number; position: number; discipline: number; landscape: number; culture: number; urgency: number }
+  signalScores?: Record<string, number>
   synopsis?: string
   relevance?: string
 }
@@ -574,7 +575,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
   const [annotating, setAnnotating] = useState(false)
 
   useEffect(() => {
-    const ANNOTATION_CACHE_KEY = "dispatch-audio-annotations"
+    const ANNOTATION_CACHE_KEY = storageKey("audio-annotations")
     const ANNOTATION_TTL = 4 * 60 * 60 * 1000 // 4 hours — resilient to weak connections
 
     fetch("/api/podcasts")

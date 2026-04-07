@@ -8,8 +8,9 @@ import { trackUsage } from "@/lib/usage-tracker"
 import { kv } from "@vercel/kv"
 import { fetchAndClassifyGalleryImages } from "@/lib/gallery-fetch"
 import { matchImagesToDirection, fetchMetMuseumImages } from "@/lib/color-utils"
+import { kvKey } from "@/lib/config"
 
-const KV_KEY = "color-intelligence:weekly"
+const KV_KEY = kvKey("color-intelligence:weekly")
 const CACHE_TTL = 60 * 60 * 12 // 12 hours
 
 // Sources and keywords that signal color/visual culture relevance

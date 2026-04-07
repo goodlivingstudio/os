@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import localFont from "next/font/local"
+import config from "@/lib/config"
 import "./globals.css"
 
 export const viewport: Viewport = {
@@ -31,16 +32,16 @@ const grenette = localFont({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://dispatch.goodliving.studio"),
-  title: "Dispatch",
-  description: "Directed Intelligence for Strategic Positioning Across Technology, Culture & Healthcare",
+  metadataBase: new URL(`https://${config.branding.domain}`),
+  title: config.branding.name,
+  description: config.branding.tagline,
   robots: { index: false, follow: false },
   icons: {
     icon: [
-      { url: "/favicon-light.png", media: "(prefers-color-scheme: light)" },
-      { url: "/favicon-dark.png", media: "(prefers-color-scheme: dark)" },
+      { url: config.branding.favicon.light, media: "(prefers-color-scheme: light)" },
+      { url: config.branding.favicon.dark, media: "(prefers-color-scheme: dark)" },
     ],
-    apple: "/apple-touch-icon.png",
+    apple: config.branding.favicon.apple,
   },
 }
 
@@ -56,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             background: "#1a6cf0", color: "#fff", fontSize: 10, fontFamily: "monospace",
             padding: "3px 8px", borderRadius: 4, opacity: 0.85,
           }}>
-            DISPATCH · :3001
+            {config.branding.name.toUpperCase()} · :{config.branding.port}
           </div>
         )}
       </body>

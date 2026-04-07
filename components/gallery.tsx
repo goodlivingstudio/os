@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle } from "lucide-react"
 import { TYPE, MONO } from "@/lib/styles"
+import { storageKey } from "@/lib/config"
 import { GALLERY_SOURCES, type GalleryImage, type ColorMood } from "@/lib/gallery"
 import type { Skin, Article } from "@/lib/types"
 import { Ticker } from "@/components/ticker"
@@ -165,7 +166,7 @@ function Lightbox({ image, onClose, onPrev, onNext }: {
   )
 }
 
-const GALLERY_CACHE_KEY = "dispatch-gallery"
+const GALLERY_CACHE_KEY = storageKey("gallery")
 const GALLERY_TTL = 4 * 60 * 60 * 1000 // 4 hours
 const GALLERY_FETCH_TIMEOUT = 10_000
 

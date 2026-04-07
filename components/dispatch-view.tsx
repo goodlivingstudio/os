@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { Copy, Check, ArrowUpRight, X, RefreshCw, ChevronLeft, ChevronRight, Pen } from "lucide-react"
 import { TYPE, MONO, labelStyle, metaStyle } from "@/lib/styles"
+import { storageKey } from "@/lib/config"
 import { renderCitedBody } from "@/components/citation"
 import type { CitationSource } from "@/lib/types"
 
@@ -111,13 +112,13 @@ function pitchKey(title: string): string {
 
 function loadPitchStatuses(): Record<string, PitchStatus> {
   try {
-    const raw = localStorage.getItem("dispatch-pitch-status")
+    const raw = localStorage.getItem(storageKey("pitch-status"))
     return raw ? JSON.parse(raw) : {}
   } catch { return {} }
 }
 
 function savePitchStatuses(statuses: Record<string, PitchStatus>) {
-  try { localStorage.setItem("dispatch-pitch-status", JSON.stringify(statuses)) } catch { /* */ }
+  try { localStorage.setItem(storageKey("pitch-status"), JSON.stringify(statuses)) } catch { /* */ }
 }
 
 // ─── Week key helpers ──────────────────────────────────────────────────────

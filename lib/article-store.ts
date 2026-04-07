@@ -27,7 +27,7 @@ interface StoredArticle {
   relevance?: string
   signalType?: string
   signalLens?: string
-  signalScores?: { opportunity: number; position: number; discipline: number; landscape: number; culture: number; urgency: number }
+  signalScores?: Record<string, number>
 }
 
 function dayKey(date?: Date): string {

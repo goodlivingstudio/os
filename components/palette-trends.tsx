@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Copy, Check, Sun, Moon, Upload, ChevronDown } from "lucide-react"
 import { TYPE, MONO, metaStyle } from "@/lib/styles"
+import { storageKey } from "@/lib/config"
 import type { ColorMood, ColorSwatch } from "@/lib/gallery"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -243,11 +244,11 @@ function PaletteDisplay({ palette, index }: { palette: GeneratedPalette; index: 
 
   const handlePushToFigma = async () => {
     // Get Figma file key from localStorage or prompt
-    const fileKey = localStorage.getItem("dispatch-figma-file-key")
+    const fileKey = localStorage.getItem(storageKey("figma-file-key"))
     if (!fileKey) {
       const key = prompt("Enter your Figma file key (from the URL: figma.com/design/FILE_KEY/...)")
       if (!key) return
-      localStorage.setItem("dispatch-figma-file-key", key)
+      localStorage.setItem(storageKey("figma-file-key"), key)
     }
 
     setPushing(true)
@@ -261,7 +262,7 @@ function PaletteDisplay({ palette, index }: { palette: GeneratedPalette; index: 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          fileKey: localStorage.getItem("dispatch-figma-file-key"),
+          fileKey: localStorage.getItem(storageKey("figma-file-key")),
           paletteName: palette.name,
           colors,
         }),

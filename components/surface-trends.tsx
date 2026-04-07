@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { ArrowUpRight } from "lucide-react"
 import { useScrollGuard } from "@/lib/use-scroll-guard"
+import { storageKey } from "@/lib/config"
 import type { Article } from "@/lib/types"
 import type { CuratedImage } from "@/lib/gallery"
 import { TYPE, MONO, labelStyle } from "@/lib/styles"
@@ -44,7 +45,7 @@ interface SurfaceTrendsProps {
   onDeliberate: (text: string) => void
 }
 
-const CACHE_KEY = "dispatch-color-intel"
+const CACHE_KEY = storageKey("color-intel")
 const CACHE_TTL = 4 * 60 * 60 * 1000 // 4 hours
 const FETCH_TIMEOUT = 45_000
 

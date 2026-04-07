@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk"
 import { DISPATCH_PREAMBLE } from "@/lib/prompts"
 import { trackUsage } from "@/lib/usage-tracker"
+import { layerLabelsSlash } from "@/lib/config"
 
 function getClient() {
   const key = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
@@ -25,7 +26,7 @@ Each card must contain:
 - body: 2–3 sentences. What the signal is. Why it matters to this operator specifically. What it might demand of him.
 - source: Article title and source name
 - citation: [1], [2], [3] inline references in the body text, where numbers refer to the article indices in the feed
-- layer: Primary intelligence layer (Opportunity / Position / Discipline / Landscape / Culture)
+- layer: Primary intelligence layer (${layerLabelsSlash()})
 - urgency: The urgency score (0–10)
 
 TONE: The first signal is special — its headline will appear as a "Today's Lens" ambient one-liner in the left rail. Write the first headline as a grounded, clear observation — measured and reflective, like a principle emerging from the noise. The body of the first signal should still be substantive and specific.

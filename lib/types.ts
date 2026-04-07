@@ -1,5 +1,7 @@
 // ─── Shared types ────────────────────────────────────────────────────────────
 
+import config, { getLayerConfig } from "@/lib/config"
+
 export interface Article {
   id: string
   title: string
@@ -14,7 +16,7 @@ export interface Article {
   relevance?: string    // AI-generated: why it matters to the mandate
   signalType?: string
   signalLens?: string
-  signalScores?: { opportunity: number; position: number; discipline: number; landscape: number; culture: number; urgency: number }
+  signalScores?: Record<string, number>  // layer scores (dynamic per instance) + urgency
 }
 
 export interface Message {
@@ -47,22 +49,15 @@ export interface FeedHealth {
   sourceFailures?: Record<string, number> // { "Source Name": consecutiveFailureCount }
 }
 
-export type Skin = "mineral" | "slate" | "forest"
+export type Skin = string  // now dynamic per instance — skin IDs come from config
 
 export type ViewMode = "signal" | "audio" | "synthesis" | "dispatch" | "config" | "pulse"
 
-// ─── Intelligence layers (from mandate) ──────────────────────────────────────
+// ─── Intelligence layers (config-driven) ─────────────────────────────────────
 
-export type IntelLayer = "opportunity" | "position" | "discipline" | "landscape" | "culture"
+export type IntelLayer = string  // now dynamic per instance
 
-export const LAYER_CONFIG: { id: IntelLayer | "all"; label: string }[] = [
-  { id: "all",          label: "All"          },
-  { id: "opportunity",  label: "Opportunity"  },
-  { id: "position",     label: "Position"     },
-  { id: "discipline",   label: "Discipline"   },
-  { id: "landscape",    label: "Landscape"    },
-  { id: "culture",      label: "Culture"      },
-]
+export const LAYER_CONFIG = getLayerConfig()
 
 // Legacy — will be removed once news API migrates to layers
 export const CATEGORY_CONFIG = LAYER_CONFIG
@@ -85,15 +80,9 @@ export interface CitationSource {
   source?: string
 }
 
-// ─── Layer colors ────────────────────────────────────────────────────────────
+// ─── Layer colors (config-driven) ────────────────────────────────────────────
 
-export const LAYER_COLOR: Record<string, string> = {
-  opportunity: "var(--accent-secondary)",
-  position:    "var(--accent-muted)",
-  discipline:  "var(--text-secondary)",
-  landscape:   "var(--text-tertiary)",
-  culture:     "var(--accent-muted)",
-}
+export const LAYER_COLOR: Record<string, string> = config.layerColors
 
 // Legacy alias
 export const LENS_COLOR = LAYER_COLOR

@@ -5,6 +5,7 @@ import Anthropic from "@anthropic-ai/sdk"
 import { FEEDS, type FeedDef } from "@/lib/feeds"
 import { storeArticles, recordSourceHealth, loadSourceFailures } from "@/lib/article-store"
 import { OPERATOR, FIVE_LAYERS } from "@/lib/prompts"
+import instanceConfig, { layerLabelsSlash, scoreJsonRange } from "@/lib/config"
 import { trackUsage } from "@/lib/usage-tracker"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -23,7 +24,7 @@ interface Article {
   relevance?: string
   signalType?: string
   signalLens?: string
-  signalScores?: { opportunity: number; position: number; discipline: number; landscape: number; culture: number; urgency: number }
+  signalScores?: Record<string, number>
 }
 
 // ─── RSS Parser ───────────────────────────────────────────────────────────────
@@ -157,7 +158,7 @@ async function fetchFeed(feed: FeedDef): Promise<Article[]> {
 // ─── Stub Content ─────────────────────────────────────────────────────────────
 // Quality reference content — used when live feeds are unavailable for a layer
 
-const ALL_LAYERS = ["opportunity", "position", "discipline", "landscape", "culture"]
+const ALL_LAYERS = instanceConfig.layers.map(l => l.id)
 
 const STUBS: Record<string, Article[]> = {
   opportunity: [
@@ -220,8 +221,8 @@ For each numbered headline, return a JSON array. One object per article, same or
   "synopsis": "1-2 sentence synopsis — what this article is about, stated plainly",
   "hook": "1 sentence — why this article is relevant to the mandate. Be precise — name the specific connection.",
   "type": "DATA | CASE | OPINION | TREND | RESEARCH | NEWS | CULTURAL",
-  "lens": "OPPORTUNITY | POSITION | DISCIPLINE | LANDSCAPE | CULTURE",
-  "scores": { "opportunity": 0-10, "position": 0-10, "discipline": 0-10, "landscape": 0-10, "culture": 0-10, "urgency": 0-10 }
+  "lens": "${layerLabelsSlash().toUpperCase()}",
+  "scores": ${scoreJsonRange()}
 }
 
 Score generously for genuine relevance; score 0-2 for layers where relevance is a stretch. Multi-layer signals (2+ layers above 6) are the most valuable.
@@ -232,7 +233,7 @@ Return only valid JSON array. No prose.`
 async function annotateBatch(
   client: Anthropic,
   batch: Article[],
-): Promise<{ synopsis?: string; hook?: string; type?: string; lens?: string; scores?: { opportunity: number; position: number; discipline: number; landscape: number; culture: number; urgency: number } }[]> {
+): Promise<{ synopsis?: string; hook?: string; type?: string; lens?: string; scores?: Record<string, number> }[]> {
   const items = batch.map((a, i) => `${i + 1}. [${a.category}] ${a.title}`).join("\n")
   try {
     const response = await client.messages.create({
@@ -281,7 +282,7 @@ async function annotateArticles(articles: Article[]): Promise<Article[]> {
   // Build annotation map from all batch results
   const annotationMap = new Map<string, {
     synopsis: string; relevance: string; signalType: string; signalLens: string;
-    signalScores?: { opportunity: number; position: number; discipline: number; landscape: number; culture: number; urgency: number }
+    signalScores?: Record<string, number>
   }>()
 
   let batchIdx = 0

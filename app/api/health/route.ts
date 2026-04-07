@@ -1,6 +1,7 @@
 // Diagnostic endpoint — live connectivity probes for all services
 // Visit /api/health to debug deployment issues
 import { kv } from "@vercel/kv"
+import { kvKey } from "@/lib/config"
 
 const TIMEOUT = 6000
 
@@ -47,7 +48,7 @@ async function probeExa(key: string): Promise<string> {
 
 async function probeKV(): Promise<string> {
   try {
-    const ttl = await kv.ttl("synthesis:weekly")
+    const ttl = await kv.ttl(kvKey("synthesis:weekly"))
     // ttl returns a number: -2 (key missing), -1 (no expiry), or seconds remaining
     return typeof ttl === "number" ? "ok" : "unexpected response"
   } catch (err) {

@@ -20,33 +20,38 @@ import { Divider } from "@/components/divider"
 import type { Article, Signal, FeedHealth, Skin, ViewMode } from "@/lib/types"
 import { CATEGORY_CONFIG } from "@/lib/types"
 import { TYPE, MONO } from "@/lib/styles"
+import instanceConfig, { storageKey } from "@/lib/config"
 
 // ─── Skin + mode system ───────────────────────────────────────────────────────
 
 
 function applyThemeClasses(skin: Skin, day: boolean) {
   const el = document.documentElement
-  el.classList.remove("day", "skin-slate", "skin-forest")
+  // Remove all skin classes dynamically
+  el.classList.remove("day", ...instanceConfig.skins.map(s => `skin-${s.id}`))
   if (day) el.classList.add("day")
-  if (skin === "slate")  el.classList.add("skin-slate")
-  if (skin === "forest") el.classList.add("skin-forest")
+  // The first skin in config is the default — no class needed for it
+  if (skin !== instanceConfig.skins[0]?.id) el.classList.add(`skin-${skin}`)
 }
 
+const DEFAULT_SKIN = instanceConfig.defaultSkin
+const STORAGE_PREFIX = instanceConfig.id  // "dispatch" | "explore" | "lilly"
+
 function useTheme() {
-  const [skin, setSkinState] = useState<Skin>("mineral")
+  const [skin, setSkinState] = useState<Skin>(DEFAULT_SKIN)
   const [isDay, setIsDay]     = useState(false)
   const [mounted, setMounted] = useState(false)
-  const skinRef               = useRef<Skin>("mineral")
+  const skinRef               = useRef<Skin>(DEFAULT_SKIN)
 
   useEffect(() => {
-    const storedSkin = (localStorage.getItem("dispatch-skin") as Skin) || "mineral"
-    const storedMode = localStorage.getItem("dispatch-theme")
-    const storedModeTs = localStorage.getItem("dispatch-theme-ts")
+    const storedSkin = (localStorage.getItem(`${STORAGE_PREFIX}-skin`) as Skin) || DEFAULT_SKIN
+    const storedMode = localStorage.getItem(`${STORAGE_PREFIX}-theme`)
+    const storedModeTs = localStorage.getItem(`${STORAGE_PREFIX}-theme-ts`)
     const THEME_SESSION_TTL = 4 * 60 * 60 * 1000 // 4 hours
     const modeExpired = !storedModeTs || (Date.now() - parseInt(storedModeTs, 10)) > THEME_SESSION_TTL
     const h   = new Date().getHours()
     const day = storedMode && !modeExpired ? (storedMode === "day") : h >= 6 && h < 20
-    if (modeExpired) { localStorage.removeItem("dispatch-theme"); localStorage.removeItem("dispatch-theme-ts") }
+    if (modeExpired) { localStorage.removeItem(`${STORAGE_PREFIX}-theme`); localStorage.removeItem(`${STORAGE_PREFIX}-theme-ts`) }
     skinRef.current = storedSkin
     setSkinState(storedSkin)
     setIsDay(day)
@@ -58,8 +63,8 @@ function useTheme() {
     setIsDay(prev => {
       const next = !prev
       applyThemeClasses(skinRef.current, next)
-      localStorage.setItem("dispatch-theme", next ? "day" : "night")
-      localStorage.setItem("dispatch-theme-ts", String(Date.now()))
+      localStorage.setItem(`${STORAGE_PREFIX}-theme`, next ? "day" : "night")
+      localStorage.setItem(`${STORAGE_PREFIX}-theme-ts`, String(Date.now()))
       return next
     })
   }, [])
@@ -67,7 +72,7 @@ function useTheme() {
   const setSkin = useCallback((newSkin: Skin) => {
     skinRef.current = newSkin
     setSkinState(newSkin)
-    localStorage.setItem("dispatch-skin", newSkin)
+    localStorage.setItem(`${STORAGE_PREFIX}-skin`, newSkin)
     setIsDay(prev => { applyThemeClasses(newSkin, prev); return prev })
   }, [])
 
@@ -78,7 +83,7 @@ function useTheme() {
 // Annotations live in localStorage with a 2-hour TTL.
 // Single-user tool; 5-10 visits/day — fresh enough, eliminates every load cost.
 
-const ANNOTATION_CACHE_KEY = "dispatch-annotations-v3"
+const ANNOTATION_CACHE_KEY = storageKey("annotations-v3")
 const ANNOTATION_TTL_MS    = 4 * 60 * 60 * 1000 // 4 hours — resilient to weak connections
 
 interface AnnotationEntry {
@@ -87,7 +92,7 @@ interface AnnotationEntry {
   relevance: string
   signalType: string
   signalLens: string
-  signalScores?: { opportunity: number; position: number; discipline: number; landscape: number; culture: number; urgency: number }
+  signalScores?: Record<string, number>
 }
 
 function loadAnnotationCache(): AnnotationEntry[] | null {
@@ -353,7 +358,7 @@ export default function Page() {
       const next = new Set(prev)
       if (next.has(source)) next.delete(source)
       else next.add(source)
-      try { localStorage.setItem("dispatch-excluded-sources", JSON.stringify([...next])) } catch {}
+      try { localStorage.setItem(storageKey("excluded-sources"), JSON.stringify([...next])) } catch {}
       return next
     })
   }, [])
@@ -361,7 +366,7 @@ export default function Page() {
   // Restore persisted state on mount
   useEffect(() => {
     try {
-      const savedLayers = localStorage.getItem("dispatch-active-layers")
+      const savedLayers = localStorage.getItem(storageKey("active-layers"))
       if (savedLayers) {
         const parsed = JSON.parse(savedLayers)
         if (Array.isArray(parsed)) setActiveLayers(new Set(parsed))
@@ -371,17 +376,17 @@ export default function Page() {
 
       // View mode now synced via URL — localStorage fallback only when on root path
       if (window.location.pathname === "/") {
-        const savedView = localStorage.getItem("dispatch-view-mode")
+        const savedView = localStorage.getItem(storageKey("view-mode"))
         if (savedView === "signal" || savedView === "audio" || savedView === "synthesis" || savedView === "dispatch" || savedView === "config" || savedView === "pulse") setViewModeRaw(savedView)
       }
 
-      const savedTab = localStorage.getItem("dispatch-mobile-tab")
+      const savedTab = localStorage.getItem(storageKey("mobile-tab"))
       if (savedTab === "signal" || savedTab === "audio" || savedTab === "synthesis" || savedTab === "gallery" || savedTab === "cerebro" || savedTab === "config") setMobileTab(savedTab as typeof mobileTab)
 
-      const savedExcluded = localStorage.getItem("dispatch-excluded-sources")
+      const savedExcluded = localStorage.getItem(storageKey("excluded-sources"))
       if (savedExcluded) setExcludedSources(new Set(JSON.parse(savedExcluded)))
 
-      const savedPinned = localStorage.getItem("dispatch-pinned-articles")
+      const savedPinned = localStorage.getItem(storageKey("pinned-articles"))
       if (savedPinned) {
         const parsed = JSON.parse(savedPinned)
         if (Array.isArray(parsed)) setPinnedArticles(parsed)
@@ -391,23 +396,23 @@ export default function Page() {
 
   // Persist active layers and sort
   useEffect(() => {
-    try { localStorage.setItem("dispatch-active-layers", JSON.stringify([...activeLayers])) } catch {}
+    try { localStorage.setItem(storageKey("active-layers"), JSON.stringify([...activeLayers])) } catch {}
   }, [activeLayers])
   // sortBy not persisted — always land on Triage
 
   // Persist view mode
   useEffect(() => {
-    try { localStorage.setItem("dispatch-view-mode", viewMode) } catch {}
+    try { localStorage.setItem(storageKey("view-mode"), viewMode) } catch {}
   }, [viewMode])
 
   // Persist mobile tab
   useEffect(() => {
-    try { localStorage.setItem("dispatch-mobile-tab", mobileTab) } catch {}
+    try { localStorage.setItem(storageKey("mobile-tab"), mobileTab) } catch {}
   }, [mobileTab])
 
   // Persist pinned articles
   useEffect(() => {
-    try { localStorage.setItem("dispatch-pinned-articles", JSON.stringify(pinnedArticles)) } catch {}
+    try { localStorage.setItem(storageKey("pinned-articles"), JSON.stringify(pinnedArticles)) } catch {}
   }, [pinnedArticles])
 
   const handlePinArticle = useCallback((article: Article) => {
@@ -787,9 +792,8 @@ export default function Page() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             {/* Skin dots — large touch targets */}
-            {(["mineral", "slate", "forest"] as Skin[]).map(s => {
+            {instanceConfig.skins.map(({ id: s, dot: color }) => {
               const isActive = skin === s
-              const color = s === "mineral" ? "#B8966A" : s === "slate" ? "#4A7A9B" : "#5C8A6E"
               return (
                 <button
                   key={s}

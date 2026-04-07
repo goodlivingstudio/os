@@ -7,6 +7,7 @@ import { FEEDS } from "@/lib/feeds"
 import { PODCAST_FEEDS } from "@/lib/podcasts"
 import { GALLERY_SOURCES } from "@/lib/gallery"
 import { MONO, TYPE, labelStyle, metaStyle } from "@/lib/styles"
+import { storageKey } from "@/lib/config"
 import { RefreshCw } from "lucide-react"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -193,7 +194,7 @@ function CerebroStation() {
   const [loading, setLoading] = useState(true)
   const [logExpanded, setLogExpanded] = useState(false)
 
-  const sessionId = typeof window !== "undefined" ? localStorage.getItem("cerebro-session") : null
+  const sessionId = typeof window !== "undefined" ? localStorage.getItem(storageKey("cerebro-session")) : null
 
   const fetchMessages = () => {
     if (!sessionId) { setLoading(false); return }

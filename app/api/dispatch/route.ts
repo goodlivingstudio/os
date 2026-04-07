@@ -6,6 +6,8 @@ import { loadArticleHistory, ARTICLE_STORE_AVAILABLE } from "@/lib/article-store
 import { trackUsage } from "@/lib/usage-tracker"
 import { DISPATCH_PREAMBLE } from "@/lib/prompts"
 import { kv } from "@vercel/kv"
+import { kvKey, layerIdsPipe } from "@/lib/config"
+import instanceConfig from "@/lib/config"
 
 const KV_AVAILABLE = !!(
   process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN
@@ -21,7 +23,7 @@ function getISOWeek(d: Date): { year: number; week: number } {
 
 function getWeekKey(): string {
   const { year, week } = getISOWeek(new Date())
-  return `dispatch:weekly:${year}-w${week}`
+  return kvKey(`weekly:${year}-w${week}`)
 }
 
 const WEEK_TTL = 90 * 24 * 60 * 60 // 90 days — archive support
@@ -88,7 +90,7 @@ Return a JSON object:
     {
       "title": "Perspective title — a sharp framing of the week through this lens",
       "body": "2-3 sentences analyzing the week through this intelligence layer, with source citations [1][2]. Lead with the implication, not the event.",
-      "layer": "opportunity|position|discipline|landscape|culture"
+      "layer": "${layerIdsPipe()}"
     }
   ],
   "pitches": [
@@ -110,7 +112,7 @@ Return a JSON object:
   ]
 }
 
-PERSPECTIVES: Generate 3-4 perspectives. Each must analyze the week through a DIFFERENT intelligence layer. Cover at least opportunity, position, and one of discipline/landscape/culture. Use [N] citations referencing the numbered articles.
+PERSPECTIVES: Generate 3-4 perspectives. Each must analyze the week through a DIFFERENT intelligence layer. Cover at least the first two layers (${instanceConfig.layers.slice(0, 2).map(l => l.id).join(", ")}) and one of the remaining (${instanceConfig.layers.slice(2).map(l => l.id).join("/")}). Use [N] citations referencing the numbered articles.
 
 PITCHES: Generate exactly 7 pitches. Be specific. Name companies, cite data points, reference real trends from the articles. Every pitch must trace to multiple signals.
 
@@ -125,8 +127,9 @@ export async function GET(request: Request) {
   // Support week navigation: ?week=2026-w14
   const { searchParams } = new URL(request.url)
   const weekParam = searchParams.get("week")
-  const currentWeekId = getWeekKey().replace("dispatch:weekly:", "")
-  const cacheKey = weekParam ? `dispatch:weekly:${weekParam}` : getWeekKey()
+  const currentWeekKey = getWeekKey()
+  const currentWeekId = currentWeekKey.split(":").pop() || ""
+  const cacheKey = weekParam ? kvKey(`weekly:${weekParam}`) : currentWeekKey
   const isArchive = weekParam && weekParam !== currentWeekId
 
   if (!ARTICLE_STORE_AVAILABLE) {
