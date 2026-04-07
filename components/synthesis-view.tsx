@@ -410,11 +410,10 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                 </div>
                 <div className="synthesis-heatmap" style={{
                   background: "var(--bg-surface)", borderRadius: 8,
-                  overflowX: "auto", overflowY: "hidden",
+                  overflowX: "scroll", overflowY: "hidden",
                   WebkitOverflowScrolling: "touch",
-                  touchAction: "pan-x",
                 } as React.CSSProperties}>
-                  <div style={{ minWidth: 520, padding: "18px 20px" }}>
+                  <div style={{ minWidth: 540, padding: "18px 20px" }}>
                   {/* Day headers */}
                   <div style={{ display: "flex", marginBottom: 8 }}>
                     <div style={{ width: 96, flexShrink: 0 }} />
