@@ -467,7 +467,8 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
             {/* Trends + Sources — desktop only */}
             {!isMobile && (
               <>
-                <button
+                {/* Trends — hidden for Explore (color intelligence not relevant to public lands mandate) */}
+                {instanceConfig.id !== "explore" && <button
                   onClick={() => { setShowTrends(!showTrends); setShowSources(false); if (!showTrends) setActiveMood(null) }}
                   style={{
                     ...TYPE.sm, padding: "3px 10px", borderRadius: 8,
@@ -481,7 +482,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                   onMouseLeave={e => { if (!showTrends) e.currentTarget.style.background = showTrends ? "var(--accent-primary)" : "transparent" }}
                 >
                   Trends
-                </button>
+                </button>}
                 <button
                   onClick={() => { setShowSources(!showSources); if (!showSources) { setShowTrends(false); setActiveMood(null) } }}
                   style={{
@@ -527,8 +528,8 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
 
       </div>
 
-      {/* Trends panel — desktop only, replaces grid */}
-      {!isMobile && showTrends && (
+      {/* Trends panel — desktop only, replaces grid (hidden for Explore) */}
+      {instanceConfig.id !== "explore" && !isMobile && showTrends && (
         <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
           <SurfaceTrends
             articles={articles || []}
