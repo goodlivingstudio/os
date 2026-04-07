@@ -608,7 +608,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
           </div>
         )}
 
-        <div style={{ padding: "0 16px 16px" }}>
+        <div style={{ padding: "0 16px 16px", flexShrink: 0 }}>
           <div style={{ background: "var(--bg-elevated)", borderRadius: 14, border: "1px solid var(--border)", transition: "border-color 0.15s", overflow: "hidden" }}>
             {/* Textarea with typewriter provocation overlay */}
             <div style={{ position: "relative" }}>
@@ -645,17 +645,17 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
                   >
                     <Square size={14} strokeWidth={2} />
                   </button>
-                ) : !input.trim() ? (
+                ) : (
                   <button
-                    onClick={() => send(PROVOCATIONS[placeholderIdx])}
-                    aria-label="Discuss this prompt"
-                    style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--text-tertiary)", width: 30, height: 30, borderRadius: 8, transition: "all 0.15s", display: "flex", alignItems: "center", justifyContent: "center", padding: 0 }}
-                    onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.background = "var(--bg-surface)" }}
-                    onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
+                    onClick={() => input.trim() ? send(input) : send(PROVOCATIONS[placeholderIdx])}
+                    aria-label={input.trim() ? "Send message" : "Discuss this prompt"}
+                    style={{ background: input.trim() ? "var(--accent-secondary)" : "transparent", border: "none", cursor: "pointer", color: input.trim() ? "var(--bg-primary)" : "var(--text-tertiary)", width: 30, height: 30, borderRadius: 8, transition: "all 0.15s", display: "flex", alignItems: "center", justifyContent: "center", padding: 0 }}
+                    onMouseEnter={e => { if (!input.trim()) { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.background = "var(--bg-surface)" } }}
+                    onMouseLeave={e => { if (!input.trim()) { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" } }}
                   >
                     <ArrowUpRight size={16} strokeWidth={1.5} />
                   </button>
-                ) : <div />}
+                )}
               </div>
               <div style={{ display: "flex", gap: 2 }}>
                 {onFocusMode && (
