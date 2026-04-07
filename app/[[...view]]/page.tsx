@@ -1289,7 +1289,7 @@ export default function Page() {
       />
 
       {/* Gallery overlay */}
-      {galleryOpen && <GalleryOverlay onClose={() => setGalleryOpenWithUrl(false)} excludedSources={excludedSources} isDay={isDay} onToggleMode={toggleMode} skin={skin} onSkinChange={setSkin} articles={articles} onDeliberate={handleSynthesisDeliberate} />}
+      {galleryOpen && <GalleryOverlay onClose={() => setGalleryOpenWithUrl(false)} excludedSources={excludedSources} onToggleSource={handleToggleSource} isDay={isDay} onToggleMode={toggleMode} skin={skin} onSkinChange={setSkin} articles={articles} onDeliberate={handleSynthesisDeliberate} />}
 
       {/* Hotkeys overlay */}
       {hotkeysOpen && <HotkeysOverlay onClose={() => setHotkeysOpen(false)} />}
