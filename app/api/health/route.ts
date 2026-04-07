@@ -1,7 +1,7 @@
 // Diagnostic endpoint — live connectivity probes for all services
 // Visit /api/health to debug deployment issues
 import { kv } from "@vercel/kv"
-import { kvKey } from "@/lib/config"
+import instanceConfig, { kvKey } from "@/lib/config"
 
 const TIMEOUT = 6000
 
@@ -58,7 +58,10 @@ async function probeKV(): Promise<string> {
 
 async function probeArena(token: string): Promise<string> {
   try {
-    const res = await fetch("https://api.are.na/v2/channels/dispatch-zen/contents?per=1&page=1", {
+    // Use first arena source from config, or fall back to a simple channel check
+    const arenaSource = instanceConfig.gallerySources.find(s => s.type === "arena")
+    const probeUrl = arenaSource ? `${arenaSource.url.split("/contents")[0]}/contents?per=1&page=1` : "https://api.are.na/v2/me"
+    const res = await fetch(probeUrl, {
       headers: { "Authorization": `Bearer ${token}` },
       signal: AbortSignal.timeout(TIMEOUT),
     })

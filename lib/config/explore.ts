@@ -189,14 +189,16 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
     { url: "https://feeds.simplecast.com/kEKXbjuJ",                                 show: "Ezra Klein Show",         category: "Policy & Ideas",          tag: "policy",   layer: "policy" },
   ],
 
-  // ─── Gallery — Public domain archives + curated feeds ─────────────────────
+  // ─── Gallery — Are.na curation + public domain + landscape photography ────
 
   gallerySources: [
-    // Public domain archives
-    { url: "https://www.nps.gov/media/photo/gallery.htm",    name: "NPS Digital Archive", type: "rss" },
+    // Are.na — team-curated visual intelligence channel
+    { url: "https://api.are.na/v2/channels/explore-t7o5uh83n2s/contents?per=200", name: "Are.na", type: "arena" },
+    // Architecture & landscape
     { url: "https://www.dezeen.com/architecture/feed/",       name: "Dezeen",              type: "rss" },
     { url: "https://www.archdaily.com/feed",                  name: "ArchDaily",           type: "rss" },
     { url: "https://www.designboom.com/feed/",                name: "Designboom",          type: "rss" },
+    // Photography
     { url: "https://www.thisiscolossal.com/category/photography/feed/", name: "Colossal Photography", type: "rss" },
     { url: "https://www.featureshoot.com/feed/",              name: "Feature Shoot",       type: "rss" },
     { url: "https://www.ignant.com/feed/",                    name: "IGNANT",              type: "rss" },
