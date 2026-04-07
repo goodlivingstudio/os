@@ -6,12 +6,13 @@
 // Config-driven: reads targets and channel slug from instance config.
 //
 // Usage:
-//   npx tsx scripts/gallery-scraper.ts                         # dispatch (default)
-//   npx tsx scripts/gallery-scraper.ts --instance=explore      # explore instance
-//   npx tsx scripts/gallery-scraper.ts --dry-run               # preview without pushing
-//   npx tsx scripts/gallery-scraper.ts --site=unsplash         # scrape one site
-//   npx tsx scripts/gallery-scraper.ts --taste                 # enable Claude Vision filter
-//   npx tsx scripts/gallery-scraper.ts --instance=explore --taste --dry-run
+//   npx tsx scripts/gallery-scraper.ts                              # dispatch gallery (default)
+//   npx tsx scripts/gallery-scraper.ts --instance=explore           # explore gallery
+//   npx tsx scripts/gallery-scraper.ts --instance=explore --ugc     # explore UGC channel
+//   npx tsx scripts/gallery-scraper.ts --dry-run                    # preview without pushing
+//   npx tsx scripts/gallery-scraper.ts --site=unsplash              # scrape one site
+//   npx tsx scripts/gallery-scraper.ts --taste                      # enable Claude Vision filter
+//   npx tsx scripts/gallery-scraper.ts --instance=explore --ugc --taste
 //
 // Requires:
 //   ARENA_ACCESS_TOKEN env var for Are.na API writes
@@ -34,12 +35,15 @@ import type { InstanceConfig, ScrapeTarget } from "../lib/config/types.js"
 const CONFIGS: Record<string, InstanceConfig> = { dispatch: dispatchConfig, explore: exploreConfig }
 const config = CONFIGS[instanceArg] || dispatchConfig
 
-if (!config.galleryScraper) {
-  console.error(`Instance "${instanceArg}" has no galleryScraper config.`)
+const useUgc = args.includes("--ugc")
+const scraperConfig = useUgc ? config.ugcScraper : config.galleryScraper
+
+if (!scraperConfig) {
+  console.error(`Instance "${instanceArg}" has no ${useUgc ? "ugcScraper" : "galleryScraper"} config.`)
   process.exit(1)
 }
 
-const { arenaChannelSlug, targets: TARGETS, tastePrompt } = config.galleryScraper
+const { arenaChannelSlug, targets: TARGETS, tastePrompt } = scraperConfig
 
 // ─── Settings ──────────────────────────────────────────────────────────────
 
@@ -296,7 +300,7 @@ async function main() {
   const useTaste = args.includes("--taste") && !!process.env.ANTHROPIC_API_KEY
   const siteFilter = args.find(a => a.startsWith("--site="))?.split("=")[1]
 
-  console.log(`\n🏔  Gallery Scraper — ${config.branding.name} (${instanceArg})`)
+  console.log(`\n🏔  Gallery Scraper — ${config.branding.name} (${instanceArg}${useUgc ? " · UGC" : ""})`)
   console.log(`   Channel: ${arenaChannelSlug}`)
   if (dryRun) {
     console.log("   Mode: DRY RUN — no images will be pushed to Are.na")

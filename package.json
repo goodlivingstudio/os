@@ -13,7 +13,8 @@
     "scrape": "npx tsx scripts/gallery-scraper.ts",
     "scrape:dispatch": "npx tsx scripts/gallery-scraper.ts --instance=dispatch",
     "scrape:explore": "npx tsx scripts/gallery-scraper.ts --instance=explore",
-    "scrape:explore:taste": "npx tsx scripts/gallery-scraper.ts --instance=explore --taste"
+    "scrape:explore:taste": "npx tsx scripts/gallery-scraper.ts --instance=explore --taste",
+    "scrape:explore:ugc": "npx tsx scripts/gallery-scraper.ts --instance=explore --ugc --taste"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",

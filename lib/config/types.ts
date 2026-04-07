@@ -122,4 +122,6 @@ export interface InstanceConfig {
 
   // Gallery scraper (optional — instances that don't use the scraper can omit)
   galleryScraper?: GalleryScraperConfig
+  // UGC scraper — separate channel for authentic user-generated content
+  ugcScraper?: GalleryScraperConfig
 }

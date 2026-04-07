@@ -192,8 +192,10 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
   // ─── Gallery — American wilderness, adventure, wildlife ────────────────────
 
   gallerySources: [
-    // Are.na — scraper-populated visual intelligence (parks, wildlife, adventure)
+    // Are.na — curated visual intelligence (parks, wildlife, adventure)
     { url: "https://api.are.na/v2/channels/explore-t7o5uh83n2s/contents?per=200", name: "Are.na", type: "arena" },
+    // Are.na — UGC feed (authentic ground-level outdoor content)
+    { url: "https://api.are.na/v2/channels/explore-ugc/contents?per=200", name: "Are.na UGC", type: "arena" },
     // Outdoor editorial — adventure photography, expedition stories
     { url: "https://www.outsideonline.com/feed/all/",                              name: "Outside",              type: "rss" },
     { url: "https://adventure-journal.com/feed/",                                  name: "Adventure Journal",    type: "rss" },
@@ -358,6 +360,50 @@ YOU MUST REJECT: anything urban, anything indoors, design portfolios, agency wor
       { url: "https://www.pexels.com/search/national%20park/", name: "Pexels National Parks", category: "photography" },
       { url: "https://www.pexels.com/search/american%20wilderness/", name: "Pexels Wilderness", category: "photography" },
       { url: "https://www.pexels.com/search/wildlife%20america/", name: "Pexels Wildlife", category: "photography" },
+    ],
+  },
+
+  // ─── UGC Scraper — authentic community outdoor content ────────────────────
+
+  ugcScraper: {
+    arenaChannelSlug: "explore-ugc",
+    tastePrompt: `You are sourcing authentic, ground-level content showing real Americans experiencing public land. This is NOT a professional photography gallery — it's a UGC feed. Rate each image 1-5:
+
+1 = Clearly commercial, stock photography, brand advertisement, or has nothing to do with the outdoors
+2 = Low quality, blurry, or too mundane to be worth including
+3 = Decent outdoor photo but generic — no story, no feeling
+4 = Authentic and compelling — you can feel the experience. Real people on real trails, at real campsites, in real parks. Doesn't need to be professionally shot. Diversity of people, places, and activities matters.
+5 = Stops you in your tracks — the kind of UGC that makes public land feel alive and accessible to everyone. A family at a campsite, a solo hiker on a ridgeline, kids seeing a bison for the first time.
+
+PRIORITIZE: authenticity over polish, diversity of people and places, genuine outdoor moments, community-sourced adventure.
+REJECT: professional brand campaigns, influencer content that feels staged, gear advertisements, anything with visible watermarks or logos.`,
+    targets: [
+      // ── Flickr Groups — massive community photo pools ─────────────────
+      { url: "https://www.flickr.com/groups/nationalparks/pool/", name: "Flickr National Parks", category: "photography" },
+      { url: "https://www.flickr.com/groups/camping/pool/", name: "Flickr Camping", category: "photography" },
+      { url: "https://www.flickr.com/groups/hikingtrails/pool/", name: "Flickr Hiking", category: "photography" },
+      { url: "https://www.flickr.com/groups/americanlandscapes/pool/", name: "Flickr American Landscape", category: "photography" },
+      { url: "https://www.flickr.com/groups/wildlife/pool/", name: "Flickr Wildlife", category: "photography" },
+      { url: "https://www.flickr.com/groups/backpacking/pool/", name: "Flickr Backpacking", category: "photography" },
+
+      // ── Flickr Tags — direct community content ────────────────────────
+      { url: "https://www.flickr.com/photos/tags/findyourpark/", name: "Flickr #FindYourPark", category: "photography" },
+      { url: "https://www.flickr.com/photos/tags/optoutside/", name: "Flickr #OptOutside", category: "photography" },
+      { url: "https://www.flickr.com/photos/tags/publiclands/", name: "Flickr #PublicLands", category: "photography" },
+
+      // ── Reddit — community outdoor photography ────────────────────────
+      { url: "https://old.reddit.com/r/EarthPorn/top/?t=week", name: "r/EarthPorn", category: "photography" },
+      { url: "https://old.reddit.com/r/NationalPark/top/?t=week", name: "r/NationalPark", category: "photography" },
+      { url: "https://old.reddit.com/r/CampingandHiking/top/?t=week", name: "r/CampingAndHiking", category: "photography" },
+      { url: "https://old.reddit.com/r/WildernessBackpacking/top/?t=week", name: "r/WildernessBackpacking", category: "photography" },
+      { url: "https://old.reddit.com/r/camping/top/?t=week", name: "r/Camping", category: "photography" },
+      { url: "https://old.reddit.com/r/hiking/top/?t=week", name: "r/Hiking", category: "photography" },
+      { url: "https://old.reddit.com/r/wildlifephotography/top/?t=week", name: "r/WildlifePhotography", category: "photography" },
+
+      // ── Community outdoor organizations ────────────────────────────────
+      { url: "https://outdoorafro.org/blog/feed/", name: "Outdoor Afro", category: "editorial" },
+      { url: "https://latinooutdoors.org/feed/", name: "Latino Outdoors", category: "editorial" },
+      { url: "https://melaninbasecamp.com/feed/", name: "Melanin Basecamp", category: "editorial" },
     ],
   },
 }
