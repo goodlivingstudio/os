@@ -167,7 +167,7 @@ function Lightbox({ image, onClose, onPrev, onNext }: {
 }
 
 const GALLERY_CACHE_KEY = storageKey("gallery")
-const GALLERY_TTL = 4 * 60 * 60 * 1000 // 4 hours
+const GALLERY_TTL = 15 * 60 * 1000 // 15 min — shortened during content buildout (restore to 4hr later)
 const GALLERY_FETCH_TIMEOUT = 10_000
 
 // ─── Gallery Overlay ────────────────────────────────────────────────────────
