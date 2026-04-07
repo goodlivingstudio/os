@@ -203,7 +203,7 @@ export default function Page() {
   const [mobileDcosIdx, setMobileDcosIdx] = useState(0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [feedImageMode, setFeedImageMode] = useState<"off" | "source">("off")
-  const [showDcos, setShowDcos] = useState(true)
+  const [showDcos, setShowDcos] = useState(false)
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
   const [pinnedArticles, setPinnedArticles] = useState<Article[]>([])
 
