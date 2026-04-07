@@ -882,7 +882,7 @@ export default function Page() {
             {mobileTab === "signal" && feedContent}
             {mobileTab === "synthesis" && <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} sortBy={sortBy} />}
             {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} pinnedArticleIds={new Set(pinnedArticles.map(a => a.id))} onPinArticle={handlePinArticle} />}
-            {mobileTab === "gallery"   && <GalleryOverlay onClose={() => setMobileTab("signal")} excludedSources={excludedSources} articles={articles} onDeliberate={handleSynthesisDeliberate} />}
+            {mobileTab === "gallery"   && <GalleryOverlay onClose={() => setMobileTab("signal")} excludedSources={excludedSources} onToggleSource={handleToggleSource} articles={articles} onDeliberate={handleSynthesisDeliberate} />}
             {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} /></div>}
             {mobileTab === "config"    && <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} />}
           </div>
@@ -1203,7 +1203,7 @@ export default function Page() {
       />
 
       {/* Gallery overlay */}
-      {galleryOpen && <GalleryOverlay onClose={() => setGalleryOpenWithUrl(false)} excludedSources={excludedSources} isDay={isDay} onToggleMode={toggleMode} skin={skin} onSkinChange={setSkin} articles={articles} onDeliberate={handleSynthesisDeliberate} />}
+      {galleryOpen && <GalleryOverlay onClose={() => setGalleryOpenWithUrl(false)} excludedSources={excludedSources} onToggleSource={handleToggleSource} isDay={isDay} onToggleMode={toggleMode} skin={skin} onSkinChange={setSkin} articles={articles} onDeliberate={handleSynthesisDeliberate} />}
 
       {/* Hotkeys overlay */}
       {hotkeysOpen && <HotkeysOverlay onClose={() => setHotkeysOpen(false)} />}

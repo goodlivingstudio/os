@@ -11,7 +11,7 @@ export interface GallerySource {
 
 export const GALLERY_SOURCES: GallerySource[] = [
   // Are.na — manual curation channel
-  { url: "https://api.are.na/v2/channels/dispatch-zen/contents?per=200", name: "Dispatch Zen", type: "arena" },
+  { url: "https://api.are.na/v2/channels/dispatch-zen/contents?per=200", name: "Are.na", type: "arena" },
 
   // Architecture & built environment (Mono/Muted heavy — intentionally reduced)
   { url: "https://www.dezeen.com/architecture/feed/", name: "Dezeen", type: "rss" },
@@ -49,6 +49,9 @@ export const GALLERY_SOURCES: GallerySource[] = [
 
   // Agency portfolios
   { url: "https://www.tendril.ca/feed", name: "Tendril", type: "rss" },
+
+  // Interiors (color-aware)
+  { url: "https://www.architecturaldigest.com/feed/rss", name: "Architectural Digest", type: "rss" },
 ]
 
 export type ColorMood = "warm" | "cool" | "earth" | "vivid" | "neutral"
@@ -74,4 +77,13 @@ export interface GalleryImage {
   palette?: ColorSwatch[]  // top 3-5 dominant colors
   mediaType?: "image" | "video"
   videoUrl?: string
+}
+
+/** Display-only image subset for color direction galleries */
+export interface CuratedImage {
+  id: string
+  url: string
+  title?: string
+  source: string
+  linkUrl?: string
 }

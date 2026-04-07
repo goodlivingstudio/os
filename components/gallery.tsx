@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from "react"
-import { X, ChevronLeft, ChevronRight, Shuffle } from "lucide-react"
+import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle } from "lucide-react"
 import { TYPE, MONO } from "@/lib/styles"
-import type { GalleryImage, ColorMood } from "@/lib/gallery"
+import { GALLERY_SOURCES, type GalleryImage, type ColorMood } from "@/lib/gallery"
 import type { Skin, Article } from "@/lib/types"
 import { Ticker } from "@/components/ticker"
 import { SurfaceTrends } from "@/components/surface-trends"
@@ -171,14 +171,17 @@ const GALLERY_FETCH_TIMEOUT = 10_000
 
 // ─── Gallery Overlay ────────────────────────────────────────────────────────
 
-export function GalleryOverlay({ onClose, excludedSources, isDay, onToggleMode, skin, onSkinChange, articles, onDeliberate }: { onClose: () => void; excludedSources?: Set<string>; isDay?: boolean; onToggleMode?: () => void; skin?: Skin; onSkinChange?: (s: Skin) => void; articles?: Article[]; onDeliberate?: (text: string) => void }) {
+export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay, onToggleMode, skin, onSkinChange, articles, onDeliberate }: { onClose: () => void; excludedSources?: Set<string>; onToggleSource?: (source: string) => void; isDay?: boolean; onToggleMode?: () => void; skin?: Skin; onSkinChange?: (s: Skin) => void; articles?: Article[]; onDeliberate?: (text: string) => void }) {
   const [allImages, setAllImages] = useState<GalleryImage[]>([])
   const [loading, setLoading] = useState(true)
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
   const [activeMood, setActiveMood] = useState<ColorMood | null>(null)
   const [showTrends, setShowTrends] = useState(false)
+  const [showSources, setShowSources] = useState(false)
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
   const [shuffleKey, setShuffleKey] = useState(0)
-  const galleryCols = typeof window !== "undefined" && window.innerWidth <= 768 ? 2 : 3
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768
+  const galleryCols = isMobile ? 2 : 3
 
   useEffect(() => {
     // Stale-while-revalidate
@@ -304,50 +307,117 @@ export function GalleryOverlay({ onClose, excludedSources, isDay, onToggleMode, 
             </span>
           </div>
 
-          {/* Color mood filters */}
-          <div style={{ display: "flex", alignItems: "center", gap: 4, flex: 1, justifyContent: "center" }}>
-            <button
-              onClick={() => { setActiveMood(null); setShowTrends(false) }}
-              style={{
-                ...TYPE.sm, padding: "3px 10px", borderRadius: 8, border: "none",
-                background: activeMood === null && !showTrends ? "var(--accent-primary)" : "transparent",
-                color: activeMood === null && !showTrends ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                fontWeight: activeMood === null && !showTrends ? 600 : 400,
-                cursor: "pointer", transition: "all 0.15s",
-              }}
-              onMouseEnter={e => { if (activeMood !== null) e.currentTarget.style.background = "var(--bg-elevated)" }}
-              onMouseLeave={e => { if (activeMood !== null) e.currentTarget.style.background = "transparent" }}
-            >
-              All
-            </button>
-            {(Object.keys(MOOD_LABELS) as ColorMood[]).map(mood => {
-              const isActive = activeMood === mood
-              const count = moodCounts[mood]
-              if (count === 0 && classifiedCount > 10) return null
-              return (
+          {/* Color mood filters — dropdown on mobile, pills on desktop */}
+          <div style={{ display: "flex", alignItems: "center", gap: 4, flex: 1, justifyContent: isMobile ? "flex-start" : "center" }}>
+            {isMobile ? (
+              /* ── Mobile: dropdown for mood filters ── */
+              <div style={{ position: "relative" }}>
                 <button
-                  key={mood}
-                  onClick={() => { setActiveMood(isActive ? null : mood); setShowTrends(false) }}
+                  onClick={() => setMobileFilterOpen(v => !v)}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: 6,
+                    padding: "6px 14px", borderRadius: 8, border: "1px solid var(--border)",
+                    background: "transparent", cursor: "pointer", transition: "all 0.15s",
+                  }}
+                >
+                  {activeMood && <span style={{ width: 6, height: 6, borderRadius: "50%", background: MOOD_COLORS[activeMood], flexShrink: 0 }} />}
+                  <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 500 }}>
+                    {activeMood ? MOOD_LABELS[activeMood] : "All"}
+                  </span>
+                  <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.6, fontVariantNumeric: "tabular-nums" }}>
+                    {images.length}
+                  </span>
+                  <ChevronDown size={12} style={{ color: "var(--text-tertiary)", transition: "transform 0.2s", transform: mobileFilterOpen ? "rotate(180deg)" : "none" }} />
+                </button>
+                {mobileFilterOpen && (
+                  <div style={{
+                    position: "absolute", top: 38, left: 0, zIndex: 100, minWidth: 180,
+                    background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 10,
+                    padding: "4px 0", animation: "status-fade 0.15s ease both",
+                  }}>
+                    <button
+                      onClick={() => { setActiveMood(null); setShowTrends(false); setShowSources(false); setMobileFilterOpen(false) }}
+                      style={{
+                        display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
+                        padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
+                        ...TYPE.sm, color: !activeMood && !showTrends && !showSources ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: !activeMood && !showTrends && !showSources ? 600 : 400,
+                      }}
+                    >
+                      <span>All</span>
+                      <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, fontVariantNumeric: "tabular-nums" }}>{includedImages.length}</span>
+                    </button>
+                    {(Object.keys(MOOD_LABELS) as ColorMood[]).map(mood => {
+                      const count = moodCounts[mood]
+                      if (count === 0 && classifiedCount > 10) return null
+                      const isActive = activeMood === mood
+                      return (
+                        <button
+                          key={mood}
+                          onClick={() => { setActiveMood(isActive ? null : mood); setShowTrends(false); setShowSources(false); setMobileFilterOpen(false) }}
+                          style={{
+                            display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
+                            padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
+                            ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: isActive ? 600 : 400,
+                          }}
+                        >
+                          <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: MOOD_COLORS[mood] }} />
+                            {MOOD_LABELS[mood]}
+                          </span>
+                          <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, fontVariantNumeric: "tabular-nums" }}>{count}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* ── Desktop: pills ── */
+              <>
+                <button
+                  onClick={() => { setActiveMood(null); setShowTrends(false); setShowSources(false) }}
                   style={{
                     ...TYPE.sm, padding: "3px 10px", borderRadius: 8, border: "none",
-                    display: "inline-flex", alignItems: "center", gap: 5,
-                    background: isActive ? "var(--accent-primary)" : "transparent",
-                    color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                    fontWeight: isActive ? 600 : 400,
+                    background: activeMood === null && !showTrends && !showSources ? "var(--accent-primary)" : "transparent",
+                    color: activeMood === null && !showTrends && !showSources ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                    fontWeight: activeMood === null && !showTrends && !showSources ? 600 : 400,
                     cursor: "pointer", transition: "all 0.15s",
                   }}
-                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
-                  onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? "var(--accent-primary)" : "transparent" }}
+                  onMouseEnter={e => { if (activeMood !== null) e.currentTarget.style.background = "var(--bg-elevated)" }}
+                  onMouseLeave={e => { if (activeMood !== null) e.currentTarget.style.background = "transparent" }}
                 >
-                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: MOOD_COLORS[mood], flexShrink: 0 }} />
-                  {MOOD_LABELS[mood]}
-                  {count > 0 && <span style={{ opacity: 0.5 }}>{count}</span>}
+                  All
                 </button>
-              )
-            })}
-            {/* Trends toggle — inline with mood filters */}
+                {(Object.keys(MOOD_LABELS) as ColorMood[]).map(mood => {
+                  const isActive = activeMood === mood
+                  const count = moodCounts[mood]
+                  if (count === 0 && classifiedCount > 10) return null
+                  return (
+                    <button
+                      key={mood}
+                      onClick={() => { setActiveMood(isActive ? null : mood); setShowTrends(false); setShowSources(false) }}
+                      style={{
+                        ...TYPE.sm, padding: "3px 10px", borderRadius: 8, border: "none",
+                        display: "inline-flex", alignItems: "center", gap: 5,
+                        background: isActive ? "var(--accent-primary)" : "transparent",
+                        color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                        fontWeight: isActive ? 600 : 400,
+                        cursor: "pointer", transition: "all 0.15s",
+                      }}
+                      onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
+                      onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? "var(--accent-primary)" : "transparent" }}
+                    >
+                      <span style={{ width: 6, height: 6, borderRadius: "50%", background: MOOD_COLORS[mood], flexShrink: 0 }} />
+                      {MOOD_LABELS[mood]}
+                      {count > 0 && <span style={{ opacity: 0.5 }}>{count}</span>}
+                    </button>
+                  )
+                })}
+              </>
+            )}
+            {/* Trends toggle — always visible */}
             <button
-              onClick={() => { setShowTrends(!showTrends); if (!showTrends) setActiveMood(null) }}
+              onClick={() => { setShowTrends(!showTrends); setShowSources(false); setMobileFilterOpen(false); if (!showTrends) setActiveMood(null) }}
               style={{
                 ...TYPE.sm, padding: "3px 10px", borderRadius: 8,
                 border: showTrends ? "none" : "1px solid var(--border)",
@@ -360,6 +430,27 @@ export function GalleryOverlay({ onClose, excludedSources, isDay, onToggleMode, 
               onMouseLeave={e => { if (!showTrends) e.currentTarget.style.background = showTrends ? "var(--accent-primary)" : "transparent" }}
             >
               Trends
+            </button>
+            {/* Sources toggle — always visible */}
+            <button
+              onClick={() => { setShowSources(!showSources); setMobileFilterOpen(false); if (!showSources) { setShowTrends(false); setActiveMood(null) } }}
+              style={{
+                ...TYPE.sm, padding: "3px 10px", borderRadius: 8,
+                border: showSources ? "none" : "1px solid var(--border)",
+                background: showSources ? "var(--accent-primary)" : "transparent",
+                color: showSources ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                fontWeight: showSources ? 600 : 400,
+                cursor: "pointer", transition: "all 0.15s",
+              }}
+              onMouseEnter={e => { if (!showSources) e.currentTarget.style.background = "var(--bg-elevated)" }}
+              onMouseLeave={e => { if (!showSources) e.currentTarget.style.background = showSources ? "var(--accent-primary)" : "transparent" }}
+            >
+              Sources
+              {excludedSources?.size ? (
+                <span style={{ opacity: 0.5, marginLeft: 4 }}>
+                  {GALLERY_SOURCES.length - excludedSources.size}/{GALLERY_SOURCES.length}
+                </span>
+              ) : null}
             </button>
           </div>
 
@@ -394,8 +485,61 @@ export function GalleryOverlay({ onClose, excludedSources, isDay, onToggleMode, 
         </div>
       )}
 
-      {/* Masonry grid — hidden when trends is active */}
-      {!showTrends && <div style={{
+      {/* Sources panel — replaces grid when active */}
+      {showSources && onToggleSource && (
+        <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", padding: "20px 24px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+            <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+              Gallery Sources
+            </span>
+            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
+              {GALLERY_SOURCES.length - (excludedSources?.size || 0)}/{GALLERY_SOURCES.length} active
+            </span>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
+            {GALLERY_SOURCES.map(src => {
+              const active = !excludedSources?.has(src.name)
+              return (
+                <div
+                  key={src.url}
+                  onClick={() => onToggleSource(src.name)}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 8,
+                    padding: "10px 12px", borderRadius: 8,
+                    background: active ? "var(--bg-surface)" : "transparent",
+                    opacity: active ? 1 : 0.4,
+                    cursor: "pointer", transition: "all 0.15s",
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+                  onMouseLeave={e => { e.currentTarget.style.background = active ? "var(--bg-surface)" : "transparent" }}
+                >
+                  {/* Toggle indicator */}
+                  <span style={{
+                    width: 8, height: 8, borderRadius: "50%", flexShrink: 0,
+                    background: active ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                    transition: "background 0.15s",
+                  }} />
+                  <span style={{
+                    ...TYPE.body, color: active ? "var(--text-primary)" : "var(--text-tertiary)",
+                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                  }}>
+                    {src.name}
+                  </span>
+                  <span style={{
+                    ...TYPE.xs, color: "var(--text-tertiary)", marginLeft: "auto",
+                    textTransform: "uppercase", letterSpacing: "0.04em",
+                  }}>
+                    {src.type}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Masonry grid — hidden when trends or sources is active */}
+      {!showTrends && !showSources && <div style={{
         flex: 1, overflowY: "auto", overflowX: "hidden",
         padding: "24px 16px",
       }}>

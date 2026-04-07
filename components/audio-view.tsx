@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { ExternalLink, ArrowUpRight, ChevronUp, Bookmark } from "lucide-react"
+import { ExternalLink, ArrowUpRight, ChevronUp, ChevronDown, Bookmark } from "lucide-react"
 import { TYPE, MONO, metaStyle } from "@/lib/styles"
 import type { Article } from "@/lib/types"
 
@@ -566,8 +566,10 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", p
   const [showCount, setShowCount] = useState(0)
   const [activeEpisode, setActiveEpisode] = useState<Episode | null>(null)
   const [activeLayer, setActiveLayer] = useState("all")
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
   const [signal, setSignal] = useState<{ episode: Episode; x: number; y: number } | null>(null)
   const [artworkMode, setArtworkMode] = useState<"off" | "source">("off")
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768
   const annotated = useRef(false)
   const [annotating, setAnnotating] = useState(false)
 
@@ -659,89 +661,145 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", p
       {/* Audio DCOS Band — matches Signal's DCOS layout (no separate header) */}
       <AudioBriefBand episodes={episodes} visible={!loading} defaultExpanded={sortBy === "urgency"} />
 
-      {/* Layer pills + artwork toggle — sticky band */}
-      {!loading && (
-        <div style={{ flexShrink: 0, padding: "10px 16px", display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-          {LAYER_FILTERS.map(layer => {
-            const isActive = activeLayer === layer.id
-            // Use triage-filtered pool for counts (urgency-gated before layer selection)
-            const pool = sortBy === "urgency" && hasScores
-              ? sourceFiltered.filter(ep => (ep.urgency ?? 0) >= TRIAGE_THRESHOLD)
-              : sourceFiltered
-            const count = layer.id === "all" ? pool.length : pool.filter(ep => ep.layer === layer.id).length
-            if (layer.id !== "all" && count === 0) return null
-            return (
-              <button
-                key={layer.id}
-                onClick={() => setActiveLayer(layer.id)}
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 4,
-                  padding: "4px 12px", borderRadius: 8, border: "none",
-                  background: isActive ? "var(--accent-primary)" : "transparent",
-                  cursor: "pointer", transition: "all 0.15s",
-                }}
-                onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
-                onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? "var(--accent-primary)" : "transparent" }}
-              >
-                <span style={{
-                  ...TYPE.sm,
-                  color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                  fontWeight: isActive ? 600 : 400,
-                  transition: "color 0.15s",
-                }}>
-                  {layer.label}
-                </span>
-                <span style={{
-                  ...TYPE.xs, fontVariantNumeric: "tabular-nums",
-                  color: isActive ? "var(--accent-muted)" : "var(--text-tertiary)",
-                  opacity: 0.5, transition: "color 0.15s",
-                }}>
-                  {count}
-                </span>
-              </button>
-            )
-          })}
-          {/* Artwork switcher — Off removes images, Source shows podcast artwork */}
-          {episodes.length > 0 && (
-            <div style={{
-              marginLeft: "auto",
-              display: "flex",
-              gap: 2,
-              background: "var(--bg-elevated)",
-              borderRadius: 8,
-              padding: 3,
-            }}>
-              {([
-                { id: "off" as const, label: "Off" },
-                { id: "source" as const, label: "Source" },
-              ]).map(mode => {
-                const isActive = artworkMode === mode.id
-                return (
-                  <button
-                    key={mode.id}
-                    className="toggle-btn"
-                    aria-pressed={isActive}
-                    onClick={() => setArtworkMode(mode.id)}
-                    style={{
-                      padding: "4px 12px", border: "none",
-                      borderRadius: 6, cursor: "pointer",
-                      background: isActive ? "var(--bg-surface)" : "transparent",
-                      ...TYPE.xs,
-                      fontWeight: isActive ? 600 : 400,
-                      color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
-                      transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-                    }}
-                    onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.color = "var(--text-secondary)" } }}
-                    onMouseLeave={e => { e.currentTarget.style.background = isActive ? "var(--bg-surface)" : "transparent"; e.currentTarget.style.color = isActive ? "var(--text-primary)" : "var(--text-tertiary)" }}
-                  >
-                    {mode.label}
-                  </button>
-                )
-              })}
-            </div>
-          )}
-        </div>
-      )}
+      {/* Layer filters + artwork toggle — dropdown on mobile, pills on desktop */}
+      {!loading && (() => {
+        const pool = sortBy === "urgency" && hasScores
+          ? sourceFiltered.filter(ep => (ep.urgency ?? 0) >= TRIAGE_THRESHOLD)
+          : sourceFiltered
+        const activeLabel = activeLayer === "all" ? "All" : LAYER_FILTERS.find(l => l.id === activeLayer)?.label || activeLayer
+        const activeCount = activeLayer === "all" ? pool.length : pool.filter(ep => ep.layer === activeLayer).length
+
+        return (
+          <div style={{ flexShrink: 0, padding: "10px 16px", display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+            {isMobile ? (
+              /* ── Mobile: dropdown ── */
+              <div style={{ position: "relative" }}>
+                <button
+                  onClick={() => setMobileFilterOpen(v => !v)}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: 6,
+                    padding: "6px 14px", borderRadius: 8, border: "1px solid var(--border)",
+                    background: "transparent", cursor: "pointer", transition: "all 0.15s",
+                  }}
+                >
+                  <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 500 }}>
+                    {activeLabel}
+                  </span>
+                  <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.6, fontVariantNumeric: "tabular-nums" }}>
+                    {activeCount}
+                  </span>
+                  <ChevronDown size={12} style={{ color: "var(--text-tertiary)", transition: "transform 0.2s", transform: mobileFilterOpen ? "rotate(180deg)" : "none" }} />
+                </button>
+                {mobileFilterOpen && (
+                  <div style={{
+                    position: "absolute", top: 38, left: 0, zIndex: 100, minWidth: 180,
+                    background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 10,
+                    padding: "4px 0", animation: "status-fade 0.15s ease both",
+                  }}>
+                    {LAYER_FILTERS.map(layer => {
+                      const count = layer.id === "all" ? pool.length : pool.filter(ep => ep.layer === layer.id).length
+                      if (layer.id !== "all" && count === 0) return null
+                      const isActive = activeLayer === layer.id
+                      return (
+                        <button
+                          key={layer.id}
+                          onClick={() => { setActiveLayer(layer.id); setMobileFilterOpen(false) }}
+                          style={{
+                            display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
+                            padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
+                            ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: isActive ? 600 : 400,
+                          }}
+                        >
+                          <span>{layer.label}</span>
+                          <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, fontVariantNumeric: "tabular-nums" }}>{count}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* ── Desktop: pills ── */
+              <>
+                {LAYER_FILTERS.map(layer => {
+                  const isActive = activeLayer === layer.id
+                  const count = layer.id === "all" ? pool.length : pool.filter(ep => ep.layer === layer.id).length
+                  if (layer.id !== "all" && count === 0) return null
+                  return (
+                    <button
+                      key={layer.id}
+                      onClick={() => setActiveLayer(layer.id)}
+                      style={{
+                        display: "inline-flex", alignItems: "center", gap: 4,
+                        padding: "4px 12px", borderRadius: 8, border: "none",
+                        background: isActive ? "var(--accent-primary)" : "transparent",
+                        cursor: "pointer", transition: "all 0.15s",
+                      }}
+                      onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
+                      onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? "var(--accent-primary)" : "transparent" }}
+                    >
+                      <span style={{
+                        ...TYPE.sm,
+                        color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                        fontWeight: isActive ? 600 : 400,
+                        transition: "color 0.15s",
+                      }}>
+                        {layer.label}
+                      </span>
+                      <span style={{
+                        ...TYPE.xs, fontVariantNumeric: "tabular-nums",
+                        color: isActive ? "var(--accent-muted)" : "var(--text-tertiary)",
+                        opacity: 0.5, transition: "color 0.15s",
+                      }}>
+                        {count}
+                      </span>
+                    </button>
+                  )
+                })}
+              </>
+            )}
+            {/* Artwork switcher — Off removes images, Source shows podcast artwork */}
+            {episodes.length > 0 && (
+              <div style={{
+                marginLeft: "auto",
+                display: "flex",
+                gap: 2,
+                background: "var(--bg-elevated)",
+                borderRadius: 8,
+                padding: 3,
+              }}>
+                {([
+                  { id: "off" as const, label: "Off" },
+                  { id: "source" as const, label: "Source" },
+                ]).map(mode => {
+                  const isActive = artworkMode === mode.id
+                  return (
+                    <button
+                      key={mode.id}
+                      className="toggle-btn"
+                      aria-pressed={isActive}
+                      onClick={() => setArtworkMode(mode.id)}
+                      style={{
+                        padding: "4px 12px", border: "none",
+                        borderRadius: 6, cursor: "pointer",
+                        background: isActive ? "var(--bg-surface)" : "transparent",
+                        ...TYPE.xs,
+                        fontWeight: isActive ? 600 : 400,
+                        color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
+                        transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                      }}
+                      onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.color = "var(--text-secondary)" } }}
+                      onMouseLeave={e => { e.currentTarget.style.background = isActive ? "var(--bg-surface)" : "transparent"; e.currentTarget.style.color = isActive ? "var(--text-primary)" : "var(--text-tertiary)" }}
+                    >
+                      {mode.label}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )
+      })()}
 
       <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
       {/* Loading state — matches Signal feed skeleton pattern */}

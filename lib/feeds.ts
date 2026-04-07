@@ -64,9 +64,17 @@ export const FEEDS: FeedDef[] = [
 
   // ── COLOR INTELLIGENCE — Visual culture, color forecasting ────────────────
   { url: "https://heuritech.com/blog/feed/",                      source: "Heuritech",         category: "Color & Fashion Intelligence", tag: "culture", layer: "culture" },
-  { url: "https://www.itsnicethat.com/feed",                       source: "It's Nice That",    category: "Visual Culture",               tag: "culture", layer: "culture" },
-  { url: "https://www.creativeboom.com/feed",                      source: "Creative Boom",     category: "Creative Industry",            tag: "culture", layer: "culture" },
+  // It's Nice That — feed dead since 2020, removed
+  // Creative Boom — no RSS feed exists, removed
   { url: "https://www.canva.com/newsroom/feed/",                   source: "Canva Newsroom",    category: "Design Platform",              tag: "culture", layer: "culture" },
+  // Frame Magazine — no RSS feed exists, removed
+  { url: "https://www.architecturaldigest.com/feed/rss",           source: "Architectural Digest", category: "Interior Color Direction",  tag: "culture", layer: "culture" },
+  // Forecaster mention monitoring (Google News proxies)
+  { url: "https://news.google.com/rss/search?q=WGSN+color+forecast+2026&hl=en-US&gl=US", source: "WGSN", category: "Color Forecasting", tag: "culture", layer: "culture" },
+  { url: "https://news.google.com/rss/search?q=Pantone+color+year+2026&hl=en-US&gl=US", source: "Pantone", category: "Color Forecasting", tag: "culture", layer: "culture" },
+  { url: "https://news.google.com/rss/search?q=Coloro+key+colors+2026&hl=en-US&gl=US", source: "Coloro", category: "Color Forecasting", tag: "culture", layer: "culture" },
+  { url: "https://news.google.com/rss/search?q=%22Farrow+Ball%22+OR+%22Dulux%22+OR+%22Benjamin+Moore%22+OR+%22Sherwin+Williams%22+color+year&hl=en-US&gl=US", source: "Paint Authorities", category: "Color of the Year", tag: "culture", layer: "culture" },
+  { url: "https://news.google.com/rss/search?q=Edelkoort+OR+%22Colour+Hive%22+color+trend&hl=en-US&gl=US", source: "Trend Forecasters", category: "Color Forecasting", tag: "culture", layer: "culture" },
 
   // ── CULTURE — Taste, criticism, creative practice ─────────────────────────
   { url: "https://www.theatlantic.com/feed/all/",                source: "The Atlantic",      category: "Ideas & Culture",      tag: "culture",      layer: "culture" },

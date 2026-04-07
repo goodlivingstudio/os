@@ -520,37 +520,7 @@ export function ConfigView({ excludedSources, onToggleSource }: ConfigViewProps)
             </div>
           </div>
 
-          {/* ── Gallery Sources ── */}
-          <div>
-            <div style={sectionLabel}>
-              Gallery Sources
-              <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
-                {activeGalleryCount}/{GALLERY_SOURCES.length} active
-              </span>
-            </div>
-            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
-              <div className="gallery-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-                {GALLERY_SOURCES.map(src => {
-                  const active = !excludedSources.has(src.name)
-                  return (
-                    <div
-                      key={src.url}
-                      onClick={() => onToggleSource(src.name)}
-                      style={{ ...rowStyle, opacity: active ? 1 : 0.5, padding: "8px 10px" }}
-                      onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-                      onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
-                    >
-                      <Toggle active={active} onToggle={() => onToggleSource(src.name)} />
-                      <span style={{ ...TYPE.body, color: active ? "var(--text-primary)" : "var(--text-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                        {src.name}
-                      </span>
-                      <span style={badgeStyle("var(--text-tertiary)")}>{src.type}</span>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          </div>
+          {/* Gallery sources moved to Gallery → Sources chip */}
 
           <div style={{ height: 8 }} />
         </div>
