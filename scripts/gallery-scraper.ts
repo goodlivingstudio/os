@@ -168,59 +168,15 @@ async function scrapeImages(url: string, name: string): Promise<ExtractedImage[]
   }
 }
 
-// ─── Claude Vision Taste Filter (optional) ──────────────────────────────────
+// ─── Claude Vision Taste Filter ─────────────────────────────────────────────
+
+import { visionFilter } from "./lib/vision-filter.js"
 
 async function filterByTaste(images: ExtractedImage[], siteName: string): Promise<ExtractedImage[]> {
-  const apiKey = process.env.ANTHROPIC_API_KEY
-  if (!apiKey || images.length === 0) return images
-
-  try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 500,
-        messages: [{
-          role: "user",
-          content: [
-            {
-              type: "text",
-              text: `${tastePrompt}
-
-I have ${images.length} candidate images from ${siteName}. Based on the URLs and alt text below, rate each 1-5 using the criteria above.
-
-${images.map((img, i) => `${i + 1}. alt="${img.alt}" url=${img.url.slice(0, 100)} (${img.width}x${img.height})`).join("\n")}
-
-Return only a JSON array of indices (1-based) that scored 4 or 5. Example: [1, 3, 5]
-Return only the JSON array, nothing else.`,
-            },
-          ],
-        }],
-      }),
-    })
-
-    if (!response.ok) return images
-
-    const data = await response.json()
-    const text = data.content?.[0]?.text || ""
-    const match = text.match(/\[[\d,\s]*\]/)
-    if (!match) return images
-
-    const approved: number[] = JSON.parse(match[0])
-    const filtered = approved
-      .filter(i => i >= 1 && i <= images.length)
-      .map(i => images[i - 1])
-
-    console.log(`  Taste filter: ${filtered.length}/${images.length} approved`)
-    return filtered.length > 0 ? filtered : images.slice(0, 3)
-  } catch {
-    return images
-  }
+  const approved = await visionFilter(images, tastePrompt, siteName)
+  // Map back to ExtractedImage (visionFilter returns ImageCandidate which may lack width/height)
+  const approvedUrls = new Set(approved.map(a => a.url))
+  return images.filter(img => approvedUrls.has(img.url))
 }
 
 // ─── Are.na Dedup ───────────────────────────────────────────────────────────

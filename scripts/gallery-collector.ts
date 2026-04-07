@@ -400,16 +400,34 @@ async function main() {
   console.log(`  After self-dedup: ${unique.length}`)
 
   // Filter against existing Are.na content
-  let totalSkipped = 0
+  const newImages = unique.filter(img => {
+    const title = img.alt || `${img.query} — ${img.source}`
+    return !existingUrls.has(img.url) && !existingUrls.has(title)
+  })
+  console.log(`  New (not in Are.na): ${newImages.length}`)
+
+  // Vision filter — evaluate actual images if ANTHROPIC_API_KEY is set
+  let approved = newImages
+  if (process.env.ANTHROPIC_API_KEY && scraperConfig?.tastePrompt && newImages.length > 0) {
+    const { visionFilter } = await import("./lib/vision-filter.js")
+    console.log(`\n── Vision Filter (${newImages.length} candidates) ──`)
+    approved = await visionFilter(
+      newImages.map(img => ({ url: img.url, alt: img.alt })),
+      scraperConfig!.tastePrompt,
+      "API Collection",
+      4, // min score
+    ) as typeof newImages
+    // Map back to CollectedImage format
+    const approvedUrls = new Set(approved.map(a => a.url))
+    approved = newImages.filter(img => approvedUrls.has(img.url))
+    console.log(`  Approved for push: ${approved.length}`)
+  }
+
+  let totalSkipped = newImages.length - approved.length
   let totalPushed = 0
 
-  for (const img of unique) {
+  for (const img of approved) {
     const title = img.alt || `${img.query} — ${img.source}`
-
-    if (existingUrls.has(img.url) || existingUrls.has(title)) {
-      totalSkipped++
-      continue
-    }
 
     if (dryRun) {
       // In dry-run just count and show a sample
