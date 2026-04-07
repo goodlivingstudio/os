@@ -8,6 +8,7 @@
 //   3. Redeploy
 
 import { kv } from "@vercel/kv"
+import { kvKey } from "@/lib/config"
 
 export interface StoredMessage {
   role: "user" | "assistant"
@@ -25,7 +26,7 @@ const MAX_STORED = 30
 const TTL_SECONDS = 30 * 24 * 60 * 60
 
 function sessionKey(sessionId: string) {
-  return `cerebro:${sessionId}`
+  return kvKey(`cerebro:${sessionId}`)
 }
 
 /**

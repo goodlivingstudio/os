@@ -39,8 +39,8 @@ export const SURFACE_STYLES: Record<string, string> = {
 // Applied as a secondary modifier after the surface style.
 
 export const LAYER_PALETTES: Record<string, string> = {
-  opportunity: "Lean cooler — soft clinical blues and teals suggesting healthcare precision.",
-  position: "Lean warmer — amber and ochre suggesting professional authority.",
+  opportunity: "Lean cooler — soft clinical blues and teals suggesting analytical clarity.",
+  position: "Lean warmer — amber and ochre suggesting decisive confidence.",
   discipline: "Lean greener — muted sage and deep indigo suggesting structural evolution.",
   landscape: "Stay neutral — silver grays with atmospheric depth.",
   culture: "Lean earthier — raw umber, oxide, burnt sienna suggesting material honesty.",

@@ -257,50 +257,61 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
 
   galleryScraper: {
     arenaChannelSlug: "explore-t7o5uh83n2s",
-    tastePrompt: `You are curating a visual intelligence gallery for a design team building explore.gov — a civic platform connecting Americans with public land. Rate each image 1-5:
+    tastePrompt: `You are curating a visual gallery that celebrates America's public lands — the national parks, forests, waterways, and open spaces that belong to every American. Rate each image 1-5:
 
-1 = UI screenshot, logo, text-heavy, diagram, low quality, or generic stock
-2 = Mundane outdoor content, gear advertisement, or influencer-style hiking photo
-3 = Decent landscape or design work but not exceptional
-4 = Strong work — evokes the experience of American public land, demonstrates civic design excellence, or captures genuine human connection with outdoor space. Diverse representation matters.
-5 = Exceptional — documentary-quality landscape photography, world-class civic/accessible interface design, or an image that captures what it feels like to discover public land. The kind of image that would stop a design team and change how they think about the platform.
+1 = UI screenshot, logo, text-heavy, diagram, urban design portfolio, or anything that has nothing to do with outdoor space or public land
+2 = Generic nature wallpaper, gear advertisement, influencer-style posed hiking photo, or commercial outdoor brand content
+3 = Decent outdoor or landscape image but generic — could be anywhere, doesn't evoke a specific sense of place
+4 = Strong — real American landscape with presence and scale. Or: real people genuinely experiencing outdoor space (hiking, camping, fishing, kayaking, stargazing). Or: park infrastructure (trails, visitor centers, signage) with documentary quality. Diverse representation matters.
+5 = Exceptional — the kind of image that makes you want to leave your desk and drive to a national park. Grand scale, emotional weight, specific sense of place. Documentary photography of Americans on public land. The visual register that explore.gov should aspire to.
 
-Prioritize: American landscape with presence (not pretty screensavers), diverse people genuinely experiencing outdoor space (not posed stock), civic infrastructure and wayfinding design, accessible interface patterns, and national park visual culture.
-Reject: commercial outdoor brand advertising, generic nature wallpaper, AI-generated landscape, influencer content.`,
+YOU MUST PRIORITIZE: vast American landscapes (canyons, forests, rivers, mountains, deserts, coastlines), people camping and hiking and being in nature, national park vistas, trail photography, campfire and shelter scenes, wildlife in habitat, water (rivers, lakes, waterfalls, coastline), sunrise/sunset over public land, snow-capped peaks, autumn forests, wildflower meadows.
+YOU MUST REJECT: anything urban, anything indoors, design portfolios, agency work, UI screenshots, commercial products, AI-generated imagery, stock photography with watermarks.`,
     targets: [
-      // ── American Landscape Photography ────────────────────────────────
-      { url: "https://unsplash.com/s/photos/national-parks", name: "Unsplash NPS", category: "photography" },
-      { url: "https://unsplash.com/s/photos/american-landscape", name: "Unsplash American Landscape", category: "photography" },
-      { url: "https://unsplash.com/s/photos/public-lands", name: "Unsplash Public Lands", category: "photography" },
-      { url: "https://www.featureshoot.com/category/landscape/", name: "Feature Shoot Landscape", category: "photography" },
-      { url: "https://www.thisiscolossal.com/category/photography/", name: "Colossal Photography", category: "photography" },
-      { url: "https://www.ignant.com/category/photography/", name: "IGNANT Photography", category: "photography" },
+      // ── American Landscape — by park and terrain ──────────────────────
+      { url: "https://unsplash.com/s/photos/yosemite", name: "Unsplash Yosemite", category: "photography" },
+      { url: "https://unsplash.com/s/photos/grand-canyon", name: "Unsplash Grand Canyon", category: "photography" },
+      { url: "https://unsplash.com/s/photos/yellowstone", name: "Unsplash Yellowstone", category: "photography" },
+      { url: "https://unsplash.com/s/photos/glacier-national-park", name: "Unsplash Glacier", category: "photography" },
+      { url: "https://unsplash.com/s/photos/zion-national-park", name: "Unsplash Zion", category: "photography" },
+      { url: "https://unsplash.com/s/photos/olympic-national-park", name: "Unsplash Olympic", category: "photography" },
+      { url: "https://unsplash.com/s/photos/sequoia-national-park", name: "Unsplash Sequoia", category: "photography" },
+      { url: "https://unsplash.com/s/photos/acadia-national-park", name: "Unsplash Acadia", category: "photography" },
+      { url: "https://unsplash.com/s/photos/joshua-tree", name: "Unsplash Joshua Tree", category: "photography" },
+      { url: "https://unsplash.com/s/photos/great-smoky-mountains", name: "Unsplash Smokies", category: "photography" },
+      { url: "https://unsplash.com/s/photos/denali", name: "Unsplash Denali", category: "photography" },
+      { url: "https://unsplash.com/s/photos/big-sur", name: "Unsplash Big Sur", category: "photography" },
+
+      // ── Outdoor Activity — people on the land ─────────────────────────
+      { url: "https://unsplash.com/s/photos/camping-tent-nature", name: "Unsplash Camping", category: "photography" },
+      { url: "https://unsplash.com/s/photos/hiking-trail-mountain", name: "Unsplash Hiking", category: "photography" },
+      { url: "https://unsplash.com/s/photos/campfire-outdoors", name: "Unsplash Campfire", category: "photography" },
+      { url: "https://unsplash.com/s/photos/kayaking-river-lake", name: "Unsplash Kayaking", category: "photography" },
+      { url: "https://unsplash.com/s/photos/fishing-river-nature", name: "Unsplash Fishing", category: "photography" },
+      { url: "https://unsplash.com/s/photos/stargazing-night-sky", name: "Unsplash Stargazing", category: "photography" },
+
+      // ── Terrain & Seasons ─────────────────────────────────────────────
+      { url: "https://unsplash.com/s/photos/american-desert-landscape", name: "Unsplash Desert", category: "photography" },
+      { url: "https://unsplash.com/s/photos/autumn-forest-trail", name: "Unsplash Autumn Forest", category: "photography" },
+      { url: "https://unsplash.com/s/photos/mountain-lake-reflection", name: "Unsplash Mountain Lake", category: "photography" },
+      { url: "https://unsplash.com/s/photos/waterfall-forest", name: "Unsplash Waterfall", category: "photography" },
+      { url: "https://unsplash.com/s/photos/wildflower-meadow", name: "Unsplash Wildflowers", category: "photography" },
+      { url: "https://unsplash.com/s/photos/snow-mountain-peak", name: "Unsplash Snow Peaks", category: "photography" },
 
       // ── NPS & Federal Archives ────────────────────────────────────────
       { url: "https://www.nps.gov/media/photo/gallery.htm", name: "NPS Photo Gallery", category: "archive" },
       { url: "https://www.flickr.com/photos/npsclimatechange/", name: "NPS Flickr", category: "archive" },
-      { url: "https://gallery.usgs.gov/", name: "USGS Gallery", category: "archive" },
+      { url: "https://www.flickr.com/photos/usaboretum/", name: "National Arboretum", category: "archive" },
 
-      // ── Outdoor Culture & Editorial ───────────────────────────────────
+      // ── Outdoor Editorial Photography ─────────────────────────────────
       { url: "https://www.outsideonline.com/", name: "Outside", category: "editorial" },
       { url: "https://adventure-journal.com/", name: "Adventure Journal", category: "editorial" },
-      { url: "https://orionmagazine.org/", name: "Orion Magazine", category: "editorial" },
       { url: "https://www.hcn.org/", name: "High Country News", category: "editorial" },
+      { url: "https://www.thisiscolossal.com/category/photography/", name: "Colossal Photography", category: "photography" },
+      { url: "https://www.featureshoot.com/category/landscape/", name: "Feature Shoot Landscape", category: "photography" },
 
-      // ── Civic & Accessible Design ─────────────────────────────────────
-      { url: "https://design-system.service.gov.uk/", name: "GOV.UK Design System", category: "gallery" },
-      { url: "https://designsystem.digital.gov/", name: "USWDS", category: "gallery" },
-      { url: "https://www.a11yproject.com/", name: "A11y Project", category: "gallery" },
-      { url: "https://www.canada.ca/en/government/about/design-system.html", name: "Canada Design System", category: "gallery" },
-
-      // ── National Park & Civic Identity ────────────────────────────────
-      { url: "https://www.dezeen.com/tag/national-parks/", name: "Dezeen National Parks", category: "editorial" },
-      { url: "https://www.archdaily.com/search/all?q=visitor%20center", name: "ArchDaily Visitor Centers", category: "editorial" },
-      { url: "https://placesjournal.org/", name: "Places Journal", category: "editorial" },
-
-      // ── Wayfinding & Environmental Graphics ───────────────────────────
-      { url: "https://sfrfrancisco.com/", name: "SEGD", category: "gallery" },
-      { url: "https://www.pentagram.com/work/archive?discipline=environmental-design", name: "Pentagram Environmental", category: "agency" },
+      // ── Visitor Centers & Park Architecture (light) ───────────────────
+      { url: "https://www.archdaily.com/search/all?q=visitor%20center%20national%20park", name: "ArchDaily Visitor Centers", category: "editorial" },
     ],
   },
 }

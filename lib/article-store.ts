@@ -6,6 +6,7 @@
 // Reading the last 7 days gives a full week of scored signal.
 
 import { kv } from "@vercel/kv"
+import { kvKey } from "@/lib/config"
 
 const KV_AVAILABLE = !!(
   process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN
@@ -32,7 +33,7 @@ interface StoredArticle {
 
 function dayKey(date?: Date): string {
   const d = date || new Date()
-  return `articles:${d.toISOString().slice(0, 10)}`
+  return kvKey(`articles:${d.toISOString().slice(0, 10)}`)
 }
 
 /**
@@ -95,7 +96,7 @@ export async function loadArticleHistory(days: number = 7): Promise<StoredArticl
 // Tracks consecutive failures per source. Incremented on failure, reset on success.
 // Keyed as a single KV entry: { "STAT News": 0, "Axios": 3, ... }
 
-const FAILURE_KEY = "source:failures"
+const FAILURE_KEY = kvKey("source:failures")
 const FAILURE_TTL = 30 * 24 * 60 * 60 // 30 days
 
 export interface SourceFailures {
@@ -160,7 +161,7 @@ export interface PaletteSnapshot {
   }>
 }
 
-const PALETTE_KEY_PREFIX = "palette:"
+const PALETTE_KEY_PREFIX = kvKey("palette:")
 const PALETTE_TTL = 14 * 24 * 60 * 60 // 14 days
 
 export async function storePaletteSnapshot(snapshot: PaletteSnapshot): Promise<void> {
