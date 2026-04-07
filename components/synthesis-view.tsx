@@ -350,48 +350,50 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     onClick={scroll.guardedClick(() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`))}
                     onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
                     style={{
-                      display: "flex", gap: 20,
                       padding: "12px 16px",
                       cursor: "pointer", transition: "background 0.15s", outline: "none",
                     }}
                     onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
-                    {/* Image thumbnail — matches Dispatch size */}
-                    <div style={{
-                      width: 150, height: 100, borderRadius: 8, overflow: "hidden", flexShrink: 0,
-                      background: pattern.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
-                    }}>
-                      {pattern.imageUrl && (
-                        <img src={pattern.imageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                      )}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      {/* Eyebrow: layers + signal count */}
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                        <div style={{ display: "flex", gap: 5 }}>
-                          {pattern.layers.map(l => (
-                            <span key={l} style={{ width: 7, height: 7, borderRadius: "50%", background: LAYER_DOT[l] || "var(--text-tertiary)" }} />
-                          ))}
-                        </div>
-                        <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-                          {pattern.signalCount} Signals
-                        </span>
+                    {/* Top row: image + eyebrow/title centered horizontally */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 8 }}>
+                      {/* Image thumbnail */}
+                      <div style={{
+                        width: 100, height: 68, borderRadius: 8, overflow: "hidden", flexShrink: 0,
+                        background: pattern.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
+                      }}>
+                        {pattern.imageUrl && (
+                          <img src={pattern.imageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        )}
                       </div>
-                      {/* Title */}
-                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, letterSpacing: "-0.01em", marginBottom: 6 }}>
-                        {pattern.title}
-                      </div>
-                      {/* Description — capped on desktop, full on mobile */}
-                      {pattern.description && (
-                        <div style={{
-                          ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.6,
-                          ...(!isMobile ? { display: "-webkit-box", WebkitLineClamp: isTriage ? 1 : 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {}),
-                        }}>
-                          {pattern.description}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        {/* Eyebrow: layers + signal count */}
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                          <div style={{ display: "flex", gap: 5 }}>
+                            {pattern.layers.map(l => (
+                              <span key={l} style={{ width: 7, height: 7, borderRadius: "50%", background: LAYER_DOT[l] || "var(--text-tertiary)" }} />
+                            ))}
+                          </div>
+                          <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+                            {pattern.signalCount} Signals
+                          </span>
                         </div>
-                      )}
+                        {/* Title */}
+                        <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, letterSpacing: "-0.01em" }}>
+                          {pattern.title}
+                        </div>
+                      </div>
                     </div>
+                    {/* Description — full width below image */}
+                    {pattern.description && (
+                      <div style={{
+                        ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.6,
+                        ...(!isMobile ? { display: "-webkit-box", WebkitLineClamp: isTriage ? 2 : 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {}),
+                      }}>
+                        {pattern.description}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
