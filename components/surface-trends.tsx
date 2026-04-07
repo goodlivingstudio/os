@@ -224,7 +224,8 @@ export function SurfaceTrends({ articles, onDeliberate }: SurfaceTrendsProps) {
 
             {/* ─ HEADLINE BANNER — full width ─ */}
             <div style={{
-              background: "var(--bg-surface)", padding: "20px 24px",
+              background: "var(--bg-surface)", padding: "16px 16px",
+              animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
               <div style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 10 }}>
                 Weekly Color Shift
