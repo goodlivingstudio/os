@@ -203,6 +203,7 @@ export default function Page() {
   const [mobileDcosIdx, setMobileDcosIdx] = useState(0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [feedImageMode, setFeedImageMode] = useState<"off" | "source">("off")
+  const [showDcos, setShowDcos] = useState(true)
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
   const [pinnedArticles, setPinnedArticles] = useState<Article[]>([])
 
@@ -854,6 +855,31 @@ export default function Page() {
                       ))}
                     </div>
                   </div>
+                  {/* Briefing on/off */}
+                  <div style={{ padding: "8px 12px" }}>
+                    <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Briefing</div>
+                    <div style={{ display: "flex", background: "var(--bg-elevated)", borderRadius: 6, padding: 2 }}>
+                      {([
+                        { id: true, label: "On" },
+                        { id: false, label: "Off" },
+                      ] as const).map(mode => (
+                        <button
+                          key={String(mode.id)}
+                          onClick={() => { setShowDcos(mode.id); setMobileMenuOpen(false) }}
+                          style={{
+                            flex: 1, padding: "6px 0", borderRadius: 5, border: "none",
+                            background: showDcos === mode.id ? "var(--bg-surface)" : "transparent",
+                            ...TYPE.xs, fontWeight: showDcos === mode.id ? 600 : 400,
+                            color: showDcos === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
+                            textTransform: "uppercase", letterSpacing: "0.04em",
+                            cursor: "pointer", transition: "all 0.15s",
+                          }}
+                        >
+                          {mode.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                   <div style={{ height: 1, background: "var(--border)", margin: "4px 0" }} />
                   {/* Config + Pulse links */}
                   <button
@@ -874,8 +900,8 @@ export default function Page() {
           </div>
         </div>
 
-        {/* ── DCOS swipeable carousel — Signal + Sound tabs, hidden in triage ── */}
-        {(mobileTab === "signal" || mobileTab === "audio") && sortBy !== "urgency" && signals.filter(s => s.body).length > 0 && (() => {
+        {/* ── DCOS swipeable carousel — Signal + Sound tabs, toggled via hamburger menu ── */}
+        {(mobileTab === "signal" || mobileTab === "audio") && showDcos && signals.filter(s => s.body).length > 0 && (() => {
           const dcosSignals = signals.filter(s => s.body)
           return (
             <div style={{ flexShrink: 0, borderBottom: "1px solid var(--border)" }}>
