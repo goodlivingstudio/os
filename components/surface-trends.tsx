@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { ArrowUpRight } from "lucide-react"
+import { useScrollGuard } from "@/lib/use-scroll-guard"
 import type { Article } from "@/lib/types"
 import type { CuratedImage } from "@/lib/gallery"
 import { TYPE, MONO, labelStyle } from "@/lib/styles"
@@ -65,6 +66,7 @@ export function SurfaceTrends({ articles, onDeliberate }: SurfaceTrendsProps) {
   const [retryCount, setRetryCount] = useState(0)
   const fetched = useRef(false)
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768
+  const scroll = useScrollGuard()
 
   useEffect(() => {
     if (articles.length === 0 || fetched.current) return
@@ -334,7 +336,7 @@ export function SurfaceTrends({ articles, onDeliberate }: SurfaceTrendsProps) {
                     <div
                       role="button"
                       tabIndex={0}
-                      onClick={() => onDeliberate(`I want to explore this color direction:\n\n"${direction.title}"\n\n${direction.description}\n\nWhat does this mean for design leadership and healthcare? How should I think about this shift?`)}
+                      onClick={scroll.guardedClick(() => onDeliberate(`I want to explore this color direction:\n\n"${direction.title}"\n\n${direction.description}\n\nWhat does this mean for design leadership and healthcare? How should I think about this shift?`))}
                       onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`Explore this color direction: "${direction.title}" — ${direction.description}`) } }}
                       style={{
                         ...TYPE.heading, color: "var(--text-primary)",
@@ -399,7 +401,7 @@ export function SurfaceTrends({ articles, onDeliberate }: SurfaceTrendsProps) {
                       key={i}
                       role="button"
                       tabIndex={0}
-                      onClick={() => onDeliberate(topic.prompt)}
+                      onClick={scroll.guardedClick(() => onDeliberate(topic.prompt))}
                       onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(topic.prompt) } }}
                       style={{
                         background: "var(--bg-surface)", borderRadius: 10, padding: "16px 18px",

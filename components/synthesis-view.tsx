@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { useScrollGuard } from "@/lib/use-scroll-guard"
 import { ArrowUpRight } from "lucide-react"
 import type { Article } from "@/lib/types"
 import { TYPE, MONO, labelStyle } from "@/lib/styles"
@@ -94,6 +95,7 @@ const LAYER_DOT: Record<string, string> = {
 export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: SynthesisViewProps) {
   const isTriage = sortBy === "urgency"
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768
+  const scroll = useScrollGuard()
   const [data, setData] = useState<SynthesisData | null>(null)
   const [loading, setLoading] = useState(false)
   const [statusIdx, setStatusIdx] = useState(0)
@@ -345,7 +347,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     key={i}
                     role="button"
                     tabIndex={0}
-                    onClick={() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`)}
+                    onClick={scroll.guardedClick(() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`))}
                     onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
                     style={{
                       display: "flex", gap: 20,
@@ -404,9 +406,12 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
                   Urgency Heatmap
                 </div>
-                <div className="synthesis-heatmap" style={{ background: "var(--bg-surface)", borderRadius: 8, padding: "18px 20px", overflowX: "auto" }}>
+                <div className="synthesis-heatmap" style={{
+                  background: "var(--bg-surface)", borderRadius: 8, padding: "18px 20px",
+                  overflowX: "auto", WebkitOverflowScrolling: "touch",
+                } as React.CSSProperties}>
                   {/* Day headers */}
-                  <div style={{ display: "flex", marginBottom: 8 }}>
+                  <div style={{ display: "flex", marginBottom: 8, minWidth: 520 }}>
                     <div style={{ width: 96, flexShrink: 0 }} />
                     {data.heatmap.days.map((day, i) => (
                       <div key={i} style={{ flex: 1, textAlign: "center", ...TYPE.sm, color: "var(--text-tertiary)", fontWeight: 500 }}>
@@ -419,7 +424,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     const allVals = data.heatmap!.layers.flatMap(l => l.data).filter(v => v > 0)
                     const maxVal = allVals.length > 0 ? Math.max(...allVals, 1) : 10
                     return data.heatmap!.layers.map((layer, li) => (
-                      <div key={li} style={{ display: "flex", alignItems: "center", marginBottom: 6 }}>
+                      <div key={li} style={{ display: "flex", alignItems: "center", marginBottom: 6, minWidth: 520 }}>
                         <div style={{ width: 96, flexShrink: 0, ...TYPE.sm, color: layer.color, fontWeight: 500 }}>
                           {layer.name}
                         </div>
@@ -454,23 +459,24 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ BLIND SPOTS — 3 cards ─ */}
             {data.blindSpots && data.blindSpots.length > 0 && (
               <div style={{
-                padding: "24px 24px",
+                padding: isMobile ? "24px 0 24px 16px" : "24px 24px",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 400ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11, paddingLeft: isMobile ? 4 : 0 }}>
                   Blind Spots
                 </div>
-                <div className="synthesis-blindspots" style={isMobile ? {
+                <div className="synthesis-blindspots" onScroll={scroll.onScroll} style={isMobile ? {
                   display: "flex", gap: 12, overflowX: "auto", overflowY: "hidden",
                   WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory",
-                  paddingBottom: 4, msOverflowStyle: "none", scrollbarWidth: "none",
+                  paddingRight: 16, paddingBottom: 4,
+                  msOverflowStyle: "none", scrollbarWidth: "none",
                 } as React.CSSProperties : { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
                   {data.blindSpots.map((spot, i) => (
                     <div
                       key={i}
                       role="button"
                       tabIndex={0}
-                      onClick={() => onDeliberate(`Explore this blind spot:\n\n**${BLIND_SPOT_LABELS[spot.type] || "Blind Spot"}: ${spot.title}**\n\n${spot.body}\n\nWhat am I missing and what should I do about it?`)}
+                      onClick={scroll.guardedClick(() => onDeliberate(`Explore this blind spot:\n\n**${BLIND_SPOT_LABELS[spot.type] || "Blind Spot"}: ${spot.title}**\n\n${spot.body}\n\nWhat am I missing and what should I do about it?`))}
                       onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`Explore this blind spot: ${spot.title}`) } }}
                       style={{
                         background: "var(--bg-surface)", borderRadius: 10, padding: "18px 20px",
@@ -486,9 +492,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, marginBottom: 8, fontSize: 14 }}>
                         {spot.title}
                       </div>
-                      <div style={{
-                        ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.6,
-                      }}>
+                      <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.6 }}>
                         {spot.body}
                       </div>
                     </div>
@@ -509,7 +513,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     Ask Cerebro
                   </span>
                 </div>
-                <div className="synthesis-cerebro" style={isMobile ? {
+                <div className="synthesis-cerebro" onScroll={scroll.onScroll} style={isMobile ? {
                   display: "flex", gap: 12, overflowX: "auto", overflowY: "hidden",
                   WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory",
                   paddingBottom: 4, msOverflowStyle: "none", scrollbarWidth: "none",
@@ -519,7 +523,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       key={i}
                       role="button"
                       tabIndex={0}
-                      onClick={() => onDeliberate(topic.prompt)}
+                      onClick={scroll.guardedClick(() => onDeliberate(topic.prompt))}
                       onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(topic.prompt) } }}
                       style={{
                         background: "var(--bg-surface)", borderRadius: 10, padding: "18px 20px",
