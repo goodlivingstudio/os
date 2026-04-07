@@ -188,29 +188,29 @@ When scoring and surfacing signals, weight POLICY sources for urgency (they crea
   ],
 
   categoryStyleDay: {
-    ACCESS:       { bg: "rgba(85,121,73,0.10)",   color: "#557949" },
-    EXPERIENCE:   { bg: "rgba(68,119,132,0.10)",  color: "#447784" },
-    CONSERVATION: { bg: "rgba(120,104,144,0.10)", color: "#786890" },
-    POLICY:       { bg: "rgba(140,106,59,0.10)",  color: "#8C6A3B" },
-    CULTURE:      { bg: "rgba(156,95,83,0.10)",   color: "#9C5F53" },
+    ACCESS:       { bg: "rgba(92,58,34,0.10)",    color: "#5C3A22" },
+    EXPERIENCE:   { bg: "rgba(30,92,115,0.10)",   color: "#1E5C73" },
+    CONSERVATION: { bg: "rgba(74,110,60,0.10)",   color: "#4A6E3C" },
+    POLICY:       { bg: "rgba(139,74,42,0.10)",   color: "#8B4A2A" },
+    CULTURE:      { bg: "rgba(120,90,110,0.10)",  color: "#785A6E" },
   },
 
   categoryStyleNight: {
-    ACCESS:       { bg: "rgba(123,175,106,0.14)", color: "#7BAF6A" },
-    EXPERIENCE:   { bg: "rgba(90,158,176,0.12)",  color: "#5A9EB0" },
-    CONSERVATION: { bg: "rgba(154,133,184,0.12)", color: "#9A85B8" },
-    POLICY:       { bg: "rgba(212,160,90,0.12)",  color: "#D4A05A" },
-    CULTURE:      { bg: "rgba(200,122,106,0.12)", color: "#C87A6A" },
+    ACCESS:       { bg: "rgba(139,94,60,0.14)",   color: "#A87A58" },
+    EXPERIENCE:   { bg: "rgba(74,143,168,0.12)",  color: "#4A8FA8" },
+    CONSERVATION: { bg: "rgba(92,138,80,0.12)",   color: "#5C8A50" },
+    POLICY:       { bg: "rgba(194,112,70,0.12)",  color: "#C27046" },
+    CULTURE:      { bg: "rgba(160,120,148,0.12)", color: "#A07894" },
   },
 
-  // ─── Theme — Forest skin as default for public lands ────────────────────────
+  // ─── Theme — National park skins ────────────────────────────────────────────
 
   skins: [
-    { id: "forest",  label: "Forest",  dot: "#5C8A6E" },
-    { id: "mineral", label: "Mineral", dot: "#B8956A" },
-    { id: "slate",   label: "Slate",   dot: "#4A7A9B" },
+    { id: "sequoia", label: "Sequoia", dot: "#8B5E3C" },
+    { id: "glacier", label: "Glacier", dot: "#4A8FA8" },
+    { id: "canyon",  label: "Canyon",  dot: "#C27046" },
   ],
-  defaultSkin: "forest",
+  defaultSkin: "sequoia",
 }
 
 export default config

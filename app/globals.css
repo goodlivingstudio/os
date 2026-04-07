@@ -347,6 +347,108 @@ html, body {
   --shadow-tooltip:   0 8px 40px rgba(0,0,0,0.05), 0 20px 60px rgba(0,0,0,0.05), 0 0 80px rgba(0,0,0,0.05);
 }
 
+/* ── Sequoia — Sequoia National Park ──────────────────────────── */
+:root.skin-sequoia {
+  --bg-primary:       #100C09;
+  --bg-surface:       #1A1410;
+  --bg-elevated:      #241C16;
+  --card-tint:        #2A1E15;
+  --accent-primary:   #2E1A0E;
+  --accent-secondary: #8B5E3C;
+  --accent-muted:     #A87A58;
+  --text-primary:     #F0EAE2;
+  --text-secondary:   #A89A8C;
+  --text-tertiary:    #8E8078;
+  --border:           #2E2418;
+  --live:             #4ade80;
+  --synth-indicator:  #382818;
+  --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(139,94,60,0.08);
+}
+:root.skin-sequoia.day {
+  --bg-primary:       #F8F4EE;
+  --bg-surface:       #F0EAE0;
+  --bg-elevated:      #E8E0D6;
+  --card-tint:        #FFF8F0;
+  --accent-primary:   #F4E8D8;
+  --accent-secondary: #5C3A22;
+  --accent-muted:     #6E4A30;
+  --text-primary:     #1C1610;
+  --text-secondary:   #3A3028;
+  --text-tertiary:    #6A5E54;
+  --border:           #DED4C6;
+  --live:             #166534;
+  --synth-indicator:  #EEE0D0;
+  --shadow-tooltip:   0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(92,58,34,0.06);
+}
+
+/* ── Glacier — Glacier National Park ─────────────────────────── */
+:root.skin-glacier {
+  --bg-primary:       #0A0E12;
+  --bg-surface:       #121820;
+  --bg-elevated:      #1A222C;
+  --card-tint:        #1A2530;
+  --accent-primary:   #0E1E2C;
+  --accent-secondary: #4A8FA8;
+  --accent-muted:     #68AAC0;
+  --text-primary:     #EDF2F6;
+  --text-secondary:   #96A8B8;
+  --text-tertiary:    #7A8E9C;
+  --border:           #222E3A;
+  --live:             #4ade80;
+  --synth-indicator:  #1E2E3C;
+  --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(74,143,168,0.08);
+}
+:root.skin-glacier.day {
+  --bg-primary:       #F3F6F8;
+  --bg-surface:       #E8EEF4;
+  --bg-elevated:      #DCE6F0;
+  --card-tint:        #F0F6FA;
+  --accent-primary:   #DEE8F2;
+  --accent-secondary: #1E5C73;
+  --accent-muted:     #2A6E88;
+  --text-primary:     #141A20;
+  --text-secondary:   #283848;
+  --text-tertiary:    #4A6070;
+  --border:           #CCD8E4;
+  --live:             #166534;
+  --synth-indicator:  #D4E4F0;
+  --shadow-tooltip:   0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(30,92,115,0.06);
+}
+
+/* ── Canyon — Grand Canyon ───────────────────────────────────── */
+:root.skin-canyon {
+  --bg-primary:       #110D0A;
+  --bg-surface:       #1C1510;
+  --bg-elevated:      #261C14;
+  --card-tint:        #2C2018;
+  --accent-primary:   #2E1810;
+  --accent-secondary: #C27046;
+  --accent-muted:     #D48A62;
+  --text-primary:     #F2ECE4;
+  --text-secondary:   #AE9E8E;
+  --text-tertiary:    #948478;
+  --border:           #302418;
+  --live:             #4ade80;
+  --synth-indicator:  #3A2818;
+  --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(194,112,70,0.08);
+}
+:root.skin-canyon.day {
+  --bg-primary:       #FAF6F0;
+  --bg-surface:       #F2EAE0;
+  --bg-elevated:      #EAE0D4;
+  --card-tint:        #FFF6EE;
+  --accent-primary:   #F6E8D6;
+  --accent-secondary: #8B4A2A;
+  --accent-muted:     #A05830;
+  --text-primary:     #1E1610;
+  --text-secondary:   #3E3028;
+  --text-tertiary:    #6E5E50;
+  --border:           #E0D4C4;
+  --live:             #166534;
+  --synth-indicator:  #F0E0CC;
+  --shadow-tooltip:   0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(139,74,42,0.06);
+}
+
 /* ─── Ticker scroll ────────────────────────────────────────────── */
 @keyframes ticker-scroll {
   from { transform: translateX(0); }

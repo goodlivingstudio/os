@@ -5,6 +5,7 @@ import { Radio, AudioLines, Blend, Newspaper, Settings, Aperture, Keyboard, File
 import type { Article, FeedHealth, ViewMode } from "@/lib/types"
 import { CATEGORY_CONFIG, LAYER_COLOR } from "@/lib/types"
 import { TYPE, metaStyle, labelStyle } from "@/lib/styles"
+import instanceConfig from "@/lib/config"
 
 // ─── Live Clock — 24hr with seconds ──────────────────────────────────────────
 
@@ -357,7 +358,7 @@ export function LeftRail({
             margin: 0,
           }}
         >
-          Dispatch
+          {instanceConfig.branding.name}
         </h1>
         <div
           style={{
@@ -367,7 +368,7 @@ export function LeftRail({
             lineHeight: 1.5,
           }}
         >
-          Directed intelligence for strategic positioning across technology, culture &amp; healthcare
+          {instanceConfig.branding.tagline}
         </div>
       </div>
 
@@ -655,7 +656,7 @@ export function LeftRail({
           { id: "pulse" as const,    Icon: Activity,  title: "Source Pulse",          isView: true },
           { id: "shortcuts" as const, Icon: Keyboard, title: "Keyboard shortcuts",   isView: false },
           { id: "export" as const,   Icon: FileDown,  title: "Quick Export",          isView: false },
-          { id: "dispatch" as const, Icon: Newspaper,  title: "Dispatch",             isView: true },
+          { id: "dispatch" as const, Icon: Newspaper,  title: instanceConfig.branding.name, isView: true },
         ]).map(item => {
           const isActive = item.isView && viewMode === item.id
           const hasBadge = item.id === "pulse" && feedHealth && feedHealth.sourcesFailed > 0
