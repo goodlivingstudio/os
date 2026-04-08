@@ -86,7 +86,7 @@ function useTheme() {
 // Single-user tool; 5-10 visits/day — fresh enough, eliminates every load cost.
 
 const ANNOTATION_CACHE_KEY = storageKey("annotations-v3")
-const ANNOTATION_TTL_MS    = 4 * 60 * 60 * 1000 // 4 hours — resilient to weak connections
+const ANNOTATION_TTL_MS    = 12 * 60 * 60 * 1000 // 12 hours — reduces API cost
 
 interface AnnotationEntry {
   id: string
