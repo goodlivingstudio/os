@@ -14,9 +14,8 @@
     "scrape:dispatch": "npx tsx scripts/gallery-scraper.ts --instance=dispatch",
     "scrape:explore": "npx tsx scripts/gallery-scraper.ts --instance=explore",
     "scrape:explore:taste": "npx tsx scripts/gallery-scraper.ts --instance=explore --taste",
-    "scrape:explore:ugc": "npx tsx scripts/gallery-scraper.ts --instance=explore --ugc --taste",
     "collect:explore": "npx tsx scripts/gallery-collector.ts --instance=explore",
-    "collect:explore:ugc": "npx tsx scripts/gallery-collector.ts --instance=explore --ugc"
+    "collect:explore": "npx tsx scripts/gallery-collector.ts --instance=explore"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",

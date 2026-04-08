@@ -194,8 +194,6 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
   gallerySources: [
     // Are.na — curated visual intelligence (parks, wildlife, adventure)
     { url: "https://api.are.na/v2/channels/explore-t7o5uh83n2s/contents?per=200", name: "Are.na", type: "arena" },
-    // Are.na — UGC feed (authentic ground-level outdoor content)
-    { url: "https://api.are.na/v2/channels/explore-ugc/contents?per=200", name: "Are.na UGC", type: "arena" },
     // Outdoor editorial — adventure photography, expedition stories
     { url: "https://www.outsideonline.com/feed/all/",                              name: "Outside",              type: "rss" },
     { url: "https://adventure-journal.com/feed/",                                  name: "Adventure Journal",    type: "rss" },
@@ -392,51 +390,7 @@ AMERICAN LANDSCAPES ONLY. No exceptions.`,
     ],
   },
 
-  // ─── UGC Scraper — authentic community outdoor content ────────────────────
-
-  ugcScraper: {
-    arenaChannelSlug: "explore-ugc",
-    tastePrompt: `You are sourcing authentic, ground-level content showing real people experiencing AMERICAN public land. United States locations ONLY.
-
-CRITICAL RULE: Every image MUST be of an American place. If the alt text or URL suggests a location outside the United States, rate it 1 IMMEDIATELY. When in doubt, rate it 1.
-
-Rate each image 1-5:
-1 = NOT American. Or: commercial, stock photography, brand ad, gear ad, staged influencer content, watermarks/logos, indoors, urban
-2 = Low quality, blurry, or too mundane
-3 = Decent outdoor photo but generic — could be anywhere
-4 = Authentic and compelling — real people on American trails, at American campsites, in American parks. Doesn't need to be professionally shot. Diversity of people, places, and activities matters.
-5 = Stops you in your tracks — a family at Yellowstone, a solo hiker on an Appalachian ridgeline, kids seeing a bison, dawn at a backcountry campsite. The kind of image that makes American public land feel alive and accessible to everyone.
-
-AMERICAN PLACES ONLY. No exceptions.`,
-    targets: [
-      // ── Flickr Groups — massive community photo pools ─────────────────
-      { url: "https://www.flickr.com/groups/nationalparks/pool/", name: "Flickr National Parks", category: "photography" },
-      { url: "https://www.flickr.com/groups/camping/pool/", name: "Flickr Camping", category: "photography" },
-      { url: "https://www.flickr.com/groups/hikingtrails/pool/", name: "Flickr Hiking", category: "photography" },
-      { url: "https://www.flickr.com/groups/americanlandscapes/pool/", name: "Flickr American Landscape", category: "photography" },
-      { url: "https://www.flickr.com/groups/wildlife/pool/", name: "Flickr Wildlife", category: "photography" },
-      { url: "https://www.flickr.com/groups/backpacking/pool/", name: "Flickr Backpacking", category: "photography" },
-
-      // ── Flickr Tags — direct community content ────────────────────────
-      { url: "https://www.flickr.com/photos/tags/findyourpark/", name: "Flickr #FindYourPark", category: "photography" },
-      { url: "https://www.flickr.com/photos/tags/optoutside/", name: "Flickr #OptOutside", category: "photography" },
-      { url: "https://www.flickr.com/photos/tags/publiclands/", name: "Flickr #PublicLands", category: "photography" },
-
-      // ── Reddit — community outdoor photography ────────────────────────
-      { url: "https://old.reddit.com/r/EarthPorn/top/?t=week", name: "r/EarthPorn", category: "photography" },
-      { url: "https://old.reddit.com/r/NationalPark/top/?t=week", name: "r/NationalPark", category: "photography" },
-      { url: "https://old.reddit.com/r/CampingandHiking/top/?t=week", name: "r/CampingAndHiking", category: "photography" },
-      { url: "https://old.reddit.com/r/WildernessBackpacking/top/?t=week", name: "r/WildernessBackpacking", category: "photography" },
-      { url: "https://old.reddit.com/r/camping/top/?t=week", name: "r/Camping", category: "photography" },
-      { url: "https://old.reddit.com/r/hiking/top/?t=week", name: "r/Hiking", category: "photography" },
-      { url: "https://old.reddit.com/r/wildlifephotography/top/?t=week", name: "r/WildlifePhotography", category: "photography" },
-
-      // ── Community outdoor organizations ────────────────────────────────
-      { url: "https://outdoorafro.org/blog/feed/", name: "Outdoor Afro", category: "editorial" },
-      { url: "https://latinooutdoors.org/feed/", name: "Latino Outdoors", category: "editorial" },
-      { url: "https://melaninbasecamp.com/feed/", name: "Melanin Basecamp", category: "editorial" },
-    ],
-  },
+  // UGC scraper removed — curated channel only
 }
 
 export default config

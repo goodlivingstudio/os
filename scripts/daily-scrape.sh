@@ -35,11 +35,7 @@ EXPLORE_PUSHED=$(echo "$EXPLORE_RESULT" | grep "Images pushed:" | awk '{print $N
 EXPLORE_PUSHED=${EXPLORE_PUSHED:-0}
 echo "Explore: $EXPLORE_PUSHED images pushed" >> "$LOG_FILE"
 
-# ── Explore UGC ──
-echo "Starting Explore UGC scraper..." >> "$LOG_FILE"
-UGC_RESULT=$(npx tsx scripts/gallery-scraper.ts --instance=explore --ugc 2>&1 | tail -5)
-UGC_PUSHED=$(echo "$UGC_RESULT" | grep "Images pushed:" | awk '{print $NF}')
-UGC_PUSHED=${UGC_PUSHED:-0}
+UGC_PUSHED=0
 echo "Explore UGC: $UGC_PUSHED images pushed" >> "$LOG_FILE"
 
 TOTAL=$((DISPATCH_PUSHED + EXPLORE_PUSHED + UGC_PUSHED))
