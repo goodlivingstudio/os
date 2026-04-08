@@ -448,8 +448,8 @@ export function LeftRail({
             {([
               { id: "signal" as const,    Icon: Radio,      title: "Signal",    action: null },
               { id: "audio" as const,     Icon: AudioLines, title: "Sound",     action: null },
-              { id: "synthesis" as const, Icon: Blend,      title: "Synthesis", action: null },
               { id: "gallery" as const,   Icon: Aperture,   title: "Surface",   action: "gallery" },
+              { id: "synthesis" as const, Icon: Blend,      title: "Synthesis", action: null },
             ]).map(tab => {
               const isActive = tab.action === "gallery" ? false : viewMode === tab.id
               return (

@@ -982,8 +982,8 @@ export default function Page() {
           const tabs = [
             { id: "signal" as const,    Icon: Radio,      label: "Signal"    },
             { id: "audio" as const,     Icon: AudioLines, label: "Sound"     },
-            { id: "synthesis" as const, Icon: Blend,      label: "Synthesis" },
             { id: "gallery" as const,   Icon: Aperture,   label: "Surface"   },
+            { id: "synthesis" as const, Icon: Blend,      label: "Synthesis" },
             { id: "cerebro" as const,   Icon: Brain,      label: "Cerebro"   },
           ]
           const activeIdx = tabs.findIndex(t => t.id === mobileTab)

@@ -295,7 +295,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ SIGNAL VELOCITY ─ */}
             {data.velocity && (data.velocity.accelerating.length > 0 || data.velocity.decelerating.length > 0) && (
               <div style={{
-                padding: "16px 0",
+                padding: "28px 0 16px",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
@@ -364,7 +364,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 8 }}>
                       {/* Image thumbnail */}
                       <div style={{
-                        width: 100, height: 68, borderRadius: 8, overflow: "hidden", flexShrink: 0,
+                        width: 150, height: 100, borderRadius: 8, overflow: "hidden", flexShrink: 0,
                         background: pattern.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
                       }}>
                         {pattern.imageUrl && (
