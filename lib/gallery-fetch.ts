@@ -31,6 +31,7 @@ export async function fetchArena(url: string, sourceName: string): Promise<Galle
         title: c.title || undefined,
         source: sourceName,
         linkUrl: c.source?.url || undefined,
+        arenaBlockId: String(c.id),
       }))
       .filter((img: GalleryImage) => img.url.length > 0)
   } catch {

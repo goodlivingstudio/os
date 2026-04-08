@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from "react"
-import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle } from "lucide-react"
+import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle, ThumbsUp, ThumbsDown } from "lucide-react"
 import { TYPE, MONO } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
 import { GALLERY_SOURCES, type GalleryImage, type ColorMood } from "@/lib/gallery"
@@ -185,7 +185,28 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
   const hasUgc = instanceConfig.gallerySources.some(s => s.name.toLowerCase().includes("ugc"))
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
   const [shuffleKey, setShuffleKey] = useState(0)
+  const [curatedIds, setCuratedIds] = useState<Set<string>>(new Set()) // track which images have been curated this session
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768
+
+  const handleCurate = useCallback(async (img: GalleryImage, action: "approve" | "reject") => {
+    setCuratedIds(prev => new Set(prev).add(img.id))
+    try {
+      await fetch("/api/gallery/curate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action,
+          imageUrl: img.url,
+          arenaBlockId: img.arenaBlockId,
+          source: img.source,
+        }),
+      })
+      if (action === "reject") {
+        setAllImages(prev => prev.filter(i => i.id !== img.id))
+        setLightboxIdx(null)
+      }
+    } catch { /* silent fail — image stays visible */ }
+  }, [])
   const galleryCols = isMobile ? 2 : 3
 
   useEffect(() => {
@@ -621,6 +642,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                     return (
                       <div
                         key={img.id}
+                        className="gallery-card"
                         onClick={() => setLightboxIdx(globalIdx)}
                         style={{
                           borderRadius: 8,
@@ -628,10 +650,57 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                           cursor: "zoom-in",
                           transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
                           animation: `gallery-reveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) ${Math.min(delay, 1400)}ms both`,
+                          position: "relative",
                         }}
                         onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.015)" }}
                         onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)" }}
                       >
+                        {/* Curation buttons — appear on hover */}
+                        {!curatedIds.has(img.id) && (
+                          <div className="gallery-curate" style={{
+                            position: "absolute", bottom: 8, right: 8, zIndex: 2,
+                            display: "flex", gap: 4,
+                            opacity: 0, transition: "opacity 0.2s",
+                            pointerEvents: "none",
+                          }}>
+                            <button
+                              onClick={e => { e.stopPropagation(); handleCurate(img, "approve") }}
+                              title="Keep this image"
+                              style={{
+                                width: 28, height: 28, borderRadius: 6,
+                                background: "rgba(0,0,0,0.6)", border: "none",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                                cursor: "pointer", color: "#fff", pointerEvents: "auto",
+                                backdropFilter: "blur(8px)",
+                              }}
+                            >
+                              <ThumbsUp size={13} strokeWidth={1.8} />
+                            </button>
+                            <button
+                              onClick={e => { e.stopPropagation(); handleCurate(img, "reject") }}
+                              title="Remove this image"
+                              style={{
+                                width: 28, height: 28, borderRadius: 6,
+                                background: "rgba(0,0,0,0.6)", border: "none",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                                cursor: "pointer", color: "#fff", pointerEvents: "auto",
+                                backdropFilter: "blur(8px)",
+                              }}
+                            >
+                              <ThumbsDown size={13} strokeWidth={1.8} />
+                            </button>
+                          </div>
+                        )}
+                        {curatedIds.has(img.id) && (
+                          <div style={{
+                            position: "absolute", bottom: 8, right: 8, zIndex: 2,
+                            padding: "3px 8px", borderRadius: 6,
+                            background: "rgba(0,0,0,0.5)", backdropFilter: "blur(8px)",
+                            ...TYPE.xs, color: "rgba(255,255,255,0.7)",
+                          }}>
+                            Saved
+                          </div>
+                        )}
                         {img.mediaType === "video" && img.videoUrl ? (
                           <video
                             src={img.videoUrl}

@@ -29,6 +29,7 @@ export interface GalleryImage {
   palette?: ColorSwatch[]  // top 3-5 dominant colors
   mediaType?: "image" | "video"
   videoUrl?: string
+  arenaBlockId?: string    // Are.na block ID for curation actions
 }
 
 /** Display-only image subset for color direction galleries */

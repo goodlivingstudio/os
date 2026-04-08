@@ -234,6 +234,16 @@ html, body {
   100% { opacity: 1; translate: 0 0; scale: 1; }
 }
 
+/* Gallery curation buttons — reveal on hover */
+.gallery-card:hover .gallery-curate {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+.gallery-curate button:hover {
+  background: rgba(0,0,0,0.8) !important;
+  transform: scale(1.1);
+}
+
 /* Hue concentration cluster glow — breathing energy */
 .hue-glow {
   animation: hue-breathe 2.8s ease-in-out infinite;
