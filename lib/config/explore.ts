@@ -234,29 +234,29 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
   ],
 
   categoryStyleDay: {
-    PLATFORM: { bg: "rgba(92,58,34,0.10)",    color: "#5C3A22" },
-    POLICY:   { bg: "rgba(139,74,42,0.10)",   color: "#8B4A2A" },
-    CULTURE:  { bg: "rgba(120,90,110,0.10)",  color: "#785A6E" },
-    INDUSTRY: { bg: "rgba(30,92,115,0.10)",   color: "#1E5C73" },
-    CRAFT:    { bg: "rgba(74,110,60,0.10)",   color: "#4A6E3C" },
+    PLATFORM: { bg: "rgba(30,94,62,0.10)",    color: "#1E5E3E" },
+    POLICY:   { bg: "rgba(142,94,30,0.10)",   color: "#8E5E1E" },
+    CULTURE:  { bg: "rgba(100,75,100,0.10)",  color: "#644B64" },
+    INDUSTRY: { bg: "rgba(30,117,106,0.10)",  color: "#1E756A" },
+    CRAFT:    { bg: "rgba(80,100,60,0.10)",   color: "#50643C" },
   },
 
   categoryStyleNight: {
-    PLATFORM: { bg: "rgba(139,94,60,0.14)",   color: "#A87A58" },
-    POLICY:   { bg: "rgba(194,112,70,0.12)",  color: "#C27046" },
-    CULTURE:  { bg: "rgba(160,120,148,0.12)", color: "#A07894" },
-    INDUSTRY: { bg: "rgba(74,143,168,0.12)",  color: "#4A8FA8" },
-    CRAFT:    { bg: "rgba(92,138,80,0.12)",   color: "#5C8A50" },
+    PLATFORM: { bg: "rgba(58,125,92,0.14)",   color: "#3A7D5C" },
+    POLICY:   { bg: "rgba(196,135,58,0.12)",  color: "#C4873A" },
+    CULTURE:  { bg: "rgba(140,108,140,0.12)", color: "#8C6C8C" },
+    INDUSTRY: { bg: "rgba(61,155,143,0.12)",  color: "#3D9B8F" },
+    CRAFT:    { bg: "rgba(110,138,80,0.12)",  color: "#6E8A50" },
   },
 
-  // ─── Theme — National park skins ────────────────────────────────────────────
+  // ─── Theme — Three regions of America ───────────────────────────────────────
 
   skins: [
-    { id: "sequoia", label: "Sequoia", dot: "#8B5E3C" },
-    { id: "glacier", label: "Glacier", dot: "#4A8FA8" },
-    { id: "canyon",  label: "Canyon",  dot: "#C27046" },
+    { id: "cascadia", label: "Cascadia", dot: "#3A7D5C" },
+    { id: "mesa",     label: "Mesa",     dot: "#3D9B8F" },
+    { id: "cider",    label: "Cider",    dot: "#C4873A" },
   ],
-  defaultSkin: "sequoia",
+  defaultSkin: "cascadia",
 
   // ─── Gallery Scraper — Public lands imagery + civic design excellence ──────
 
