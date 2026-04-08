@@ -352,16 +352,16 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     onClick={scroll.guardedClick(() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`))}
                     onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
                     style={{
-                      padding: "12px 0",
-                      borderTop: "1px solid var(--border)",
-                      borderBottom: i === data.patterns.length - 1 ? "1px solid var(--border)" : "none",
+                      padding: "20px 0",
+                      margin: "0 -20px",
+                      paddingLeft: 20, paddingRight: 20,
+                      borderBottom: "1px solid var(--border)",
                       cursor: "pointer", transition: "background 0.15s", outline: "none",
                     }}
                     onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
-                    {/* Top row: image + eyebrow/title centered horizontally */}
-                    <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 8 }}>
+                    <div style={{ display: "flex", gap: 20 }}>
                       {/* Image thumbnail */}
                       <div style={{
                         width: 150, height: 100, borderRadius: 8, overflow: "hidden", flexShrink: 0,
@@ -387,17 +387,17 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                         <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, letterSpacing: "-0.01em" }}>
                           {pattern.title}
                         </div>
+                        {/* Description — aligned with eyebrow and title */}
+                        {pattern.description && (
+                          <div style={{
+                            ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.6, marginTop: 8,
+                            ...(!isMobile ? { display: "-webkit-box", WebkitLineClamp: isTriage ? 2 : 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {}),
+                          }}>
+                            {pattern.description}
+                          </div>
+                        )}
                       </div>
                     </div>
-                    {/* Description — full width below image */}
-                    {pattern.description && (
-                      <div style={{
-                        ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.6,
-                        ...(!isMobile ? { display: "-webkit-box", WebkitLineClamp: isTriage ? 2 : 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {}),
-                      }}>
-                        {pattern.description}
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
