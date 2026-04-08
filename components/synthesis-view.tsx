@@ -353,6 +353,8 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
                     style={{
                       padding: "12px 16px",
+                      borderTop: "1px solid var(--border)",
+                      borderBottom: i === data.patterns.length - 1 ? "1px solid var(--border)" : "none",
                       cursor: "pointer", transition: "background 0.15s", outline: "none",
                     }}
                     onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
