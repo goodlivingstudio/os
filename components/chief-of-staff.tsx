@@ -10,7 +10,7 @@ import { storageKey } from "@/lib/config"
 // ─── Chief of Staff — data hook ─────────────────────────────────────────────
 
 const BRIEF_CACHE_KEY = storageKey("dcos-brief")
-const BRIEF_TTL = 4 * 60 * 60 * 1000 // 4 hours — resilient to weak connections
+const BRIEF_TTL = 12 * 60 * 60 * 1000 // 12 hours — reduces API cost
 const FETCH_TIMEOUT = 25_000 // 25s — allows for Vercel cold start + Anthropic latency
 
 export function useChiefOfStaff(articles: Article[]) {

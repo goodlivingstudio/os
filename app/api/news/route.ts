@@ -1,5 +1,5 @@
 // News feed aggregator — fetches RSS sources, annotates via Claude, sorts by recency
-export const revalidate = 1800 // 30 min cache
+export const revalidate = 43200 // 12 hours — matches annotation TTL, reduces API cost
 
 import Anthropic from "@anthropic-ai/sdk"
 import { FEEDS, type FeedDef } from "@/lib/feeds"
