@@ -253,8 +253,8 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
 
   skins: [
     { id: "cascadia", label: "Cascadia", dot: "#3A7D5C" },
-    { id: "mesa",     label: "Mesa",     dot: "#3D9B8F" },
-    { id: "cider",    label: "Cider",    dot: "#C4873A" },
+    { id: "mesa",     label: "Mesa",     dot: "#D4764A" },
+    { id: "marina",   label: "Marina",   dot: "#5A7EA8" },
   ],
   defaultSkin: "cascadia",
 

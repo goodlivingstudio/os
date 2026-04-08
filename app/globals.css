@@ -358,108 +358,108 @@ html, body {
 }
 
 /* ── Cascadia — Pacific Northwest ────────────────────────────── */
-/* Moss-draped old growth, slate ocean, rain-soaked fern */
+/* Moss-draped old growth, fern floor, temperate rainforest */
 :root.skin-cascadia {
-  --bg-primary:       #0B0E0C;
-  --bg-surface:       #141A16;
-  --bg-elevated:      #1C2420;
-  --card-tint:        #1A2A20;
+  --bg-primary:       #0A120E;
+  --bg-surface:       #121E17;
+  --bg-elevated:      #1A2820;
+  --card-tint:        #162218;
   --accent-primary:   #0E2418;
   --accent-secondary: #3A7D5C;
   --accent-muted:     #5A9E7C;
-  --text-primary:     #E8EDE9;
-  --text-secondary:   #94A89A;
-  --text-tertiary:    #7A8E80;
-  --border:           #222E26;
+  --text-primary:     #E2EBE5;
+  --text-secondary:   #8EA89A;
+  --text-tertiary:    #6A8474;
+  --border:           #1E3428;
   --live:             #4ade80;
-  --synth-indicator:  #1E3428;
+  --synth-indicator:  #1A2E22;
   --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(58,125,92,0.08);
 }
 :root.skin-cascadia.day {
-  --bg-primary:       #F0F4F1;
-  --bg-surface:       #E4EBE6;
-  --bg-elevated:      #D8E2DB;
-  --card-tint:        #E8F2EA;
-  --accent-primary:   #D4E8DA;
+  --bg-primary:       #EBF2ED;
+  --bg-surface:       #DCE8E0;
+  --bg-elevated:      #CDD8D0;
+  --card-tint:        #E0EEE4;
+  --accent-primary:   #D0E4D6;
   --accent-secondary: #1E5E3E;
   --accent-muted:     #2D7050;
-  --text-primary:     #121A14;
-  --text-secondary:   #283828;
-  --text-tertiary:    #4A5E4E;
-  --border:           #C8D6CC;
+  --text-primary:     #141E18;
+  --text-secondary:   #2A4434;
+  --text-tertiary:    #4A6454;
+  --border:           #BACED0;
   --live:             #166534;
-  --synth-indicator:  #D0E8D6;
+  --synth-indicator:  #CCE2D4;
   --shadow-tooltip:   0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(30,94,62,0.06);
 }
 
 /* ── Mesa — American Southwest ───────────────────────────────── */
-/* Red rock, turquoise sky, juniper and piñon at magic hour */
+/* Red rock, desert clay, turquoise sky at magic hour */
 :root.skin-mesa {
-  --bg-primary:       #0D0B0A;
-  --bg-surface:       #1A1614;
-  --bg-elevated:      #241E1A;
-  --card-tint:        #2A2018;
-  --accent-primary:   #0E2228;
-  --accent-secondary: #3D9B8F;
-  --accent-muted:     #5CB8AC;
-  --text-primary:     #F0ECE6;
-  --text-secondary:   #A89E92;
-  --text-tertiary:    #8E847A;
-  --border:           #2C2620;
+  --bg-primary:       #150C0A;
+  --bg-surface:       #221410;
+  --bg-elevated:      #2E1C16;
+  --card-tint:        #281810;
+  --accent-primary:   #2A160E;
+  --accent-secondary: #D4764A;
+  --accent-muted:     #E8986A;
+  --text-primary:     #F0E8E0;
+  --text-secondary:   #A8928A;
+  --text-tertiary:    #8A7468;
+  --border:           #3A2418;
   --live:             #4ade80;
-  --synth-indicator:  #1E2E30;
-  --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(61,155,143,0.08);
+  --synth-indicator:  #2E1E14;
+  --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,118,74,0.08);
 }
 :root.skin-mesa.day {
-  --bg-primary:       #F8F4EE;
-  --bg-surface:       #F0E8DE;
-  --bg-elevated:      #E6DDD0;
-  --card-tint:        #F4EEE4;
-  --accent-primary:   #D6EAE6;
-  --accent-secondary: #1E756A;
-  --accent-muted:     #2A8A7E;
-  --text-primary:     #1A1610;
-  --text-secondary:   #362E26;
-  --text-tertiary:    #685E52;
-  --border:           #DCD4C6;
+  --bg-primary:       #FAF0E8;
+  --bg-surface:       #F0E2D4;
+  --bg-elevated:      #E6D4C4;
+  --card-tint:        #F4E8DA;
+  --accent-primary:   #F0DCC8;
+  --accent-secondary: #8E4A2A;
+  --accent-muted:     #A05830;
+  --text-primary:     #1E1410;
+  --text-secondary:   #4A3428;
+  --text-tertiary:    #6A5444;
+  --border:           #E0D0C0;
   --live:             #166534;
-  --synth-indicator:  #CCE6E2;
-  --shadow-tooltip:   0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(30,117,106,0.06);
+  --synth-indicator:  #ECD8C4;
+  --shadow-tooltip:   0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(142,74,42,0.06);
 }
 
-/* ── Cider — New England ─────────────────────────────────────── */
-/* Peak foliage, granite walls, the amber hour before first frost */
-:root.skin-cider {
-  --bg-primary:       #0E0C0A;
-  --bg-surface:       #1A1610;
-  --bg-elevated:      #241E16;
-  --card-tint:        #2A2014;
-  --accent-primary:   #2E1E0A;
-  --accent-secondary: #C4873A;
-  --accent-muted:     #D8A058;
-  --text-primary:     #F2EDE4;
-  --text-secondary:   #AEA294;
-  --text-tertiary:    #928678;
-  --border:           #2E2618;
+/* ── Marina — New England Coast ──────────────────────────────── */
+/* Granite harbor, slate water, lighthouse at November dusk */
+:root.skin-marina {
+  --bg-primary:       #0A0E16;
+  --bg-surface:       #121822;
+  --bg-elevated:      #1A222E;
+  --card-tint:        #161E2A;
+  --accent-primary:   #0E1A2E;
+  --accent-secondary: #5A7EA8;
+  --accent-muted:     #7A9CBC;
+  --text-primary:     #E4E8F0;
+  --text-secondary:   #8A96AA;
+  --text-tertiary:    #6A7A90;
+  --border:           #1E283A;
   --live:             #4ade80;
-  --synth-indicator:  #382A16;
-  --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(196,135,58,0.08);
+  --synth-indicator:  #1A2436;
+  --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(90,126,168,0.08);
 }
-:root.skin-cider.day {
-  --bg-primary:       #FAF6EE;
-  --bg-surface:       #F2EAE0;
-  --bg-elevated:      #EAE0D2;
-  --card-tint:        #FFF4E6;
-  --accent-primary:   #F6E6CC;
-  --accent-secondary: #8E5E1E;
-  --accent-muted:     #A47028;
-  --text-primary:     #1C1610;
-  --text-secondary:   #3A3028;
-  --text-tertiary:    #6A5E4E;
-  --border:           #DED4C2;
+:root.skin-marina.day {
+  --bg-primary:       #EDF0F6;
+  --bg-surface:       #DEE4EE;
+  --bg-elevated:      #CED6E2;
+  --card-tint:        #E2E8F2;
+  --accent-primary:   #D4DCE8;
+  --accent-secondary: #2A4A6A;
+  --accent-muted:     #3A5E80;
+  --text-primary:     #141A24;
+  --text-secondary:   #2A3A50;
+  --text-tertiary:    #4A5E74;
+  --border:           #C0CAD8;
   --live:             #166534;
-  --synth-indicator:  #F0E0C6;
-  --shadow-tooltip:   0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(142,94,30,0.06);
+  --synth-indicator:  #D0D8E6;
+  --shadow-tooltip:   0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(42,74,106,0.06);
 }
 
 /* ─── Ticker scroll ────────────────────────────────────────────── */
