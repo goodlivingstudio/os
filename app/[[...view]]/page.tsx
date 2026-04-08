@@ -886,19 +886,40 @@ export default function Page() {
                     </div>
                   </div>
                   <div style={{ height: 1, background: "var(--border)", margin: "4px 0" }} />
-                  {/* Config + Pulse links */}
-                  <button
-                    onClick={() => { setMobileTab("config" as typeof mobileTab); setMobileMenuOpen(false) }}
-                    style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer", ...TYPE.sm, color: "var(--text-secondary)", textAlign: "left" }}
-                  >
-                    <Settings size={14} strokeWidth={1.5} /> Configuration
-                  </button>
-                  <button
-                    onClick={() => { setMobileTab("signal"); setMobileMenuOpen(false); /* Pulse not a mobile tab — navigate via config */ }}
-                    style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer", ...TYPE.sm, color: "var(--text-secondary)", textAlign: "left" }}
-                  >
-                    <Activity size={14} strokeWidth={1.5} /> Source Pulse
-                  </button>
+                  {/* Project switcher */}
+                  <div style={{ padding: "8px 12px" }}>
+                    <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Projects</div>
+                    {([
+                      { name: "Dispatch", url: "https://dispatch.goodliving.studio", id: "dispatch" },
+                      { name: "Explore", url: "https://explore.goodliving.studio", id: "explore" },
+                      { name: "Lilly", url: "https://lilly.goodliving.studio", id: "lilly" },
+                    ]).map(project => {
+                      const isCurrent = instanceConfig.id === project.id
+                      return (
+                        <a
+                          key={project.id}
+                          href={isCurrent ? undefined : project.url}
+                          onClick={isCurrent ? (e: React.MouseEvent) => { e.preventDefault(); setMobileMenuOpen(false) } : undefined}
+                          style={{
+                            display: "flex", alignItems: "center", gap: 8,
+                            width: "100%", padding: "8px 4px",
+                            textDecoration: "none",
+                            ...TYPE.sm,
+                            color: isCurrent ? "var(--accent-secondary)" : "var(--text-secondary)",
+                            fontWeight: isCurrent ? 600 : 400,
+                            cursor: isCurrent ? "default" : "pointer",
+                            transition: "color 0.15s",
+                          }}
+                        >
+                          <span style={{
+                            width: 6, height: 6, borderRadius: "50%", flexShrink: 0,
+                            background: isCurrent ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                          }} />
+                          {project.name}
+                        </a>
+                      )
+                    })}
+                  </div>
                 </div>
               )}
             </div>
