@@ -12,20 +12,28 @@ export interface ImageCandidate {
   height?: number
 }
 
-// Download image as base64 — more reliable than URL source for varied CDNs
+// Detect actual image format from magic bytes
+function detectMediaType(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer)
+  if (bytes[0] === 0xFF && bytes[1] === 0xD8) return "image/jpeg"
+  if (bytes[0] === 0x89 && bytes[1] === 0x50) return "image/png"
+  if (bytes[0] === 0x47 && bytes[1] === 0x49) return "image/gif"
+  if (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[8] === 0x57 && bytes[9] === 0x45) return "image/webp"
+  return "image/jpeg" // fallback
+}
+
+// Download image as base64 — detects actual format from bytes, not headers
 async function fetchImageBase64(url: string): Promise<{ data: string; mediaType: string } | null> {
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout(10000) })
     if (!res.ok) return null
-    const contentType = res.headers.get("content-type") || "image/jpeg"
-    const mediaType = contentType.split(";")[0].trim()
-    // Only accept image types
-    if (!mediaType.startsWith("image/")) return null
     const buffer = await res.arrayBuffer()
     // Skip tiny images (likely icons/tracking pixels)
     if (buffer.byteLength < 5000) return null
     // Skip huge images to stay under API limits (>5MB)
     if (buffer.byteLength > 5 * 1024 * 1024) return null
+    // Detect actual format from magic bytes — don't trust Content-Type header
+    const mediaType = detectMediaType(buffer)
     const data = Buffer.from(buffer).toString("base64")
     return { data, mediaType }
   } catch {
@@ -97,7 +105,7 @@ export async function visionFilter(
 
       if (!response.ok) {
         const err = await response.text()
-        console.log(`  Vision API error: ${response.status} ${err.slice(0, 100)}`)
+        console.log(`  Vision API error: ${response.status} ${err.slice(0, 300)}`)
         continue
       }
 
