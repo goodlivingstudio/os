@@ -220,7 +220,7 @@ export const FeedCard = memo(function FeedCard({ article, index, onSignalEnter, 
             transition: "opacity 0.15s, color 0.15s",
           }}
         >
-          <Bookmark size={14} strokeWidth={1.5} fill={isPinned ? "currentColor" : "none"} />
+          <Bookmark size={14} strokeWidth={0} fill="currentColor" />
         </button>
       )}
     </div>
