@@ -264,6 +264,16 @@ When scoring and surfacing signals, weight INTELLIGENCE and POSITIONING sources 
     { url: "https://tympanus.net/codrops/feed/", name: "Codrops", type: "rss" },
     { url: "https://www.tendril.ca/feed", name: "Tendril", type: "rss" },
     { url: "https://www.architecturaldigest.com/feed/rss", name: "Architectural Digest", type: "rss" },
+    // Visual culture + photography (expanded)
+    { url: "https://www.itsnicethat.com/rss", name: "Its Nice That", type: "rss" },
+    { url: "https://www.creativeboom.com/feed/", name: "Creative Boom", type: "rss" },
+    { url: "https://abduzeedo.com/feed/", name: "Abduzeedo", type: "rss" },
+    { url: "https://weandthecolor.com/feed", name: "We And The Color", type: "rss" },
+    { url: "https://www.creativereview.co.uk/feed/", name: "Creative Review", type: "rss" },
+    { url: "https://theinspirationgrid.com/feed/", name: "Inspiration Grid", type: "rss" },
+    // Tumblr (RSS via /rss suffix)
+    { url: "https://thedsgnblog.tumblr.com/rss", name: "The Design Blog", type: "rss" },
+    { url: "https://designeverywhere.tumblr.com/rss", name: "Design Everywhere Tumblr", type: "rss" },
   ],
 
   // ─── Ticker ─────────────────────────────────────────────────────────────────
@@ -337,25 +347,86 @@ When scoring and surfacing signals, weight INTELLIGENCE and POSITIONING sources 
 4 = Strong visual work — good composition, interesting subject
 5 = Exceptional — the kind of image a design leader would save for reference`,
     targets: [
+      // ── Ricardo Matos dailies — the benchmark ────────────────────────
+      { url: "https://ricardommatos.github.io/daily-gllry-1/", name: "Ricardo Daily 1", category: "gallery" },
+      { url: "https://ricardommatos.github.io/daily-gllry-2/", name: "Ricardo Daily 2", category: "gallery" },
+      { url: "https://ricardommatos.github.io/daily-gllry-3/", name: "Ricardo Daily 3", category: "gallery" },
+      { url: "https://ricardommatos.github.io/daily-gllry-4/", name: "Ricardo Daily 4", category: "gallery" },
+      { url: "https://ricardommatos.github.io/daily-gllry-5/", name: "Ricardo Daily 5", category: "gallery" },
+      { url: "https://ricardommatos.github.io/daily-gllry-6/", name: "Ricardo Daily 6", category: "gallery" },
+
+      // ── Web design galleries ──────────────────────────────────────────
       { url: "https://savee.it/", name: "Savee", category: "gallery" },
       { url: "https://godly.website/", name: "Godly", category: "gallery" },
       { url: "https://www.siteinspire.com/", name: "Siteinspire", category: "gallery" },
       { url: "https://dribbble.com/shots/popular", name: "Dribbble", category: "gallery" },
       { url: "https://www.behance.net/", name: "Behance", category: "gallery" },
-      { url: "https://hoverstates.com/", name: "Hover States", category: "gallery" },
       { url: "https://minimal.gallery/", name: "Minimal Gallery", category: "gallery" },
       { url: "https://www.awwwards.com/websites/", name: "Awwwards", category: "gallery" },
       { url: "https://www.searchsystem.co/", name: "SearchSystem", category: "gallery" },
       { url: "https://www.designeverywhere.co/", name: "Design Everywhere", category: "gallery" },
       { url: "https://www.curated.design/", name: "Curated Inspiration", category: "gallery" },
       { url: "https://www.visualjournal.it/", name: "Visual Journal", category: "gallery" },
+      { url: "https://landing.love/", name: "Landing Love", category: "gallery" },
+
+      // ── Visual culture + photography ──────────────────────────────────
+      { url: "https://www.ignant.com/", name: "IGNANT", category: "editorial" },
+      { url: "https://www.thisiscolossal.com/", name: "Colossal", category: "editorial" },
+      { url: "https://www.booooooom.com/", name: "Booooooom", category: "editorial" },
+      { url: "https://www.featureshoot.com/", name: "Feature Shoot", category: "editorial" },
+      { url: "https://www.juxtapoz.com/", name: "Juxtapoz", category: "editorial" },
+      { url: "https://www.fubiz.net/en/", name: "Fubiz", category: "editorial" },
+      { url: "https://trendland.com/", name: "Trendland", category: "editorial" },
+      { url: "https://www.yellowtrace.com.au/", name: "Yellowtrace", category: "editorial" },
+      { url: "https://plainmagazine.com/", name: "Plain Magazine", category: "editorial" },
+      { url: "https://minimalissimo.com/", name: "Minimalissimo", category: "editorial" },
+      { url: "https://www.itsnicethat.com/", name: "Its Nice That", category: "editorial" },
+      { url: "https://www.creativeboom.com/", name: "Creative Boom", category: "editorial" },
+      { url: "https://www.theinspirationgrid.com/", name: "Inspiration Grid", category: "editorial" },
+      { url: "https://abduzeedo.com/", name: "Abduzeedo", category: "editorial" },
+      { url: "https://weandthecolor.com/", name: "We And The Color", category: "editorial" },
+      { url: "https://www.creativereview.co.uk/", name: "Creative Review", category: "editorial" },
+
+      // ── Tumblr — curated visual culture (still active) ────────────────
+      { url: "https://thedsgnblog.tumblr.com/", name: "The Design Blog", category: "gallery" },
+      { url: "https://designeverywhere.tumblr.com/", name: "Design Everywhere Tumblr", category: "gallery" },
+      { url: "https://www.thisishappiness.com/", name: "This Isn't Happiness", category: "gallery" },
+
+      // ── Architecture + interiors ──────────────────────────────────────
+      { url: "https://www.dezeen.com/", name: "Dezeen", category: "editorial" },
+      { url: "https://www.archdaily.com/", name: "ArchDaily", category: "editorial" },
+      { url: "https://www.designboom.com/", name: "Designboom", category: "editorial" },
+      { url: "https://leibal.com/", name: "Leibal", category: "editorial" },
+      { url: "https://www.wallpaper.com/", name: "Wallpaper*", category: "editorial" },
+      { url: "https://www.architecturaldigest.com/", name: "Architectural Digest", category: "editorial" },
+
+      // ── Street culture + fashion photography ──────────────────────────
+      { url: "https://hypebeast.com/", name: "Hypebeast", category: "editorial" },
+      { url: "https://highsnobiety.com/", name: "Highsnobiety", category: "editorial" },
+
+      // ── Digital craft + code art ──────────────────────────────────────
+      { url: "https://tympanus.net/codrops/", name: "Codrops", category: "gallery" },
+
+      // ── AI-generated visual art ───────────────────────────────────────
+      { url: "https://www.lummi.ai/creator/ricardomatos", name: "Ricardo Matos (Lummi)", category: "gallery" },
+
+      // ── Design agencies ───────────────────────────────────────────────
       { url: "https://fantasy.co/", name: "Fantasy", category: "agency" },
       { url: "https://www.monks.com/work", name: "Monks", category: "agency" },
       { url: "https://erichu.info/", name: "Eric Hu", category: "agency" },
+      { url: "https://www.daisychainstudio.net/", name: "Daisy Chain", category: "agency" },
+      { url: "https://mouthwash.studio/", name: "Mouthwash Studio", category: "agency" },
       { url: "https://koto.studio/", name: "Koto", category: "agency" },
+      { url: "https://dfrnt.com/", name: "DFRNT", category: "agency" },
       { url: "https://tendril.ca/", name: "Tendril", category: "agency" },
+      { url: "https://watsondesign.com/", name: "Watson", category: "agency" },
+      { url: "https://locomotive.ca/en", name: "Locomotive", category: "agency" },
       { url: "https://metalab.com/work", name: "Metalab", category: "agency" },
       { url: "https://portorocha.com/", name: "Porto Rocha", category: "agency" },
+      { url: "https://www.studiodumbar.com/work", name: "Studio Dumbar", category: "agency" },
+      { url: "https://www.pentagram.com/work", name: "Pentagram", category: "agency" },
+      { url: "https://collins1.com/", name: "Collins", category: "agency" },
+      { url: "https://order.design/", name: "Order", category: "agency" },
     ],
   },
 }
