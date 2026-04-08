@@ -202,12 +202,12 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
         </span>
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
+      <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
 
         {/* ── Loading ── */}
         {loading && (
           <div role="status" aria-live="polite" style={{ position: "relative", overflow: "hidden" }}>
-            <div style={{ padding: "32px 20px" }}>
+            <div style={{ padding: "32px 0" }}>
               {SYNTHESIS_STATUSES.slice(0, statusIdx + 1).map((line, i) => (
                 <div
                   key={i}
@@ -265,7 +265,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
 
             {/* ─ WEEKLY SHIFT banner ─ */}
             <div style={{
-              background: "var(--bg-primary)", padding: "16px 16px",
+              background: "var(--bg-primary)", padding: "16px 0",
               borderBottom: "1px solid var(--border)",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
@@ -295,7 +295,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ SIGNAL VELOCITY ─ */}
             {data.velocity && (data.velocity.accelerating.length > 0 || data.velocity.decelerating.length > 0) && (
               <div style={{
-                padding: "16px 16px",
+                padding: "16px 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
@@ -341,7 +341,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
               <div style={{
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 200ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", padding: "16px 16px 14px", fontSize: 11 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", padding: "16px 0 14px", fontSize: 11 }}>
                   Convergences
                 </div>
                 {data.patterns.map((pattern, i) => (
@@ -352,7 +352,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     onClick={scroll.guardedClick(() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`))}
                     onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
                     style={{
-                      padding: "12px 16px",
+                      padding: "12px 0",
                       borderTop: "1px solid var(--border)",
                       borderBottom: i === data.patterns.length - 1 ? "1px solid var(--border)" : "none",
                       cursor: "pointer", transition: "background 0.15s", outline: "none",
@@ -406,7 +406,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ URGENCY HEATMAP ─ */}
             {!isTriage && data.heatmap && data.heatmap.layers.length > 0 && (
               <div style={{
-                padding: "16px 16px",
+                padding: "16px 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 300ms both",
               }}>
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 11 }}>
@@ -513,7 +513,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ ASK CEREBRO — 4 cards ─ */}
             {cerebroTopics.length > 0 && (
               <div style={{
-                padding: "16px 16px",
+                padding: "16px 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 500ms both",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 14 }}>

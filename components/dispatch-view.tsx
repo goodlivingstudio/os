@@ -476,11 +476,11 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
         )}
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
+      <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
 
         {/* ── Loading ── */}
         {loading && (
-          <div style={{ padding: "32px 20px" }}>
+          <div style={{ padding: "32px 0" }}>
             {DISPATCH_STATUSES.slice(0, statusIdx + 1).map((line, idx) => (
               <div
                 key={idx}
@@ -523,7 +523,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
 
             {/* ─ EDITORIAL HEADER — centered broadsheet ─ */}
             <div className="dispatch-header-content" style={{
-              padding: "36px 48px 32px",
+              padding: "36px 0 32px",
               borderBottom: "1px solid var(--border)",
               textAlign: "center",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",

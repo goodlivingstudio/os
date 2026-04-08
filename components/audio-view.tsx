@@ -682,7 +682,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
         const activeCount = activeLayer === "all" ? pool.length : pool.filter(ep => ep.layer === activeLayer).length
 
         return (
-          <div style={{ flexShrink: 0, padding: "12px 16px 0" }}>
+          <div style={{ flexShrink: 0, padding: "12px 32px 0" }}>
             {isMobile ? (
               /* ── Mobile: dropdown + triage/explore toggle — matches Signal ── */
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
@@ -843,10 +843,10 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
         )
       })()}
 
-      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
+      <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
       {/* Loading state — matches Signal feed skeleton pattern */}
       {loading ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "8px 16px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "8px 0" }}>
           {[...Array(8)].map((_, i) => (
             <div
               key={i}
@@ -863,7 +863,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
           ))}
         </div>
       ) : triageWaiting ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "8px 16px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "8px 0" }}>
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
@@ -884,7 +884,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
           No episodes loaded. Check podcast feed configuration.
         </div>
       ) : (
-        <div className="episode-grid" style={{ gap: 8, padding: "8px 16px" }}>
+        <div className="episode-grid" style={{ gap: 8, padding: "8px 0" }}>
           {filtered.map((ep, i) => (
             <EpisodeCard
               key={ep.id}

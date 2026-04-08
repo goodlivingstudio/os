@@ -730,7 +730,7 @@ export default function Page() {
           </div>
         )}
       </div>
-      <div id="main-feed" role="feed" aria-label="Intelligence feed" tabIndex={-1} style={{ flex: 1, overflowY: "auto", padding: "8px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
+      <div id="main-feed" role="feed" aria-label="Intelligence feed" tabIndex={-1} className="view-padding" style={{ flex: 1, overflowY: "auto", paddingTop: 8, paddingBottom: 8, display: "flex", flexDirection: "column", gap: 8 }}>
         {feedLoading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {[...Array(8)].map((_, i) => (
