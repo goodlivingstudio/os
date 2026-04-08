@@ -46,7 +46,9 @@ function useTheme() {
   const skinRef               = useRef<Skin>(DEFAULT_SKIN)
 
   useEffect(() => {
-    const storedSkin = (localStorage.getItem(`${STORAGE_PREFIX}-skin`) as Skin) || DEFAULT_SKIN
+    const rawSkin = localStorage.getItem(`${STORAGE_PREFIX}-skin`)
+    const validSkinIds = instanceConfig.skins.map(s => s.id)
+    const storedSkin = (rawSkin && validSkinIds.includes(rawSkin) ? rawSkin : DEFAULT_SKIN) as Skin
     const storedMode = localStorage.getItem(`${STORAGE_PREFIX}-theme`)
     const storedModeTs = localStorage.getItem(`${STORAGE_PREFIX}-theme-ts`)
     const THEME_SESSION_TTL = 4 * 60 * 60 * 1000 // 4 hours
