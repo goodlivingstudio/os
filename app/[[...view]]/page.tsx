@@ -995,7 +995,7 @@ export default function Page() {
             {mobileTab === "synthesis" && <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} sortBy={sortBy} />}
             {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} onSortChange={setSortBy} pinnedArticleIds={new Set(pinnedArticles.map(a => a.id))} onPinArticle={handlePinArticle} />}
             {mobileTab === "gallery"   && <GalleryOverlay onClose={() => setMobileTab("signal")} excludedSources={excludedSources} articles={articles} onDeliberate={handleSynthesisDeliberate} />}
-            {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} /></div>}
+            {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} hideHeader /></div>}
             {mobileTab === "config"    && <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} />}
           </div>
         </div>

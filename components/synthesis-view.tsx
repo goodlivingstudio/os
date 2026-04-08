@@ -189,14 +189,15 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
       aria-label="Synthesis intelligence view"
       style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}
     >
-      {/* Header bar */}
+      {/* Header bar — desktop: title + date. Mobile: centered date only (title in app header) */}
       <div style={{
-        flexShrink: 0, height: 40, display: "flex", alignItems: "center", justifyContent: "space-between",
+        flexShrink: 0, height: 40, display: "flex", alignItems: "center",
+        justifyContent: isMobile ? "center" : "space-between",
         padding: "0 20px", borderBottom: "1px solid var(--border)",
       }}>
-        <span style={{ ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+        {!isMobile && <span style={{ ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
           Synthesis
-        </span>
+        </span>}
         <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)" }}>
           {weekRange}
         </span>

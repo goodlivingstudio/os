@@ -80,11 +80,12 @@ const PROVOCATIONS = instanceConfig.id === "explore" ? EXPLORE_PROVOCATIONS : DI
 
 // ─── Cerebro — strategic intelligence advisor ───────────────────────────────
 
-export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
+export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHeader }: {
   articles: Article[]
   pendingPrompt?: { text: string; id: number } | null
   onFocusMode?: () => void
   maxWidth?: number
+  hideHeader?: boolean
 }) {
   const [messages,  setMessages]  = useState<Message[]>([])
   const [input,     setInput]     = useState("")
@@ -328,8 +329,8 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth }: {
         overflow: "hidden",
       }}
     >
-      {/* Header — hidden in focus mode */}
-      {!maxWidth && <div
+      {/* Header — hidden in focus mode and when hideHeader is set (mobile) */}
+      {!maxWidth && !hideHeader && <div
         style={{
           flexShrink: 0,
           height: 40,
