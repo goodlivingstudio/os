@@ -1,9 +1,12 @@
-// Gallery Curation API — thumbs up/down on gallery images
-// Approve: protects image from auto-archiving, logs positive signal
-// Reject: removes from Are.na + adds to blocklist so scrapers skip it
+// Gallery Curation API — three-action image curation
+//
+// approve:      Thumbs up — protect from auto-archiving, positive taste signal
+// reject:       X — wrong content. Remove + blocklist + teach taste to avoid this subject
+// low-quality:  Low fidelity — right subject, bad execution. Remove + blocklist the URL
+//               but DON'T penalize the subject matter (watermarks, blurry, bad crop)
 //
 // POST /api/gallery/curate
-// Body: { action: "approve" | "reject", imageUrl: string, arenaBlockId?: string, source?: string }
+// Body: { action: "approve" | "reject" | "low-quality", imageUrl: string, arenaBlockId?: string, source?: string }
 
 import { kv } from "@vercel/kv"
 import { kvKey } from "@/lib/config"
@@ -12,12 +15,14 @@ const KV_AVAILABLE = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_T
 const ARENA_API = "https://api.are.na/v2"
 
 // KV keys for curation data
-const BLOCKLIST_KEY = kvKey("gallery:blocklist")       // Set of rejected image URLs
-const APPROVED_KEY = kvKey("gallery:approved")          // Set of approved image URLs
-const CURATION_LOG_KEY = kvKey("gallery:curation-log")  // Recent curation actions for taste learning
+const BLOCKLIST_KEY = kvKey("gallery:blocklist")           // Set of rejected image URLs (both reject + low-quality)
+const APPROVED_KEY = kvKey("gallery:approved")              // Set of approved image URLs
+const CONTENT_REJECT_KEY = kvKey("gallery:content-rejects") // URLs rejected for CONTENT (teaches taste to avoid subject)
+const QUALITY_REJECT_KEY = kvKey("gallery:quality-rejects") // URLs rejected for QUALITY (subject is fine, find better version)
+const CURATION_LOG_KEY = kvKey("gallery:curation-log")      // Recent curation actions for taste learning
 
 interface CurationAction {
-  action: "approve" | "reject"
+  action: "approve" | "reject" | "low-quality"
   imageUrl: string
   source?: string
   timestamp: string
@@ -31,66 +36,65 @@ export async function POST(req: Request) {
       return Response.json({ error: "action and imageUrl required" }, { status: 400 })
     }
 
-    if (action !== "approve" && action !== "reject") {
-      return Response.json({ error: "action must be 'approve' or 'reject'" }, { status: 400 })
+    if (!["approve", "reject", "low-quality"].includes(action)) {
+      return Response.json({ error: "action must be 'approve', 'reject', or 'low-quality'" }, { status: 400 })
     }
 
     const results: string[] = []
 
-    // ── Reject: remove from Are.na + add to blocklist ──
-    if (action === "reject") {
-      // Delete from Are.na if we have a block ID and token
-      if (arenaBlockId && process.env.ARENA_ACCESS_TOKEN) {
-        // Try both channels (curated and UGC) — the block could be in either
-        const channels = await getChannelSlugs()
-        for (const slug of channels) {
-          try {
-            const res = await fetch(`${ARENA_API}/channels/${slug}/blocks/${arenaBlockId}`, {
-              method: "DELETE",
-              headers: { "Authorization": `Bearer ${process.env.ARENA_ACCESS_TOKEN}` },
-            })
-            if (res.ok) results.push(`Removed from Are.na (${slug})`)
-          } catch { /* channel might not contain this block */ }
-        }
-      }
-
-      // Add to KV blocklist
-      if (KV_AVAILABLE) {
-        await kv.sadd(BLOCKLIST_KEY, imageUrl)
-        // Also remove from approved set if it was there
-        await kv.srem(APPROVED_KEY, imageUrl)
-        results.push("Added to blocklist")
+    // ── Remove from Are.na (both reject and low-quality remove the image) ──
+    if ((action === "reject" || action === "low-quality") && arenaBlockId && process.env.ARENA_ACCESS_TOKEN) {
+      const channels = await getChannelSlugs()
+      for (const slug of channels) {
+        try {
+          const res = await fetch(`${ARENA_API}/channels/${slug}/blocks/${arenaBlockId}`, {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${process.env.ARENA_ACCESS_TOKEN}` },
+          })
+          if (res.ok) results.push(`Removed from Are.na (${slug})`)
+        } catch { /* channel might not contain this block */ }
       }
     }
 
-    // ── Approve: mark as protected ──
-    if (action === "approve") {
-      if (KV_AVAILABLE) {
-        await kv.sadd(APPROVED_KEY, imageUrl)
-        // Remove from blocklist if it was there (undo previous reject)
-        await kv.srem(BLOCKLIST_KEY, imageUrl)
-        results.push("Marked as approved")
-      }
-    }
-
-    // ── Log the action for taste learning ──
     if (KV_AVAILABLE) {
+      // ── Reject (content): blocklist + record as content rejection ──
+      if (action === "reject") {
+        await kv.sadd(BLOCKLIST_KEY, imageUrl)
+        await kv.sadd(CONTENT_REJECT_KEY, imageUrl)
+        await kv.srem(APPROVED_KEY, imageUrl)
+        results.push("Blocklisted (content)")
+      }
+
+      // ── Low quality: blocklist the URL but record as quality rejection ──
+      // The scraper won't re-add this exact image, but won't avoid the subject matter
+      if (action === "low-quality") {
+        await kv.sadd(BLOCKLIST_KEY, imageUrl)
+        await kv.sadd(QUALITY_REJECT_KEY, imageUrl)
+        await kv.srem(APPROVED_KEY, imageUrl)
+        results.push("Blocklisted (quality)")
+      }
+
+      // ── Approve: mark as protected ──
+      if (action === "approve") {
+        await kv.sadd(APPROVED_KEY, imageUrl)
+        await kv.srem(BLOCKLIST_KEY, imageUrl)
+        await kv.srem(CONTENT_REJECT_KEY, imageUrl)
+        await kv.srem(QUALITY_REJECT_KEY, imageUrl)
+        results.push("Approved")
+      }
+
+      // ── Log the action ──
       const logEntry: CurationAction = {
         action,
         imageUrl,
         source,
         timestamp: new Date().toISOString(),
       }
-      // Keep a rolling log of last 500 actions
       await kv.lpush(CURATION_LOG_KEY, JSON.stringify(logEntry))
       await kv.ltrim(CURATION_LOG_KEY, 0, 499)
     }
 
-    return Response.json({
-      success: true,
-      action,
-      results,
-    })
+    return Response.json({ success: true, action, results })
   } catch (err) {
     return Response.json(
       { error: err instanceof Error ? err.message : "Unknown error" },

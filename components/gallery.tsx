@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from "react"
-import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle, ThumbsUp, ThumbsDown } from "lucide-react"
+import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle, ThumbsUp, Ban, ImageOff } from "lucide-react"
 import { TYPE, MONO } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
 import { GALLERY_SOURCES, type GalleryImage, type ColorMood } from "@/lib/gallery"
@@ -188,7 +188,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
   const [curatedIds, setCuratedIds] = useState<Set<string>>(new Set()) // track which images have been curated this session
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768
 
-  const handleCurate = useCallback(async (img: GalleryImage, action: "approve" | "reject") => {
+  const handleCurate = useCallback(async (img: GalleryImage, action: "approve" | "reject" | "low-quality") => {
     setCuratedIds(prev => new Set(prev).add(img.id))
     try {
       await fetch("/api/gallery/curate", {
@@ -201,7 +201,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
           source: img.source,
         }),
       })
-      if (action === "reject") {
+      if (action === "reject" || action === "low-quality") {
         setAllImages(prev => prev.filter(i => i.id !== img.id))
         setLightboxIdx(null)
       }
@@ -659,46 +659,59 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                         {!curatedIds.has(img.id) && (
                           <div className="gallery-curate" style={{
                             position: "absolute", bottom: 8, right: 8, zIndex: 2,
-                            display: "flex", gap: 4,
+                            display: "flex", gap: 3,
                             opacity: 0, transition: "opacity 0.2s",
                             pointerEvents: "none",
                           }}>
                             <button
                               onClick={e => { e.stopPropagation(); handleCurate(img, "approve") }}
-                              title="Keep this image"
+                              title="Keep — protect this image"
                               style={{
-                                width: 28, height: 28, borderRadius: 6,
-                                background: "rgba(0,0,0,0.6)", border: "none",
+                                width: 26, height: 26, borderRadius: 5,
+                                background: "rgba(0,0,0,0.55)", border: "none",
                                 display: "flex", alignItems: "center", justifyContent: "center",
-                                cursor: "pointer", color: "#fff", pointerEvents: "auto",
+                                cursor: "pointer", color: "rgba(255,255,255,0.85)", pointerEvents: "auto",
                                 backdropFilter: "blur(8px)",
                               }}
                             >
-                              <ThumbsUp size={13} strokeWidth={1.8} />
+                              <ThumbsUp size={12} strokeWidth={1.8} />
+                            </button>
+                            <button
+                              onClick={e => { e.stopPropagation(); handleCurate(img, "low-quality") }}
+                              title="Low fidelity — remove (subject is fine, quality isn't)"
+                              style={{
+                                width: 26, height: 26, borderRadius: 5,
+                                background: "rgba(0,0,0,0.55)", border: "none",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                                cursor: "pointer", color: "rgba(255,255,255,0.85)", pointerEvents: "auto",
+                                backdropFilter: "blur(8px)",
+                              }}
+                            >
+                              <ImageOff size={12} strokeWidth={1.8} />
                             </button>
                             <button
                               onClick={e => { e.stopPropagation(); handleCurate(img, "reject") }}
-                              title="Remove this image"
+                              title="Doesn't belong — remove and don't show content like this"
                               style={{
-                                width: 28, height: 28, borderRadius: 6,
-                                background: "rgba(0,0,0,0.6)", border: "none",
+                                width: 26, height: 26, borderRadius: 5,
+                                background: "rgba(0,0,0,0.55)", border: "none",
                                 display: "flex", alignItems: "center", justifyContent: "center",
-                                cursor: "pointer", color: "#fff", pointerEvents: "auto",
+                                cursor: "pointer", color: "rgba(255,255,255,0.85)", pointerEvents: "auto",
                                 backdropFilter: "blur(8px)",
                               }}
                             >
-                              <ThumbsDown size={13} strokeWidth={1.8} />
+                              <Ban size={12} strokeWidth={1.8} />
                             </button>
                           </div>
                         )}
                         {curatedIds.has(img.id) && (
                           <div style={{
                             position: "absolute", bottom: 8, right: 8, zIndex: 2,
-                            padding: "3px 8px", borderRadius: 6,
-                            background: "rgba(0,0,0,0.5)", backdropFilter: "blur(8px)",
-                            ...TYPE.xs, color: "rgba(255,255,255,0.7)",
+                            padding: "2px 7px", borderRadius: 5,
+                            background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)",
+                            ...TYPE.xs, color: "rgba(255,255,255,0.6)",
                           }}>
-                            Saved
+                            ✓
                           </div>
                         )}
                         {img.mediaType === "video" && img.videoUrl ? (
