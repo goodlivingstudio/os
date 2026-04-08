@@ -109,7 +109,7 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episode
       <div
         style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          width: "100%", padding: "0 32px", height: 40,
+          width: "100%", padding: "0 20px", height: 40,
           borderBottom: "1px solid var(--border)",
         }}
       >
@@ -682,7 +682,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
         const activeCount = activeLayer === "all" ? pool.length : pool.filter(ep => ep.layer === activeLayer).length
 
         return (
-          <div style={{ flexShrink: 0, padding: "12px 32px 0" }}>
+          <div style={{ flexShrink: 0, padding: "12px 20px 0" }}>
             {isMobile ? (
               /* ── Mobile: dropdown + triage/explore toggle — matches Signal ── */
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
