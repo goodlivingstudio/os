@@ -902,18 +902,20 @@ export default function Page() {
                           onClick={isCurrent ? (e: React.MouseEvent) => { e.preventDefault(); setMobileMenuOpen(false) } : undefined}
                           style={{
                             display: "flex", alignItems: "center", gap: 8,
-                            width: "100%", padding: "8px 4px",
+                            width: "100%", padding: "8px 10px",
+                            borderRadius: 6,
                             textDecoration: "none",
                             ...TYPE.sm,
-                            color: isCurrent ? "var(--accent-secondary)" : "var(--text-secondary)",
+                            background: isCurrent ? "var(--accent-secondary)" : "transparent",
+                            color: isCurrent ? "var(--bg-primary)" : "var(--text-secondary)",
                             fontWeight: isCurrent ? 600 : 400,
                             cursor: isCurrent ? "default" : "pointer",
-                            transition: "color 0.15s",
+                            transition: "all 0.15s",
                           }}
                         >
                           <span style={{
                             width: 6, height: 6, borderRadius: "50%", flexShrink: 0,
-                            background: isCurrent ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                            background: isCurrent ? "var(--bg-primary)" : "var(--text-tertiary)",
                           }} />
                           {project.name}
                         </a>
