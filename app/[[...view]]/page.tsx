@@ -1268,7 +1268,7 @@ export default function Page() {
                 onClick={() => setCerebroCollapsed(true)}
                 title="Collapse Cerebro"
                 style={{
-                  position: "absolute", top: 8, right: 8, zIndex: 2,
+                  position: "absolute", top: 6, right: 6, zIndex: 2,
                   width: 28, height: 28,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   background: "transparent", border: "none", borderRadius: 6,
