@@ -309,20 +309,20 @@ html, body {
   --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.6), 0 0 0 1px rgba(216,138,122,0.06);
 }
 :root.skin-ink.day {
-  --bg-primary:       #0C0B0A;
-  --bg-surface:       #161514;
-  --bg-elevated:      #1E1D1B;
-  --card-tint:        #1A1918;
-  --accent-primary:   #1E1210;
-  --accent-secondary: #D88A7A;
-  --accent-muted:     #E4A498;
-  --text-primary:     #F2F0EC;
-  --text-secondary:   #B0ACA6;
-  --text-tertiary:    #9A968E;
-  --border:           #2A2826;
-  --live:             #4ade80;
-  --synth-indicator:  #241E1C;
-  --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.6), 0 0 0 1px rgba(216,138,122,0.06);
+  --bg-primary:       #FAFAF8;
+  --bg-surface:       #F0EFEC;
+  --bg-elevated:      #E6E5E2;
+  --card-tint:        #F4F3F0;
+  --accent-primary:   #F8E8E4;
+  --accent-secondary: #7E3A30;
+  --accent-muted:     #8E4238;
+  --text-primary:     #141210;
+  --text-secondary:   #36322C;
+  --text-tertiary:    #58544C;
+  --border:           #E0DEDB;
+  --live:             #166534;
+  --synth-indicator:  #F0E4E0;
+  --shadow-tooltip:   0 2px 8px rgba(0,0,0,0.06), 0 0 0 1px rgba(126,58,48,0.06);
 }
 
 /* ── Paper — editorial white, deep coral accent ──────────────────── */

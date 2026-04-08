@@ -126,7 +126,7 @@ export function Ticker({
       </div>
 
       {/* Skin picker */}
-      {onSkinChange && (
+      {onSkinChange && config.skins.length > 1 && (
         <div
           style={{
             flexShrink: 0,
