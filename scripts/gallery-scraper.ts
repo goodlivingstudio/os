@@ -249,6 +249,31 @@ async function pushToArena(imageUrl: string, title: string, sourceUrl: string): 
   }
 }
 
+// ─── Blocklist — skip images the user has rejected ──────────────────────────
+
+async function loadBlocklist(): Promise<Set<string>> {
+  // Load from KV via the curation API — works both locally and in production
+  const kvUrl = process.env.KV_REST_API_URL
+  const kvToken = process.env.KV_REST_API_TOKEN
+  if (!kvUrl || !kvToken) return new Set()
+
+  try {
+    // Use the same kvKey pattern as the curation API
+    const key = `${config.id}:gallery:blocklist`
+    const res = await fetch(`${kvUrl}/smembers/${key}`, {
+      headers: { "Authorization": `Bearer ${kvToken}` },
+      signal: AbortSignal.timeout(5000),
+    })
+    if (!res.ok) return new Set()
+    const data = await res.json() as { result?: string[] }
+    const urls = new Set(data.result || [])
+    if (urls.size > 0) console.log(`  Loaded ${urls.size} blocked URLs from curation history`)
+    return urls
+  } catch {
+    return new Set()
+  }
+}
+
 // ─── Main ───────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -278,6 +303,7 @@ async function main() {
   console.log(`   Sites: ${targets.length}\n`)
 
   const existingUrls = dryRun ? new Set<string>() : await loadExistingUrls()
+  const blockedUrls = await loadBlocklist()
 
   let totalFound = 0
   let totalPushed = 0
@@ -303,6 +329,10 @@ async function main() {
     for (const img of images) {
       const title = img.alt || `${target.name} — visual`
 
+      if (blockedUrls.has(img.url)) {
+        totalSkipped++
+        continue
+      }
       if (existingUrls.has(img.url) || existingUrls.has(title)) {
         totalSkipped++
         continue

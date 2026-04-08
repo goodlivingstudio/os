@@ -286,6 +286,28 @@ async function loadExistingUrls(): Promise<Set<string>> {
   }
 }
 
+// ─── Blocklist — skip images the user has rejected ──────────────────────────
+
+async function loadBlocklist(): Promise<Set<string>> {
+  const kvUrl = process.env.KV_REST_API_URL
+  const kvToken = process.env.KV_REST_API_TOKEN
+  if (!kvUrl || !kvToken) return new Set()
+  try {
+    const key = `${config.id}:gallery:blocklist`
+    const res = await fetch(`${kvUrl}/smembers/${key}`, {
+      headers: { "Authorization": `Bearer ${kvToken}` },
+      signal: AbortSignal.timeout(5000),
+    })
+    if (!res.ok) return new Set()
+    const data = await res.json() as { result?: string[] }
+    const urls = new Set(data.result || [])
+    if (urls.size > 0) console.log(`  Loaded ${urls.size} blocked URLs from curation history`)
+    return urls
+  } catch {
+    return new Set()
+  }
+}
+
 // ─── Are.na Push ────────────────────────────────────────────────────────────
 
 async function pushToArena(imageUrl: string, title: string, sourceApi: string): Promise<boolean> {
@@ -346,8 +368,9 @@ async function main() {
     process.exit(1)
   }
 
-  // Load existing Are.na content for dedup
+  // Load existing Are.na content for dedup + blocklist
   const existingUrls = dryRun ? new Set<string>() : await loadExistingUrls()
+  const blockedUrls = await loadBlocklist()
 
   // Collect all images
   const allImages: CollectedImage[] = []
@@ -399,8 +422,9 @@ async function main() {
 
   console.log(`  After self-dedup: ${unique.length}`)
 
-  // Filter against existing Are.na content
+  // Filter against existing Are.na content + blocklist
   const newImages = unique.filter(img => {
+    if (blockedUrls.has(img.url)) return false
     const title = img.alt || `${img.query} — ${img.source}`
     return !existingUrls.has(img.url) && !existingUrls.has(title)
   })
