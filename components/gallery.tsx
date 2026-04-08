@@ -304,207 +304,210 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
       {/* Ticker — matches main layout */}
       {onToggleMode && <Ticker isDay={isDay} onToggle={onToggleMode} skin={skin} onSkinChange={onSkinChange} />}
 
-      {/* Header */}
-      <div style={{
-        flexShrink: 0, display: "flex", flexDirection: "column",
-        borderBottom: "1px solid var(--border)",
-      }}>
-        {/* Top row: title + mood filters + count + close */}
-        <div style={{
-          height: 52, display: "flex", alignItems: "center",
-          justifyContent: "space-between", padding: "0 24px",
-        }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            <span style={{
-              ...TYPE.sm,
-              color: "var(--accent-muted)", textTransform: "uppercase",
-              letterSpacing: "0.04em",
-            }}>
-              Surface
-            </span>
+      {/* Header — desktop: single row (title + pills + close). Mobile: filter row only (title in app header) */}
+      <div style={{ flexShrink: 0, borderBottom: "1px solid var(--border)" }}>
+        {isMobile ? (
+          /* ── Mobile: filter dropdown flush left, matching Signal/Sound pattern ── */
+          <div style={{ display: "flex", alignItems: "center", padding: "12px 16px 0", gap: 8 }}>
+            <div style={{ position: "relative" }}>
+              <button
+                onClick={() => setMobileFilterOpen(v => !v)}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  padding: "6px 14px", borderRadius: 8, border: "1px solid var(--border)",
+                  background: "transparent", cursor: "pointer", transition: "all 0.15s",
+                }}
+              >
+                {activeMood && <span style={{ width: 6, height: 6, borderRadius: "50%", background: MOOD_COLORS[activeMood], flexShrink: 0 }} />}
+                <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 500 }}>
+                  {activeMood ? MOOD_LABELS[activeMood] : "All"}
+                </span>
+                <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.6, fontVariantNumeric: "tabular-nums" }}>
+                  {images.length}
+                </span>
+                <ChevronDown size={12} style={{ color: "var(--text-tertiary)", transition: "transform 0.2s", transform: mobileFilterOpen ? "rotate(180deg)" : "none" }} />
+              </button>
+              {mobileFilterOpen && (
+                <div style={{
+                  position: "absolute", top: 38, left: 0, zIndex: 100, minWidth: 180,
+                  background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 10,
+                  padding: "4px 0", animation: "status-fade 0.15s ease both",
+                }}>
+                  <button
+                    onClick={() => { setActiveMood(null); setMobileFilterOpen(false) }}
+                    style={{
+                      display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
+                      padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
+                      ...TYPE.sm, color: !activeMood ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: !activeMood ? 600 : 400,
+                    }}
+                  >
+                    <span>All</span>
+                    <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, fontVariantNumeric: "tabular-nums" }}>{includedImages.length}</span>
+                  </button>
+                  {(Object.keys(MOOD_LABELS) as ColorMood[]).map(mood => {
+                    const count = moodCounts[mood]
+                    if (count === 0 && classifiedCount > 10) return null
+                    const isActive = activeMood === mood
+                    return (
+                      <button
+                        key={mood}
+                        onClick={() => { setActiveMood(isActive ? null : mood); setMobileFilterOpen(false) }}
+                        style={{
+                          display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
+                          padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
+                          ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: isActive ? 600 : 400,
+                        }}
+                      >
+                        <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <span style={{ width: 6, height: 6, borderRadius: "50%", background: MOOD_COLORS[mood] }} />
+                          {MOOD_LABELS[mood]}
+                        </span>
+                        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, fontVariantNumeric: "tabular-nums" }}>{count}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
             <button
               onClick={() => setShuffleKey(k => k + 1)}
-              title="Shuffle"
               aria-label="Shuffle images"
               style={{
-                width: 28, height: 28,
+                width: 28, height: 28, marginLeft: "auto",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 background: "transparent", border: "none", borderRadius: 6,
-                color: "var(--text-tertiary)", cursor: "pointer",
-                transition: "all 0.15s", padding: 0,
+                color: "var(--text-tertiary)", cursor: "pointer", padding: 0,
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" }}
-              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
             >
               <Shuffle size={14} strokeWidth={1.5} />
             </button>
-            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
-              {images.length}
-            </span>
           </div>
+        ) : (
+          /* ── Desktop: title + pills + source chips + close ── */
+          <div style={{
+            height: 52, display: "flex", alignItems: "center",
+            justifyContent: "space-between", padding: "0 20px",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+              <span style={{ ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                Surface
+              </span>
+              <button
+                onClick={() => setShuffleKey(k => k + 1)}
+                title="Shuffle"
+                aria-label="Shuffle images"
+                style={{
+                  width: 28, height: 28,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  background: "transparent", border: "none", borderRadius: 6,
+                  color: "var(--text-tertiary)", cursor: "pointer",
+                  transition: "all 0.15s", padding: 0,
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
+              >
+                <Shuffle size={14} strokeWidth={1.5} />
+              </button>
+              <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
+                {images.length}
+              </span>
+            </div>
 
-          {/* Color mood filters — dropdown on mobile, pills on desktop */}
-          <div style={{ display: "flex", alignItems: "center", gap: 4, flex: 1, justifyContent: "center" }}>
-            {isMobile ? (
-              /* ── Mobile: dropdown for mood filters ── */
-              <div style={{ position: "relative" }}>
-                <button
-                  onClick={() => setMobileFilterOpen(v => !v)}
-                  style={{
-                    display: "inline-flex", alignItems: "center", gap: 6,
-                    padding: "6px 14px", borderRadius: 8, border: "1px solid var(--border)",
-                    background: "transparent", cursor: "pointer", transition: "all 0.15s",
-                  }}
-                >
-                  {activeMood && <span style={{ width: 6, height: 6, borderRadius: "50%", background: MOOD_COLORS[activeMood], flexShrink: 0 }} />}
-                  <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 500 }}>
-                    {activeMood ? MOOD_LABELS[activeMood] : "All"}
-                  </span>
-                  <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.6, fontVariantNumeric: "tabular-nums" }}>
-                    {images.length}
-                  </span>
-                  <ChevronDown size={12} style={{ color: "var(--text-tertiary)", transition: "transform 0.2s", transform: mobileFilterOpen ? "rotate(180deg)" : "none" }} />
-                </button>
-                {mobileFilterOpen && (
-                  <div style={{
-                    position: "absolute", top: 38, left: 0, zIndex: 100, minWidth: 180,
-                    background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 10,
-                    padding: "4px 0", animation: "status-fade 0.15s ease both",
-                  }}>
-                    <button
-                      onClick={() => { setActiveMood(null); setMobileFilterOpen(false) }}
-                      style={{
-                        display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
-                        padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                        ...TYPE.sm, color: !activeMood ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: !activeMood ? 600 : 400,
-                      }}
-                    >
-                      <span>All</span>
-                      <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, fontVariantNumeric: "tabular-nums" }}>{includedImages.length}</span>
-                    </button>
-                    {(Object.keys(MOOD_LABELS) as ColorMood[]).map(mood => {
-                      const count = moodCounts[mood]
-                      if (count === 0 && classifiedCount > 10) return null
-                      const isActive = activeMood === mood
-                      return (
-                        <button
-                          key={mood}
-                          onClick={() => { setActiveMood(isActive ? null : mood); setMobileFilterOpen(false) }}
-                          style={{
-                            display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
-                            padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                            ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: isActive ? 600 : 400,
-                          }}
-                        >
-                          <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: MOOD_COLORS[mood] }} />
-                            {MOOD_LABELS[mood]}
-                          </span>
-                          <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, fontVariantNumeric: "tabular-nums" }}>{count}</span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                )}
-              </div>
-            ) : (
-              /* ── Desktop: pills ── */
-              <>
-                <button
-                  onClick={() => { setActiveMood(null) }}
-                  style={{
-                    ...TYPE.sm, padding: "3px 10px", borderRadius: 8, border: "none",
-                    background: !activeMood ? "var(--accent-primary)" : "transparent",
-                    color: !activeMood ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                    fontWeight: !activeMood ? 600 : 400,
-                    cursor: "pointer", transition: "all 0.15s",
-                  }}
-                  onMouseEnter={e => { if (activeMood !== null) e.currentTarget.style.background = "var(--bg-elevated)" }}
-                  onMouseLeave={e => { if (activeMood !== null) e.currentTarget.style.background = "transparent" }}
-                >
-                  All
-                </button>
-                {(Object.keys(MOOD_LABELS) as ColorMood[]).map(mood => {
-                  const isActive = activeMood === mood
-                  const count = moodCounts[mood]
-                  if (count === 0 && classifiedCount > 10) return null
-                  return (
-                    <button
-                      key={mood}
-                      onClick={() => { setActiveMood(isActive ? null : mood) }}
-                      style={{
-                        ...TYPE.sm, padding: "3px 10px", borderRadius: 8, border: "none",
-                        display: "inline-flex", alignItems: "center", gap: 5,
-                        background: isActive ? "var(--accent-primary)" : "transparent",
-                        color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                        fontWeight: isActive ? 600 : 400,
-                        cursor: "pointer", transition: "all 0.15s",
-                      }}
-                      onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
-                      onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? "var(--accent-primary)" : "transparent" }}
-                    >
-                      <span style={{ width: 6, height: 6, borderRadius: "50%", background: MOOD_COLORS[mood], flexShrink: 0 }} />
-                      {MOOD_LABELS[mood]}
-                      {count > 0 && <span style={{ opacity: 0.5 }}>{count}</span>}
-                    </button>
-                  )
-                })}
-              </>
-            )}
-            {/* Source type chips — Explore only, after mood filters with hairline separator */}
-            {hasUgc && !isMobile && (
-              <>
-                <span style={{ width: 1, height: 16, background: "var(--border)", flexShrink: 0, margin: "0 4px" }} />
-                {([
-                  { id: "curated" as const, label: "Curated", count: curatedCount },
-                  { id: "ugc" as const, label: "UGC", count: ugcCount },
-                ] as const).map(opt => {
-                  const isActive = sourceType === opt.id
-                  return (
-                    <button
-                      key={opt.id}
-                      onClick={() => setSourceType(isActive ? "all" : opt.id)}
-                      style={{
-                        ...TYPE.sm, padding: "3px 10px", borderRadius: 8, border: "none",
-                        display: "inline-flex", alignItems: "center", gap: 5,
-                        background: isActive ? "var(--accent-primary)" : "transparent",
-                        color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                        fontWeight: isActive ? 600 : 400,
-                        cursor: "pointer", transition: "all 0.15s",
-                      }}
-                      onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
-                      onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = "transparent" }}
-                    >
-                      {opt.label}
-                      {opt.count > 0 && <span style={{ opacity: 0.5 }}>{opt.count}</span>}
-                    </button>
-                  )
-                })}
-              </>
-            )}
+            {/* Color mood pills */}
+            <div style={{ display: "flex", alignItems: "center", gap: 4, flex: 1, justifyContent: "center" }}>
+              <button
+                onClick={() => { setActiveMood(null) }}
+                style={{
+                  ...TYPE.sm, padding: "3px 10px", borderRadius: 8, border: "none",
+                  background: !activeMood ? "var(--accent-primary)" : "transparent",
+                  color: !activeMood ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                  fontWeight: !activeMood ? 600 : 400,
+                  cursor: "pointer", transition: "all 0.15s",
+                }}
+                onMouseEnter={e => { if (activeMood !== null) e.currentTarget.style.background = "var(--bg-elevated)" }}
+                onMouseLeave={e => { if (activeMood !== null) e.currentTarget.style.background = "transparent" }}
+              >
+                All
+              </button>
+              {(Object.keys(MOOD_LABELS) as ColorMood[]).map(mood => {
+                const isActive = activeMood === mood
+                const count = moodCounts[mood]
+                if (count === 0 && classifiedCount > 10) return null
+                return (
+                  <button
+                    key={mood}
+                    onClick={() => { setActiveMood(isActive ? null : mood) }}
+                    style={{
+                      ...TYPE.sm, padding: "3px 10px", borderRadius: 8, border: "none",
+                      display: "inline-flex", alignItems: "center", gap: 5,
+                      background: isActive ? "var(--accent-primary)" : "transparent",
+                      color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                      fontWeight: isActive ? 600 : 400,
+                      cursor: "pointer", transition: "all 0.15s",
+                    }}
+                    onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
+                    onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? "var(--accent-primary)" : "transparent" }}
+                  >
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: MOOD_COLORS[mood], flexShrink: 0 }} />
+                    {MOOD_LABELS[mood]}
+                    {count > 0 && <span style={{ opacity: 0.5 }}>{count}</span>}
+                  </button>
+                )
+              })}
 
-            {/* Trends + Sources removed — gallery sources now live in Config view */}
+              {/* Source type chips — Explore only */}
+              {hasUgc && (
+                <>
+                  <span style={{ width: 1, height: 16, background: "var(--border)", flexShrink: 0, margin: "0 4px" }} />
+                  {([
+                    { id: "curated" as const, label: "Curated", count: curatedCount },
+                    { id: "ugc" as const, label: "UGC", count: ugcCount },
+                  ] as const).map(opt => {
+                    const isActive = sourceType === opt.id
+                    return (
+                      <button
+                        key={opt.id}
+                        onClick={() => setSourceType(isActive ? "all" : opt.id)}
+                        style={{
+                          ...TYPE.sm, padding: "3px 10px", borderRadius: 8, border: "none",
+                          display: "inline-flex", alignItems: "center", gap: 5,
+                          background: isActive ? "var(--accent-primary)" : "transparent",
+                          color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                          fontWeight: isActive ? 600 : 400,
+                          cursor: "pointer", transition: "all 0.15s",
+                        }}
+                        onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
+                        onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = "transparent" }}
+                      >
+                        {opt.label}
+                        {opt.count > 0 && <span style={{ opacity: 0.5 }}>{opt.count}</span>}
+                      </button>
+                    )
+                  })}
+                </>
+              )}
+            </div>
+
+            {/* Close — desktop only */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+              <button
+                onClick={onClose}
+                title="Close"
+                style={{
+                  width: 28, height: 28,
+                  background: "transparent", border: "none", borderRadius: 6,
+                  color: "var(--text-tertiary)", cursor: "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  transition: "all 0.15s", padding: 0,
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
+              >
+                <X size={16} strokeWidth={1.5} />
+              </button>
+            </div>
           </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            <button
-              onClick={onClose}
-              title="Close"
-              style={{
-                width: 28, height: 28,
-                background: "transparent", border: "none", borderRadius: 6,
-                color: "var(--text-tertiary)", cursor: "pointer",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                transition: "all 0.15s", padding: 0,
-              }}
-              onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.color = "var(--text-secondary)" }}
-              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)" }}
-            >
-              <X size={16} strokeWidth={1.5} />
-            </button>
-          </div>
-        </div>
-
+        )}
       </div>
 
       {/* Masonry grid */}
