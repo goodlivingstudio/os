@@ -624,7 +624,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
   }, [articles, failures])
 
   const layerHealth = useMemo((): LayerHealth[] => {
-    const layers = ["opportunity", "position", "discipline", "landscape", "culture"]
+    const layers = instanceConfig.layers.map(l => l.id)
     return layers.map(layer => {
       const layerArticles = articles.filter(a => a.tag === layer)
       const annotated = layerArticles.filter(a => a.synopsis || a.relevance)
