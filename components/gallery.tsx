@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from "react"
-import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle, ThumbsUp, Ban, ImageOff } from "lucide-react"
+import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle, ThumbsUp, ThumbsDown, Frown } from "lucide-react"
 import { TYPE, MONO } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
 import { GALLERY_SOURCES, type GalleryImage, type ColorMood } from "@/lib/gallery"
@@ -562,7 +562,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                           }}>
                             <button
                               onClick={e => { e.stopPropagation(); handleCurate(img, "approve") }}
-                              title="Keep — protect this image"
+                              title="Like — keep this image"
                               style={{
                                 width: 26, height: 26, borderRadius: 5,
                                 background: "rgba(0,0,0,0.55)", border: "none",
@@ -575,7 +575,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                             </button>
                             <button
                               onClick={e => { e.stopPropagation(); handleCurate(img, "low-quality") }}
-                              title="Low fidelity — remove (subject is fine, quality isn't)"
+                              title="Bad quality — subject is fine, image isn't"
                               style={{
                                 width: 26, height: 26, borderRadius: 5,
                                 background: "rgba(0,0,0,0.55)", border: "none",
@@ -584,11 +584,11 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                                 backdropFilter: "blur(8px)",
                               }}
                             >
-                              <ImageOff size={12} strokeWidth={1.8} />
+                              <Frown size={12} strokeWidth={1.8} />
                             </button>
                             <button
                               onClick={e => { e.stopPropagation(); handleCurate(img, "reject") }}
-                              title="Doesn't belong — remove and don't show content like this"
+                              title="Don't like — remove and avoid content like this"
                               style={{
                                 width: 26, height: 26, borderRadius: 5,
                                 background: "rgba(0,0,0,0.55)", border: "none",
@@ -597,7 +597,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                                 backdropFilter: "blur(8px)",
                               }}
                             >
-                              <Ban size={12} strokeWidth={1.8} />
+                              <ThumbsDown size={12} strokeWidth={1.8} />
                             </button>
                           </div>
                         )}
