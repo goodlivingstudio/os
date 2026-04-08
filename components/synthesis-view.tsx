@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useScrollGuard } from "@/lib/use-scroll-guard"
-import { storageKey } from "@/lib/config"
+import instanceConfig, { storageKey } from "@/lib/config"
 import { ArrowUpRight } from "lucide-react"
 import type { Article } from "@/lib/types"
 import { TYPE, MONO, labelStyle } from "@/lib/styles"
@@ -83,13 +83,9 @@ const BLIND_SPOT_LABELS: Record<string, string> = {
   general: "Blind Spot",
 }
 
-const LAYER_DOT: Record<string, string> = {
-  opportunity: "#D4A05A",
-  position: "#5A9EB0",
-  discipline: "#7BAF6A",
-  landscape: "#9A85B8",
-  culture: "#C87A6A",
-}
+const LAYER_DOT: Record<string, string> = Object.fromEntries(
+  instanceConfig.layers.map((l, i) => [l.id, ["#D4A05A", "#5A9EB0", "#7BAF6A", "#9A85B8", "#C87A6A"][i] || "#888"])
+)
 
 // ─── Synthesis View ────────────────────────────────────────────────────────
 

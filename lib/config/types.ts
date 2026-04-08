@@ -120,6 +120,10 @@ export interface InstanceConfig {
   skins: SkinDef[]
   defaultSkin: string
 
+  // Cerebro
+  provocations?: string[]              // rotating prompt suggestions for Cerebro
+  cerebroWelcome?: { title: string; subtitle: string }
+
   // Gallery scraper (optional — instances that don't use the scraper can omit)
   galleryScraper?: GalleryScraperConfig
   // UGC scraper — separate channel for authentic user-generated content

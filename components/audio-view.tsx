@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { ExternalLink, ArrowUpRight, ChevronUp, ChevronDown, Bookmark } from "lucide-react"
 import { TYPE, MONO, metaStyle } from "@/lib/styles"
 import type { Article } from "@/lib/types"
-import { storageKey } from "@/lib/config"
+import instanceConfig, { storageKey } from "@/lib/config"
 
 // ─── Audio DCOS Band ────────────────────────────────────────────────────────
 
@@ -227,13 +227,9 @@ function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })
 }
 
-const LAYER_LABELS: Record<string, string> = {
-  opportunity: "Opportunity",
-  position: "Position",
-  discipline: "Discipline",
-  landscape: "Landscape",
-  culture: "Culture",
-}
+const LAYER_LABELS: Record<string, string> = Object.fromEntries(
+  instanceConfig.layers.map(l => [l.id, l.label])
+)
 
 // ─── Episode Modal ──────────────────────────────────────────────────────────
 

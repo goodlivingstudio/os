@@ -8,9 +8,6 @@ import config, { buildPreamble } from "@/lib/config"
 // ─── Config-derived exports (backward compatible) ───────────────────────────
 
 export const OPERATOR = config.mandate.operator
-export const LILLY_CONTEXT = config.mandate.clientContext
-export const VOICE = config.mandate.voice
-export const SOURCE_MODES = config.mandate.sourceModes
 
 // Build FIVE_LAYERS from config layer definitions
 export const FIVE_LAYERS = (() => {

@@ -42,7 +42,7 @@ PRODUCE:
 
 4. BLIND SPOTS (exactly 3): Three specific intelligence gaps. These are NOT contrarian takes — they are genuine absences in the signal that a rigorous analyst would flag. For each, explain WHY the absence matters:
    a) DROPPED SIGNAL: A topic that was generating signal last week but went quiet this week. Name it specifically — what were the articles, and why did they stop?
-   b) MISSING SIGNAL: A major development in healthcare, AI, or design leadership that SHOULD be generating articles in the feed but isn't. What's happening in the world that your sources aren't covering?
+   b) MISSING SIGNAL: A major development in the mandate's primary domains that SHOULD be generating articles in the feed but isn't. What's happening in the world that your sources aren't covering?
    c) ASSUMPTION CHECK: One belief the operator is likely holding based on this week's signals that may not be as solid as it appears. What's the strongest evidence against the prevailing narrative? Not devil's advocacy — genuine analytical rigor.
 
 5. CEREBRO TOPICS (exactly 4): Four distinct conversation starters for the Cerebro intelligence panel — questions or provocations that would produce genuinely different strategic conversations. Each should be grounded in this week's data. One should be a wildcard: unexpected, cross-domain, the kind of question that connects signals most analysts would keep separate.

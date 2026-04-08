@@ -73,7 +73,7 @@ PRODUCE:
 
 2. BRIEFING: 2-3 sentences. What's moving in color culture and why it matters for a design leader. Connect color shifts to broader cultural forces — consumer psychology, industry direction, material culture. Reference specific articles and sources.
 
-3. COLOR DIRECTIONS (exactly 4): Named trends emerging from the feed. Each is a cultural direction expressed through color, not just a color name. Example: "Pharmaceutical Warmth" — the shift from clinical white to amber in healthcare branding signals a pivot from authority to approachability.
+3. COLOR DIRECTIONS (exactly 4): Named trends emerging from the feed. Each is a cultural direction expressed through color, not just a color name. Example: "Institutional Warmth" — the shift from clinical white to amber in corporate branding signals a pivot from authority to approachability.
    - title: A named direction (3-6 words, evocative not technical)
    - description: 2-3 sentences. What this direction means culturally and what's driving it. Reference specific articles.
    - palette: exactly 5 hex colors that represent this direction, ordered from warmest/darkest to lightest/coolest. Include a range: a deep anchor, two mid-tones, a light tint, and an accent or complement.
@@ -83,7 +83,7 @@ PRODUCE:
    - insight: Their position, synthesized in 1-2 sentences
    - timeframe: What season or year they're forecasting for (if available)
 
-5. CEREBRO TOPICS (exactly 3): Color-specific questions for the Cerebro intelligence panel. Each should connect color/visual culture to the operator's broader mandate — design leadership, healthcare, strategic positioning.
+5. CEREBRO TOPICS (exactly 3): Color-specific questions for the Cerebro intelligence panel. Each should connect color/visual culture to the operator's broader mandate — design leadership, strategic positioning, and the mandate's primary domains.
    - title: Short label (3-6 words)
    - body: 1-2 sentences on why this matters now
    - prompt: Full question for Cerebro

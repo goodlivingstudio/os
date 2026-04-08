@@ -31,52 +31,14 @@ function hasSpeechSupport() {
 
 // ─── Provocations — rotating prompts ────────────────────────────────────────
 
-// Provocations are instance-specific — loaded from config
+// Provocations loaded from instance config
 import instanceConfig from "@/lib/config"
 
-const DISPATCH_PROVOCATIONS = [
+const PROVOCATIONS = instanceConfig.provocations || [
   "What's the sharpest thing you read today?",
-  "What would Rau ask you in the first five minutes?",
-  "Where does design sit in Lilly's AI stack?",
-  "What's the difference between your pitch and everyone else's?",
   "What signal are you ignoring?",
-  "If you had the role today, what's day-one?",
-  "What's the question you're afraid they'll ask?",
-  "Who else is circling this opportunity?",
-  "What does 'Head of Design' mean at a pharma company?",
-  "What would you kill from your portfolio right now?",
-  "What's the systems argument, not the craft argument?",
-  "Where does patient experience break down first?",
-  "What's the five-year move if Lilly doesn't happen?",
-  "What does design leadership look like without a team?",
-  "What are you over-indexing on?",
-  "What would make them say no?",
-  "How do you talk about AI without sounding like everyone else?",
-  "What's the organizational layer no one is designing?",
+  "What's the weakest assumption in your current direction?",
 ]
-
-const EXPLORE_PROVOCATIONS = [
-  "What's the sharpest signal from this week's feed?",
-  "Where does the discovery experience break down first?",
-  "What would Gebbia push back on?",
-  "What's the accessibility gap no one is talking about?",
-  "How is AllTrails solving a problem we haven't named yet?",
-  "What's the Burgum frame doing to this decision?",
-  "Who is the platform leaving out right now?",
-  "What does the July 4 deadline actually require?",
-  "What would GOV.UK do differently here?",
-  "Where is the billboard critique still valid?",
-  "What's the difference between a reservation system and a discovery platform?",
-  "What signal are we ignoring?",
-  "What does offline-first actually mean for this feature?",
-  "What's the weakest assumption in our current direction?",
-  "How does this serve a first-time visitor from Detroit?",
-  "What would the NPS ranger say about this?",
-  "What's the stewardship decision hiding behind the 90-day urgency?",
-  "What's the equity case for this design choice?",
-]
-
-const PROVOCATIONS = instanceConfig.id === "explore" ? EXPLORE_PROVOCATIONS : DISPATCH_PROVOCATIONS
 
 // ─── Cerebro — strategic intelligence advisor ───────────────────────────────
 
@@ -271,10 +233,11 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
   const showEscalate = assistantCount >= 2
 
   const handleEscalate = useCallback(() => {
-    const header = `Continue this Cerebro conversation in Claude Desktop. Context below.\n\n---\n\nYou are Cerebro — a strategic intelligence agent for Jeremy Grant, Senior Design Director at Code and Theory. Five-year target: Head of Design at a significant product organization (AI, healthcare, sustainability, or culture). Immediate priority: Eli Lilly permalance engagement.\n\nTwo lenses: (1) Does this matter to Lilly? (2) Does this matter to the five-year position?\n\nConversation so far:\n\n`
+    const mandateSnippet = instanceConfig.mandate.operator.split("\n")[0]
+    const header = `Continue this Cerebro conversation in Claude Desktop. Context below.\n\n---\n\n${mandateSnippet}\n\nConversation so far:\n\n`
     const thread = messages
       .filter(m => m.role !== "search")
-      .map(m => `${m.role === "user" ? "Jeremy" : "Cerebro"}: ${m.content}`)
+      .map(m => `${m.role === "user" ? "User" : "Cerebro"}: ${m.content}`)
       .join("\n\n")
     const footer = `\n\n---\n\nContinue from here. Go deeper — this thread has been escalated for extended strategic thinking.`
     navigator.clipboard.writeText(header + thread + footer).then(() => {
@@ -403,12 +366,10 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
                 lineHeight: 1.8,
               }}
             >
-              {instanceConfig.id === "explore" ? "Field intelligence ready." : "Strategic intelligence ready."}
+              {instanceConfig.cerebroWelcome?.title || "Intelligence ready."}
               <br />
               <span style={{ color: "var(--accent-muted)" }}>
-                {instanceConfig.id === "explore"
-                  ? "Signal analysis, platform intelligence, civic design."
-                  : "Feed analysis, Lilly positioning, career trajectory."}
+                {instanceConfig.cerebroWelcome?.subtitle || "Feed analysis, strategic positioning."}
               </span>
             </div>
           </div>

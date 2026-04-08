@@ -327,6 +327,33 @@ When scoring and surfacing signals, weight INTELLIGENCE and POSITIONING sources 
     CULTURE: { bg: "rgba(200,122,106,0.12)", color: "#C87A6A" },
   },
 
+  // ─── Cerebro ────────────────────────────────────────────────────────────────
+
+  provocations: [
+    "What's the sharpest thing you read today?",
+    "What would Rau ask you in the first five minutes?",
+    "Where does design sit in Lilly's AI stack?",
+    "What's the difference between your pitch and everyone else's?",
+    "What signal are you ignoring?",
+    "If you had the role today, what's day-one?",
+    "What's the question you're afraid they'll ask?",
+    "Who else is circling this opportunity?",
+    "What does 'Head of Design' mean at a pharma company?",
+    "What would you kill from your portfolio right now?",
+    "What's the systems argument, not the craft argument?",
+    "Where does patient experience break down first?",
+    "What's the five-year move if Lilly doesn't happen?",
+    "What does design leadership look like without a team?",
+    "What are you over-indexing on?",
+    "What would make them say no?",
+    "How do you talk about AI without sounding like everyone else?",
+    "What's the organizational layer no one is designing?",
+  ],
+  cerebroWelcome: {
+    title: "Strategic intelligence ready.",
+    subtitle: "Feed analysis, Lilly positioning, career trajectory.",
+  },
+
   // ─── Theme ──────────────────────────────────────────────────────────────────
 
   skins: [

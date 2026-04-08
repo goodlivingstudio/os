@@ -249,6 +249,33 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
     CRAFT:    { bg: "rgba(90,130,90,0.12)",   color: "#5A825A" },
   },
 
+  // ─── Cerebro ────────────────────────────────────────────────────────────────
+
+  provocations: [
+    "What's the sharpest signal from this week's feed?",
+    "Where does the discovery experience break down first?",
+    "What would Gebbia push back on?",
+    "What's the accessibility gap no one is talking about?",
+    "How is AllTrails solving a problem we haven't named yet?",
+    "What's the Burgum frame doing to this decision?",
+    "Who is the platform leaving out right now?",
+    "What does the July 4 deadline actually require?",
+    "What would GOV.UK do differently here?",
+    "Where is the billboard critique still valid?",
+    "What's the difference between a reservation system and a discovery platform?",
+    "What signal are we ignoring?",
+    "What does offline-first actually mean for this feature?",
+    "What's the weakest assumption in our current direction?",
+    "How does this serve a first-time visitor from Detroit?",
+    "What would the NPS ranger say about this?",
+    "What's the stewardship decision hiding behind the 90-day urgency?",
+    "What's the equity case for this design choice?",
+  ],
+  cerebroWelcome: {
+    title: "Field intelligence ready.",
+    subtitle: "Signal analysis, platform intelligence, civic design.",
+  },
+
   // ─── Theme — Three regions of America ───────────────────────────────────────
 
   skins: [

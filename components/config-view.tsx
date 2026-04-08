@@ -17,21 +17,13 @@ interface ConfigViewProps {
   onToggleSource: (source: string) => void
 }
 
-const LAYERS = ["opportunity", "position", "discipline", "landscape", "culture"] as const
-const LAYER_LABELS: Record<string, string> = {
-  opportunity: "Opportunity",
-  position: "Position",
-  discipline: "Discipline",
-  landscape: "Landscape",
-  culture: "Culture",
-}
-const LAYER_DOT: Record<string, string> = {
-  opportunity: "#D4A05A",
-  position: "#5A9EB0",
-  discipline: "#7BAF6A",
-  landscape: "#9A85B8",
-  culture: "#C87A6A",
-}
+const LAYERS = instanceConfig.layers.map(l => l.id)
+const LAYER_LABELS: Record<string, string> = Object.fromEntries(
+  instanceConfig.layers.map(l => [l.id, l.label])
+)
+const LAYER_DOT: Record<string, string> = Object.fromEntries(
+  instanceConfig.layers.map((l, i) => [l.id, ["#D4A05A", "#5A9EB0", "#7BAF6A", "#9A85B8", "#C87A6A"][i] || "#888"])
+)
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
