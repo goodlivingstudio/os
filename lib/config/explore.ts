@@ -116,61 +116,39 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
   // ─── Feeds — from EXPLORE-SOURCES-MEGALIST.md ─────────────────────────────
 
   feeds: [
-    // ── SIGNAL: Federal Government Primary Sources ──────────────────────────
+    // ── SIGNAL: Federal Government ──────────────────────────────────────────
     { url: "https://www.nps.gov/feeds/getnewsrss.htm",                              source: "NPS News",              category: "National Parks",          tag: "platform", layer: "platform" },
-    { url: "https://www.doi.gov/feeds/news",                                         source: "Interior Dept",         category: "Federal Policy",          tag: "policy",   layer: "policy" },
-    { url: "https://www.blm.gov/feeds/news-media/news-releases/rss.xml",             source: "BLM News",              category: "Federal Lands",           tag: "policy",   layer: "policy" },
-    { url: "https://inciweb.wildfire.gov/feeds/rss/current",                         source: "InciWeb",               category: "Wildfire & Incidents",    tag: "platform", layer: "platform" },
-    { url: "https://www.nifc.gov/rss/news.xml",                                     source: "NIFC",                  category: "Fire Intelligence",       tag: "platform", layer: "platform" },
-    { url: "https://www.fs.usda.gov/rss/news",                                      source: "Forest Service",        category: "Federal Lands",           tag: "policy",   layer: "policy" },
     { url: "https://fedscoop.com/feed/",                                             source: "FedScoop",              category: "NDS Intelligence",        tag: "industry", layer: "industry" },
     { url: "https://federalnewsnetwork.com/feed/",                                   source: "Federal News Network",  category: "NDS Intelligence",        tag: "industry", layer: "industry" },
     { url: "https://www.nextgov.com/rss/all/",                                       source: "Nextgov/FCW",           category: "Federal Digital",         tag: "platform", layer: "platform" },
 
-    // ── SIGNAL: Public Lands & Outdoor — Trade & Editorial ──────────────────
-    { url: "https://www.nationalparkstraveler.org/feed",                             source: "NP Traveler",           category: "National Parks",          tag: "platform", layer: "platform" },
-    { url: "https://www.hcn.org/rss.xml",                                            source: "High Country News",     category: "American West",           tag: "culture",  layer: "culture" },
-    { url: "https://www.outsideonline.com/feed/all/",                                source: "Outside",               category: "Outdoor Culture",         tag: "culture",  layer: "culture" },
+    // ── SIGNAL: Public Lands & Outdoor ──────────────────────────────────────
     { url: "https://adventure-journal.com/feed/",                                    source: "Adventure Journal",     category: "Outdoor Culture",         tag: "culture",  layer: "culture" },
     { url: "https://www.backpacker.com/feed/",                                       source: "Backpacker",            category: "Trail Culture",           tag: "culture",  layer: "culture" },
     { url: "https://landdesk.substack.com/feed",                                     source: "Land Desk",             category: "American West",           tag: "culture",  layer: "culture", type: "social" },
     { url: "https://therevelator.org/feed/",                                         source: "The Revelator",         category: "Conservation",            tag: "culture",  layer: "culture" },
-    { url: "https://www.wilderness.org/feed",                                        source: "Wilderness Society",    category: "Conservation",            tag: "policy",   layer: "policy" },
-    { url: "https://www.npca.org/articles.rss",                                      source: "NPCA",                  category: "Parks Advocacy",          tag: "policy",   layer: "policy" },
     { url: "https://westernpriorities.org/feed/",                                    source: "Western Priorities",    category: "Public Lands Policy",     tag: "policy",   layer: "policy" },
-    { url: "https://www.eenews.net/rss/news",                                        source: "E&E News",              category: "Energy & Environment",    tag: "policy",   layer: "policy" },
-    { url: "https://orionmagazine.org/feed/",                                        source: "Orion",                 category: "Environmental Writing",   tag: "culture",  layer: "culture", type: "social" },
 
     // ── SIGNAL: Equity, Access & Indigenous Land ────────────────────────────
     { url: "https://indiancountrytoday.com/feed",                                    source: "Indian Country Today",  category: "Indigenous Affairs",       tag: "culture",  layer: "culture" },
-    { url: "https://melaninbasecamp.com/feed/",                                      source: "Melanin Basecamp",      category: "Equity & Access",         tag: "culture",  layer: "culture", type: "social" },
     { url: "https://latinooutdoors.org/feed/",                                       source: "Latino Outdoors",       category: "Equity & Access",         tag: "culture",  layer: "culture", type: "social" },
-    { url: "https://outdoorafro.org/blog/feed/",                                     source: "Outdoor Afro",          category: "Equity & Access",         tag: "culture",  layer: "culture", type: "social" },
-    { url: "https://www.tpl.org/blog/feed",                                          source: "Trust for Public Land", category: "Access & Equity",         tag: "culture",  layer: "culture" },
     { url: "https://www.narf.org/feed/",                                             source: "Native American Rights Fund", category: "Indigenous Rights",  tag: "policy",   layer: "policy" },
-    { url: "https://www.hcn.org/topics/indigenous-affairs/feed",                     source: "HCN Indigenous",        category: "Indigenous Affairs",       tag: "culture",  layer: "culture" },
 
     // ── POSITIONING: Design, Civic Tech & NDS Intelligence ──────────────────
     { url: "https://www.archpaper.com/feed/",                                        source: "Architect's Newspaper", category: "NDS Intelligence",        tag: "industry", layer: "industry" },
-    { url: "https://eyeondesign.aiga.org/feed/",                                     source: "Eye on Design",         category: "Design Discourse",        tag: "craft",    layer: "craft" },
+    { url: "https://aiga.s3.amazonaws.com/ikit/eod/static-feed.rss",                source: "Eye on Design",         category: "Design Discourse",        tag: "craft",    layer: "craft" },
     { url: "https://equalizedigital.com/feed/",                                      source: "Equalize Digital",      category: "Accessibility",           tag: "craft",    layer: "craft" },
     { url: "https://www.a11yproject.com/feed/feed.xml",                              source: "A11y Project",          category: "Accessibility",           tag: "craft",    layer: "craft" },
-    { url: "https://design-system.service.gov.uk/feed.xml",                          source: "GOV.UK Design System",  category: "Civic Design Systems",    tag: "craft",    layer: "craft" },
-    { url: "https://codeforamerica.org/feed/",                                       source: "Code for America",      category: "Civic Tech",              tag: "platform", layer: "platform" },
     { url: "https://designobserver.com/feed/",                                       source: "Design Observer",       category: "Design Criticism",        tag: "craft",    layer: "craft", type: "social" },
     { url: "https://www.fastcompany.com/section/design/rss",                         source: "Fast Company Design",   category: "Design & Innovation",     tag: "craft",    layer: "craft" },
-    { url: "https://placesjournal.org/feed/",                                        source: "Places Journal",        category: "Landscape & Urbanism",    tag: "craft",    layer: "craft", type: "social" },
 
     // ── POSITIONING: Analogous Platforms & Competition ───────────────────────
-    { url: "https://www.alltrails.com/blog/feed/",                                   source: "AllTrails",             category: "Platform Competition",    tag: "industry", layer: "industry" },
     { url: "https://www.hipcamp.com/journal/feed/",                                  source: "Hipcamp",               category: "Platform Competition",    tag: "industry", layer: "industry" },
     { url: "https://www.rei.com/blog/feed",                                          source: "REI Co-op Journal",     category: "Outdoor Industry",        tag: "industry", layer: "industry" },
 
     // ── SIGNAL: Climate & Environment ───────────────────────────────────────
     { url: "https://wildfiretoday.com/feed/",                                        source: "Wildfire Today",        category: "Wildfire Intelligence",   tag: "platform", layer: "platform" },
-    { url: "https://www.climate.gov/feeds/all.rss.xml",                              source: "NOAA Climate",          category: "Climate Data",            tag: "policy",   layer: "policy" },
     { url: "https://blog.nature.org/feed/",                                          source: "Nature Conservancy",    category: "Conservation",            tag: "culture",  layer: "culture" },
-    { url: "https://e360.yale.edu/feed",                                             source: "Yale e360",             category: "Environment",             tag: "culture",  layer: "culture" },
     { url: "https://www.propublica.org/feeds/propublica/main",                       source: "ProPublica",            category: "Investigative",           tag: "policy",   layer: "policy" },
   ],
 
