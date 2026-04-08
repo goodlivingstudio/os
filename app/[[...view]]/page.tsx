@@ -27,11 +27,13 @@ import instanceConfig, { storageKey } from "@/lib/config"
 
 function applyThemeClasses(skin: Skin, day: boolean) {
   const el = document.documentElement
-  // Remove all skin classes dynamically
-  el.classList.remove("day", ...instanceConfig.skins.map(s => `skin-${s.id}`))
+  // Remove all possible skin classes (from all instances)
+  el.classList.remove("day", "skin-mineral", "skin-slate", "skin-forest",
+    "skin-cascadia", "skin-mesa", "skin-marina",
+    ...instanceConfig.skins.map(s => `skin-${s.id}`))
   if (day) el.classList.add("day")
-  // The first skin in config is the default — no class needed for it
-  if (skin !== instanceConfig.skins[0]?.id) el.classList.add(`skin-${skin}`)
+  // Always apply skin class — :root is Dispatch Mineral, other instances need their class
+  el.classList.add(`skin-${skin}`)
 }
 
 const DEFAULT_SKIN = instanceConfig.defaultSkin

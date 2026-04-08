@@ -287,6 +287,10 @@ html, body {
   --shadow-tooltip:   0 8px 40px rgba(0,0,0,0.05), 0 20px 60px rgba(0,0,0,0.05), 0 0 80px rgba(0,0,0,0.05);
 }
 
+/* Mineral skin class — inherits from :root, exists so applyThemeClasses always works */
+:root.skin-mineral {}
+:root.skin-mineral.day {}
+
 /* ─── Slate skin ───────────────────────────────────────────────── */
 :root.skin-slate {
   --bg-primary:       #0C0D10;
