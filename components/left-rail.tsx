@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import { Radio, AudioLines, Blend, Newspaper, Settings, Aperture, Keyboard, FileDown, Activity, X } from "lucide-react"
 import type { Article, FeedHealth, ViewMode } from "@/lib/types"
-import { CATEGORY_CONFIG, LAYER_COLOR } from "@/lib/types"
+import { LAYER_CONFIG, LAYER_COLOR } from "@/lib/types"
 import { TYPE, metaStyle, labelStyle } from "@/lib/styles"
 import instanceConfig from "@/lib/config"
 

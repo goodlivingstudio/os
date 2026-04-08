@@ -335,7 +335,8 @@ async function generatePDF(content: ExportContent): Promise<void> {
   doc.setTextColor(150, 150, 150)
   doc.text(content.footer, margin, y)
 
-  const filename = `dispatch-${content.date.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.pdf`
+  const prefix = instanceConfig.id
+  const filename = `${prefix}-${content.date.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.pdf`
   doc.save(filename)
 }
 
@@ -448,7 +449,8 @@ async function generateDOCX(content: ExportContent): Promise<void> {
   })
 
   const blob = await Packer.toBlob(doc)
-  const filename = `dispatch-${content.date.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.docx`
+  const prefix = instanceConfig.id
+  const filename = `${prefix}-${content.date.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.docx`
   const { saveAs } = await import("file-saver")
   saveAs(blob, filename)
 }
@@ -578,14 +580,14 @@ export function ExportPanel({ onClose, signals, articles }: {
         const json = generateFigmaDeck(content)
         const blob = new Blob([json], { type: "application/json;charset=utf-8" })
         const { saveAs } = await import("file-saver")
-        saveAs(blob, `dispatch-deck-${new Date().toISOString().slice(0, 10)}.json`)
+        saveAs(blob, `${instanceConfig.id}-deck-${new Date().toISOString().slice(0, 10)}.json`)
       } else {
         // Markdown or plain text download as file
         const text = renderText(content, settings.format === "markdown")
         const ext = settings.format === "markdown" ? "md" : "txt"
         const blob = new Blob([text], { type: "text/plain;charset=utf-8" })
         const { saveAs } = await import("file-saver")
-        saveAs(blob, `dispatch-${new Date().toISOString().slice(0, 10)}.${ext}`)
+        saveAs(blob, `${instanceConfig.id}-${new Date().toISOString().slice(0, 10)}.${ext}`)
       }
     } catch (err) {
       console.error("Export failed:", err)

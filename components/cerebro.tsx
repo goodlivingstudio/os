@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import { Paperclip, Mic, MicOff, ExternalLink, ArrowUpRight, Copy, Check, Flag, BookMarked, Maximize2, Square, RotateCcw } from "lucide-react"
 import type { Article, Message } from "@/lib/types"
 import { storageKey } from "@/lib/config"
+import { MONO } from "@/lib/styles"
 import { renderCitedBody, CitationSource } from "@/components/citation"
 
 // ─── Speech Recognition helpers ─────────────────────────────────────────────
@@ -308,7 +309,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
           <span
             style={{
               fontSize: 11,
-              fontFamily: "var(--font-geist-mono), monospace",
+              fontFamily: MONO,
               textTransform: "uppercase",
               color: "var(--accent-muted)",
             }}
@@ -316,7 +317,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
             Cerebro
           </span>
           {tokens > 0 && (
-            <span style={{ fontSize: 11, fontFamily: "var(--font-geist-mono), monospace", fontVariantNumeric: "tabular-nums", color: "var(--text-primary)" }}>
+            <span style={{ fontSize: 11, fontFamily: MONO, fontVariantNumeric: "tabular-nums", color: "var(--text-primary)" }}>
               {tokens.toLocaleString()}
             </span>
           )}
@@ -337,7 +338,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
                 background: escalateCopied ? "var(--accent-secondary)" : "transparent",
                 color: escalateCopied ? "var(--bg-primary)" : "var(--text-tertiary)",
                 fontSize: 10,
-                fontFamily: "var(--font-geist-mono), monospace",
+                fontFamily: MONO,
                 cursor: "pointer",
                 transition: "all 0.2s",
               }}
@@ -361,7 +362,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
             <div
               style={{
                 fontSize: 12.5,
-                fontFamily: "var(--font-geist-mono), monospace",
+                fontFamily: MONO,
                 color: "var(--text-tertiary)",
                 lineHeight: 1.8,
               }}
@@ -443,7 +444,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
             ) : m.role === "search" ? (
               <div style={{
                 padding: "0 32px", fontSize: 10,
-                fontFamily: "var(--font-geist-mono), monospace",
+                fontFamily: MONO,
                 color: "var(--text-tertiary)", lineHeight: 1.5,
                 display: "flex", alignItems: "center", gap: 6,
               }}>
@@ -466,7 +467,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
                       key={pi}
                       style={{
                         fontSize: 12.5,
-                        fontFamily: "var(--font-geist-mono), monospace",
+                        fontFamily: MONO,
                         color: "var(--text-secondary)",
                         lineHeight: 1.9,
                         wordBreak: "break-word",
@@ -502,7 +503,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
               }}
             >
               <div style={{
-                fontSize: 12.5, fontFamily: "var(--font-geist-mono), monospace",
+                fontSize: 12.5, fontFamily: MONO,
                 color: "var(--accent-muted)", lineHeight: 1.8,
                 transition: "color 0.15s",
               }}
@@ -523,7 +524,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
                       display: "flex", alignItems: "baseline", gap: 8,
                       background: "transparent", border: "none",
                       padding: "4px 0", borderRadius: 0,
-                      fontSize: 11, fontFamily: "var(--font-geist-mono), monospace",
+                      fontSize: 11, fontFamily: MONO,
                       color: "var(--text-tertiary)", cursor: "pointer",
                       transition: "color 0.15s", textAlign: "left", lineHeight: 1.5,
                       opacity: 0.6,
@@ -542,7 +543,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
 
         {loading && (
           <div style={{ padding: "0 24px" }}>
-            <span className="cursor-blink" style={{ fontSize: 13, fontFamily: "var(--font-geist-mono), monospace" }}>▊</span>
+            <span className="cursor-blink" style={{ fontSize: 13, fontFamily: MONO }}>▊</span>
           </div>
         )}
         <div ref={bottomRef} />

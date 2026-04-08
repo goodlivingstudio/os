@@ -15,6 +15,9 @@ import type { CSSProperties } from "react"
 /** Monospace — Cerebro voice only */
 export const MONO = "var(--font-geist-mono), monospace"
 
+/** Editorial serif — Dispatch view headlines and editorial content */
+export const EDITORIAL = "var(--font-grenette), Georgia, serif"
+
 // ─── Type scale tokens ──────────────────────────────────────────────────────
 
 export const TYPE = {

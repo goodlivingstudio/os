@@ -18,7 +18,7 @@ import { HotkeysOverlay } from "@/components/hotkeys"
 import { ExportPanel } from "@/components/export-panel"
 import { Divider } from "@/components/divider"
 import type { Article, Signal, FeedHealth, Skin, ViewMode } from "@/lib/types"
-import { CATEGORY_CONFIG } from "@/lib/types"
+import { LAYER_CONFIG } from "@/lib/types"
 import { TYPE, MONO } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
 
@@ -557,7 +557,7 @@ export default function Page() {
                 }}
               >
                 <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 500 }}>
-                  {activeLayers.size === 0 ? "All" : [...activeLayers].map(l => CATEGORY_CONFIG.find(c => c.id === l)?.label || l).join(", ")}
+                  {activeLayers.size === 0 ? "All" : [...activeLayers].map(l => LAYER_CONFIG.find(c => c.id === l)?.label || l).join(", ")}
                 </span>
                 <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.6, fontVariantNumeric: "tabular-nums" }}>
                   {triagePool.length}
@@ -581,7 +581,7 @@ export default function Page() {
                     <span>All</span>
                     <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.5, fontVariantNumeric: "tabular-nums" }}>{triagePool.length}</span>
                   </button>
-                  {CATEGORY_CONFIG.filter(cat => cat.id !== "all").map(cat => {
+                  {LAYER_CONFIG.filter(cat => cat.id !== "all").map(cat => {
                     const n = triagePool.filter(a => a.tag === cat.id).length
                     if (n === 0 && !feedLoading) return null
                     const isActive = activeLayers.has(cat.id)
@@ -661,7 +661,7 @@ export default function Page() {
                 {triagePool.length}
               </span>
             </button>
-            {CATEGORY_CONFIG.filter(cat => cat.id !== "all").map(cat => {
+            {LAYER_CONFIG.filter(cat => cat.id !== "all").map(cat => {
               const n = cat.id === "all" ? triagePool.length : triagePool.filter(a => a.tag === cat.id).length
               if (n === 0 && !feedLoading) return null
               const isActive = activeLayers.has(cat.id)

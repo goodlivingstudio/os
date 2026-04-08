@@ -3,7 +3,7 @@
 import { useState, useRef, memo } from "react"
 import { Bookmark } from "lucide-react"
 import type { Article } from "@/lib/types"
-import { timeAgo, LENS_COLOR } from "@/lib/types"
+import { timeAgo, LAYER_COLOR } from "@/lib/types"
 import { TYPE, labelStyle, bodyStyle, metaStyle } from "@/lib/styles"
 
 // ─── Signal Card — hover intelligence briefing ──────────────────────────────
@@ -14,7 +14,7 @@ export function SignalCard({ x, y, article }: { x: number; y: number; article: A
   const left        = Math.min(x + 18, (typeof window !== "undefined" ? window.innerWidth : 1200) - 276)
   const top         = Math.max(8, y - 44)
   const lens        = article.signalLens || ""
-  const accentColor = LENS_COLOR[lens] || "var(--border)"
+  const accentColor = LAYER_COLOR[lens] || "var(--border)"
 
   return (
     <div style={{

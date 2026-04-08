@@ -59,8 +59,6 @@ export type IntelLayer = string  // now dynamic per instance
 
 export const LAYER_CONFIG = getLayerConfig()
 
-// Legacy — will be removed once news API migrates to layers
-export const CATEGORY_CONFIG = LAYER_CONFIG
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -84,5 +82,3 @@ export interface CitationSource {
 
 export const LAYER_COLOR: Record<string, string> = config.layerColors
 
-// Legacy alias
-export const LENS_COLOR = LAYER_COLOR
