@@ -357,11 +357,10 @@ When scoring and surfacing signals, weight INTELLIGENCE and POSITIONING sources 
   // ─── Theme ──────────────────────────────────────────────────────────────────
 
   skins: [
-    { id: "mineral", label: "Mineral", dot: "#B8956A" },
-    { id: "slate",   label: "Slate",   dot: "#4A7A9B" },
-    { id: "forest",  label: "Forest",  dot: "#5C8A6E" },
+    { id: "ink",   label: "Ink",   dot: "#D88A7A" },
+    { id: "paper", label: "Paper", dot: "#7E3A30" },
   ],
-  defaultSkin: "mineral",
+  defaultSkin: "ink",
 
   // ─── Gallery Scraper ──────────────────────────────────────────────────────
 
