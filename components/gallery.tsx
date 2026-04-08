@@ -7,7 +7,7 @@ import instanceConfig, { storageKey } from "@/lib/config"
 import { GALLERY_SOURCES, type GalleryImage, type ColorMood } from "@/lib/gallery"
 import type { Skin, Article } from "@/lib/types"
 import { Ticker } from "@/components/ticker"
-import { SurfaceTrends } from "@/components/surface-trends"
+// SurfaceTrends removed — Trends feature abandoned globally
 
 // ─── Color Mood Display ─────────────────────────────────────────────────────
 
@@ -178,8 +178,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
   const [activeMood, setActiveMood] = useState<ColorMood | null>(null)
   const [sourceType, setSourceType] = useState<"all" | "curated" | "ugc">("all")
-  const [showTrends, setShowTrends] = useState(false)
-  const [showSources, setShowSources] = useState(false)
+  // Trends + Sources panels removed — sources now in Config view
 
   // Detect if this instance has UGC sources (Are.na UGC channel)
   const hasUgc = instanceConfig.gallerySources.some(s => s.name.toLowerCase().includes("ugc"))
@@ -484,47 +483,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
               </>
             )}
 
-            {/* Trends + Sources — desktop only */}
-            {!isMobile && (
-              <>
-                {/* Trends — hidden for Explore (color intelligence not relevant to public lands mandate) */}
-                {instanceConfig.id !== "explore" && <button
-                  onClick={() => { setShowTrends(!showTrends); setShowSources(false); if (!showTrends) setActiveMood(null) }}
-                  style={{
-                    ...TYPE.sm, padding: "3px 10px", borderRadius: 8,
-                    border: showTrends ? "none" : "1px solid var(--border)",
-                    background: showTrends ? "var(--accent-primary)" : "transparent",
-                    color: showTrends ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                    fontWeight: showTrends ? 600 : 400,
-                    cursor: "pointer", transition: "all 0.15s",
-                  }}
-                  onMouseEnter={e => { if (!showTrends) e.currentTarget.style.background = "var(--bg-elevated)" }}
-                  onMouseLeave={e => { if (!showTrends) e.currentTarget.style.background = showTrends ? "var(--accent-primary)" : "transparent" }}
-                >
-                  Trends
-                </button>}
-                <button
-                  onClick={() => { setShowSources(!showSources); if (!showSources) { setShowTrends(false); setActiveMood(null) } }}
-                  style={{
-                    ...TYPE.sm, padding: "3px 10px", borderRadius: 8,
-                    border: showSources ? "none" : "1px solid var(--border)",
-                    background: showSources ? "var(--accent-primary)" : "transparent",
-                    color: showSources ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                    fontWeight: showSources ? 600 : 400,
-                    cursor: "pointer", transition: "all 0.15s",
-                  }}
-                  onMouseEnter={e => { if (!showSources) e.currentTarget.style.background = "var(--bg-elevated)" }}
-                  onMouseLeave={e => { if (!showSources) e.currentTarget.style.background = showSources ? "var(--accent-primary)" : "transparent" }}
-                >
-                  Sources
-                  {excludedSources?.size ? (
-                    <span style={{ opacity: 0.5, marginLeft: 4 }}>
-                      {GALLERY_SOURCES.length - excludedSources.size}/{GALLERY_SOURCES.length}
-                    </span>
-                  ) : null}
-                </button>
-              </>
-            )}
+            {/* Trends + Sources removed — gallery sources now live in Config view */}
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
@@ -548,70 +507,8 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
 
       </div>
 
-      {/* Trends panel — desktop only, replaces grid (hidden for Explore) */}
-      {instanceConfig.id !== "explore" && !isMobile && showTrends && (
-        <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
-          <SurfaceTrends
-            articles={articles || []}
-            onDeliberate={onDeliberate || (() => {})}
-          />
-        </div>
-      )}
-
-      {/* Sources panel — desktop only, replaces grid */}
-      {!isMobile && showSources && onToggleSource && (
-        <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", padding: "20px 24px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-            <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-              Gallery Sources
-            </span>
-            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
-              {GALLERY_SOURCES.length - (excludedSources?.size || 0)}/{GALLERY_SOURCES.length} active
-            </span>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
-            {GALLERY_SOURCES.map(src => {
-              const active = !excludedSources?.has(src.name)
-              return (
-                <div
-                  key={src.url}
-                  onClick={() => onToggleSource(src.name)}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 8,
-                    padding: "10px 12px", borderRadius: 8,
-                    background: active ? "var(--bg-surface)" : "transparent",
-                    opacity: active ? 1 : 0.4,
-                    cursor: "pointer", transition: "all 0.15s",
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-                  onMouseLeave={e => { e.currentTarget.style.background = active ? "var(--bg-surface)" : "transparent" }}
-                >
-                  <span style={{
-                    width: 8, height: 8, borderRadius: "50%", flexShrink: 0,
-                    background: active ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                    transition: "background 0.15s",
-                  }} />
-                  <span style={{
-                    ...TYPE.body, color: active ? "var(--text-primary)" : "var(--text-tertiary)",
-                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                  }}>
-                    {src.name}
-                  </span>
-                  <span style={{
-                    ...TYPE.xs, color: "var(--text-tertiary)", marginLeft: "auto",
-                    textTransform: "uppercase", letterSpacing: "0.04em",
-                  }}>
-                    {src.type}
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Masonry grid — hidden when trends or sources active on desktop */}
-      {!((!isMobile && showTrends) || (!isMobile && showSources)) && <div style={{
+      {/* Masonry grid */}
+      <div style={{
         flex: 1, overflowY: "auto", overflowX: "hidden",
         padding: "24px 16px",
       }}>
@@ -750,7 +647,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
             </div>
           )
         })()}
-      </div>}
+      </div>
 
       {/* Lightbox */}
       {lightboxIdx !== null && images[lightboxIdx] && (
