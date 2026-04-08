@@ -12,6 +12,27 @@ export interface ImageCandidate {
   height?: number
 }
 
+// Download image as base64 — more reliable than URL source for varied CDNs
+async function fetchImageBase64(url: string): Promise<{ data: string; mediaType: string } | null> {
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(10000) })
+    if (!res.ok) return null
+    const contentType = res.headers.get("content-type") || "image/jpeg"
+    const mediaType = contentType.split(";")[0].trim()
+    // Only accept image types
+    if (!mediaType.startsWith("image/")) return null
+    const buffer = await res.arrayBuffer()
+    // Skip tiny images (likely icons/tracking pixels)
+    if (buffer.byteLength < 5000) return null
+    // Skip huge images to stay under API limits (>5MB)
+    if (buffer.byteLength > 5 * 1024 * 1024) return null
+    const data = Buffer.from(buffer).toString("base64")
+    return { data, mediaType }
+  } catch {
+    return null
+  }
+}
+
 export async function visionFilter(
   images: ImageCandidate[],
   tastePrompt: string,
@@ -22,24 +43,39 @@ export async function visionFilter(
   if (!apiKey || images.length === 0) return images
 
   const scored: { image: ImageCandidate; score: number }[] = []
+  let fetchFails = 0
 
   for (let i = 0; i < images.length; i += VISION_BATCH_SIZE) {
     const batch = images.slice(i, i + VISION_BATCH_SIZE)
 
+    // Download images as base64
+    const downloaded: { image: ImageCandidate; data: string; mediaType: string }[] = []
+    for (const img of batch) {
+      const result = await fetchImageBase64(img.url)
+      if (result) {
+        downloaded.push({ image: img, ...result })
+      } else {
+        fetchFails++
+        scored.push({ image: img, score: 1 }) // can't download = reject
+      }
+    }
+
+    if (downloaded.length === 0) continue
+
     const content: Array<Record<string, unknown>> = [
       {
         type: "text",
-        text: `${tastePrompt}\n\nI'm showing you ${batch.length} candidate images from ${siteName}. Look at EACH image carefully and rate it 1-5 using the criteria above.\n\nFor each image, evaluate:\n- Is this an AMERICAN landscape/location? (non-US = automatic 1)\n- What is the visual quality and emotional impact?\n- Does it serve the mandate?\n\nReturn a JSON array of scores, one per image, in order. Example for ${batch.length} images: [${batch.map((_, j) => j === 0 ? "5" : "3").join(", ")}]\nReturn only the JSON array, nothing else.`,
+        text: `${tastePrompt}\n\nI'm showing you ${downloaded.length} candidate images from ${siteName}. Look at EACH image carefully and rate it 1-5 using the criteria above.\n\nFor each image, evaluate:\n- Is this an AMERICAN landscape/location? (non-US = automatic 1)\n- What is the visual quality and emotional impact?\n- Does it serve the mandate?\n\nReturn a JSON array of scores, one per image, in order. Example for ${downloaded.length} images: [${downloaded.map((_, j) => j === 0 ? "5" : "3").join(", ")}]\nReturn only the JSON array, nothing else.`,
       },
     ]
 
-    for (const img of batch) {
+    for (const item of downloaded) {
       content.push({
         type: "image",
         source: {
-          type: "url",
-          media_type: "image/jpeg",
-          url: img.url,
+          type: "base64",
+          media_type: item.mediaType,
+          data: item.data,
         },
       })
     }
@@ -62,7 +98,6 @@ export async function visionFilter(
       if (!response.ok) {
         const err = await response.text()
         console.log(`  Vision API error: ${response.status} ${err.slice(0, 100)}`)
-        // On error, skip this batch entirely (strict mode)
         continue
       }
 
@@ -72,8 +107,8 @@ export async function visionFilter(
 
       if (match) {
         const scores: number[] = JSON.parse(match[0])
-        for (let j = 0; j < batch.length; j++) {
-          scored.push({ image: batch[j], score: scores[j] || 1 })
+        for (let j = 0; j < downloaded.length; j++) {
+          scored.push({ image: downloaded[j].image, score: scores[j] || 1 })
         }
       }
     } catch (err) {
@@ -83,6 +118,11 @@ export async function visionFilter(
     // Rate limit between batches
     if (i + VISION_BATCH_SIZE < images.length) {
       await new Promise(r => setTimeout(r, 1000))
+    }
+
+    // Progress indicator every 20 images
+    if ((i + VISION_BATCH_SIZE) % 20 === 0) {
+      process.stdout.write(`  [${Math.min(i + VISION_BATCH_SIZE, images.length)}/${images.length}]`)
     }
   }
 
