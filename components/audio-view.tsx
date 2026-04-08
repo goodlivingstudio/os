@@ -109,7 +109,7 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episode
       <div
         style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          width: "100%", padding: "0 20px", height: 40,
+          width: "100%", padding: "0 32px", height: 40,
           borderBottom: "1px solid var(--border)",
         }}
       >

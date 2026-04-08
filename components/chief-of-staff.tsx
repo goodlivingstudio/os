@@ -143,7 +143,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
       {briefError ? (
         /* ── Error state ── */
         <div style={{
-          padding: "16px 24px",
+          padding: "16px 32px",
           display: "flex", flexDirection: "column", gap: 8,
           minHeight: 80, justifyContent: "center",
         }}>
@@ -160,7 +160,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
         /* ── Loading state: terminal boot ── */
         <>
           <div style={{
-            padding: "16px 24px",
+            padding: "16px 32px",
             display: "flex", flexDirection: "column", gap: 4,
             minHeight: 80, justifyContent: "center",
           }}>
@@ -191,7 +191,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
           <div
             style={{
               display: "flex", alignItems: "center", justifyContent: "space-between",
-              width: "100%", padding: "0 20px", height: 40,
+              width: "100%", padding: "0 32px", height: 40,
               borderBottom: "1px solid var(--border)",
             }}
           >
@@ -231,7 +231,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
             overflow: "hidden",
             transition: "max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
           }}>
-            <div style={{ display: "grid", gridTemplateColumns: `repeat(${signals.filter(s => s.body).length || 1}, 1fr)`, gap: 8, padding: "8px 16px 16px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(${signals.filter(s => s.body).length || 1}, 1fr)`, gap: 8, padding: "8px 32px 16px" }}>
               {signals.filter(s => s.body).map((signal, i) => (
                   <div
                     key={i}
@@ -296,7 +296,7 @@ export function AnalysisPanelMobile({ signals, briefLoading }: { signals: Signal
         <div
           key={i}
           style={{
-            padding: "24px 24px",
+            padding: "24px 32px",
             borderBottom: "1px solid var(--border)",
             background: "var(--accent-primary)",
           }}

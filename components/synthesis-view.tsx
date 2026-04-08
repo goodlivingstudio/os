@@ -192,7 +192,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
       {/* Header bar */}
       <div style={{
         flexShrink: 0, height: 40, display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "0 20px", borderBottom: "1px solid var(--border)",
+        padding: "0 32px", borderBottom: "1px solid var(--border)",
       }}>
         <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase" }}>
           Synthesis
