@@ -843,7 +843,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
         )
       })()}
 
-      <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", paddingTop: 8, paddingBottom: 8 }}>
+      <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", paddingTop: 12, paddingBottom: 12 }}>
       {/* Loading state — matches Signal feed skeleton pattern */}
       {loading ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "8px 0" }}>
