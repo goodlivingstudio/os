@@ -7,7 +7,7 @@ import { FEEDS } from "@/lib/feeds"
 import { PODCAST_FEEDS } from "@/lib/podcasts"
 import { GALLERY_SOURCES } from "@/lib/gallery"
 import { MONO, TYPE, labelStyle, metaStyle } from "@/lib/styles"
-import { storageKey } from "@/lib/config"
+import instanceConfig, { storageKey } from "@/lib/config"
 import { RefreshCw } from "lucide-react"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -554,6 +554,93 @@ export function ConfigView({ excludedSources, onToggleSource }: ConfigViewProps)
               </div>
             </div>
           </div>
+
+          {/* ── Scraper Targets — where the image agents hunt ── */}
+          {instanceConfig.galleryScraper && (
+            <div>
+              <div style={sectionLabel}>
+                Scraper Targets
+                <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
+                  {instanceConfig.galleryScraper.targets.length} sites
+                </span>
+              </div>
+              <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
+                {(() => {
+                  const categories = [...new Set(instanceConfig.galleryScraper!.targets.map(t => t.category))]
+                  return categories.map(cat => (
+                    <div key={cat} style={{ marginBottom: 12 }}>
+                      <div style={{ ...TYPE.sm, fontWeight: 500, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, paddingLeft: 4 }}>
+                        {cat}
+                        <span style={{ color: "var(--text-tertiary)", marginLeft: 6 }}>
+                          ({instanceConfig.galleryScraper!.targets.filter(t => t.category === cat).length})
+                        </span>
+                      </div>
+                      <div className="source-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
+                        {instanceConfig.galleryScraper!.targets.filter(t => t.category === cat).map(target => (
+                          <a
+                            key={target.url}
+                            href={target.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              ...rowStyle, padding: "6px 10px", textDecoration: "none",
+                            }}
+                            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+                            onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+                          >
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", flexShrink: 0, background: "var(--accent-muted)" }} />
+                            <span style={{ ...TYPE.body, color: "var(--text-secondary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                              {target.name}
+                            </span>
+                            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginLeft: "auto", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                              fetch
+                            </span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                })()}
+              </div>
+            </div>
+          )}
+
+          {/* ── UGC Scraper Targets ── */}
+          {instanceConfig.ugcScraper && (
+            <div>
+              <div style={sectionLabel}>
+                UGC Scraper Targets
+                <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
+                  {instanceConfig.ugcScraper.targets.length} sites
+                </span>
+              </div>
+              <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
+                <div className="source-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
+                  {instanceConfig.ugcScraper.targets.map(target => (
+                    <a
+                      key={target.url}
+                      href={target.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        ...rowStyle, padding: "6px 10px", textDecoration: "none",
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+                    >
+                      <span style={{ width: 6, height: 6, borderRadius: "50%", flexShrink: 0, background: "var(--accent-muted)" }} />
+                      <span style={{ ...TYPE.body, color: "var(--text-secondary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {target.name}
+                      </span>
+                      <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginLeft: "auto", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                        fetch
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           <div style={{ height: 8 }} />
         </div>
