@@ -376,20 +376,20 @@ html, body {
   --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(58,125,92,0.08);
 }
 :root.skin-cascadia.day {
-  --bg-primary:       #EBF2ED;
-  --bg-surface:       #DCE8E0;
-  --bg-elevated:      #CDD8D0;
-  --card-tint:        #E0EEE4;
-  --accent-primary:   #D0E4D6;
-  --accent-secondary: #1E5E3E;
-  --accent-muted:     #2D7050;
-  --text-primary:     #141E18;
-  --text-secondary:   #2A4434;
-  --text-tertiary:    #4A6454;
-  --border:           #BACED0;
+  --bg-primary:       #E8F0EA;
+  --bg-surface:       #D8E6DC;
+  --bg-elevated:      #C8D8CE;
+  --card-tint:        #D0E2D4;
+  --accent-primary:   #C4DCC8;
+  --accent-secondary: #1A6840;
+  --accent-muted:     #28804E;
+  --text-primary:     #101C14;
+  --text-secondary:   #24402E;
+  --text-tertiary:    #3E5E48;
+  --border:           #B0C8B8;
   --live:             #166534;
-  --synth-indicator:  #CCE2D4;
-  --shadow-tooltip:   0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(30,94,62,0.06);
+  --synth-indicator:  #C0D8C8;
+  --shadow-tooltip:   0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(26,104,64,0.08);
 }
 
 /* ── Mesa — American Southwest ───────────────────────────────── */
