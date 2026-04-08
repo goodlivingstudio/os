@@ -565,7 +565,7 @@ export default function Page() {
                   background: "transparent", cursor: "pointer", transition: "all 0.15s",
                 }}
               >
-                <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 500 }}>
+                <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 400 }}>
                   {activeLayers.size === 0 ? "All" : [...activeLayers].map(l => LAYER_CONFIG.find(c => c.id === l)?.label || l).join(", ")}
                 </span>
                 <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.6, fontVariantNumeric: "tabular-nums" }}>
@@ -692,7 +692,7 @@ export default function Page() {
                   onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
                   onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? "var(--accent-primary)" : "transparent" }}
                 >
-                  <span style={{ ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)", fontWeight: isActive ? 600 : 400 }}>
+                  <span style={{ ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)", fontWeight: 400 }}>
                     {cat.label}
                   </span>
                   <span style={{ ...TYPE.xs, fontVariantNumeric: "tabular-nums", color: isActive ? "var(--accent-muted)" : "var(--text-tertiary)", opacity: 0.5 }}>
