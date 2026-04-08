@@ -113,7 +113,7 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episode
           borderBottom: "1px solid var(--border)",
         }}
       >
-        <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-secondary)", textTransform: "uppercase" }}>
+        <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
           Sound
         </span>
         <button

@@ -316,9 +316,9 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <span style={{
-              ...TYPE.sm, fontFamily: MONO,
+              ...TYPE.sm,
               color: "var(--accent-muted)", textTransform: "uppercase",
-              letterSpacing: "0.08em",
+              letterSpacing: "0.04em",
             }}>
               Surface
             </span>

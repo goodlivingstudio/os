@@ -58,7 +58,7 @@ export function HotkeysOverlay({ onClose }: { onClose: () => void }) {
       >
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-          <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+          <span style={{ ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
             Keyboard Shortcuts
           </span>
           <button

@@ -786,7 +786,7 @@ export default function Page() {
           borderBottom: "1px solid var(--border)",
         }}>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.06em" }}>
+            <span style={{ ...TYPE.sm, fontFamily: mobileTab === "cerebro" ? MONO : undefined, color: "var(--accent-muted)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.06em" }}>
               {{ signal: "Signal", audio: "Sound", synthesis: "Synthesis", gallery: "Surface", cerebro: "Cerebro", config: "Config" }[mobileTab] || "Dispatch"}
             </span>
           </div>

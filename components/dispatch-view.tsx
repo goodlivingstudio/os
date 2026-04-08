@@ -450,7 +450,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
         flexShrink: 0, height: 40, display: "flex", alignItems: "center",
         padding: "0 20px", borderBottom: "1px solid var(--border)",
       }}>
-        <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase" }}>
+        <span style={{ ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
           Dispatch
         </span>
 

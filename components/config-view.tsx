@@ -466,7 +466,7 @@ export function ConfigView({ excludedSources, onToggleSource }: ConfigViewProps)
         padding: "0 20px", borderBottom: "1px solid var(--border)",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-muted)", textTransform: "uppercase" }}>
+          <span style={{ ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
             Configuration
           </span>
           <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
