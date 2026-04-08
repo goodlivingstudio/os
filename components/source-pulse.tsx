@@ -147,7 +147,6 @@ function SourceRow({ source }: { source: SourceStat }) {
       <span style={{
         width: 6, height: 6, borderRadius: "50%", flexShrink: 0,
         background: source.live ? "var(--live)" : "#ef4444",
-        boxShadow: source.live ? "0 0 4px var(--live)" : "0 0 4px #ef4444",
       }} />
       <span style={{
         flex: 1, ...TYPE.sm, fontFamily: MONO,
@@ -688,7 +687,6 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
           <span style={{
             width: 7, height: 7, borderRadius: "50%",
             background: overallColor,
-            boxShadow: `0 0 6px ${overallColor}`,
           }} />
           <span style={{ ...TYPE.xs, fontFamily: MONO, color: overallColor }}>{healthPct}%</span>
         </div>
@@ -742,7 +740,6 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                     <span style={{
                       width: 6, height: 6, borderRadius: "50%",
                       background: ok === null ? "var(--text-tertiary)" : ok ? "var(--live)" : "#ef4444",
-                      boxShadow: ok === null ? "none" : ok ? "0 0 4px var(--live)" : "0 0 4px #ef4444",
                     }} />
                     <span style={{ ...TYPE.sm, fontFamily: MONO, color: ok === null ? "var(--text-tertiary)" : ok ? "var(--text-secondary)" : "#ef4444" }}>
                       {api.name}
@@ -774,6 +771,32 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
             <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "10px 14px" }}>
               {layerHealth.map(lh => (
                 <LayerBar key={lh.layer} layer={lh} health={0} maxArticles={maxLayerArticles} />
+              ))}
+            </div>
+          </div>
+
+          {/* ── Intelligence Layers (reference) ── */}
+          <div>
+            <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
+              Intelligence Layers
+            </div>
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px", display: "flex", flexDirection: "column", gap: 16 }}>
+              {instanceConfig.layers.map((l, i) => ({
+                layer: l.label,
+                color: ["#D4A05A", "#5A9EB0", "#7BAF6A", "#9A85B8", "#C87A6A"][i] || "#888",
+                what: l.description.split(". ")[0],
+                why: l.description,
+              })).map(item => (
+                <div key={item.layer}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                    <span style={{ width: 8, height: 8, borderRadius: 3, background: item.color, flexShrink: 0 }} />
+                    <span style={{ ...TYPE.body, color: "var(--text-primary)", fontWeight: 500 }}>{item.layer}</span>
+                    <span style={{ ...TYPE.sm, color: "var(--text-tertiary)" }}>{item.what}</span>
+                  </div>
+                  <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7, paddingLeft: 16 }}>
+                    {item.why}
+                  </div>
+                </div>
               ))}
             </div>
           </div>
@@ -835,32 +858,6 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
 
           {/* ── API Usage (live) ── */}
           <UsagePanel />
-
-          {/* ── Intelligence Layers (reference) ── */}
-          <div>
-            <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
-              Intelligence Layers
-            </div>
-            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px", display: "flex", flexDirection: "column", gap: 16 }}>
-              {instanceConfig.layers.map((l, i) => ({
-                layer: l.label,
-                color: ["#D4A05A", "#5A9EB0", "#7BAF6A", "#9A85B8", "#C87A6A"][i] || "#888",
-                what: l.description.split(". ")[0],
-                why: l.description,
-              })).map(item => (
-                <div key={item.layer}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                    <span style={{ width: 8, height: 8, borderRadius: 3, background: item.color, flexShrink: 0 }} />
-                    <span style={{ ...TYPE.body, color: "var(--text-primary)", fontWeight: 500 }}>{item.layer}</span>
-                    <span style={{ ...TYPE.sm, color: "var(--text-tertiary)" }}>{item.what}</span>
-                  </div>
-                  <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7, paddingLeft: 16 }}>
-                    {item.why}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
           {/* ── Stub Fallback ── */}
           {feedHealth?.stubCategories && feedHealth.stubCategories.length > 0 && (
