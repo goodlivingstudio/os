@@ -235,18 +235,18 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
 
   categoryStyleDay: {
     PLATFORM: { bg: "rgba(30,94,62,0.10)",    color: "#1E5E3E" },
-    POLICY:   { bg: "rgba(142,94,30,0.10)",   color: "#8E5E1E" },
-    CULTURE:  { bg: "rgba(100,75,100,0.10)",  color: "#644B64" },
-    INDUSTRY: { bg: "rgba(30,117,106,0.10)",  color: "#1E756A" },
-    CRAFT:    { bg: "rgba(80,100,60,0.10)",   color: "#50643C" },
+    POLICY:   { bg: "rgba(90,70,50,0.10)",    color: "#5A4632" },
+    CULTURE:  { bg: "rgba(80,90,110,0.10)",   color: "#505A6E" },
+    INDUSTRY: { bg: "rgba(42,74,106,0.10)",   color: "#2A4A6A" },
+    CRAFT:    { bg: "rgba(70,100,70,0.10)",   color: "#466446" },
   },
 
   categoryStyleNight: {
     PLATFORM: { bg: "rgba(58,125,92,0.14)",   color: "#3A7D5C" },
-    POLICY:   { bg: "rgba(196,135,58,0.12)",  color: "#C4873A" },
-    CULTURE:  { bg: "rgba(140,108,140,0.12)", color: "#8C6C8C" },
-    INDUSTRY: { bg: "rgba(61,155,143,0.12)",  color: "#3D9B8F" },
-    CRAFT:    { bg: "rgba(110,138,80,0.12)",  color: "#6E8A50" },
+    POLICY:   { bg: "rgba(160,130,90,0.12)",  color: "#A08A5A" },
+    CULTURE:  { bg: "rgba(120,130,160,0.12)", color: "#7882A0" },
+    INDUSTRY: { bg: "rgba(90,126,168,0.12)",  color: "#5A7EA8" },
+    CRAFT:    { bg: "rgba(90,130,90,0.12)",   color: "#5A825A" },
   },
 
   // ─── Theme — Three regions of America ───────────────────────────────────────
