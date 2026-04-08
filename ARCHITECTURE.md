@@ -62,6 +62,23 @@ All client-side (localStorage) and server-side (Vercel KV) cache keys are prefix
 - `storageKey("annotations-v3")` → `"dispatch-annotations-v3"` or `"explore-annotations-v3"`
 - `kvKey("synthesis:weekly")` → `"dispatch:synthesis:weekly"` or `"explore:synthesis:weekly"`
 
+## Gallery Header Pattern
+
+The gallery filter bar has a fixed structure:
+
+```
+[ All · Warm · Cool · Earth · Vivid · Neutral ]  |  [ instance-specific chips ]
+```
+
+- **Left of hairline** — universal mood filters, shared by all instances
+- **Right of hairline** — instance-specific toggles, rendered only when the instance config warrants them (e.g., Explore shows Curated / UGC because it has a UGC Are.na channel)
+
+Dispatch: no custom chips (no UGC channel)
+Explore: Curated / UGC chips
+Lilly: TBD
+
+This pattern extends to any future per-instance gallery features — they go right of the hairline.
+
 ## Adding a New Instance
 
 1. Create `lib/config/{name}.ts` implementing `InstanceConfig`
