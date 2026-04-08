@@ -467,7 +467,7 @@ export default function Page() {
       if (!dragRef.current) return
       const delta = ev.clientX - dragRef.current.startX
       if (dragRef.current.side === "left") {
-        setLeftWidth(clamp(dragRef.current.startW + delta, 160, 380))
+        setLeftWidth(clamp(dragRef.current.startW + delta, 220, 380))
       } else {
         setRightWidth(clamp(dragRef.current.startW - delta, 220, 520))
       }
