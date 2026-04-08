@@ -5,7 +5,7 @@ import { fetchAndClassifyGalleryImages } from "@/lib/gallery-fetch"
 import { kv } from "@vercel/kv"
 import { kvKey } from "@/lib/config"
 
-export const revalidate = 1800 // 30 min cache
+export const revalidate = 3600 // 1 hour — gallery images don't need frequent refresh
 
 const KV_AVAILABLE = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN)
 const BLOCKLIST_KEY = kvKey("gallery:blocklist")

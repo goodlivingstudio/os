@@ -1,4 +1,4 @@
-export const revalidate = 1800 // 30 min cache
+export const revalidate = 43200 // 12 hours — podcasts don't update frequently
 
 import { PODCAST_FEEDS, type PodcastFeed } from "@/lib/podcasts"
 
