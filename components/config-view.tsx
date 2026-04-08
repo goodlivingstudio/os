@@ -530,36 +530,22 @@ export function ConfigView({ excludedSources, onToggleSource }: ConfigViewProps)
               </span>
             </div>
             <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
+              <div className="source-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
                 {GALLERY_SOURCES.map(src => {
                   const active = !excludedSources.has(src.name)
                   return (
                     <div
                       key={src.url}
                       onClick={() => onToggleSource(src.name)}
-                      style={{
-                        display: "flex", alignItems: "center", gap: 8,
-                        padding: "10px 12px", borderRadius: 8,
-                        background: active ? "transparent" : "transparent",
-                        opacity: active ? 1 : 0.4,
-                        cursor: "pointer", transition: "all 0.15s",
-                      }}
+                      style={{ ...rowStyle, opacity: active ? 1 : 0.5, padding: "8px 10px" }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                     >
-                      <span style={{
-                        width: 8, height: 8, borderRadius: "50%", flexShrink: 0,
-                        background: active ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                        transition: "background 0.15s",
-                      }} />
-                      <span style={{
-                        fontSize: 13, color: active ? "var(--text-primary)" : "var(--text-tertiary)",
-                        overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                      }}>
+                      <Toggle active={active} onToggle={() => onToggleSource(src.name)} />
+                      <span style={{ ...TYPE.body, color: active ? "var(--text-primary)" : "var(--text-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {src.name}
                       </span>
-                      <span style={{
-                        fontSize: 10, color: "var(--text-tertiary)", marginLeft: "auto",
-                        textTransform: "uppercase", letterSpacing: "0.04em",
-                      }}>
+                      <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginLeft: "auto", textTransform: "uppercase", letterSpacing: "0.04em" }}>
                         {src.type}
                       </span>
                     </div>
