@@ -106,26 +106,36 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episode
 
   return (
     <div style={{ flexShrink: 0, position: "relative", overflow: "hidden" }}>
-      <button
-        onClick={() => setExpanded(e => !e)}
+      <div
         style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
           width: "100%", padding: "0 20px", height: 40,
-          background: "none", border: "none", borderBottom: "1px solid var(--border)",
-          cursor: "pointer", transition: "background 0.15s",
+          borderBottom: "1px solid var(--border)",
         }}
-        onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-        onMouseLeave={e => { e.currentTarget.style.background = "none" }}
       >
         <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--accent-secondary)", textTransform: "uppercase" }}>
           Sound
         </span>
-        <ChevronUp size={14} strokeWidth={1.5} style={{
-          color: "var(--text-tertiary)",
-          transition: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-          transform: expanded ? "rotate(0)" : "rotate(180deg)",
-        }} />
-      </button>
+        <button
+          onClick={() => setExpanded(e => !e)}
+          title={expanded ? "Collapse briefing" : "Expand briefing"}
+          style={{
+            width: 28, height: 28, borderRadius: 6,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "transparent", border: "none",
+            cursor: "pointer", transition: "background 0.15s",
+            padding: 0,
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+          onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+        >
+          <ChevronUp size={14} strokeWidth={1.5} style={{
+            color: "var(--text-tertiary)",
+            transition: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+            transform: expanded ? "rotate(0)" : "rotate(180deg)",
+          }} />
+        </button>
+      </div>
 
       <div style={{
         maxHeight: expanded ? 400 : 0, overflow: "hidden",
