@@ -338,7 +338,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                     style={{
                       display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
                       padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                      ...TYPE.sm, color: !activeMood ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: !activeMood ? 600 : 400,
+                      ...TYPE.sm, color: !activeMood ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
                     }}
                   >
                     <span>All</span>
@@ -355,7 +355,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                         style={{
                           display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
                           padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                          ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: isActive ? 600 : 400,
+                          ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
                         }}
                       >
                         <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -421,7 +421,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                   ...TYPE.sm, padding: "3px 10px", borderRadius: 8, border: "none",
                   background: !activeMood ? "var(--accent-primary)" : "transparent",
                   color: !activeMood ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                  fontWeight: !activeMood ? 600 : 400,
+                  fontWeight: 400,
                   cursor: "pointer", transition: "all 0.15s",
                 }}
                 onMouseEnter={e => { if (activeMood !== null) e.currentTarget.style.background = "var(--bg-elevated)" }}
@@ -442,7 +442,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                       display: "inline-flex", alignItems: "center", gap: 5,
                       background: isActive ? "var(--accent-primary)" : "transparent",
                       color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                      fontWeight: isActive ? 600 : 400,
+                      fontWeight: 400,
                       cursor: "pointer", transition: "all 0.15s",
                     }}
                     onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
@@ -473,7 +473,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                           display: "inline-flex", alignItems: "center", gap: 5,
                           background: isActive ? "var(--accent-primary)" : "transparent",
                           color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                          fontWeight: isActive ? 600 : 400,
+                          fontWeight: 400,
                           cursor: "pointer", transition: "all 0.15s",
                         }}
                         onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}

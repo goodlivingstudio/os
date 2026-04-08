@@ -196,8 +196,8 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
             }}
           >
             <span style={{
-              ...TYPE.sm, fontFamily: "var(--font-geist-mono), monospace",
-              color: "var(--accent-secondary)", textTransform: "uppercase",
+              ...TYPE.sm,
+              color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.04em",
             }}>
               Signal
             </span>

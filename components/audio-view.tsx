@@ -716,7 +716,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
                           style={{
                             display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
                             padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                            ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: isActive ? 600 : 400,
+                            ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
                           }}
                         >
                           <span>{layer.label}</span>
@@ -744,7 +744,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
                       style={{
                         padding: "4px 12px", border: "none", borderRadius: 6, cursor: "pointer",
                         background: isActive ? "var(--bg-surface)" : "transparent",
-                        ...TYPE.xs, fontWeight: isActive ? 600 : 400,
+                        ...TYPE.xs, fontWeight: 400,
                         color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
                         letterSpacing: "0.01em",
                         transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -779,7 +779,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
                       <span style={{
                         ...TYPE.sm,
                         color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                        fontWeight: isActive ? 600 : 400,
+                        fontWeight: 400,
                         transition: "color 0.15s",
                       }}>
                         {layer.label}
@@ -820,7 +820,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
                         borderRadius: 6, cursor: "pointer",
                         background: isActive ? "var(--bg-surface)" : "transparent",
                         ...TYPE.xs,
-                        fontWeight: isActive ? 600 : 400,
+                        fontWeight: 400,
                         color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
                         transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                       }}

@@ -541,7 +541,7 @@ export function LeftRail({
                       position: "relative",
                       zIndex: 1,
                       fontSize: 13,
-                      fontWeight: isActive ? 600 : 400,
+                      fontWeight: 400,
                       color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
                       transition: "background 0.2s ease, color 0.3s ease",
                       letterSpacing: "0.01em",

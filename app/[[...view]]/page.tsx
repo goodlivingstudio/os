@@ -458,7 +458,7 @@ export default function Page() {
   const handleSignalLeave = useCallback(() => { setSignal(null) }, [])
 
   // Resizable column widths
-  const [leftWidth,  setLeftWidth]  = useState(300)
+  const [leftWidth,  setLeftWidth]  = useState(310)
   const [rightWidth, setRightWidth] = useState(320)
   const dragRef = useRef<{ side: "left"|"right"; startX: number; startW: number } | null>(null)
 
@@ -609,7 +609,7 @@ export default function Page() {
                         style={{
                           display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
                           padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                          ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: isActive ? 600 : 400,
+                          ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
                         }}
                       >
                         <span>{cat.label}</span>
@@ -637,7 +637,7 @@ export default function Page() {
                     style={{
                       padding: "4px 12px", border: "none", borderRadius: 6, cursor: "pointer",
                       background: isActive ? "var(--bg-surface)" : "transparent",
-                      ...TYPE.xs, fontWeight: isActive ? 600 : 400,
+                      ...TYPE.xs, fontWeight: 400,
                       color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
                       letterSpacing: "0.01em",
                       transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -726,7 +726,7 @@ export default function Page() {
                       borderRadius: 6, cursor: "pointer",
                       background: isActive ? "var(--bg-surface)" : "transparent",
                       ...TYPE.xs,
-                      fontWeight: isActive ? 600 : 400,
+                      fontWeight: 400,
                       color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
                       transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                     }}

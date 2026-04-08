@@ -69,7 +69,7 @@ function ChipGroup<T extends string>({ label, options, value, onChange }: {
                 ...TYPE.sm, padding: "5px 14px", borderRadius: 8, border: "none",
                 background: isActive ? "var(--accent-primary)" : "transparent",
                 color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                fontWeight: isActive ? 600 : 400,
+                fontWeight: 400,
                 cursor: "pointer", transition: "all 0.15s",
               }}
               onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
