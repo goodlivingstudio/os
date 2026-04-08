@@ -114,6 +114,12 @@ Return only valid JSON.`
 export const maxDuration = 60
 
 export async function POST(req: Request) {
+  // Color intelligence is Dispatch-only — skip for other instances
+  const instance = process.env.NEXT_PUBLIC_INSTANCE || "dispatch"
+  if (instance !== "dispatch") {
+    return Response.json({ briefing: null, colorDirections: [], forecastHighlights: [] })
+  }
+
   const apiKey = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
   if (!apiKey) return Response.json({ error: "No API key" }, { status: 500 })
 

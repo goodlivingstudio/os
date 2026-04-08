@@ -246,13 +246,14 @@ function CacheManagement() {
       action: () => purge("/api/dispatch-purge", setDispatchStatus, "Dispatch"),
       age: cacheAges.dispatch,
     },
-    {
+    // Color Intelligence — Dispatch only
+    ...(instanceConfig.id === "dispatch" ? [{
       label: "Color Intelligence",
       desc: "Clear cache — regenerates on next visit",
       status: colorStatus,
       action: () => purge("/api/color-intelligence-purge", setColorStatus, "Color Intelligence"),
       age: cacheAges.colorIntelligence,
-    },
+    }] : []),
     {
       label: "Purge Images",
       desc: "Clear all generated artwork",
