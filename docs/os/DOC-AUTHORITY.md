@@ -21,7 +21,7 @@ docs/os/                          ← The atmosphere: philosophy, operator, voca
 docs/dispatch/                    ← Dispatch product (in production)
 docs/explore/                     ← Explore product (WIP)
 docs/atlas/                       ← Atlas product (on hold)
-docs/lilly/                       ← Lilly Direct product (working name)
+docs/lilly-direct/                ← Lilly Direct product
 ```
 
 *The OS and its product doc sets live inside a single repository historically named `dispatch/` on disk. Conceptually, the repository is the OS. See `ARCHITECTURE.md` § HISTORICAL NAMING ARTIFACT.*
@@ -153,7 +153,7 @@ Project-level authority map governs all 14 canonical files. Status: complete (al
 ### Atlas — `docs/atlas/` *(on hold)*
 Doc set to be established when Atlas development resumes. Must follow the 14-file canonical shape from day one.
 
-### Lilly Direct — `docs/lilly/DOC-AUTHORITY.md`
+### Lilly Direct — `docs/lilly-direct/DOC-AUTHORITY.md`
 Project-level authority map governs all 14 canonical files. Status: scaffolded. All 14 files exist as structural stubs. Content lands during the engagement.
 
 ---

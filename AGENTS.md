@@ -15,7 +15,7 @@ Each product runs from this shared codebase via a white-label instance config in
 - **Dispatch** — personal intelligence. Runs at **port 3001** in dev, deploys to `dispatch.goodliving.studio`. Default instance when no `NEXT_PUBLIC_INSTANCE` is set. In production. Voice character: Station Chief.
 - **Explore** — civic/team intelligence. Runs at **port 3002** in dev (`NEXT_PUBLIC_INSTANCE=explore`), will deploy to `explore.goodliving.studio`. Doc set complete; build active. Voice character: Field Correspondent.
 - **Atlas** — decision capture. The layer that makes the between-state visible. Currently **on hold**. Lives as a separate repository at `~/claude-projects/atlas/` with its own stack. Strategic doc placeholder at `docs/atlas/README.md` reserves its seat in OS.
-- **Lilly Direct** — engagement intelligence for Eli Lilly's innovation team. Runs at **port 3003** in dev (`NEXT_PUBLIC_INSTANCE=lilly-direct`). **Scaffolded 2026-04-10.** All 14 canonical doc files exist as structural stubs at `docs/lilly/`; content lands during kickoff. Voice character: TBD at kickoff (Station Chief, Field Correspondent, or new).
+- **Lilly Direct** — engagement intelligence for Eli Lilly's innovation team. Runs at **port 3003** in dev (`NEXT_PUBLIC_INSTANCE=lilly-direct`). **Scaffolded 2026-04-10.** All 14 canonical doc files exist as structural stubs at `docs/lilly-direct/`; content lands during kickoff. Voice character: TBD at kickoff (Station Chief, Field Correspondent, or new).
 
 ## Doc hierarchy
 

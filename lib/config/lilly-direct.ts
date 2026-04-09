@@ -3,21 +3,21 @@
 // Working product name: Lilly Direct. Final name TBD.
 // Strategic relationship: Laree Ross.
 //
-// Source authority: docs/lilly/ (14 canonical files, all currently placeholder
+// Source authority: docs/lilly-direct/ (14 canonical files, all currently placeholder
 // stubs — content lands during the kickoff session 2026-04-10).
 //
 // STATUS: SCAFFOLD — everything below is a working placeholder chosen so the
 // instance boots, types resolve, and the shared OS infrastructure adapts
 // correctly. The real content (mandate, voice character, intelligence layers,
 // source list, skins, ticker) gets defined during the kickoff session from
-// the doc set in docs/lilly/. When content arrives, update this file to
+// the doc set in docs/lilly-direct/. When content arrives, update this file to
 // reference the canonical sources in those docs rather than restating them
 // inline. The Dispatch and Explore configs are the template patterns.
 //
 // WHAT TO DO AT KICKOFF:
 //   1. Confirm final product name and update branding.name
 //   2. Decide voice character (Station Chief / Field Correspondent / new)
-//      and populate mandate.voice from docs/lilly/CEREBRO-CHARTER.md
+//      and populate mandate.voice from docs/lilly-direct/CEREBRO-CHARTER.md
 //   3. Define the intelligence layers — these are the most bespoke part of
 //      any product's config. Lilly Direct's layers should reflect the
 //      engagement's specific intelligence taxonomy (not Dispatch's five,
@@ -25,7 +25,7 @@
 //      Regulatory, AI & Digital Health, Organizational, Competitive
 //      Landscape. TBD at kickoff.
 //   4. Populate mandate.operator and mandate.clientContext from
-//      docs/lilly/MANDATE.md once it's written.
+//      docs/lilly-direct/MANDATE.md once it's written.
 //   5. Start the feed list from the engagement's actual intelligence
 //      priorities — Lilly newsroom, pharma trade press, FDA signal,
 //      competitive pharma (Novo Nordisk GLP-1 news, Pfizer strategic
@@ -48,14 +48,14 @@ const config: InstanceConfig = {
     favicon: { light: "/favicon-light.png", dark: "/favicon-dark.png", apple: "/apple-touch-icon.png" },
   },
 
-  // ─── Mandate — PLACEHOLDER, rewrite from docs/lilly/MANDATE.md at kickoff ─
+  // ─── Mandate — PLACEHOLDER, rewrite from docs/lilly-direct/MANDATE.md at kickoff ─
 
   mandate: {
-    operator: `[PLACEHOLDER] You are the intelligence system for the Lilly Direct engagement. The operator context, mandate, and engagement framing will be defined at kickoff and derived from docs/lilly/MANDATE.md. Until then, operate with the shared OS operator profile at docs/os/OPERATOR.md § Active Engagements as the baseline — that section already describes Jeremy Grant's Lilly engagement and the strategic context this product serves.`,
+    operator: `[PLACEHOLDER] You are the intelligence system for the Lilly Direct engagement. The operator context, mandate, and engagement framing will be defined at kickoff and derived from docs/lilly-direct/MANDATE.md. Until then, operate with the shared OS operator profile at docs/os/OPERATOR.md § PRIORITY INTELLIGENCE TARGETS § Eli Lilly as the baseline — that section already describes Jeremy Grant's Lilly engagement and the strategic context this product serves.`,
 
-    clientContext: `[PLACEHOLDER] Primary intelligence target: Eli Lilly and Company. The engagement-specific intelligence will be defined at kickoff from docs/lilly/LIVE-ENVIRONMENT.md. Until then, reference docs/os/OPERATOR.md § Active Engagements for the Lilly context baseline — 51M patients, GLP-1 momentum, Diogo Rau's AI mandate, the donanemab care coordination challenge, LillyDirect (existing platform), the 73% pharma digital transformation failure rate, and the strategic argument that Lilly's science has outpaced the experience of receiving it.`,
+    clientContext: `[PLACEHOLDER] Primary intelligence target: Eli Lilly and Company. The engagement-specific intelligence will be defined at kickoff from docs/lilly-direct/LIVE-ENVIRONMENT.md. Until then, reference docs/os/OPERATOR.md § PRIORITY INTELLIGENCE TARGETS § Eli Lilly for the Lilly context baseline — 51M patients, GLP-1 momentum, Diogo Rau's AI mandate, the donanemab care coordination challenge, LillyDirect (existing platform), the 73% pharma digital transformation failure rate, and the strategic argument that Lilly's science has outpaced the experience of receiving it.`,
 
-    voice: `[PLACEHOLDER] Analytical voice character TBD at kickoff. Until defined in docs/lilly/CEREBRO-CHARTER.md, inherit the universal disciplines from docs/os/VOICE.md (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density over comprehensiveness). The Station Chief and Field Correspondent models are the two existing character templates; Lilly Direct's character may draw from either or develop something new specific to the engagement.`,
+    voice: `[PLACEHOLDER] Analytical voice character TBD at kickoff. Until defined in docs/lilly-direct/CEREBRO-CHARTER.md, inherit the universal disciplines from docs/os/VOICE.md (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density over comprehensiveness). The Station Chief and Field Correspondent models are the two existing character templates; Lilly Direct's character may draw from either or develop something new specific to the engagement.`,
 
     sourceModes: `[PLACEHOLDER] Source mode framing TBD at kickoff. Reference Dispatch's Intelligence/Formation/Positioning model or Explore's own framing as templates. Lilly Direct's modes should reflect how the engagement consumes signal (probably some combination of Engagement signal, Therapeutic area intelligence, Competitive landscape, and Internal Lilly signal).`,
   },
@@ -63,7 +63,7 @@ const config: InstanceConfig = {
   // ─── Intelligence layers — PLACEHOLDER, replace at kickoff ────────────────
   // Currently reusing Dispatch's 5-layer taxonomy as a placeholder so the
   // shared infrastructure boots. Lilly Direct should define its own layers
-  // from docs/lilly/MANDATE.md at kickoff. Likely candidates: Therapeutic
+  // from docs/lilly-direct/MANDATE.md at kickoff. Likely candidates: Therapeutic
   // (GLP-1, Alzheimer's, oncology, immunology), Regulatory (FDA, EMA,
   // reimbursement), Digital Health (AI integration, patient experience,
   // care coordination), Organizational (Lilly internal, Rau's AI mandate,
@@ -85,7 +85,7 @@ const config: InstanceConfig = {
     competitive:  "var(--accent-muted)",
   },
 
-  // ─── Feeds — PLACEHOLDER, populate from docs/lilly/SOURCES.md at kickoff ──
+  // ─── Feeds — PLACEHOLDER, populate from docs/lilly-direct/SOURCES.md at kickoff ──
   // Minimum viable set so the feed API returns something on first boot.
   // Expand during kickoff with Lilly newsroom, pharma trade press, FDA feeds,
   // competitive pharma, and engagement-specific social/substack sources.
@@ -99,7 +99,7 @@ const config: InstanceConfig = {
   ],
 
   podcasts: [
-    // [PLACEHOLDER] Empty at scaffold. Populate from docs/lilly/SOURCES.md at kickoff.
+    // [PLACEHOLDER] Empty at scaffold. Populate from docs/lilly-direct/SOURCES.md at kickoff.
   ],
 
   gallerySources: [
@@ -139,7 +139,7 @@ const config: InstanceConfig = {
     "[PLACEHOLDER] What's the weakest claim in Lilly's current patient experience argument?",
     "[PLACEHOLDER] Where does Rau's AI mandate break down at the team level?",
     "[PLACEHOLDER] What does the donanemab care coordination gap demand of Lilly Direct?",
-    "[PLACEHOLDER] Populate real provocations from docs/lilly/PROMPTS.md at kickoff",
+    "[PLACEHOLDER] Populate real provocations from docs/lilly-direct/PROMPTS.md at kickoff",
   ],
   cerebroWelcome: {
     title: "Lilly Direct scaffold active.",
@@ -150,7 +150,7 @@ const config: InstanceConfig = {
   // Currently a single "clinical" skin. Lilly Direct may want multiple skins
   // (one per therapeutic area, or one per engagement phase) or may stay with
   // a single skin like Dispatch. Decision deferred to kickoff from
-  // docs/lilly/SYSTEM-BRIEF.md.
+  // docs/lilly-direct/SYSTEM-BRIEF.md.
 
   skins: [
     { id: "clinical", label: "Clinical", dot: "#C83028" },  // Placeholder vermillion — matches Dispatch ink for now

@@ -37,6 +37,12 @@ The synthesis exists to serve the mandate — not to editorialize for its own sa
 
 This is an editorial integrity commitment. Systems that blur the line between source material and analytical interpretation erode the operator's ability to form independent judgment. The encoding is structural — built into the shared component architecture — not decorative.
 
+### Visual surfaces earn their place
+
+Every image carries signal or it doesn't ship. Decoration is not a category in this OS — neither in the gallery, nor inline, nor in marketing surfaces. The gallery is not a feed; it is a curated visual argument that must be defensible the same way the daily brief is defensible. Source attribution is required for visual content for the same reason it's required for text: the operator must always know whether they are looking at something the world produced or something the product produced. Image-generation surfaces inherit this rule — generated images must serve a stated visual mandate, never fill space.
+
+This is restraint applied to the visual register. Each product expresses it differently — Dispatch through its themed material vocabulary, Explore through its observational frame, each future product through its own visual language — but the underlying rule does not bend. A surface that cannot defend its images is not yet finished.
+
 ### Analytical voice in service of the mandate
 
 The analytical layers are not neutral — they are oriented. Every product has a mandate, and the analytical voice exists to serve it. That means taking positions when the mandate demands clarity, challenging weak reasoning when it threatens the operator's trajectory, naming noise as noise when attention needs protecting, and closing every substantive response by identifying the weakest claim in its own analysis.

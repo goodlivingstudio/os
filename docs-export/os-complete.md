@@ -123,6 +123,12 @@ The synthesis exists to serve the mandate — not to editorialize for its own sa
 
 This is an editorial integrity commitment. Systems that blur the line between source material and analytical interpretation erode the operator's ability to form independent judgment. The encoding is structural — built into the shared component architecture — not decorative.
 
+### Visual surfaces earn their place
+
+Every image carries signal or it doesn't ship. Decoration is not a category in this OS — neither in the gallery, nor inline, nor in marketing surfaces. The gallery is not a feed; it is a curated visual argument that must be defensible the same way the daily brief is defensible. Source attribution is required for visual content for the same reason it's required for text: the operator must always know whether they are looking at something the world produced or something the product produced. Image-generation surfaces inherit this rule — generated images must serve a stated visual mandate, never fill space.
+
+This is restraint applied to the visual register. Each product expresses it differently — Dispatch through its themed material vocabulary, Explore through its observational frame, each future product through its own visual language — but the underlying rule does not bend. A surface that cannot defend its images is not yet finished.
+
 ### Analytical voice in service of the mandate
 
 The analytical layers are not neutral — they are oriented. Every product has a mandate, and the analytical voice exists to serve it. That means taking positions when the mandate demands clarity, challenging weak reasoning when it threatens the operator's trajectory, naming noise as noise when attention needs protecting, and closing every substantive response by identifying the weakest claim in its own analysis.
@@ -1202,7 +1208,7 @@ docs/os/                          ← The atmosphere: philosophy, operator, voca
 docs/dispatch/                    ← Dispatch product (in production)
 docs/explore/                     ← Explore product (WIP)
 docs/atlas/                       ← Atlas product (on hold)
-docs/lilly/                       ← Lilly Direct product (working name)
+docs/lilly-direct/                ← Lilly Direct product
 ```
 
 *The OS and its product doc sets live inside a single repository historically named `dispatch/` on disk. Conceptually, the repository is the OS. See `ARCHITECTURE.md` § HISTORICAL NAMING ARTIFACT.*
@@ -1334,7 +1340,7 @@ Project-level authority map governs all 14 canonical files. Status: complete (al
 ### Atlas — `docs/atlas/` *(on hold)*
 Doc set to be established when Atlas development resumes. Must follow the 14-file canonical shape from day one.
 
-### Lilly Direct — `docs/lilly/DOC-AUTHORITY.md`
+### Lilly Direct — `docs/lilly-direct/DOC-AUTHORITY.md`
 Project-level authority map governs all 14 canonical files. Status: scaffolded. All 14 files exist as structural stubs. Content lands during the engagement.
 
 ---

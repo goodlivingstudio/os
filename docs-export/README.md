@@ -7,7 +7,7 @@ Concatenated documentation exports generated for pasting into external sessions 
 - **`os-complete.md`** — All 8 OS-level documents concatenated. Shared atmosphere: OPERATOR, DOCTRINE, PASSAGE, VOICE, PIPELINE, ARCHITECTURE, GLOSSARY, DOC-AUTHORITY. ~1,400 lines. This is the inheritance context every product doc set assumes.
 - **`dispatch-complete.md`** — All 14 canonical Dispatch product docs concatenated. ~2,000 lines. Dispatch is in production; most files are substantive but four are structural stubs awaiting content.
 - **`explore-complete.md`** — All 14 canonical Explore product docs concatenated. ~2,400 lines. Explore is WIP; operational tier mostly complete, strategic tier mostly stubs.
-- **`lilly-complete.md`** — All 14 canonical Lilly Direct product docs concatenated. ~1,100 lines. Lilly Direct was scaffolded 2026-04-10; all 14 files are structural stubs awaiting content at kickoff. This export is the canonical reference for any future session filling in Lilly Direct's content.
+- **`lilly-direct-complete.md`** — All 14 canonical Lilly Direct product docs concatenated. ~1,100 lines. Lilly Direct was scaffolded 2026-04-10; all 14 files are structural stubs awaiting content at kickoff. This export is the canonical reference for any future session filling in Lilly Direct's content.
 
 ## How to use these
 
@@ -99,13 +99,13 @@ WORKTREE=/Users/jeremygrant/claude-projects/dispatch
   for f in MANDATE CEREBRO-CHARTER SYSTEM-BRIEF ARCHITECTURE PROMPTS ANTI-PATTERNS DOC-AUTHORITY SOURCES SOURCES-MEGALIST LIVE-ENVIRONMENT WATCHFILE ROADMAP VOICE-CALIBRATION REPLICATE-PROMPTS; do
     echo ""
     echo "================================================================"
-    echo "## FILE: docs/lilly/${f}.md"
+    echo "## FILE: docs/lilly-direct/${f}.md"
     echo "================================================================"
     echo ""
-    cat "$WORKTREE/docs/lilly/${f}.md"
+    cat "$WORKTREE/docs/lilly-direct/${f}.md"
     echo ""
   done
-} > "$WORKTREE/docs-export/lilly-complete.md"
+} > "$WORKTREE/docs-export/lilly-direct-complete.md"
 ```
 
 Run this from any shell in the repo. When Atlas gets its doc set, add a matching block for `atlas-complete.md`.

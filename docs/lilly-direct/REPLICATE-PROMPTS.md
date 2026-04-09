@@ -3,7 +3,7 @@ Established: 2026-04-10 (scaffold — may never activate)
 
 *This document is reserved for image generation prompts for Lilly Direct's gallery or visual surfaces, if any exist. It is named for the Replicate platform convention but is not platform-specific — the prompts here should work across Replicate, Midjourney, Ideogram, or any equivalent image model with minor syntax adjustments.*
 
-*See SYSTEM-BRIEF.md for the visual language that image prompts would need to respect. See `../os/DOCTRINE.md § Gallery discipline` for the OS-wide gallery discipline that applies to any visual surface.*
+*See SYSTEM-BRIEF.md for the visual language that image prompts would need to respect. See `../os/DOCTRINE.md § Visual surfaces earn their place` for the OS-wide gallery discipline that applies to any visual surface.*
 
 ---
 
@@ -30,7 +30,7 @@ If Lilly Direct activates a generated gallery surface, REPLICATE-PROMPTS.md will
 - **The aesthetic frame.** A prose paragraph describing what "a Lilly Direct image" should look like and why — tied to the engagement context (pharma, healthcare, innovation) and the material skins in SYSTEM-BRIEF.md.
 - **Subject prompts by category.** Reusable prompt templates for the kinds of images the gallery would need. Possible categories: healthcare environments, clinical settings, patient experience moments, scientific abstraction, pharma innovation contexts, abstract material textures tied to the skin system.
 - **Style modifiers.** Reusable fragments that can be appended to any prompt to nudge the output toward the product's aesthetic.
-- **Anti-prompts.** Things the image generator must never produce in a Lilly Direct context — stock-photo smiling patients, cyan gradient medical backgrounds, molecule-graphic decoration, pharma marketing aesthetics, anything that reads as a drug advertisement, any image with a visible watermark (per `../os/DOCTRINE.md § Gallery discipline`).
+- **Anti-prompts.** Things the image generator must never produce in a Lilly Direct context — stock-photo smiling patients, cyan gradient medical backgrounds, molecule-graphic decoration, pharma marketing aesthetics, anything that reads as a drug advertisement, any image with a visible watermark (per `../os/DOCTRINE.md § Visual surfaces earn their place`).
 - **Platform notes.** Any platform-specific syntax or parameter adjustments for Replicate / Midjourney / Ideogram.
 - **Confidentiality note.** Whether image generation calls log query content in ways that could contain engagement-sensitive context. If yes, that's a constraint on what subjects the prompts can address.
 

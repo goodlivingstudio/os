@@ -41,7 +41,7 @@ Lilly Direct's visual language has implications Dispatch and Explore don't share
 2. **What does "clinical without feeling clinical" mean?** The engagement is about healthcare, but Dispatch's anti-dashboard / anti-widget discipline must hold. The material language needs to feel considered without feeling corporate-pharma.
 3. **How does Lilly Direct relate visually to Dispatch?** They share the same operator. Jeremy opens both. Should they feel like siblings with different accents, or like distinct instruments? The white-label architecture supports either answer.
 4. **What's the restraint argument here?** Dispatch's restraint is grounded in the Wise Counselor voice — nothing that would feel out of place in a room where serious decisions are being made. Explore's restraint is grounded in civic legibility. What grounds Lilly Direct's restraint?
-5. **Does Lilly Direct have a gallery surface?** The scaffold config leaves gallery sources empty because it's not yet decided. If yes, the gallery discipline from `../os/DOCTRINE.md § Gallery discipline` applies — and the gallery needs its own curatorial argument (is it visual references for pharma innovation? patient experience imagery? something else?).
+5. **Does Lilly Direct have a gallery surface?** The scaffold config leaves gallery sources empty because it's not yet decided. If yes, the gallery discipline from `../os/DOCTRINE.md § Visual surfaces earn their place` applies — and the gallery needs its own curatorial argument (is it visual references for pharma innovation? patient experience imagery? something else?).
 
 ---
 

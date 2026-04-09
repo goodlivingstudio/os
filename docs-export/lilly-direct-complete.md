@@ -1,15 +1,9 @@
 # Lilly Direct — Complete Product Documentation Export
 Generated: 2026-04-09
 
-This file concatenates all 14 canonical product doc files for Lilly Direct. Paste os-complete.md first as shared context, then paste this file for focused Lilly Direct product work.
-
-**Current state:** Lilly Direct was scaffolded 2026-04-10. All 14 canonical files exist as structural stubs with scaffold content explaining what each file will own at kickoff. The Lilly Direct instance runs as NEXT_PUBLIC_INSTANCE=lilly-direct on dev port 3003. Voice character, layer taxonomy, source inventory, and most strategic decisions are deferred to the kickoff session.
-
----
-
 
 ================================================================
-## FILE: docs/lilly/MANDATE.md
+## FILE: docs/lilly-direct/MANDATE.md
 ================================================================
 
 # LILLY DIRECT — System Mandate v0 (scaffold)
@@ -65,7 +59,7 @@ MANDATE.md is the single source of truth for what the product is. PROMPTS.md der
 
 
 ================================================================
-## FILE: docs/lilly/CEREBRO-CHARTER.md
+## FILE: docs/lilly-direct/CEREBRO-CHARTER.md
 ================================================================
 
 # LILLY DIRECT — Cerebro Charter (scaffold)
@@ -100,7 +94,7 @@ When written at kickoff, CEREBRO-CHARTER.md will contain:
 - **§ REGISTER AND DELIVERY** — how the voice sounds. Tone register. Sentence structure. Prose vs bullets. How responses open and close. Specific examples of good vs bad moves.
 - **§ BEHAVIORAL DIRECTIVES** — the numbered directives specific to this engagement. Example patterns: "brief the engagement, not the people," "hold the Lilly internal/external tension without collapsing it," "name regulatory risk explicitly," "flag competitive moves against specific Lilly positions."
 - **§ WHAT THE FUNCTION WILL NOT DO** — the anti-patterns. Example: "does not produce clinical advice," "does not substitute for Lilly internal intelligence the team has access to that Lilly Direct doesn't," "does not take sides in internal Lilly debates the team is reporting on."
-- **§ WHAT THE FUNCTION KNOWS** — the data inventory. Full mandate, live environment (docs/lilly/LIVE-ENVIRONMENT.md), the annotated signal feed across Lilly Direct's layers, conversation history (30-day KV persistence), web search via Exa, and anything engagement-specific (Lilly newsroom live feed, competitive pharma trade press, internal team working questions).
+- **§ WHAT THE FUNCTION KNOWS** — the data inventory. Full mandate, live environment (docs/lilly-direct/LIVE-ENVIRONMENT.md), the annotated signal feed across Lilly Direct's layers, conversation history (30-day KV persistence), web search via Exa, and anything engagement-specific (Lilly newsroom live feed, competitive pharma trade press, internal team working questions).
 - **§ ANALYTICAL PROTOCOLS** — any engagement-specific checks (parallel to Explore's "Civic Design Test," "Burgum-Gebbia Frame Check," "90-day / Stewardship Split"). Example candidates: "The LillyDirect Frame Check" (does this decision optimize for direct-to-patient clarity vs institutional risk aversion), "The GLP-1 Momentum Check" (is this signal about the core revenue engine or a peripheral concern), "The Therapeutic Area Spread Check" (are we over-indexing on GLP-1 at the expense of Alzheimer's, oncology, immunology).
 - **§ SYNTHESIS DIRECTIVES** — what synthesis produces for this team specifically. Pre-meeting briefs? Weekly patterns? Per-therapeutic-area digests?
 - **§ PUSH FORWARD** — Dispatch's convention of closing every response with three next-directions. Does Lilly Direct inherit this? Or does it use a different convention (questions to bring into the next Laree meeting, deliverables to draft, risks to track)?
@@ -127,7 +121,7 @@ An intelligence function that sounds wrong for its context is useless even if th
 
 
 ================================================================
-## FILE: docs/lilly/SYSTEM-BRIEF.md
+## FILE: docs/lilly-direct/SYSTEM-BRIEF.md
 ================================================================
 
 # LILLY DIRECT — Design System Generative Brief (scaffold)
@@ -173,7 +167,7 @@ Lilly Direct's visual language has implications Dispatch and Explore don't share
 2. **What does "clinical without feeling clinical" mean?** The engagement is about healthcare, but Dispatch's anti-dashboard / anti-widget discipline must hold. The material language needs to feel considered without feeling corporate-pharma.
 3. **How does Lilly Direct relate visually to Dispatch?** They share the same operator. Jeremy opens both. Should they feel like siblings with different accents, or like distinct instruments? The white-label architecture supports either answer.
 4. **What's the restraint argument here?** Dispatch's restraint is grounded in the Wise Counselor voice — nothing that would feel out of place in a room where serious decisions are being made. Explore's restraint is grounded in civic legibility. What grounds Lilly Direct's restraint?
-5. **Does Lilly Direct have a gallery surface?** The scaffold config leaves gallery sources empty because it's not yet decided. If yes, the gallery discipline from `../os/DOCTRINE.md § Gallery discipline` applies — and the gallery needs its own curatorial argument (is it visual references for pharma innovation? patient experience imagery? something else?).
+5. **Does Lilly Direct have a gallery surface?** The scaffold config leaves gallery sources empty because it's not yet decided. If yes, the gallery discipline from `../os/DOCTRINE.md § Visual surfaces earn their place` applies — and the gallery needs its own curatorial argument (is it visual references for pharma innovation? patient experience imagery? something else?).
 
 ---
 
@@ -187,7 +181,7 @@ Without a written SYSTEM-BRIEF, any AI agent asked to generate UI for Lilly Dire
 
 
 ================================================================
-## FILE: docs/lilly/ARCHITECTURE.md
+## FILE: docs/lilly-direct/ARCHITECTURE.md
 ================================================================
 
 # LILLY DIRECT — Architecture (scaffold)
@@ -242,7 +236,7 @@ The shared OS architecture handles the general case. Every product-specific arch
 
 
 ================================================================
-## FILE: docs/lilly/PROMPTS.md
+## FILE: docs/lilly-direct/PROMPTS.md
 ================================================================
 
 # LILLY DIRECT — Prompt Architecture (scaffold)
@@ -307,7 +301,7 @@ When written, PROMPTS.md will contain:
 
 
 ================================================================
-## FILE: docs/lilly/ANTI-PATTERNS.md
+## FILE: docs/lilly-direct/ANTI-PATTERNS.md
 ================================================================
 
 # LILLY DIRECT — Anti-Patterns (scaffold)
@@ -381,7 +375,7 @@ SYSTEM-BRIEF defines what to build. Without a corresponding stop list, the posit
 
 
 ================================================================
-## FILE: docs/lilly/DOC-AUTHORITY.md
+## FILE: docs/lilly-direct/DOC-AUTHORITY.md
 ================================================================
 
 # LILLY DIRECT — Document Authority Map (scaffold)
@@ -545,7 +539,7 @@ If a concern spans Lilly Direct and Dispatch (e.g., how Dispatch's content pipel
 
 
 ================================================================
-## FILE: docs/lilly/SOURCES.md
+## FILE: docs/lilly-direct/SOURCES.md
 ================================================================
 
 # LILLY DIRECT — Sources (scaffold)
@@ -627,7 +621,7 @@ The distinction between SOURCES.md (active, earned-its-place) and SOURCES-MEGALI
 
 
 ================================================================
-## FILE: docs/lilly/SOURCES-MEGALIST.md
+## FILE: docs/lilly-direct/SOURCES-MEGALIST.md
 ================================================================
 
 # LILLY DIRECT — Sources Mega List (scaffold)
@@ -703,7 +697,7 @@ The active SOURCES.md is opinionated and earned. The mega list is the staging ar
 
 
 ================================================================
-## FILE: docs/lilly/LIVE-ENVIRONMENT.md
+## FILE: docs/lilly-direct/LIVE-ENVIRONMENT.md
 ================================================================
 
 # LILLY DIRECT — Live Environment (scaffold)
@@ -711,7 +705,7 @@ Established: 2026-04-10 (scaffold — content lands at kickoff)
 
 *This document describes the current state of the Eli Lilly engagement environment — the changing terrain Lilly Direct's intelligence is scoring signal against. It is distinct from MANDATE.md (which describes what Lilly Direct is) and from SOURCES.md (which describes where signal comes from). The live environment is the terrain itself — what the signal is scored against.*
 
-*See `../os/OPERATOR.md` § Active Engagements for the baseline Lilly engagement context (51M patients, GLP-1 momentum, Diogo Rau's AI mandate, donanemab care coordination, LillyDirect platform, the 73% pharma digital transformation failure rate, and the strategic argument that Lilly's science has outpaced the experience of receiving it). This file extends that baseline with engagement-specific, time-sensitive context that changes faster than OS-level operator context.*
+*See `../os/OPERATOR.md` § PRIORITY INTELLIGENCE TARGETS § Eli Lilly for the baseline Lilly engagement context (51M patients, GLP-1 momentum, Diogo Rau's AI mandate, donanemab care coordination, LillyDirect platform, the 73% pharma digital transformation failure rate, and the strategic argument that Lilly's science has outpaced the experience of receiving it). This file extends that baseline with engagement-specific, time-sensitive context that changes faster than OS-level operator context.*
 
 ---
 
@@ -781,7 +775,7 @@ Unlike MANDATE.md (stable doctrine) or SYSTEM-BRIEF.md (stable design decisions)
 
 
 ================================================================
-## FILE: docs/lilly/WATCHFILE.md
+## FILE: docs/lilly-direct/WATCHFILE.md
 ================================================================
 
 # LILLY DIRECT — Watchfile (scaffold)
@@ -865,7 +859,7 @@ Without a watchfile, Cerebro drifts into reactive mode — only answering what J
 
 
 ================================================================
-## FILE: docs/lilly/ROADMAP.md
+## FILE: docs/lilly-direct/ROADMAP.md
 ================================================================
 
 # LILLY DIRECT — Roadmap (scaffold)
@@ -889,7 +883,7 @@ Established: 2026-04-10
 - ✅ Instance registered in `lib/config/index.ts` CONFIGS map
 - ✅ Entry added to `lib/config/products.ts` with status `"wip"`
 - ✅ `dev:lilly-direct` and `build:lilly-direct` npm scripts added
-- ✅ All 14 canonical doc files created as structural stubs at `docs/lilly/`
+- ✅ All 14 canonical doc files created as structural stubs at `docs/lilly-direct/`
 - ✅ Instance boots on dev port 3003 and renders
 - ✅ Root docs updated with Lilly Direct references
 
@@ -992,7 +986,7 @@ Established: 2026-04-10
 
 
 ================================================================
-## FILE: docs/lilly/VOICE-CALIBRATION.md
+## FILE: docs/lilly-direct/VOICE-CALIBRATION.md
 ================================================================
 
 # LILLY DIRECT — Voice Calibration (scaffold)
@@ -1072,7 +1066,7 @@ This document is specifically an observation instrument — it captures what's h
 
 
 ================================================================
-## FILE: docs/lilly/REPLICATE-PROMPTS.md
+## FILE: docs/lilly-direct/REPLICATE-PROMPTS.md
 ================================================================
 
 # LILLY DIRECT — Replicate Prompts (scaffold)
@@ -1080,7 +1074,7 @@ Established: 2026-04-10 (scaffold — may never activate)
 
 *This document is reserved for image generation prompts for Lilly Direct's gallery or visual surfaces, if any exist. It is named for the Replicate platform convention but is not platform-specific — the prompts here should work across Replicate, Midjourney, Ideogram, or any equivalent image model with minor syntax adjustments.*
 
-*See SYSTEM-BRIEF.md for the visual language that image prompts would need to respect. See `../os/DOCTRINE.md § Gallery discipline` for the OS-wide gallery discipline that applies to any visual surface.*
+*See SYSTEM-BRIEF.md for the visual language that image prompts would need to respect. See `../os/DOCTRINE.md § Visual surfaces earn their place` for the OS-wide gallery discipline that applies to any visual surface.*
 
 ---
 
@@ -1107,7 +1101,7 @@ If Lilly Direct activates a generated gallery surface, REPLICATE-PROMPTS.md will
 - **The aesthetic frame.** A prose paragraph describing what "a Lilly Direct image" should look like and why — tied to the engagement context (pharma, healthcare, innovation) and the material skins in SYSTEM-BRIEF.md.
 - **Subject prompts by category.** Reusable prompt templates for the kinds of images the gallery would need. Possible categories: healthcare environments, clinical settings, patient experience moments, scientific abstraction, pharma innovation contexts, abstract material textures tied to the skin system.
 - **Style modifiers.** Reusable fragments that can be appended to any prompt to nudge the output toward the product's aesthetic.
-- **Anti-prompts.** Things the image generator must never produce in a Lilly Direct context — stock-photo smiling patients, cyan gradient medical backgrounds, molecule-graphic decoration, pharma marketing aesthetics, anything that reads as a drug advertisement, any image with a visible watermark (per `../os/DOCTRINE.md § Gallery discipline`).
+- **Anti-prompts.** Things the image generator must never produce in a Lilly Direct context — stock-photo smiling patients, cyan gradient medical backgrounds, molecule-graphic decoration, pharma marketing aesthetics, anything that reads as a drug advertisement, any image with a visible watermark (per `../os/DOCTRINE.md § Visual surfaces earn their place`).
 - **Platform notes.** Any platform-specific syntax or parameter adjustments for Replicate / Midjourney / Ideogram.
 - **Confidentiality note.** Whether image generation calls log query content in ways that could contain engagement-sensitive context. If yes, that's a constraint on what subjects the prompts can address.
 

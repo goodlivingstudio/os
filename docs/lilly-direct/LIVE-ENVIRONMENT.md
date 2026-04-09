@@ -3,7 +3,7 @@ Established: 2026-04-10 (scaffold — content lands at kickoff)
 
 *This document describes the current state of the Eli Lilly engagement environment — the changing terrain Lilly Direct's intelligence is scoring signal against. It is distinct from MANDATE.md (which describes what Lilly Direct is) and from SOURCES.md (which describes where signal comes from). The live environment is the terrain itself — what the signal is scored against.*
 
-*See `../os/OPERATOR.md` § Active Engagements for the baseline Lilly engagement context (51M patients, GLP-1 momentum, Diogo Rau's AI mandate, donanemab care coordination, LillyDirect platform, the 73% pharma digital transformation failure rate, and the strategic argument that Lilly's science has outpaced the experience of receiving it). This file extends that baseline with engagement-specific, time-sensitive context that changes faster than OS-level operator context.*
+*See `../os/OPERATOR.md` § PRIORITY INTELLIGENCE TARGETS § Eli Lilly for the baseline Lilly engagement context (51M patients, GLP-1 momentum, Diogo Rau's AI mandate, donanemab care coordination, LillyDirect platform, the 73% pharma digital transformation failure rate, and the strategic argument that Lilly's science has outpaced the experience of receiving it). This file extends that baseline with engagement-specific, time-sensitive context that changes faster than OS-level operator context.*
 
 ---
 

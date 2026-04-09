@@ -19,7 +19,7 @@ Established: 2026-04-10
 - ✅ Instance registered in `lib/config/index.ts` CONFIGS map
 - ✅ Entry added to `lib/config/products.ts` with status `"wip"`
 - ✅ `dev:lilly-direct` and `build:lilly-direct` npm scripts added
-- ✅ All 14 canonical doc files created as structural stubs at `docs/lilly/`
+- ✅ All 14 canonical doc files created as structural stubs at `docs/lilly-direct/`
 - ✅ Instance boots on dev port 3003 and renders
 - ✅ Root docs updated with Lilly Direct references
 
