@@ -3,7 +3,7 @@ Generated: 2026-04-09
 
 This file concatenates all 14 canonical product doc files for Dispatch. Paste os-complete.md first as shared context, then paste this file for focused Dispatch product work.
 
-**Current state:** Dispatch is in production at dispatch.goodliving.studio. Many files below are substantial and complete. Four files are structural stubs waiting for real content: LIVE-ENVIRONMENT, WATCHFILE, SOURCES-MEGALIST, REPLICATE-PROMPTS. The stubs include 'WHAT THIS DOCUMENT WILL OWN' and 'QUESTIONS TO ANSWER BEFORE WRITING' sections to guide their fill-in.
+**Current state:** Dispatch is in production at dispatch.goodliving.studio. Many files below are substantial and complete. Four files are structural stubs waiting for real content: LIVE-ENVIRONMENT, WATCHFILE, SOURCES-MEGALIST, REPLICATE-PROMPTS.
 
 ---
 
@@ -661,7 +661,7 @@ All system prompts import from `lib/prompts.ts`:
 - `LILLY_CONTEXT` — all Lilly intelligence data points
 - `FIVE_LAYERS` — consistent layer definitions with scoring guidance
 - `VOICE` — The Station Chief directive
-- `DISPATCH_PREAMBLE` — combined context block for all surfaces
+- `INSTANCE_PREAMBLE` — combined context block for all surfaces (assembled from the active instance's mandate blocks)
 
 ### API Routes
 | Route | Model | Purpose |
@@ -930,7 +930,7 @@ WEAKEST CLAIM DISCIPLINE — At the close of any substantive analysis, name the 
 
 ---
 
-### `DISPATCH_PREAMBLE`
+### `INSTANCE_PREAMBLE`
 
 ```
 [Assembled from OPERATOR + LILLY_CONTEXT + FIVE_LAYERS + SOURCE_MODES + VOICE]
@@ -938,20 +938,20 @@ WEAKEST CLAIM DISCIPLINE — At the close of any substantive analysis, name the 
 
 *In `lib/prompts.ts`, assemble as:*
 ```typescript
-export const DISPATCH_PREAMBLE = `${OPERATOR}\n\n${LILLY_CONTEXT}\n\n${FIVE_LAYERS}\n\n${SOURCE_MODES}\n\n${VOICE}`
+export const INSTANCE_PREAMBLE = `${OPERATOR}\n\n${LILLY_CONTEXT}\n\n${FIVE_LAYERS}\n\n${SOURCE_MODES}\n\n${VOICE}`
 ```
 
 ---
 
 ## SURFACE PROMPTS
-*Full system prompts for each AI surface. Each imports DISPATCH_PREAMBLE plus surface-specific instructions.*
+*Full system prompts for each AI surface. Each imports INSTANCE_PREAMBLE plus surface-specific instructions.*
 
 ---
 
 ### DCOS — Brief (`/api/brief`)
 
 ```
-${DISPATCH_PREAMBLE}
+${INSTANCE_PREAMBLE}
 
 Your task: generate exactly 3 signal cards from today's annotated feed. These are not headlines. They are deliberation triggers — each one surfaces a signal that specifically matters to this operator and frames why it demands attention.
 
@@ -981,7 +981,7 @@ Return as JSON array with exactly 3 items.
 ### Cerebro — Advisor (`/api/chat`)
 
 ```
-${DISPATCH_PREAMBLE}
+${INSTANCE_PREAMBLE}
 
 You are Cerebro — the conversational intelligence layer of Dispatch. You have access to:
 - The operator's full mandate and context (above)
@@ -1065,7 +1065,7 @@ Return as valid JSON only. No preamble or explanation.
 ### Synthesis — Pattern Layer (`/api/synthesis`)
 
 ```
-${DISPATCH_PREAMBLE}
+${INSTANCE_PREAMBLE}
 
 You are the pattern intelligence layer of Dispatch. Your job is not to summarize today's feed. Your job is to tell the operator what the feed means — what's converging, what's building, and what it demands of him.
 
@@ -1099,7 +1099,7 @@ When 7-day article history is available, weight the briefing toward trend detect
 ### Dispatch — Action Layer (`/api/dispatch`)
 
 ```
-${DISPATCH_PREAMBLE}
+${INSTANCE_PREAMBLE}
 
 You are the action intelligence layer of Dispatch. Your job is to translate the week's signal into content the operator can produce and publish — thought leadership that advances his positioning, demonstrates his expertise, and builds toward his five-year target.
 
@@ -1140,7 +1140,7 @@ export const FIVE_LAYERS = `...`
 export const SOURCE_MODES = `...`
 export const VOICE = `...`
 
-export const DISPATCH_PREAMBLE = [
+export const INSTANCE_PREAMBLE = [
   OPERATOR,
   LILLY_CONTEXT,
   FIVE_LAYERS,
@@ -1148,7 +1148,7 @@ export const DISPATCH_PREAMBLE = [
   VOICE
 ].join('\n\n')
 
-// Surface prompts: import DISPATCH_PREAMBLE and append surface-specific instructions
+// Surface prompts: import INSTANCE_PREAMBLE and append surface-specific instructions
 // See surface prompt sections above for the appended copy
 ```
 

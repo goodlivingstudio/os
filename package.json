@@ -14,7 +14,6 @@
     "scrape:dispatch": "npx tsx scripts/gallery-scraper.ts --instance=dispatch",
     "scrape:explore": "npx tsx scripts/gallery-scraper.ts --instance=explore",
     "scrape:explore:taste": "npx tsx scripts/gallery-scraper.ts --instance=explore --taste",
-    "collect:explore": "npx tsx scripts/gallery-collector.ts --instance=explore",
     "collect:explore": "npx tsx scripts/gallery-collector.ts --instance=explore"
   },
   "dependencies": {

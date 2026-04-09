@@ -21,6 +21,7 @@ import type { Article, Signal, FeedHealth, Skin, ViewMode } from "@/lib/types"
 import { LAYER_CONFIG } from "@/lib/types"
 import { TYPE, MONO } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
+import { PRODUCTS } from "@/lib/config/products"
 
 // ─── Skin + mode system ───────────────────────────────────────────────────────
 
@@ -798,7 +799,7 @@ export default function Page() {
         }}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <span style={{ ...TYPE.sm, fontFamily: mobileTab === "cerebro" ? MONO : undefined, color: "var(--accent-muted)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.06em" }}>
-              {{ signal: "Signal", audio: "Sound", synthesis: "Synthesis", gallery: "Surface", cerebro: "Cerebro", config: "Config" }[mobileTab] || "Dispatch"}
+              {{ signal: "Signal", audio: "Sound", synthesis: "Synthesis", gallery: "Surface", cerebro: "Cerebro", config: "Config" }[mobileTab] || instanceConfig.branding.name}
             </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -897,20 +898,18 @@ export default function Page() {
                     </div>
                   </div>
                   <div style={{ height: 1, background: "var(--border)", margin: "4px 0" }} />
-                  {/* Project switcher */}
+                  {/* Project switcher — reads from lib/config/products.ts */}
                   <div style={{ padding: "8px 12px" }}>
                     <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Projects</div>
-                    {([
-                      { name: "Dispatch", url: "https://dispatch.goodliving.studio", id: "dispatch" },
-                      { name: "Explore", url: "https://explore.goodliving.studio", id: "explore" },
-                      { name: "Lilly", url: "https://lilly.goodliving.studio", id: "lilly" },
-                    ]).map(project => {
-                      const isCurrent = instanceConfig.id === project.id
+                    {PRODUCTS.map(product => {
+                      const isCurrent = instanceConfig.id === product.id
+                      const isNavigable = product.url !== null && !isCurrent
+                      const statusLabel = product.status === "upcoming" ? "soon" : product.status === "on-hold" ? "on hold" : null
                       return (
                         <a
-                          key={project.id}
-                          href={isCurrent ? undefined : project.url}
-                          onClick={isCurrent ? (e: React.MouseEvent) => { e.preventDefault(); setMobileMenuOpen(false) } : undefined}
+                          key={product.id}
+                          href={isNavigable ? product.url! : undefined}
+                          onClick={!isNavigable ? (e: React.MouseEvent) => { e.preventDefault(); setMobileMenuOpen(false) } : undefined}
                           style={{
                             display: "flex", alignItems: "center", gap: 8,
                             width: "100%", padding: "8px 10px",
@@ -918,9 +917,10 @@ export default function Page() {
                             textDecoration: "none",
                             ...TYPE.sm,
                             background: isCurrent ? "var(--accent-secondary)" : "transparent",
-                            color: isCurrent ? "var(--bg-primary)" : "var(--text-secondary)",
+                            color: isCurrent ? "var(--bg-primary)" : isNavigable ? "var(--text-secondary)" : "var(--text-tertiary)",
                             fontWeight: isCurrent ? 600 : 400,
-                            cursor: isCurrent ? "default" : "pointer",
+                            cursor: isNavigable ? "pointer" : "default",
+                            opacity: isNavigable || isCurrent ? 1 : 0.6,
                             transition: "all 0.15s",
                           }}
                         >
@@ -928,7 +928,12 @@ export default function Page() {
                             width: 6, height: 6, borderRadius: "50%", flexShrink: 0,
                             background: isCurrent ? "var(--bg-primary)" : "var(--text-tertiary)",
                           }} />
-                          {project.name}
+                          <span style={{ flex: 1 }}>{product.name}</span>
+                          {statusLabel && (
+                            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                              {statusLabel}
+                            </span>
+                          )}
                         </a>
                       )
                     })}
@@ -1205,7 +1210,7 @@ export default function Page() {
               onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-primary)" }}
             >
               <span style={{ writingMode: "vertical-rl", ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 500 }}>
-                Dispatch
+                {instanceConfig.branding.name}
               </span>
             </button>
           ) : (

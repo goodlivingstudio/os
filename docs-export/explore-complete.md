@@ -3,7 +3,7 @@ Generated: 2026-04-09
 
 This file concatenates all 14 canonical product doc files for Explore. Paste os-complete.md first as shared context, then paste this file for focused Explore product work.
 
-**Current state:** Explore is WIP — doctrine complete, code being built. Strategic tier files are stubs waiting for real content: SYSTEM-BRIEF, ARCHITECTURE, ANTI-PATTERNS, VOICE-CALIBRATION. The operational tier is mostly complete. Stubs include 'WHAT THIS DOCUMENT WILL OWN' and 'QUESTIONS TO ANSWER BEFORE WRITING' sections to guide their fill-in.
+**Current state:** Explore is WIP — doctrine complete, code being built. Strategic tier files are stubs waiting for real content: SYSTEM-BRIEF, ARCHITECTURE, ANTI-PATTERNS, VOICE-CALIBRATION.
 
 ---
 

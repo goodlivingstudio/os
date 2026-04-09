@@ -201,7 +201,7 @@ All system prompts import from `lib/prompts.ts`:
 - `LILLY_CONTEXT` — all Lilly intelligence data points
 - `FIVE_LAYERS` — consistent layer definitions with scoring guidance
 - `VOICE` — The Station Chief directive
-- `DISPATCH_PREAMBLE` — combined context block for all surfaces
+- `INSTANCE_PREAMBLE` — combined context block for all surfaces (assembled from the active instance's mandate blocks)
 
 ### API Routes
 | Route | Model | Purpose |

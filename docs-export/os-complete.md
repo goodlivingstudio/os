@@ -665,19 +665,79 @@ The loader also exposes helpers that the rest of the codebase uses to build prom
 
 ### `lib/prompts.ts` — the thin derivation layer
 
-This file used to hold hard-coded prompt blocks. It now reads from the active config and exports config-derived constants for backward compatibility:
+This file used to hold hard-coded prompt blocks. It now reads from the active config and exports config-derived constants:
 
 ```typescript
 export const OPERATOR = config.mandate.operator
 export const FIVE_LAYERS = (...) // built from config.layers
-export const DISPATCH_PREAMBLE = buildPreamble(config)
+export const INSTANCE_PREAMBLE = buildPreamble(config)
 ```
 
-The constant is still named `DISPATCH_PREAMBLE` for historical reasons (it predates the white-label refactor) but it contains whichever instance's preamble was loaded at module init. When Lilly's config is added, `DISPATCH_PREAMBLE` running under `NEXT_PUBLIC_INSTANCE=lilly-direct` returns Lilly's preamble, not Dispatch's. The name is a lagging historical artifact; consider renaming it if the opportunity arises, but it's low priority because nothing breaks.
+`INSTANCE_PREAMBLE` contains whichever instance's preamble was loaded at module init — Dispatch by default, Explore under `NEXT_PUBLIC_INSTANCE=explore`, Lilly Direct under `NEXT_PUBLIC_INSTANCE=lilly-direct`, and so on. The name deliberately does not encode a specific product. (Prior to 2026-04-09 this constant was named `DISPATCH_PREAMBLE` as a historical artifact of the pre-white-label codebase; it was renamed during the os-content-fill pass along with all five runtime call sites.)
 
 ### `lib/feeds.ts`, `lib/podcasts.ts`, `lib/gallery.ts`
 
 These files do the same thing: `import config from "@/lib/config"` and re-export `config.feeds`, `config.podcasts`, etc., as named exports. They exist as adapters so the rest of the codebase can keep using imports like `FEEDS` from `lib/feeds` without knowing about the config system. When a new source shows up in `lib/config/<product>.ts`, every consumer picks it up automatically.
+
+### `lib/config/products.ts` — the OS-level products registry
+
+This file is distinct from the per-instance configs. Where `lib/config/dispatch.ts` and `lib/config/explore.ts` describe a *single* product in full, `lib/config/products.ts` is a compact enumeration of *all* Good Living Studio products with their identity metadata: `id`, `name`, `url`, `status` (production / wip / upcoming / on-hold), `description`, and `isOsInstance` (true for products that run as white-label instances of this codebase, false for products like Atlas that live in separate repositories).
+
+Any UI surface that needs to render a cross-product switcher, product selector, or navigation across products reads from `PRODUCTS` in this file — never from hardcoded literals. This is the single source of truth for "which products exist, what are they called, where do they live, and what state are they in." It also exposes helpers: `getProduct(id)`, `getOsInstances()`, `getNavigableProducts()`.
+
+When a new product is added, the registry entry is added here in the same commit that creates the instance config. When a product changes lifecycle status (wip → production, on-hold → wip), the status field updates here and every consumer rerenders accordingly. Status pills in the project switcher ("soon" for upcoming, "on hold" for on-hold) are derived from this field.
+
+---
+
+## SHARED VS BESPOKE — THE HARDCODING RULES
+
+This codebase exists because four sibling products (Dispatch, Explore, Atlas, Lilly Direct) should share a common foundation while each remains rigorously itself. The white-label pattern makes this possible architecturally. The hardcoding rules below make it actually true in practice.
+
+**The rule, stated once:** every piece of product-specific content — name, URL, tagline, skin, source list, mandate, layer taxonomy, operator profile, voice character, active engagement, image prompts — lives in that product's config (`lib/config/<product>.ts`) or its doc set (`docs/<product>/`). Every consumer of that content reads from config or docs, never from string literals.
+
+**What the shared layer OWNS:**
+- UI components (`components/*`) and the main client (`app/[[...view]]/page.tsx`)
+- All shared API routes (`app/api/*`)
+- The intelligence pipeline (Ingest → Annotate → Score → Brief → Synthesize → Act) and its implementations
+- The theme engine, skin system, and material rendering (`lib/styles.ts`)
+- The prompt assembly layer (`lib/prompts.ts`, `lib/config/index.ts` helpers)
+- Persistence layer (`lib/memory.ts`, `lib/article-store.ts`)
+- Gallery infrastructure, image generation, usage tracking, caching
+- The product switcher, cross-product navigation, and the products registry itself
+- Universal analytical voice disciplines (`docs/os/VOICE.md`)
+- Interaction philosophy (`docs/os/PASSAGE.md`)
+- Shared design convictions (`docs/os/DOCTRINE.md`)
+
+**What each product OWNS:**
+- Identity: name, tagline, domain, port, favicons
+- Mandate prompt blocks: operator, clientContext, voice, sourceModes
+- Intelligence layer taxonomy: which layers this product scores against and what they mean
+- Feeds, podcasts, gallery sources
+- Ticker headlines and category styles
+- Material skins and the default skin choice
+- Cerebro provocations and welcome message
+- Gallery scraper configuration (if the product has a gallery surface)
+- The full 14-file canonical doc set under `docs/<product>/`
+- Voice character (Station Chief, Field Correspondent, TBD) — expressed through `CEREBRO-CHARTER.md`
+
+**The hardcoding rules:**
+1. **Never hardcode a product name as a string literal in `.tsx` or `.ts` files.** Read from `instanceConfig.branding.name` for the active product. Read from `PRODUCTS[n].name` when enumerating all products.
+2. **Never hardcode a product URL.** Use `PRODUCTS` for cross-product navigation. Use `instanceConfig.branding.domain` for self-references.
+3. **Never hardcode a layer name, layer taxonomy, or annotation label.** Read from `instanceConfig.layers` (runtime) or derive via `layerLabelsSlash(cfg)` / `layerIdsPipe(cfg)` helpers (prompts).
+4. **Never hardcode an operator context block, engagement context block, or voice directive in `.tsx` or `.ts` files.** These live in `config.mandate.*` fields and are assembled into prompts by `buildPreamble()` and exported as `INSTANCE_PREAMBLE`.
+5. **Never hardcode a source URL, podcast URL, or gallery source URL outside the config file.** Sources belong in `config.feeds`, `config.podcasts`, `config.gallerySources`.
+6. **Never hardcode a skin name or material token.** The skin system is config-driven; themes live in `lib/styles.ts` and are selected by the active instance's `defaultSkin`.
+7. **Never hardcode "Dispatch" as a fallback label for a generic UI element.** The fallback is `instanceConfig.branding.name` — whichever product is currently running.
+
+**The one exception:** strings that describe functionality the shared layer itself owns, not a product. "Cerebro" is shared vocabulary for the analytical function across all products and may appear as a hardcoded label in chrome (the right rail, the chat surface). "Signal," "Synthesis," "Source," "All," and "Config" are shared surface names. "SIGNAL" as a panel header is shared. These exist as string literals because they describe *the shared layer*, not any specific product.
+
+**How to tell the difference:** ask whether the string would change if you were reading it under a different product. If yes (Dispatch vs Explore), it belongs in config. If no (every product has a Cerebro, every product has a Signal panel), it's shared vocabulary and can be a literal.
+
+**Known drift points and their status:**
+- `components/source-pulse.tsx` line 181 and 184 — the "Dispatch" cache-clear action label. This is correctly scoped: the button clears `/api/dispatch`, which is Dispatch's Act-stage surface. Under Explore the button has no effect because Explore doesn't use that route. Technically drift, practically harmless. Revisit when Explore's own Act-stage surface is built.
+- `components/source-pulse.tsx` line 310 — `"dispatch": "Dispatch"` in the `ENDPOINT_LABELS` map. Here `"dispatch"` is the endpoint slug, not the product name. The label is confusing but not wrong. Cosmetic-only.
+
+When a new hardcoding violation is discovered, fix it in the same commit that discovers it and add the pattern to this document's rule list if it reveals a new category.
 
 ---
 
@@ -723,6 +783,7 @@ Every route reads `config` at request time and adapts its behavior to the active
 Shared library files in `lib/`:
 
 - **`lib/config/`** — the white-label contract (this document's main subject)
+- **`lib/config/products.ts`** — OS-level registry of all Good Living Studio products with identity, URL, status, description
 - **`lib/prompts.ts`** — config-derived prompt exports
 - **`lib/feeds.ts`** / **`lib/podcasts.ts`** / **`lib/gallery.ts`** — config adapters for content sources
 - **`lib/memory.ts`** — Vercel KV conversation persistence (30-day TTL, `MAX_STORED = 30` messages per session)
@@ -744,20 +805,21 @@ This is the canonical checklist. Use it when spinning up Lilly Direct (2026-04-1
 
 1. **Create the config file.** Copy `lib/config/dispatch.ts` or `lib/config/explore.ts` as a template to `lib/config/<product-id>.ts`. Rename the exported config object. The product ID is the lowercase slug used in env vars, storage keys, and the loader map.
 2. **Register the instance in the loader.** Add the new import and CONFIGS entry to `lib/config/index.ts`. Uncomment the `// TODO: add when ready` line if it's already scaffolded.
-3. **Populate identity and branding.** Name, tagline, domain, dev port, favicons. Pick a dev port that doesn't collide (Dispatch is 3001, Explore is 3002; pick 3003+ for Lilly, Atlas).
-4. **Populate the mandate.** Write the `operator`, `clientContext`, `voice`, and `sourceModes` prompt blocks. These derive from the product's `docs/<product>/MANDATE.md` and `docs/<product>/CEREBRO-CHARTER.md`. Do not write these inline without corresponding canonical sources in the doc set.
-5. **Populate the layer taxonomy.** Each product can define its own intelligence layers. Dispatch uses Opportunity/Position/Discipline/Landscape/Culture; Explore uses a different set calibrated to civic intelligence. Lilly Direct will define its own. This is the most bespoke part of the config.
-6. **Populate feeds, podcasts, gallery sources.** These derive from `docs/<product>/SOURCES.md`. Start with a curated core set; move candidates from `docs/<product>/SOURCES-MEGALIST.md` into the active feed as they earn it.
-7. **Populate skins and theming.** Define the product's material skins and the default. Each skin is an aesthetic commitment that lives in `lib/styles.ts` downstream — new skins may require adding entries there.
-8. **Add npm scripts.** Add `dev:<product>` and `build:<product>` to `package.json` following the Explore pattern (`NEXT_PUBLIC_INSTANCE=<product> next dev -p <port>`).
-9. **Create the product doc set.** Scaffold all 14 canonical files under `docs/<product>/` per `docs/os/DOC-AUTHORITY.md` § THE CANONICAL PRODUCT DOC SET. Stubs are acceptable; missing files are not.
-10. **Create the Vercel project.** New Vercel project, connected to the same GitHub repo, with `NEXT_PUBLIC_INSTANCE=<product>` set in the project's environment variables. Assign a CNAME (`<product>.goodliving.studio` or a client-specific domain).
-11. **Set the secrets.** `ANTHROPIC_API_KEY` is required. `EXA_API_KEY`, `KV_REST_API_URL`, `KV_REST_API_TOKEN` are optional but expected for full functionality.
-12. **Verify the boot.** Run `npm run dev:<product>` locally, confirm the instance renders with its own branding, confirm the feed populates, confirm KV cache keys are namespaced with the new instance ID, confirm Cerebro carries the new voice. Run `npx tsc --noEmit` to confirm types still resolve.
-13. **Deploy.** Push to main. Vercel picks up the new project and deploys. Verify the production deployment renders the new instance by visiting the assigned domain.
-14. **Document the instance.** Update `AGENTS.md` with the new product row (role, instance, dev port, status). Update `README.md` product table. Update `docs/os/DOC-AUTHORITY.md` project-level authority section.
+3. **Register the product in `lib/config/products.ts`.** Add an entry to the `PRODUCTS` array with `id`, `name`, `url`, `status`, `description`, and `isOsInstance`. This is what makes the product appear in the cross-product switcher and any other OS-wide product enumeration. Status should start as `"upcoming"` or `"wip"` depending on how ready the instance is.
+4. **Populate identity and branding.** Name, tagline, domain, dev port, favicons. Pick a dev port that doesn't collide (Dispatch is 3001, Explore is 3002; pick 3003+ for Lilly, Atlas).
+5. **Populate the mandate.** Write the `operator`, `clientContext`, `voice`, and `sourceModes` prompt blocks. These derive from the product's `docs/<product>/MANDATE.md` and `docs/<product>/CEREBRO-CHARTER.md`. Do not write these inline without corresponding canonical sources in the doc set.
+6. **Populate the layer taxonomy.** Each product can define its own intelligence layers. Dispatch uses Opportunity/Position/Discipline/Landscape/Culture; Explore uses a different set calibrated to civic intelligence. Lilly Direct will define its own. This is the most bespoke part of the config.
+7. **Populate feeds, podcasts, gallery sources.** These derive from `docs/<product>/SOURCES.md`. Start with a curated core set; move candidates from `docs/<product>/SOURCES-MEGALIST.md` into the active feed as they earn it.
+8. **Populate skins and theming.** Define the product's material skins and the default. Each skin is an aesthetic commitment that lives in `lib/styles.ts` downstream — new skins may require adding entries there.
+9. **Add npm scripts.** Add `dev:<product>` and `build:<product>` to `package.json` following the Explore pattern (`NEXT_PUBLIC_INSTANCE=<product> next dev -p <port>`).
+10. **Create the product doc set.** Scaffold all 14 canonical files under `docs/<product>/` per `docs/os/DOC-AUTHORITY.md` § THE CANONICAL PRODUCT DOC SET. Stubs are acceptable; missing files are not.
+11. **Create the Vercel project.** New Vercel project, connected to the same GitHub repo, with `NEXT_PUBLIC_INSTANCE=<product>` set in the project's environment variables. Assign a CNAME (`<product>.goodliving.studio` or a client-specific domain).
+12. **Set the secrets.** `ANTHROPIC_API_KEY` is required. `EXA_API_KEY`, `KV_REST_API_URL`, `KV_REST_API_TOKEN` are optional but expected for full functionality.
+13. **Verify the boot.** Run `npm run dev:<product>` locally, confirm the instance renders with its own branding, confirm the feed populates, confirm KV cache keys are namespaced with the new instance ID, confirm Cerebro carries the new voice. Run `npx tsc --noEmit` to confirm types still resolve. Update the product's `status` in `lib/config/products.ts` from `"upcoming"` to `"wip"` once the instance boots and renders.
+14. **Deploy.** Push to main. Vercel picks up the new project and deploys. Verify the production deployment renders the new instance by visiting the assigned domain. Update the product's `url` in `lib/config/products.ts` once the domain is live.
+15. **Document the instance.** Update `AGENTS.md` with the new product row (role, instance, dev port, status). Update `README.md` product table. Update `docs/os/DOC-AUTHORITY.md` project-level authority section. Promote the product's `status` in `lib/config/products.ts` to `"production"` once the deployment is stable.
 
-Steps 1-8 are the actual code work. Steps 9-14 are the alignment work that keeps the instance legible to future sessions and to the operator. Both are non-optional.
+Steps 1-9 are the code work. Steps 10-15 are the alignment and deployment work that keeps the instance legible and live. Both are non-optional.
 
 ---
 
@@ -786,8 +848,6 @@ Until the rename happens, treat the repo-name-as-`dispatch` as an artifact. Neve
 
 A short list of things this architecture document will grow to address:
 
-- **`DISPATCH_PREAMBLE` naming.** `lib/prompts.ts` exports a constant named `DISPATCH_PREAMBLE` that actually contains whichever instance's preamble was loaded. Cosmetic, not broken. Rename opportunity.
-- **`package.json` typo.** Lines 17-18 contain two identical `"collect:explore"` script entries (duplicate key). Harmless but worth fixing in a cleanup pass.
 - **`lilly` entry in CONFIGS.** Line 17 of `lib/config/index.ts` has `// lilly: lillyConfig, // TODO: add when ready` commented out. Lilly Direct kickoff (2026-04-10) will uncomment this and add the import.
 - **Shared `components/` documentation.** This doc enumerates shared API routes and lib files but not shared components. Components evolve quickly; enumerating them here would drift. A separate shared-components reference may be worth writing if the component surface stabilizes.
 - **Migration to real monorepo.** At some scale, the single-codebase white-label pattern will hit limits and the right move will be a proper monorepo with `apps/` and `packages/`. The current scale (four products, single operator) does not justify that migration. The decision trigger is: when the second piece of non-trivial shared code gets copied between two products, it's time to extract it into a package and move to monorepo structure.

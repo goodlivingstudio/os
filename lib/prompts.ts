@@ -18,5 +18,9 @@ export const FIVE_LAYERS = (() => {
 })()
 
 // ─── System Preamble — combines all shared context ──────────────────────────
+// Assembled from the active instance's mandate blocks (operator, clientContext,
+// layer definitions, sourceModes, voice). Returns whichever instance loaded at
+// module init — Dispatch by default, Explore when NEXT_PUBLIC_INSTANCE=explore,
+// Lilly Direct when NEXT_PUBLIC_INSTANCE=lilly-direct, etc.
 
-export const DISPATCH_PREAMBLE = buildPreamble(config)
+export const INSTANCE_PREAMBLE = buildPreamble(config)

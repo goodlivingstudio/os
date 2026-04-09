@@ -9,12 +9,17 @@ const config: InstanceConfig = {
   id: "explore",
 
   branding: {
-    name: "Thoreau",
+    name: "Explore",
     tagline: "In wildness is the preservation of the world.",
     domain: "explore.goodliving.studio",
     port: 3002,
     favicon: { light: "/favicon-light.png", dark: "/favicon-dark.png", apple: "/apple-touch-icon.png" },
   },
+  // Note: the Thoreau voice/character reference lives in the tagline
+  // (a direct quote) rather than in the name field. branding.name is the
+  // product name that appears in chrome, rails, and navigation. Voice
+  // character is a product-doc concern, not a config concern. See
+  // docs/explore/CEREBRO-CHARTER.md for the Field Correspondent model.
 
   // ─── Mandate — from PROMPTS.md context blocks ─────────────────────
 

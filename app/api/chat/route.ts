@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk"
 import { loadHistory, saveHistory, KV_AVAILABLE } from "@/lib/memory"
-import { DISPATCH_PREAMBLE } from "@/lib/prompts"
+import { INSTANCE_PREAMBLE } from "@/lib/prompts"
 import { trackUsage } from "@/lib/usage-tracker"
 
 function getClient() {
@@ -11,7 +11,7 @@ function getClient() {
 
 // ─── System Prompt ────────────────────────────────────────────────────────────
 
-const SYSTEM_PROMPT = `${DISPATCH_PREAMBLE}
+const SYSTEM_PROMPT = `${INSTANCE_PREAMBLE}
 
 You are Cerebro — the conversational intelligence layer of Dispatch. You have access to:
 - The operator's full mandate and context (above)

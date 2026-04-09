@@ -1,7 +1,7 @@
 // Audio Brief — generates 3 signal cards from podcast episodes
 // Same pattern as /api/brief but specific to audio content
 import Anthropic from "@anthropic-ai/sdk"
-import { DISPATCH_PREAMBLE } from "@/lib/prompts"
+import { INSTANCE_PREAMBLE } from "@/lib/prompts"
 import { trackUsage } from "@/lib/usage-tracker"
 
 function getClient() {
@@ -10,7 +10,7 @@ function getClient() {
   return new Anthropic({ apiKey: key })
 }
 
-const BRIEF_SYSTEM = `${DISPATCH_PREAMBLE}
+const BRIEF_SYSTEM = `${INSTANCE_PREAMBLE}
 
 Your task: generate exactly 3 signal cards from the podcast episodes below. These are audio intelligence — conversations, interviews, and analysis that carry different weight than written news.
 

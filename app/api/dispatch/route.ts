@@ -4,7 +4,7 @@ import Anthropic from "@anthropic-ai/sdk"
 import { generateCardImages } from "@/lib/image-gen"
 import { loadArticleHistory, ARTICLE_STORE_AVAILABLE } from "@/lib/article-store"
 import { trackUsage } from "@/lib/usage-tracker"
-import { DISPATCH_PREAMBLE } from "@/lib/prompts"
+import { INSTANCE_PREAMBLE } from "@/lib/prompts"
 import { kv } from "@vercel/kv"
 import { kvKey, layerIdsPipe } from "@/lib/config"
 import instanceConfig from "@/lib/config"
@@ -64,7 +64,7 @@ function resolveCitations(body: string, contextArticles: ContextArticle[]): { bo
 
 // ─── System prompt ──────────────────────────────────────────────────────────
 
-const SYSTEM_PROMPT = `${DISPATCH_PREAMBLE}
+const SYSTEM_PROMPT = `${INSTANCE_PREAMBLE}
 
 You are the action intelligence layer of Dispatch. Your job is to translate the week's signal into publishable content — thought leadership that advances the positioning, demonstrates expertise, and builds toward the five-year target.
 

@@ -1,6 +1,6 @@
 // Synthesis endpoint — generates narrative intelligence briefing from today's feed + 7-day history
 import Anthropic from "@anthropic-ai/sdk"
-import { DISPATCH_PREAMBLE } from "@/lib/prompts"
+import { INSTANCE_PREAMBLE } from "@/lib/prompts"
 import { loadArticleHistory } from "@/lib/article-store"
 import { generateCardImages } from "@/lib/image-gen"
 import { trackUsage } from "@/lib/usage-tracker"
@@ -20,7 +20,7 @@ const LAYER_COLORS: Record<string, string> = {
 }
 const ALL_LAYERS = instanceConfig.layers.map(l => l.id)
 
-const SYSTEM_PROMPT = `${DISPATCH_PREAMBLE}
+const SYSTEM_PROMPT = `${INSTANCE_PREAMBLE}
 
 You are the trend intelligence layer of Dispatch. You are categorically different from the daily brief (DCOS). DCOS answers "what's urgent today." You answer "what's changing this week that wasn't true last week."
 

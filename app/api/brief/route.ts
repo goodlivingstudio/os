@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk"
-import { DISPATCH_PREAMBLE } from "@/lib/prompts"
+import { INSTANCE_PREAMBLE } from "@/lib/prompts"
 import { trackUsage } from "@/lib/usage-tracker"
 import { layerLabelsSlash } from "@/lib/config"
 
@@ -9,7 +9,7 @@ function getClient() {
   return new Anthropic({ apiKey: key })
 }
 
-const BRIEF_SYSTEM = `${DISPATCH_PREAMBLE}
+const BRIEF_SYSTEM = `${INSTANCE_PREAMBLE}
 
 Your task: generate exactly 3 signal cards from today's annotated feed. These are not headlines. They are deliberation triggers — each one surfaces a signal that specifically matters to this operator and frames why it demands attention.
 
