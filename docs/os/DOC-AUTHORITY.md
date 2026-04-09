@@ -151,8 +151,8 @@ Project-level authority map governs all 14 canonical files for Explore. Status: 
 ### Atlas — `docs/atlas/` *(on hold)*
 Doc set to be established when Atlas development resumes. Must follow the 14-file canonical shape from day one.
 
-### Lilly — `docs/lilly/` *(starts 2026-04-10)*
-Doc set to be established this week. Working product name: Lilly Direct. Final name TBD. Must follow the 14-file canonical shape from day one.
+### Lilly Direct — `docs/lilly/DOC-AUTHORITY.md`
+Project-level authority map governs all 14 canonical files for Lilly Direct. Status: scaffolded 2026-04-10. All 14 files exist as structural stubs with scaffold content explaining what they will own at kickoff. Content lands during the kickoff session and over the engagement's life. Instance runs as `NEXT_PUBLIC_INSTANCE=lilly-direct` on dev port 3003. Product name "Lilly Direct" is the working name; final name TBD.
 
 ---
 
@@ -211,7 +211,7 @@ DOC-AUTHORITY.md (this file) ─────────────────
 
 **Atlas doc set does not exist.** On hold. Placeholder directory reserved at `docs/atlas/`.
 
-**Lilly doc set does not exist.** Starting Friday 2026-04-10. Placeholder directory reserved at `docs/lilly/`. Working product name: Lilly Direct. Final name TBD.
+**Lilly Direct scaffolded.** As of 2026-04-10, all 14 canonical doc files exist at `docs/lilly/` as structural scaffolds. The instance runs cleanly on dev port 3003 via `npm run dev:lilly-direct`. Content fills in during the kickoff session and over the engagement's life. Known scaffold decisions pending kickoff: (a) voice character (Station Chief / Field Correspondent / new), (b) layer taxonomy (current placeholder: Therapeutic / Regulatory / Digital / Organizational / Competitive), (c) surface inventory, (d) deployment target and domain, (e) confidentiality constraints. See `docs/lilly/ROADMAP.md` for the kickoff priority order.
 
 **Passage is young and still settling.** Dispatch's SYSTEM-BRIEF.md is the first implementation. Revisit the philosophy after Dispatch has run under it for a few weeks; add honest edges to `docs/os/PASSAGE.md` if any emerge.
 

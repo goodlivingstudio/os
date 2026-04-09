@@ -64,8 +64,8 @@ export const PRODUCTS: ProductEntry[] = [
     id: "lilly-direct",
     name: "Lilly Direct",
     url: null,
-    status: "upcoming",
-    description: "Engagement intelligence for the Eli Lilly innovation team. Starts 2026-04-10.",
+    status: "wip",
+    description: "Engagement intelligence for the Eli Lilly innovation team. Scaffolded 2026-04-10; content lands during kickoff.",
     isOsInstance: true,
   },
   {

@@ -19,6 +19,16 @@
         "PATH": "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin",
         "NEXT_PUBLIC_INSTANCE": "explore"
       }
+    },
+    {
+      "name": "lilly-direct",
+      "runtimeExecutable": "/usr/local/bin/node",
+      "runtimeArgs": ["/usr/local/bin/npm", "run", "dev", "--", "-p", "3003"],
+      "port": 3003,
+      "env": {
+        "PATH": "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin",
+        "NEXT_PUBLIC_INSTANCE": "lilly-direct"
+      }
     }
   ]
 }

@@ -13,7 +13,7 @@ OS is the shared codebase and shared philosophy for Jeremy Grant's personal body
 | **Dispatch** | Personal intelligence | port 3001 (default) / `dispatch.goodliving.studio` | Production |
 | **Explore** | Civic/team intelligence | port 3002 / `NEXT_PUBLIC_INSTANCE=explore` | WIP, doctrine complete |
 | **Atlas** | Decision capture | separate repo at `~/claude-projects/atlas/` | On hold |
-| **Lilly** | Engagement intelligence | new instance config, TBD | Starts 2026-04-10 |
+| **Lilly Direct** | Engagement intelligence (Eli Lilly innovation team) | port 3003 / `NEXT_PUBLIC_INSTANCE=lilly-direct` | Scaffolded 2026-04-10 |
 
 ## Dispatch — the first and flagship product
 
@@ -50,11 +50,12 @@ lib/
   config/              White-label instance configs (dispatch.ts, explore.ts, ...)
   memory.ts            Vercel KV session persistence
 docs/
-  os/                  Shared atmosphere — philosophy, operator, authority
-  dispatch/            Dispatch product docs
-  explore/             Explore product docs
-  atlas/               Atlas placeholder (on hold)
-  lilly/               Lilly placeholder (starts 2026-04-10)
+  os/                  Shared atmosphere — 8 OS-level docs (OPERATOR, DOCTRINE, PASSAGE,
+                       VOICE, PIPELINE, ARCHITECTURE, GLOSSARY, DOC-AUTHORITY)
+  dispatch/            Dispatch product docs (14 canonical files)
+  explore/             Explore product docs (14 canonical files)
+  atlas/               Atlas placeholder README (on hold, separate repo)
+  lilly/               Lilly Direct product docs (14 canonical files, currently stubs)
 ```
 
 ## Environment
@@ -70,10 +71,16 @@ KV_REST_API_TOKEN=   # Optional — Vercel KV auth
 
 ```bash
 # Dispatch (default instance)
-npm run dev -- -p 3001
+npm run dev:dispatch
+# or: npm run dev -- -p 3001
 
 # Explore instance
-NEXT_PUBLIC_INSTANCE=explore npm run dev -- -p 3002
+npm run dev:explore
+# or: NEXT_PUBLIC_INSTANCE=explore npm run dev -- -p 3002
+
+# Lilly Direct instance (engagement intelligence)
+npm run dev:lilly-direct
+# or: NEXT_PUBLIC_INSTANCE=lilly-direct npm run dev -- -p 3003
 ```
 
-**Port 3000 is not us.** `~/claude-projects/lilly/` is an unrelated legacy repository; do not run anything on 3000 expecting OS behavior.
+**Port 3000 is not us.** `~/claude-projects/lilly/` is an unrelated legacy repository (first Claude Code project, archival only); do not run anything on 3000 expecting OS behavior. The real Lilly Direct product runs inside OS on port 3003.

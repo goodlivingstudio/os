@@ -3,18 +3,19 @@
 // Default: "dispatch"
 //
 // Usage:
-//   NEXT_PUBLIC_INSTANCE=explore npm run dev    → loads Explore config
-//   NEXT_PUBLIC_INSTANCE=lilly npm run dev      → loads Lilly config
-//   npm run dev                                 → loads Dispatch config (default)
+//   NEXT_PUBLIC_INSTANCE=explore npm run dev        → loads Explore config
+//   NEXT_PUBLIC_INSTANCE=lilly-direct npm run dev   → loads Lilly Direct config
+//   npm run dev                                      → loads Dispatch config (default)
 
 import type { InstanceConfig } from "./types"
 import dispatchConfig from "./dispatch"
 import exploreConfig from "./explore"
+import lillyDirectConfig from "./lilly-direct"
 
 const CONFIGS: Record<string, InstanceConfig> = {
   dispatch: dispatchConfig,
   explore: exploreConfig,
-  // lilly: lillyConfig,  // TODO: add when ready
+  "lilly-direct": lillyDirectConfig,
 }
 
 const instanceId = process.env.NEXT_PUBLIC_INSTANCE || "dispatch"
