@@ -800,7 +800,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                     </div>
                     {highScores && (
                       <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", lineHeight: 1.5, paddingLeft: 16, marginTop: 6 }}>
-                        {highScores}
+                        {highScores.charAt(0).toLowerCase() + highScores.slice(1)}
                       </div>
                     )}
                   </div>
