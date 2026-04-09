@@ -1,0 +1,106 @@
+# Daily Gallery Scrape — Good Living Studio OS
+#
+# SCAFFOLDED 2026-04-09 (scheduled trigger DISABLED — enable when ready to
+# migrate scraping off the operator's local Mac).
+#
+# PURPOSE
+# Runs the Playwright-based gallery scraper for every OS instance that has
+# a galleryScraper configured (Dispatch, Explore). Replaces the local
+# launchd job at ~/Library/LaunchAgents/com.goodliving.gallery-scraper.plist
+# so the daily scrape stops depending on the operator's laptop being awake
+# at 9 AM local.
+#
+# CURRENT STATE — DISABLED
+# The `schedule:` trigger is commented out. This workflow will NOT run
+# automatically until the schedule is uncommented. Until then it can only
+# be invoked manually via the "Run workflow" button in the GitHub Actions
+# UI (that's the workflow_dispatch trigger below).
+#
+# TO ACTIVATE (estimated 5 minutes):
+#   1. Set two GitHub repo secrets (Settings → Secrets and variables → Actions):
+#        ARENA_ACCESS_TOKEN    — Are.na API token for writing to channels
+#        ANTHROPIC_API_KEY      — Claude API key for the taste filter
+#   2. Uncomment the `schedule:` block below. Schedule is in UTC; 0 13 * * *
+#      is 9 AM ET / 8 AM CT / 6 AM PT (during daylight saving).
+#   3. Trigger a manual run via the Actions tab → "Daily Gallery Scrape"
+#      → Run workflow. Verify it completes successfully and the Are.na
+#      channels show new content.
+#   4. Let it run for a few days alongside the local launchd job as a
+#      safety net. If both jobs run without conflict (they operate on
+#      the same Are.na channels but image-level deduplication happens
+#      server-side in the scraper), leave both. If they conflict, disable
+#      the local launchd job by unloading the plist:
+#        launchctl unload ~/Library/LaunchAgents/com.goodliving.gallery-scraper.plist
+#
+# OBSERVABILITY
+# Every run produces a full log in the Actions tab with per-site output,
+# image counts per instance, and any errors. Failed runs send email
+# notifications to the repo owner (GitHub default behavior).
+#
+# COSTS
+# Free on public repos (unlimited minutes). On private repos: 2000 free
+# minutes/month included with the plan. Each scrape takes ~10-15 minutes.
+# Dispatch + Explore = ~30 min/day = ~900 min/month. Well under the free
+# tier for a private repo.
+#
+# WHY NOT VERCEL CRON
+# Vercel cron calls into serverless functions with 10s (Hobby) or 60s (Pro)
+# max execution time. Playwright scraping takes 10+ minutes. Vercel cron is
+# correct for the fast aging-out job (app/api/gallery/cycle/route.ts) but
+# wrong for the slow scraping-in job.
+#
+# WHY NOT AN EXTERNAL VPS
+# Another option was a $5/month Linode/DigitalOcean box running systemd
+# timers. GitHub Actions won because: already integrated with the repo,
+# no new infrastructure to manage, free for this scale, observable in a
+# UI the operator already uses, portable if the project moves to a
+# different developer.
+
+name: Daily Gallery Scrape
+
+on:
+  workflow_dispatch: # manual trigger only (for now)
+  # schedule:
+  #   - cron: "0 13 * * *" # 9 AM ET daily (13:00 UTC during EDT)
+  # ACTIVATE THE ABOVE LINES TO MIGRATE FROM LOCAL LAUNCHD JOB
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      matrix:
+        instance: [dispatch, explore]
+      fail-fast: false # don't cancel one instance if the other fails
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run scraper for ${{ matrix.instance }}
+        env:
+          ARENA_ACCESS_TOKEN: ${{ secrets.ARENA_ACCESS_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NEXT_PUBLIC_INSTANCE: ${{ matrix.instance }}
+        run: npx tsx scripts/gallery-scraper.ts --instance=${{ matrix.instance }} --taste
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "### Scrape summary — ${{ matrix.instance }}" >> $GITHUB_STEP_SUMMARY
+          echo "Instance: ${{ matrix.instance }}" >> $GITHUB_STEP_SUMMARY
+          echo "Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "Timestamp: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
