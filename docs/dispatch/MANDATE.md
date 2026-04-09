@@ -23,7 +23,7 @@ Everything in Dispatch serves this pipeline. Cerebro is the gravity well at the 
 
 *Canonical operator context lives at `../os/OPERATOR.md`. This section contains Dispatch-specific operator context only.*
 
-Dispatch serves a single operator — Jeremy Grant. See `../os/OPERATOR.md` for full identity, five-year target, professional evolution thesis, and active engagements.
+Dispatch serves a single operator — Jeremy Grant. See `../os/OPERATOR.md` for full identity, five-year target, professional evolution thesis, and priority intelligence targets.
 
 ### What Dispatch specifically needs to know
 

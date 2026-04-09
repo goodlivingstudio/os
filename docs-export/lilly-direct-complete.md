@@ -11,7 +11,7 @@ Established: 2026-04-10 (scaffold — content lands at kickoff)
 
 *This document is the operational doctrine for Lilly Direct — what the product is, why it exists, who it serves, and what it values. It is canonical for Lilly Direct's engagement framing, intelligence modes, annotation layers, Cerebro behavioral character, and the generative brief cluster. The prompt text in `lib/prompts.ts` derives from this document via the config in `lib/config/lilly-direct.ts`. Change this first; then propagate to PROMPTS.md.*
 
-*Canonical operator context lives at `../os/OPERATOR.md` — Jeremy Grant, Senior Design Director, five-year target, professional evolution thesis, and active engagements (Lilly is one of them). This document owns the Lilly-specific framing: what the engagement demands, how Lilly Direct scores signal against it, and what it produces.*
+*Canonical operator context lives at `../os/OPERATOR.md` — Jeremy Grant, Senior Design Director, five-year target, professional evolution thesis, and priority intelligence targets (Eli Lilly is one of them). This document owns the Lilly-specific framing: what the engagement demands, how Lilly Direct scores signal against it, and what it produces.*
 
 ---
 
