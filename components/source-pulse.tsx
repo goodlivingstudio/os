@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { RefreshCw } from "lucide-react"
+import { RefreshCw, ChevronUp } from "lucide-react"
 import { TYPE, MONO, metaStyle, labelStyle } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
 import type { Article, FeedHealth } from "@/lib/types"
@@ -381,6 +381,7 @@ function formatTokens(n: number): string {
 function UsagePanel() {
   const [data, setData] = useState<UsageData | null>(null)
   const [range, setRange] = useState<"today" | "7d" | "30d">("today")
+  const [recentExpanded, setRecentExpanded] = useState(false)
 
   useEffect(() => {
     fetch(`/api/usage?range=${range}`).then(r => r.json()).then(setData).catch(() => {})
@@ -517,14 +518,28 @@ function UsagePanel() {
           </>
         )}
 
-        {/* Live event feed */}
+        {/* Live event feed — collapsible */}
         {data?.recentEvents && data.recentEvents.length > 0 && (
           <>
             <div style={{ height: 1, background: "var(--border)", margin: "10px 0" }} />
-            <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.04em" }}>
-              Recent
-            </div>
-            <div>
+            <button
+              onClick={() => setRecentExpanded(e => !e)}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
+                background: "none", border: "none", cursor: "pointer", padding: "2px 0", marginBottom: recentExpanded ? 6 : 0,
+              }}
+            >
+              <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                Recent
+                <span style={{ marginLeft: 6, opacity: 0.5 }}>{data.recentEvents.length}</span>
+              </span>
+              <ChevronUp size={12} strokeWidth={1.5} style={{
+                color: "var(--text-tertiary)",
+                transition: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                transform: recentExpanded ? "rotate(0)" : "rotate(180deg)",
+              }} />
+            </button>
+            <div style={{ maxHeight: recentExpanded ? 400 : 0, overflow: "hidden", transition: "max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1)" }}>
               {data.recentEvents.map((event, i) => {
                 const ago = Math.round((Date.now() - new Date(event.ts).getTime()) / 60000)
                 const timeLabel = ago < 1 ? "now" : ago < 60 ? `${ago}m` : `${Math.round(ago / 60)}h`
@@ -729,7 +744,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                     display: "flex", alignItems: "center", gap: 8,
                   }}>
                     <span
-                      className={ok ? "beacon-pulse" : undefined}
+                      className={ok ? "live-beacon" : undefined}
                       style={{
                         width: 6, height: 6, borderRadius: "50%",
                         background: ok === null ? "var(--text-tertiary)" : ok ? "var(--live)" : "#ef4444",
