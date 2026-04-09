@@ -16,6 +16,7 @@ interface ConfigViewProps {
   excludedSources: Set<string>
   onToggleSource: (source: string) => void
   articles?: Array<{ source: string; tag: string }>
+  sourceFailures?: Record<string, number>  // consecutive failure count per source
 }
 
 const LAYERS = instanceConfig.layers.map(l => l.id)
@@ -387,12 +388,13 @@ function CerebroStation() {
 
 // ─── Source Grid — two-column layout for source lists ───────────────────
 
-function SourceGrid({ sources, type, excludedSources, onToggleSource, sourceCounts = {} }: {
+function SourceGrid({ sources, type, excludedSources, onToggleSource, sourceCounts = {}, sourceFailures = {} }: {
   sources: Record<string, Array<{ url: string; source?: string; show?: string; category: string; layer: string }>>
   type: "source" | "show"
   excludedSources: Set<string>
   onToggleSource: (name: string) => void
   sourceCounts?: Record<string, number>
+  sourceFailures?: Record<string, number>
 }) {
   return (
     <>
@@ -413,14 +415,18 @@ function SourceGrid({ sources, type, excludedSources, onToggleSource, sourceCoun
                 const name = getName(feed)
                 const active = !excludedSources.has(name)
                 const count = sourceCounts[name] || 0
+                const failures = sourceFailures[name] || 0
+                const dotColor = !active ? "var(--text-tertiary)" : count > 0 ? "var(--live)" : failures >= 5 ? "#ef4444" : "var(--text-tertiary)"
                 return (
                   <div
                     key={feed.url}
-                    style={{ ...rowStyle, opacity: active ? 1 : 0.5, padding: "8px 10px" }}
+                    onClick={() => onToggleSource(name)}
+                    style={{ ...rowStyle, opacity: active ? 1 : 0.5, padding: "8px 10px", cursor: "pointer" }}
                     onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
                     <Toggle active={active} onToggle={() => onToggleSource(name)} />
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", flexShrink: 0, background: dotColor }} />
                     <a
                       href={feed.url}
                       target="_blank"
@@ -456,7 +462,7 @@ function SourceGrid({ sources, type, excludedSources, onToggleSource, sourceCoun
 
 // ─── ConfigView ─────────────────────────────────────────────────────────────
 
-export function ConfigView({ excludedSources, onToggleSource, articles = [] }: ConfigViewProps) {
+export function ConfigView({ excludedSources, onToggleSource, articles = [], sourceFailures = {} }: ConfigViewProps) {
   // Per-source article counts from live feed data
   const sourceCounts = useMemo(() => {
     const counts: Record<string, number> = {}
@@ -511,7 +517,7 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [] }: C
               </span>
             </div>
             <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
-              <SourceGrid sources={newsGroups} type="source" excludedSources={excludedSources} onToggleSource={onToggleSource} sourceCounts={sourceCounts} />
+              <SourceGrid sources={newsGroups} type="source" excludedSources={excludedSources} onToggleSource={onToggleSource} sourceCounts={sourceCounts} sourceFailures={sourceFailures} />
             </div>
           </div>
 
@@ -524,7 +530,7 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [] }: C
               </span>
             </div>
             <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
-              <SourceGrid sources={socialGroups} type="source" excludedSources={excludedSources} onToggleSource={onToggleSource} sourceCounts={sourceCounts} />
+              <SourceGrid sources={socialGroups} type="source" excludedSources={excludedSources} onToggleSource={onToggleSource} sourceCounts={sourceCounts} sourceFailures={sourceFailures} />
             </div>
           </div>
 
@@ -537,7 +543,7 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [] }: C
               </span>
             </div>
             <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
-              <SourceGrid sources={podGroups} type="show" excludedSources={excludedSources} onToggleSource={onToggleSource} sourceCounts={sourceCounts} />
+              <SourceGrid sources={podGroups} type="show" excludedSources={excludedSources} onToggleSource={onToggleSource} sourceCounts={sourceCounts} sourceFailures={sourceFailures} />
             </div>
           </div>
 
@@ -553,16 +559,19 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [] }: C
               <div className="source-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
                 {GALLERY_SOURCES.map(src => {
                   const active = !excludedSources.has(src.name)
+                  const homeUrl = src.url.includes("are.na") ? "https://www.are.na/" : src.url.replace(/\/feed\/?$|\/rss\/?$|\/feed\/.*$/, "/")
                   return (
                     <div
                       key={src.url}
-                      style={{ ...rowStyle, opacity: active ? 1 : 0.5, padding: "8px 10px" }}
+                      onClick={() => onToggleSource(src.name)}
+                      style={{ ...rowStyle, opacity: active ? 1 : 0.5, padding: "8px 10px", cursor: "pointer" }}
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                     >
                       <Toggle active={active} onToggle={() => onToggleSource(src.name)} />
+                      <span style={{ width: 6, height: 6, borderRadius: "50%", flexShrink: 0, background: active ? "var(--live)" : "var(--text-tertiary)" }} />
                       <a
-                        href={src.url.includes("are.na") ? "https://www.are.na/" : src.url.replace(/\/feed\/?$|\/rss\/?$|\/feed\/.*$/, "/")}
+                        href={homeUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={e => e.stopPropagation()}
@@ -576,7 +585,7 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [] }: C
                       >
                         {src.name}
                       </a>
-                      <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginLeft: "auto", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                      <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", opacity: 0.5 }}>
                         {src.type}
                       </span>
                     </div>

@@ -1007,7 +1007,7 @@ export default function Page() {
             {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} onSortChange={setSortBy} pinnedArticleIds={new Set(pinnedArticles.map(a => a.id))} onPinArticle={handlePinArticle} />}
             {mobileTab === "gallery"   && <GalleryOverlay onClose={() => setMobileTab("signal")} excludedSources={excludedSources} articles={articles} onDeliberate={handleSynthesisDeliberate} />}
             {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} hideHeader /></div>}
-            {mobileTab === "config"    && <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} articles={articles} />}
+            {mobileTab === "config"    && <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} articles={articles} sourceFailures={feedHealth?.sourceFailures} />}
           </div>
         </div>
 
@@ -1256,7 +1256,7 @@ export default function Page() {
         </div>
         <Divider onMouseDown={e => startResize("left", e)} />
         {viewMode === "config"
-          ? <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} articles={articles} />
+          ? <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} articles={articles} sourceFailures={feedHealth?.sourceFailures} />
           : viewMode === "pulse"
           ? <SourcePulseView articles={articles} feedHealth={feedHealth} fetchedAt={fetchedAt} />
           : viewMode === "dispatch"
