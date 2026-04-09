@@ -5,9 +5,9 @@
 // low-quality:  Low fidelity — right subject, bad execution. Remove + blocklist the URL
 //               but DON'T penalize the subject matter. This is the right action for
 //               watermarked images, blurry captures, or bad crops — per the OS-wide
-//               gallery discipline in docs/os/DOCTRINE.md § Gallery discipline, watermarks
-//               are a first-class reason to reject an image (they destroy the atmospheric
-//               quality the gallery is trying to hold).
+//               gallery discipline in docs/os/DOCTRINE.md § Visual surfaces earn their
+//               place, watermarks are a first-class reason to reject an image (they
+//               destroy the atmospheric quality the gallery is trying to hold).
 // wrong-biome:  Biome misclassification. The image is GOOD and stays in the gallery —
 //               only its biome tag is cleared, so it stops appearing under the wrong
 //               biome filter. Use when the keyword classifier in lib/gallery.ts put a

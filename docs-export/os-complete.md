@@ -1408,7 +1408,6 @@ Active items requiring resolution. This section tracks only unresolved state —
 
 - **Explore operator section needs slimming.** Should reference OS-level operator context and keep engagement-specific context only. Pick up when Explore's doc set is next revised.
 - **Atlas doc set does not exist.** On hold. Placeholder directory reserved at `docs/atlas/`. Must establish all 14 files when development resumes.
-- **Repository rename pending.** On-disk name is `dispatch`; conceptually it is OS. Rename planned as a dedicated session. See `ARCHITECTURE.md` § HISTORICAL NAMING ARTIFACT.
 - **Design system documentation gap.** No single living reference for shared UI components, tokens, and patterns outside the code. Separate workstream. See `ARCHITECTURE.md` § KNOWN DRIFT AND OPPORTUNITIES.
 
 ---

@@ -49,7 +49,7 @@ The most important design problems of the next decade live at the intersection o
 
 ### Lilly context
 
-*Summary of the Lilly engagement context. Canonical source: `../os/OPERATOR.md` § Active Engagements. See DOC-AUTHORITY.md for the inheritance model.*
+*Summary of the Lilly engagement context. Canonical source: `../os/OPERATOR.md` § PRIORITY INTELLIGENCE TARGETS § Eli Lilly. See DOC-AUTHORITY.md for the inheritance model.*
 
 - 51M patients, $80–83B projected 2026 revenue
 - Diogo Rau (EVP & CIDO): mandated every employee engage with AI daily
