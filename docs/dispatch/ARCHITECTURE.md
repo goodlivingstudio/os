@@ -31,7 +31,7 @@ These modes are not tabs or filters. They describe the operator's relationship t
 
 *Summary of operator context. Canonical source: `../os/OPERATOR.md`. See DOC-AUTHORITY.md for the inheritance model.*
 
-Jeremy Grant. Design Director, 15 years agency experience. Senior Design Director at Code and Theory. Founder, Good Living Studio.
+Jeremy Grant. Design Director, 15 years agency experience. Founder, Good Living Studio.
 
 ### Immediate context
 - Active engagement opportunity at Eli Lilly's innovation team (permalance, with strategic relationship to Laree Ross)
