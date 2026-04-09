@@ -357,7 +357,7 @@ When scoring and surfacing signals, weight INTELLIGENCE and POSITIONING sources 
   // ─── Theme ──────────────────────────────────────────────────────────────────
 
   skins: [
-    { id: "ink", label: "Ink", dot: "#D88A7A" },
+    { id: "ink", label: "Ink", dot: "#C83028" },
   ],
   defaultSkin: "ink",
 
