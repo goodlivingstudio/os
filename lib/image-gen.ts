@@ -29,9 +29,6 @@ export const SURFACE_STYLES: Record<string, string> = {
   // Deliberate marks. Forward momentum in the composition.
   dispatch: `Directional and decisive. Warm amber meeting cool steel. Deliberate brushwork — confident single strokes over atmospheric washes. The feeling of intelligence crystallizing into action. Slight asymmetric tension in the composition. Authority without aggression.`,
 
-  // COLOR-INTELLIGENCE — chromatic, atmospheric, rich saturation.
-  // The feeling of color as cultural force. More pigment, more interaction.
-  "color-intelligence": `Chromatic and atmospheric. Rich pigment saturation — the feeling of color as cultural force. Layered transparent washes where distinct hues meet and interact. More color, less monochrome. The palette should feel intentional and directional, like a color forecast materialized as watercolor.`,
 }
 
 // ─── Layer Palette Hints ────────────────────────────────────────────────────
@@ -48,7 +45,7 @@ export const LAYER_PALETTES: Record<string, string> = {
 
 // ─── Prompt Assembly ────────────────────────────────────────────────────────
 
-type Surface = "synthesis" | "dispatch" | "color-intelligence"
+type Surface = "synthesis" | "dispatch"
 type AspectRatio = "3:2" | "21:9"
 
 function buildPrompt(

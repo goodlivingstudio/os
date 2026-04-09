@@ -209,13 +209,12 @@ function formatCacheAge(iso: string | null): string {
 function CacheManagement() {
   const [synthStatus, setSynthStatus] = useState<"idle" | "running" | "done" | "error">("idle")
   const [dispatchStatus, setDispatchStatus] = useState<"idle" | "running" | "done" | "error">("idle")
-  const [colorStatus, setColorStatus] = useState<"idle" | "running" | "done" | "error">("idle")
   const [purgeStatus, setPurgeStatus] = useState<"idle" | "running" | "done" | "error">("idle")
-  const [cacheAges, setCacheAges] = useState<{ synthesis: string | null; dispatch: string | null; colorIntelligence: string | null }>({ synthesis: null, dispatch: null, colorIntelligence: null })
+  const [cacheAges, setCacheAges] = useState<{ synthesis: string | null; dispatch: string | null }>({ synthesis: null, dispatch: null })
 
   useEffect(() => {
     fetch("/api/cache-status").then(r => r.json()).then(setCacheAges).catch(() => {})
-  }, [synthStatus, dispatchStatus, colorStatus, purgeStatus]) // refetch after any action
+  }, [synthStatus, dispatchStatus, purgeStatus]) // refetch after any action
 
   const purge = async (
     endpoint: string,
@@ -246,14 +245,6 @@ function CacheManagement() {
       action: () => purge("/api/dispatch-purge", setDispatchStatus, "Dispatch"),
       age: cacheAges.dispatch,
     },
-    // Color Intelligence — Dispatch only
-    ...(instanceConfig.id === "dispatch" ? [{
-      label: "Color Intelligence",
-      desc: "Clear cache — regenerates on next visit",
-      status: colorStatus,
-      action: () => purge("/api/color-intelligence-purge", setColorStatus, "Color Intelligence"),
-      age: cacheAges.colorIntelligence,
-    }] : []),
     {
       label: "Purge Images",
       desc: "Clear all generated artwork",
@@ -379,7 +370,6 @@ const ENDPOINT_LABELS: Record<string, string> = {
   "synthesis": "Synthesis",
   "dispatch": "Dispatch",
   "image-gen": "Image gen",
-  "color-intelligence": "Color Intelligence",
 }
 
 function formatTokens(n: number): string {
@@ -416,12 +406,12 @@ function UsagePanel() {
   const costColor = isHealthy ? "var(--live)" : isWarning ? "#D4A05A" : "#ef4444"
 
   // Endpoint breakdown — always show all endpoints, active ones sorted by cost desc
-  const ALL_ENDPOINTS = ["news-annotate", "annotate", "brief", "audio-brief", "chat", "synthesis", "dispatch", "color-intelligence", "image-gen"] as const
+  const ALL_ENDPOINTS = ["news-annotate", "annotate", "brief", "audio-brief", "chat", "synthesis", "dispatch", "image-gen"] as const
   const ENDPOINT_MODELS: Record<string, string> = {
     "news-annotate": "claude-haiku-4-5-20251001", "annotate": "claude-haiku-4-5-20251001",
     "brief": "claude-haiku-4-5-20251001", "audio-brief": "claude-haiku-4-5-20251001",
     "chat": "claude-sonnet-4-20250514", "synthesis": "claude-haiku-4-5-20251001",
-    "dispatch": "claude-sonnet-4-20250514", "color-intelligence": "claude-haiku-4-5-20251001", "image-gen": "flux-schnell",
+    "dispatch": "claude-sonnet-4-20250514", "image-gen": "flux-schnell",
   }
   const emptyStats = { calls: 0, inputTokens: 0, outputTokens: 0, imageCount: 0, cost: 0 }
   const endpoints: [string, typeof emptyStats][] = ALL_ENDPOINTS.map(ep =>

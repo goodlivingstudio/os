@@ -1,5 +1,5 @@
 // Gallery API — aggregates images from Are.na and RSS feeds
-// Core fetch + classify logic lives in lib/gallery-fetch.ts (shared with color-intelligence)
+// Core fetch + classify logic lives in lib/gallery-fetch.ts
 import { GALLERY_SOURCES } from "@/lib/gallery"
 import { fetchAndClassifyGalleryImages } from "@/lib/gallery-fetch"
 import { kv } from "@vercel/kv"

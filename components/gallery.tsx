@@ -7,7 +7,6 @@ import instanceConfig, { storageKey } from "@/lib/config"
 import { GALLERY_SOURCES, type GalleryImage, type ColorMood } from "@/lib/gallery"
 import type { Skin, Article } from "@/lib/types"
 import { Ticker } from "@/components/ticker"
-// SurfaceTrends removed — Trends feature abandoned globally
 
 // ─── Color Mood Display ─────────────────────────────────────────────────────
 
