@@ -524,10 +524,10 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [], sou
             </div>
           </div>
 
-          {/* ── Social Sources ── */}
+          {/* ── Individual Sources ── */}
           <div>
             <div style={sectionLabel}>
-              Social Sources
+              Individual Sources
               <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
                 {activeSocialCount}/{socialFeeds.length} active
               </span>

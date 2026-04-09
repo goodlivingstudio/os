@@ -128,7 +128,7 @@ When scoring and surfacing signals, weight INTELLIGENCE and POSITIONING sources 
     { url: "https://news.google.com/rss/search?q=site:figma.com/blog&hl=en-US&gl=US", source: "Figma Blog", category: "Design Tooling", tag: "discipline", layer: "discipline" },
     { url: "https://news.google.com/rss/search?q=site:anthropic.com&hl=en-US&gl=US", source: "Anthropic", category: "AI Platform", tag: "discipline", layer: "discipline" },
     { url: "https://news.google.com/rss/search?q=site:cursor.com/blog+OR+site:cursor.sh/blog&hl=en-US&gl=US", source: "Cursor", category: "Design Engineering", tag: "discipline", layer: "discipline" },
-    { url: "https://medium.com/feed/shopify-ux",                   source: "Shopify UX",        category: "Product Design",       tag: "discipline",   layer: "discipline", type: "social" },
+    { url: "https://medium.com/feed/shopify-ux",                   source: "Shopify UX",        category: "Product Design",       tag: "discipline",   layer: "discipline" },
     { url: "https://news.google.com/rss/search?q=site:shopify.engineering&hl=en-US&gl=US", source: "Shopify Engineering", category: "Design Engineering", tag: "discipline", layer: "discipline" },
     { url: "https://news.google.com/rss/search?q=%22shopify+editions%22&hl=en-US&gl=US", source: "Shopify Editions", category: "Product Platform", tag: "discipline", layer: "discipline" },
 
@@ -171,7 +171,7 @@ When scoring and surfacing signals, weight INTELLIGENCE and POSITIONING sources 
     // VANGUARD THINKERS
     { url: "https://www.doc.cc/feed",                              source: "doc.cc",            category: "Deep Design",          tag: "discipline",   layer: "discipline", type: "social" },
     { url: "https://www.oneusefulthing.org/feed",                  source: "Ethan Mollick",     category: "AI & Organizations",   tag: "landscape",    layer: "landscape",  type: "social" },
-    { url: "https://news.google.com/rss/search?q=site:ben-evans.com&hl=en-US&gl=US", source: "Ben Evans", category: "Technology Strategy", tag: "landscape", layer: "landscape" },
+    { url: "https://news.google.com/rss/search?q=site:ben-evans.com&hl=en-US&gl=US", source: "Ben Evans", category: "Technology Strategy", tag: "landscape", layer: "landscape", type: "social" },
     { url: "https://news.google.com/rss/search?q=site:every.to&hl=en-US&gl=US", source: "Every", category: "AI & Creative Work", tag: "landscape", layer: "landscape" },
     { url: "https://www.theintrinsicperspective.com/feed",         source: "Intrinsic Perspective", category: "AI & Consciousness", tag: "culture", layer: "culture", type: "social" },
     { url: "https://www.construction-physics.com/feed",            source: "Construction Physics", category: "Industry Transformation", tag: "landscape", layer: "landscape", type: "social" },
@@ -193,8 +193,8 @@ When scoring and surfacing signals, weight INTELLIGENCE and POSITIONING sources 
     // SOCIAL — Discipline
     { url: "https://cutlefish.substack.com/feed",                  source: "John Cutler",       category: "Product Strategy",     tag: "discipline",   layer: "discipline", type: "social" },
     { url: "https://www.proofofconcept.pub/feed",                  source: "Brian Lovin",       category: "Design Engineering",   tag: "discipline",   layer: "discipline", type: "social" },
-    { url: "https://medium.com/feed/google-design",                source: "Google Design",     category: "Design Practice",      tag: "discipline",   layer: "discipline", type: "social" },
-    { url: "https://medium.com/feed/mule-design",                  source: "Mule Design",       category: "Design Ethics",        tag: "discipline",   layer: "discipline", type: "social" },
+    { url: "https://medium.com/feed/google-design",                source: "Google Design",     category: "Design Practice",      tag: "discipline",   layer: "discipline" },
+    { url: "https://medium.com/feed/mule-design",                  source: "Mule Design",       category: "Design Ethics",        tag: "discipline",   layer: "discipline" },
 
     // SOCIAL — Landscape
     { url: "https://www.digitalnative.tech/feed",                  source: "Digital Native",    category: "Tech & Culture",       tag: "landscape",    layer: "landscape",  type: "social" },

@@ -131,7 +131,7 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
 
     // ── SIGNAL: Equity, Access & Indigenous Land ────────────────────────────
     { url: "https://indiancountrytoday.com/feed",                                    source: "Indian Country Today",  category: "Indigenous Affairs",       tag: "culture",  layer: "culture" },
-    { url: "https://latinooutdoors.org/feed/",                                       source: "Latino Outdoors",       category: "Equity & Access",         tag: "culture",  layer: "culture", type: "social" },
+    { url: "https://latinooutdoors.org/feed/",                                       source: "Latino Outdoors",       category: "Equity & Access",         tag: "culture",  layer: "culture" },
     { url: "https://www.narf.org/feed/",                                             source: "Native American Rights Fund", category: "Indigenous Rights",  tag: "policy",   layer: "policy" },
 
     // ── POSITIONING: Design, Civic Tech & NDS Intelligence ──────────────────
@@ -139,7 +139,7 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
     { url: "https://aiga.s3.amazonaws.com/ikit/eod/static-feed.rss",                source: "Eye on Design",         category: "Design Discourse",        tag: "craft",    layer: "craft" },
     { url: "https://equalizedigital.com/feed/",                                      source: "Equalize Digital",      category: "Accessibility",           tag: "craft",    layer: "craft" },
     { url: "https://www.a11yproject.com/feed/feed.xml",                              source: "A11y Project",          category: "Accessibility",           tag: "craft",    layer: "craft" },
-    { url: "https://designobserver.com/feed/",                                       source: "Design Observer",       category: "Design Criticism",        tag: "craft",    layer: "craft", type: "social" },
+    { url: "https://designobserver.com/feed/",                                       source: "Design Observer",       category: "Design Criticism",        tag: "craft",    layer: "craft" },
     { url: "https://www.fastcompany.com/section/design/rss",                         source: "Fast Company Design",   category: "Design & Innovation",     tag: "craft",    layer: "craft" },
 
     // ── POSITIONING: Analogous Platforms & Competition ───────────────────────
