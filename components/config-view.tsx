@@ -398,12 +398,13 @@ function SourceGrid({ sources, type, excludedSources, onToggleSource, sourceCoun
 }) {
   return (
     <>
-      {LAYERS.map(layer => {
+      {LAYERS.map((layer, layerIdx) => {
         const items = sources[layer]
         if (!items?.length) return null
         const getName = (f: { source?: string; show?: string }) => type === "show" ? f.show || "" : f.source || ""
+        const isAlt = layerIdx % 2 === 1
         return (
-          <div key={layer} style={{ marginBottom: 16 }}>
+          <div key={layer} style={{ background: isAlt ? "var(--bg-elevated)" : "transparent", padding: "10px 18px", margin: "0 -18px" }}>
             <div style={{ ...TYPE.sm, fontWeight: 500, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, paddingLeft: 4 }}>
               {LAYER_LABELS[layer]}
               <span style={{ color: "var(--text-tertiary)", marginLeft: 6 }}>
