@@ -184,11 +184,44 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
   const hasUgc = instanceConfig.gallerySources.some(s => s.name.toLowerCase().includes("ugc"))
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
   const [shuffleKey, setShuffleKey] = useState(0)
-  const [curatedIds, setCuratedIds] = useState<Set<string>>(new Set()) // track which images have been curated this session
+  const [curatedIds, setCuratedIds] = useState<Set<string>>(new Set()) // curated this session (any of approve/reject/low-quality/wrong-biome)
+  const [approvedUrls, setApprovedUrls] = useState<Set<string>>(new Set()) // persistent approved set from server — hydrated on mount
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768
+
+  // Hydrate the persistent approved set from the server on mount. This is what
+  // makes liked images remember across sessions — the server-side APPROVED_KEY
+  // set in KV has always been persistent, but the client used to start every
+  // session with an empty curatedIds state, so there was no way to tell at a
+  // glance which images had already been liked. Now on mount we fetch the
+  // approved URL list and any image whose url is in that set gets a persistent
+  // visual marker (see the approved dot below the hover menu).
+  useEffect(() => {
+    fetch("/api/gallery/curate?type=approved")
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.urls && Array.isArray(data.urls)) {
+          setApprovedUrls(new Set(data.urls))
+        }
+      })
+      .catch(() => { /* silent — KV may be unavailable in dev */ })
+  }, [])
 
   const handleCurate = useCallback(async (img: GalleryImage, action: "approve" | "reject" | "low-quality" | "wrong-biome") => {
     setCuratedIds(prev => new Set(prev).add(img.id))
+    // Optimistic local update for the persistent approved set — keeps the UI
+    // in sync with what the server is about to record, so the persistent dot
+    // appears immediately on approve and disappears immediately on reject or
+    // low-quality (both of which remove the image from the gallery anyway,
+    // but also implicitly un-approve it server-side).
+    if (action === "approve") {
+      setApprovedUrls(prev => new Set(prev).add(img.url))
+    } else if (action === "reject" || action === "low-quality") {
+      setApprovedUrls(prev => {
+        const next = new Set(prev)
+        next.delete(img.url)
+        return next
+      })
+    }
     try {
       await fetch("/api/gallery/curate", {
         method: "POST",
@@ -612,7 +645,10 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                         onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.015)" }}
                         onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)" }}
                       >
-                        {/* Curation buttons — appear on hover */}
+                        {/* Curation buttons — appear on hover only. The image is visually
+                            untouched at rest (restraint discipline: no UI on the image unless
+                            you hover). Approved state is communicated inside this menu, not
+                            on top of the image itself. */}
                         {!curatedIds.has(img.id) && (
                           <div className="gallery-curate" style={{
                             position: "absolute", bottom: 8, right: 8, zIndex: 2,
@@ -620,19 +656,42 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                             opacity: 0, transition: "opacity 0.2s",
                             pointerEvents: "none",
                           }}>
-                            <button
-                              onClick={e => { e.stopPropagation(); handleCurate(img, "approve") }}
-                              title="Like — keep this image"
-                              style={{
-                                width: 26, height: 26, borderRadius: 5,
-                                background: "rgba(0,0,0,0.55)", border: "none",
-                                display: "flex", alignItems: "center", justifyContent: "center",
-                                cursor: "pointer", color: "rgba(255,255,255,0.85)", pointerEvents: "auto",
-                                backdropFilter: "blur(8px)",
-                              }}
-                            >
-                              <ThumbsUp size={12} strokeWidth={1.8} />
-                            </button>
+                            {/* The Like slot has two states:
+                                - Not approved: clickable ThumbsUp button (adds to server APPROVED set)
+                                - Already approved: non-interactive indicator showing the image is
+                                  already liked and protected from the daily decay cron. Same slot,
+                                  different treatment — the visual shift is the only signal that
+                                  this image has been curated before. The other three buttons
+                                  (wrong-biome, low-quality, reject) remain clickable so you can
+                                  still change your mind about a previously-liked image. */}
+                            {approvedUrls.has(img.url) ? (
+                              <div
+                                title="Liked — protected from daily decay"
+                                style={{
+                                  width: 26, height: 26, borderRadius: 5,
+                                  background: "rgba(255,255,255,0.20)",
+                                  display: "flex", alignItems: "center", justifyContent: "center",
+                                  color: "rgba(255,255,255,0.95)", pointerEvents: "auto",
+                                  backdropFilter: "blur(8px)",
+                                }}
+                              >
+                                <ThumbsUp size={12} strokeWidth={2.2} fill="currentColor" />
+                              </div>
+                            ) : (
+                              <button
+                                onClick={e => { e.stopPropagation(); handleCurate(img, "approve") }}
+                                title="Like — keep this image"
+                                style={{
+                                  width: 26, height: 26, borderRadius: 5,
+                                  background: "rgba(0,0,0,0.55)", border: "none",
+                                  display: "flex", alignItems: "center", justifyContent: "center",
+                                  cursor: "pointer", color: "rgba(255,255,255,0.85)", pointerEvents: "auto",
+                                  backdropFilter: "blur(8px)",
+                                }}
+                              >
+                                <ThumbsUp size={12} strokeWidth={1.8} />
+                              </button>
+                            )}
                             {/* Wrong biome — only renders when the instance opted into biome
                                 classification AND this specific image currently carries a
                                 biome tag. The image stays in the gallery; only its biome
