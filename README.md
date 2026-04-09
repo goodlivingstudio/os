@@ -1,6 +1,23 @@
-# Dispatch
+# OS — Good Living Studio
 
-**Directed Intelligence for Strategic Positioning Across Technology, Culture & Healthcare**
+**An ambient intelligence layer for four sibling products: Dispatch, Explore, Atlas, and Lilly.**
+
+OS is the shared codebase and shared philosophy for Jeremy Grant's personal body of work across technology, culture, healthcare, and client engagement. Each product runs as a white-label instance of OS, driven by a config in `lib/config/`. Shared convictions (operator context, design doctrine, interaction philosophy) live once in `docs/os/` and are inherited by every product.
+
+> **Naming note:** This repository is historically named `dispatch` on disk because Dispatch was the first product built here. Conceptually, the repository IS OS. The rename to `os` is planned as a separate operation. See `AGENTS.md` for the full framing.
+
+## The four products
+
+| Product | Role | Instance | Status |
+|---|---|---|---|
+| **Dispatch** | Personal intelligence | port 3001 (default) / `dispatch.goodliving.studio` | Production |
+| **Explore** | Civic/team intelligence | port 3002 / `NEXT_PUBLIC_INSTANCE=explore` | WIP, doctrine complete |
+| **Atlas** | Decision capture | separate repo at `~/claude-projects/atlas/` | On hold |
+| **Lilly** | Engagement intelligence | new instance config, TBD | Starts 2026-04-10 |
+
+## Dispatch — the first and flagship product
+
+**Directed intelligence for strategic positioning across technology, culture, and healthcare.**
 
 Personal field intelligence platform. Aggregates curated signal feeds, synthesizes relevance through AI annotation, and provides strategic advisory via Cerebro — a conversational agent tuned to career positioning and mandate alignment.
 
@@ -8,29 +25,36 @@ Personal field intelligence platform. Aggregates curated signal feeds, synthesiz
 
 - **Framework:** Next.js 16 (App Router) + React 19 + TypeScript
 - **AI:** Anthropic Claude (Sonnet) via `@anthropic-ai/sdk`
-- **Data:** 27 curated RSS sources across policy, AI, design, healthcare, market, culture
+- **Data:** Curated RSS sources across policy, AI, design, healthcare, market, culture (source mix varies per instance)
 - **Persistence:** Vercel KV for conversation memory
-- **Styling:** Tailwind CSS v4, three-skin theme system (Mineral, Slate, Forest)
+- **Styling:** Tailwind CSS v4, multi-skin theme system per instance
 - **Hosting:** Vercel (API + SSR), GitHub (source)
 
 ## Architecture
 
 ```
 app/
-  page.tsx          Main client — feed, signals, Cerebro chat
-  layout.tsx        Root layout, metadata, skip link
-  globals.css       Skin system, animations, a11y
+  page.tsx             Main client — feed, signals, Cerebro chat
+  layout.tsx           Root layout, metadata, skip link
+  globals.css          Skin system, animations, a11y
   api/
-    chat/           Cerebro agent (agentic loop, web search, follow-ups)
-    news/           RSS aggregation + annotation
-    annotate/       Article relevance scoring
-    brief/          Signal synthesis (Chief of Staff)
-    health/         Deployment diagnostics
+    chat/              Cerebro agent (agentic loop, web search, follow-ups)
+    news/              RSS aggregation + annotation
+    annotate/          Article relevance scoring
+    brief/             Signal synthesis (Chief of Staff)
+    health/            Deployment diagnostics
 components/
-  ticker.tsx        Signal headline ticker
+  ticker.tsx           Signal headline ticker
   analytics-panel.tsx  Interactive dashboard (Recharts)
 lib/
-  memory.ts         Vercel KV session persistence
+  config/              White-label instance configs (dispatch.ts, explore.ts, ...)
+  memory.ts            Vercel KV session persistence
+docs/
+  os/                  Shared atmosphere — philosophy, operator, authority
+  dispatch/            Dispatch product docs
+  explore/             Explore product docs
+  atlas/               Atlas placeholder (on hold)
+  lilly/               Lilly placeholder (starts 2026-04-10)
 ```
 
 ## Environment
@@ -45,7 +69,11 @@ KV_REST_API_TOKEN=   # Optional — Vercel KV auth
 ## Development
 
 ```bash
+# Dispatch (default instance)
 npm run dev -- -p 3001
+
+# Explore instance
+NEXT_PUBLIC_INSTANCE=explore npm run dev -- -p 3002
 ```
 
-Port 3001. Not 3000 — that's Lilly.
+**Port 3000 is not us.** `~/claude-projects/lilly/` is an unrelated legacy repository; do not run anything on 3000 expecting OS behavior.
