@@ -51,6 +51,20 @@ This discipline prevents the gradual drift toward generic UI that happens when e
 
 Every component communicates its purpose within three seconds. If a screen requires explanation, it is over-designed. If a layout feels dense, the solution is to show less — not to compress spacing. Our systems serve operators who make real decisions under time pressure. Comprehension comes first. Aesthetic interest comes second. Always.
 
+### Gallery discipline — visual surfaces earn their place
+
+Every Good Living Studio product that exposes a gallery surface — Dispatch's Surface, Explore's visual formation layer, whatever Atlas and Lilly Direct eventually develop — inherits the same discipline. The gallery is not a feed. It is a curated field. Every image has to survive three tests before it belongs in a gallery the operator actually values:
+
+1. **It says something the operator would not have found on their own.** Galleries are formation layers, not background decoration. If an image could appear in any stock-photo dashboard, it does not belong in a Good Living Studio surface.
+2. **It earns its frame.** The image is good enough, on its own terms, that removing it makes the gallery worse. Filler is the enemy of a gallery that feels like it was curated by a mind, not assembled by a pipeline.
+3. **It is unencumbered.** Watermarks, promotional stamps, stock-photo preview tags, "sample" overlays, and any other metadata burned into the pixels disqualify an image. This rule is absolute and OS-wide.
+
+**On watermarks specifically.** A watermarked image has two competing authorships: the photographer and the distributor trying to license the photograph. The distributor's watermark makes the image unusable as an aesthetic object because it trains the operator's eye to read "proof of rights" alongside "image." The result is that the operator cannot be present with the image on its own terms — the watermark keeps intruding. Watermarks are prohibited not because of aesthetics alone, and not because of licensing anxiety, but because they destroy the atmospheric quality every Good Living Studio gallery is trying to hold. A watermarked image in a gallery is the Passage philosophy failing at the visual layer: the image stops being a place the operator rejoins and becomes an interruption.
+
+**How the discipline is enforced.** The gallery pipeline in `app/api/gallery/` and the curation API in `app/api/gallery/curate/` implement three layers of defense: (1) source-level filtering at ingest (reject known stock-photo URL patterns and domains that watermark by default), (2) the `low-quality` curation action at the operator level (explicitly named in the curate route's comments as the right action for "watermarks, blurry, bad crop" — the operator can flag them in one click), and (3) the keyword pattern `watermark|preview|sample|proof|comp` at any image title/URL/source inspection point as a safety net. When a watermarked image slips through, the operator's `low-quality` click is the correction — and that correction teaches the pipeline, not just this instance.
+
+**What's still missing.** Automatic watermark detection at ingest time is genuinely hard without a vision model, and the current pipeline does not yet run one. The safety net is operator feedback via the curate API. When a vision-based pre-filter becomes feasible (a cheap Claude Vision pass at ingest time, an open-weights detection model, or a curated corpus of known watermark fingerprints), promote it from manual curation to automatic rejection. Until then, the rule stands in doctrine even if enforcement is partially manual.
+
 ---
 
 ## WHAT CONNECTS THE PROJECTS

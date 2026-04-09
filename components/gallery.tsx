@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from "react"
-import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle, ThumbsUp, ThumbsDown, Frown } from "lucide-react"
+import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle, ThumbsUp, ThumbsDown, Frown, Globe } from "lucide-react"
 import { TYPE, MONO } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
 import { GALLERY_SOURCES, type GalleryImage, type ColorMood, type Biome } from "@/lib/gallery"
@@ -187,7 +187,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
   const [curatedIds, setCuratedIds] = useState<Set<string>>(new Set()) // track which images have been curated this session
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768
 
-  const handleCurate = useCallback(async (img: GalleryImage, action: "approve" | "reject" | "low-quality") => {
+  const handleCurate = useCallback(async (img: GalleryImage, action: "approve" | "reject" | "low-quality" | "wrong-biome") => {
     setCuratedIds(prev => new Set(prev).add(img.id))
     try {
       await fetch("/api/gallery/curate", {
@@ -201,8 +201,14 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
         }),
       })
       if (action === "reject" || action === "low-quality") {
+        // Image removed entirely
         setAllImages(prev => prev.filter(i => i.id !== img.id))
         setLightboxIdx(null)
+      } else if (action === "wrong-biome") {
+        // Image stays in the gallery; just clear its biome tag locally so the
+        // UI matches the server state without waiting for a refetch. The image
+        // drops out of any active biome filter immediately.
+        setAllImages(prev => prev.map(i => i.id === img.id ? { ...i, biome: undefined } : i))
       }
     } catch { /* silent fail — image stays visible */ }
   }, [])
@@ -627,6 +633,25 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                             >
                               <ThumbsUp size={12} strokeWidth={1.8} />
                             </button>
+                            {/* Wrong biome — only renders when the instance opted into biome
+                                classification AND this specific image currently carries a
+                                biome tag. The image stays in the gallery; only its biome
+                                tag is cleared server-side. Explore-only at the moment. */}
+                            {biomesEnabled && img.biome && (
+                              <button
+                                onClick={e => { e.stopPropagation(); handleCurate(img, "wrong-biome") }}
+                                title={`Wrong biome — image is good, but "${BIOME_LABELS[img.biome]}" is the wrong category. Keeps the image, clears the tag.`}
+                                style={{
+                                  width: 26, height: 26, borderRadius: 5,
+                                  background: "rgba(0,0,0,0.55)", border: "none",
+                                  display: "flex", alignItems: "center", justifyContent: "center",
+                                  cursor: "pointer", color: "rgba(255,255,255,0.85)", pointerEvents: "auto",
+                                  backdropFilter: "blur(8px)",
+                                }}
+                              >
+                                <Globe size={12} strokeWidth={1.8} />
+                              </button>
+                            )}
                             <button
                               onClick={e => { e.stopPropagation(); handleCurate(img, "low-quality") }}
                               title="Bad quality — subject is fine, image isn't"

@@ -9,18 +9,26 @@ export const revalidate = 3600 // 1 hour — gallery images don't need frequent 
 
 const KV_AVAILABLE = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN)
 const BLOCKLIST_KEY = kvKey("gallery:blocklist")
+const WRONG_BIOME_KEY = kvKey("gallery:wrong-biome")
 
 export async function GET() {
   const classified = await fetchAndClassifyGalleryImages()
 
   // Filter out blocklisted images (thumbs-downed by user)
   let filtered = classified
+  let wrongBiomeSet = new Set<string>()
   if (KV_AVAILABLE) {
     try {
-      const blockedUrls = await kv.smembers(BLOCKLIST_KEY) as string[]
+      const [blockedUrls, wrongBiomeUrls] = await Promise.all([
+        kv.smembers(BLOCKLIST_KEY) as Promise<string[]>,
+        kv.smembers(WRONG_BIOME_KEY) as Promise<string[]>,
+      ])
       if (blockedUrls.length > 0) {
         const blocked = new Set(blockedUrls)
         filtered = classified.filter(img => !blocked.has(img.url))
+      }
+      if (wrongBiomeUrls.length > 0) {
+        wrongBiomeSet = new Set(wrongBiomeUrls)
       }
     } catch { /* KV unavailable — serve unfiltered */ }
   }
@@ -29,8 +37,17 @@ export async function GET() {
   // opt in via config.features.galleryBiomes. Explore uses biome as a first-
   // class filter taxonomy for public-lands imagery; Dispatch and other products
   // leave this off, and their images never carry a biome field.
+  //
+  // If an image URL is in the wrong-biome feedback set, its biome is forcibly
+  // cleared (even if the keyword classifier would reassign one). This honors
+  // operator feedback without blocklisting the image — the image stays in
+  // "All" but no longer appears in any biome filter.
   if (instanceConfig.features?.galleryBiomes) {
     for (const img of filtered) {
+      if (wrongBiomeSet.has(img.url)) {
+        img.biome = undefined
+        continue
+      }
       if (!img.biome) {
         img.biome = classifyBiome(img.title, img.source, img.url)
       }
