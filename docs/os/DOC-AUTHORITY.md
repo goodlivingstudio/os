@@ -129,15 +129,19 @@ DOC-AUTHORITY.md (this file) ─────────────────
 
 ## KNOWN STATE (as of 2026-04-09)
 
-**Dispatch operator section needs slimming.** Currently restates full operator context. Should be replaced with a reference to `docs/os/OPERATOR.md` plus Dispatch-specific context only.
+**Dispatch operator section slimmed.** `docs/dispatch/MANDATE.md` now references `docs/os/OPERATOR.md` for canonical operator context and keeps only Dispatch-specific framing (the personal intelligence focus, the five annotation layers calibrated to this operator, the Lilly engagement as Dispatch's primary intel target). Completed in the os-doc-reorg pass.
 
-**Explore operator section needs slimming.** Same pattern — reference OS-level, keep engagement-specific context.
+**Dispatch SYSTEM-BRIEF implements Passage.** `docs/dispatch/SYSTEM-BRIEF.md` added a new § "Interaction philosophy: Passage" inside § 2 Design Philosophy, translating the OS-level philosophy into specific Dispatch commitments (no termination language, DCOS briefs rather than greets, persistent Cerebro, always-populated signal view). Completed in the os-doc-reorg pass. This is the first project-level implementation of Passage and will inform whether the philosophy holds in practice.
+
+**Dispatch PROMPTS.md and ARCHITECTURE.md retain derived operator summaries.** This is intentional. `docs/dispatch/PROMPTS.md`'s `OPERATOR` and `LILLY_CONTEXT` blocks are copyable TypeScript constants for `lib/prompts.ts` — they must stay in place for runtime. `docs/dispatch/ARCHITECTURE.md`'s operator and Lilly summaries are retained as reference convenience. The authority headers in both files were updated post-reorg to reflect that operator-specific summaries now derive from `docs/os/OPERATOR.md`, not from MANDATE.md.
+
+**Explore operator section needs slimming.** Same pattern as Dispatch — should reference OS-level operator context and keep engagement-specific context only. Still pending; will be picked up when Explore's doc set is next revised.
 
 **Atlas doc set does not exist.** On hold. Placeholder directory reserved at `docs/atlas/`.
 
 **Lilly doc set does not exist.** Starting Friday 2026-04-10. Placeholder directory reserved at `docs/lilly/`. Working product name: Lilly Direct. Final name TBD.
 
-**Passage is new and unsettled.** No project-level SYSTEM-BRIEF has implemented it yet. The first implementation will test whether the philosophy holds in practice.
+**Passage is young and still settling.** Dispatch's SYSTEM-BRIEF.md is the first implementation. Revisit the philosophy after Dispatch has run under it for a few weeks; add honest edges to `docs/os/PASSAGE.md` if any emerge.
 
 **Repository root is historically named `dispatch/`.** This is the OS repository. The rename-to-`os` operation is planned as a separate, dedicated session.
 

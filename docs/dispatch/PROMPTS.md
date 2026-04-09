@@ -3,7 +3,7 @@ Updated: 2026-04-06
 
 *This document contains the copyable prompt text for `lib/prompts.ts`. Each block is a named export. All surfaces import from this file — change here, propagate everywhere.*
 
-*Authority: PROMPTS.md is canonical for all prompt text. Context blocks (OPERATOR, LILLY_CONTEXT, FIVE_LAYERS) derive from MANDATE.md. The VOICE block and surface prompts are canonical here. See DOC-AUTHORITY.md for the full map.*
+*Authority: PROMPTS.md is canonical for all copyable prompt text used in `lib/prompts.ts`. The `OPERATOR` and `LILLY_CONTEXT` blocks derive from `../os/OPERATOR.md` (the canonical operator profile for all four OS products). The `FIVE_LAYERS` block derives from MANDATE.md (annotation layers are Dispatch-specific). The VOICE block and surface prompts are canonical here. See DOC-AUTHORITY.md for the full map.*
 
 ---
 

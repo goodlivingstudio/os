@@ -1,7 +1,7 @@
 # DISPATCH — Architecture Brief v4
 Updated: 2026-04-06
 
-*This document is canonical for how Dispatch is built — tech stack, API routes, data flow, navigation, and AI surface specifications. Operator context, Lilly intelligence, annotation layers, and Cerebro behavioral directives that appear here are summaries derived from MANDATE.md. See DOC-AUTHORITY.md for the full ownership map.*
+*This document is canonical for how Dispatch is built — tech stack, API routes, data flow, navigation, and AI surface specifications. The operator and Lilly summaries that appear here derive from `../os/OPERATOR.md` (canonical across all OS products). Annotation layers and Cerebro behavioral directives derive from MANDATE.md (Dispatch-specific). See DOC-AUTHORITY.md for the full ownership map.*
 
 ---
 
@@ -29,7 +29,7 @@ These modes are not tabs or filters. They describe the operator's relationship t
 
 ## THE OPERATOR
 
-*Derived from MANDATE.md. See DOC-AUTHORITY.md for canonical ownership.*
+*Summary of operator context. Canonical source: `../os/OPERATOR.md`. See DOC-AUTHORITY.md for the inheritance model.*
 
 Jeremy Grant. Design Director, 15 years agency experience. Senior Design Director at Code and Theory. Founder, Good Living Studio.
 
@@ -49,7 +49,7 @@ The most important design problems of the next decade live at the intersection o
 
 ### Lilly context
 
-*Derived from MANDATE.md. See DOC-AUTHORITY.md for canonical ownership.*
+*Summary of the Lilly engagement context. Canonical source: `../os/OPERATOR.md` § Active Engagements. See DOC-AUTHORITY.md for the inheritance model.*
 
 - 51M patients, $80–83B projected 2026 revenue
 - Diogo Rau (EVP & CIDO): mandated every employee engage with AI daily
