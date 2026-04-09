@@ -8,19 +8,61 @@ Established: 2026-04-09
 ## THE HIERARCHY
 
 ```
-docs/os/                          ← Shared philosophy, operator, authority
+docs/os/                          ← Shared atmosphere: philosophy, operator, vocabulary, discipline
   ├── OPERATOR.md                 ← Who the system serves
   ├── DOCTRINE.md                 ← What we believe about design
   ├── PASSAGE.md                  ← How surfaces relate to time
+  ├── VOICE.md                    ← Universal analytical voice disciplines
+  ├── PIPELINE.md                 ← The shared Ingest→Annotate→Score→Brief→Synthesize→Act pattern
+  ├── ARCHITECTURE.md             ← The shared codebase — white-labeling, boot sequence, infra
+  ├── GLOSSARY.md                 ← Canonical shared vocabulary
   └── DOC-AUTHORITY.md            ← This document
 
-docs/dispatch/                    ← Dispatch product
-docs/explore/                     ← Explore product
+docs/dispatch/                    ← Dispatch product (in production)
+docs/explore/                     ← Explore product (WIP, doctrine complete)
 docs/atlas/                       ← Atlas product (on hold)
-docs/lilly/                       ← Lilly product (starting Friday)
+docs/lilly/                       ← Lilly product (starts 2026-04-10, working name Lilly Direct)
 ```
 
 *Note on location: OS and its four product doc sets currently live inside a single repository. The on-disk root of that repository is historically named `dispatch/` — an artifact of the first product that lived there. Conceptually, that repository is the OS. The name-on-disk is scheduled for cleanup in a future dedicated operation.*
+
+---
+
+## THE CANONICAL PRODUCT DOC SET
+
+Every product under OS maintains the same 14-file doc set shape, rigorously bespoke to the product. No product should have a file another product lacks (unless the file genuinely doesn't apply — and that exception must be justified here, not assumed). No product should invent files that don't belong to the canonical shape without first proposing the addition here and getting it promoted to canonical.
+
+**The 14 files:**
+
+*Tier 1 — Strategic (define intent, exist from day one):*
+
+| # | File | Owns |
+|---|---|---|
+| 1 | `MANDATE.md` | What this product is, why it exists, who it serves, its intelligence model |
+| 2 | `CEREBRO-CHARTER.md` | Behavioral contract for the analytical function — the product's voice character (Station Chief / Field Correspondent / TBD) |
+| 3 | `SYSTEM-BRIEF.md` | Visual language, design tokens, material skins, interaction patterns (implements `../os/PASSAGE.md`) |
+| 4 | `ARCHITECTURE.md` | Tech stack, routes, data flow, infrastructure, surface inventory (sits on top of `../os/ARCHITECTURE.md`) |
+| 5 | `PROMPTS.md` | Copyable prompt text for `lib/prompts.ts` |
+| 6 | `ANTI-PATTERNS.md` | Product-specific prohibitions (visual, behavioral, voice) |
+| 7 | `DOC-AUTHORITY.md` | Project-level authority map |
+
+*Tier 2 — Operational (develop over time, track state):*
+
+| # | File | Owns |
+|---|---|---|
+| 8 | `SOURCES.md` | Canonical feed inventory, mode assignments, rationale |
+| 9 | `SOURCES-MEGALIST.md` | Discovery/expansion layer for source growth |
+| 10 | `LIVE-ENVIRONMENT.md` | The changing context this product operates inside (political, market, cultural, engagement) |
+| 11 | `WATCHFILE.md` | Active watch items being tracked, with severity and escalation |
+| 12 | `ROADMAP.md` | Active work, priorities, completed archive |
+| 13 | `VOICE-CALIBRATION.md` | Ongoing voice observation log, drift detection |
+| 14 | `REPLICATE-PROMPTS.md` | Image generation prompts for gallery/visual surfaces |
+
+**Rule for new products:** Lilly Direct (starting 2026-04-10) and Atlas (when it resumes) must establish all 14 files from day one. Stubs are acceptable; missing files are not. The shape is what makes the four products comparable, transferable, and durable across sessions.
+
+**Rule for drift:** If a product has been shipped without a Tier 1 file, it is considered in drift. Drift is tracked in § KNOWN STATE below and resolved at the next opportunity.
+
+**Rule for additions:** A new file type may be proposed by any product. If it becomes canonical (should exist in every product), add it here and update every product doc set to include it. If it stays product-specific, it doesn't belong in this list.
 
 ---
 
@@ -59,6 +101,36 @@ OS-level documents are canonical for shared concerns. Project-level documents in
 
 ---
 
+### VOICE.md — *The Universal Analytical Disciplines*
+**Owns:** The analytical voice disciplines every OS product's analytical function must carry. Gap accounting. Confidence tiers. Amplification check. Weakest claim. No sycophancy. Lead with substance. Flag noise explicitly. Name absence.
+
+**Rule:** Canonical for the disciplines; does NOT own voice character. Product-level CEREBRO-CHARTER.md files define character (Station Chief, Field Correspondent, TBD for Atlas and Lilly). Character is product-specific; discipline is OS-wide. If a product wants to skip a discipline, the divergence must be named and justified in that product's CEREBRO-CHARTER.
+
+**Derivation chain:** VOICE.md → product CEREBRO-CHARTER.md → product PROMPTS.md VOICE block → `lib/prompts.ts`
+
+---
+
+### PIPELINE.md — *The Shared Intelligence Pipeline*
+**Owns:** The six-stage pipeline pattern (Ingest → Annotate → Score → Brief → Synthesize → Act) that every OS product implements. What each stage means, where it lives in the shared codebase, how products vary their implementations, and how the pipeline relates to Passage.
+
+**Rule:** Canonical for the pattern. Product-level ARCHITECTURE.md files describe how each product implements the stages specifically. PIPELINE wins on pattern; product ARCHITECTURE wins on implementation detail.
+
+---
+
+### ARCHITECTURE.md — *The Shared Codebase*
+**Owns:** The shared infrastructure every product inherits when it runs as an instance: Next.js stack, white-label pattern (`lib/config/`), shared API routes, shared components, boot sequence, deployment topology, how a new product instance is added. The historical naming artifact (`dispatch/` on disk, OS conceptually) is documented here.
+
+**Rule:** Canonical for the shared layer. Each product's own ARCHITECTURE.md describes product-specific architectural decisions sitting on top of this shared foundation. When a pattern is promoted from one product into the shared layer, this document is updated.
+
+---
+
+### GLOSSARY.md — *The Shared Vocabulary*
+**Owns:** Canonical definitions for terms that appear across multiple product doc sets. Operator terms, pipeline terms, voice and character terms, philosophy terms, doctrine terms, architecture terms, lineage terms.
+
+**Rule:** When a term appears in multiple product docs, it is defined here. Product docs inherit the meaning from here rather than redefining. When two docs disagree about a term's meaning, GLOSSARY resolves the conflict.
+
+---
+
 ### DOC-AUTHORITY.md — *This Document*
 **Owns:** The inheritance model. OS-level authority map. Cross-project conflict resolution. The relationship between OS-level and project-level documents.
 
@@ -71,16 +143,16 @@ OS-level documents are canonical for shared concerns. Project-level documents in
 Each project maintains its own doc authority map. Those maps are canonical for project-internal conflicts. This document is canonical for conflicts that cross project boundaries or involve OS-level documents.
 
 ### Dispatch — `docs/dispatch/DOC-AUTHORITY.md`
-Project-level authority map governs: MANDATE, PROMPTS, ARCHITECTURE, SYSTEM-BRIEF, ANTI-PATTERNS, SOURCES, ROADMAP, VOICE-CALIBRATION.
+Project-level authority map governs all 14 canonical files for Dispatch. Status: complete (all 14 files exist; operational tier files are currently stubs for LIVE-ENVIRONMENT, WATCHFILE, SOURCES-MEGALIST, REPLICATE-PROMPTS and will fill with content over time).
 
 ### Explore — `docs/explore/DOC-AUTHORITY.md`
-Project-level authority map governs: MANDATE, PROMPTS, REPLICATE-PROMPTS, CEREBRO-CHARTER, LIVE-ENVIRONMENT, SOURCES, SOURCES-MEGALIST, WATCHFILE, ROADMAP.
+Project-level authority map governs all 14 canonical files for Explore. Status: complete (all 14 files exist; strategic tier files are currently stubs for SYSTEM-BRIEF, ARCHITECTURE, ANTI-PATTERNS, VOICE-CALIBRATION and will fill with content as Explore's code is built).
 
 ### Atlas — `docs/atlas/` *(on hold)*
-Doc set to be established when Atlas development resumes.
+Doc set to be established when Atlas development resumes. Must follow the 14-file canonical shape from day one.
 
-### Lilly — `docs/lilly/` *(starting Friday)*
-Doc set to be established this week. Working product name: Lilly Direct. Final name TBD.
+### Lilly — `docs/lilly/` *(starts 2026-04-10)*
+Doc set to be established this week. Working product name: Lilly Direct. Final name TBD. Must follow the 14-file canonical shape from day one.
 
 ---
 
