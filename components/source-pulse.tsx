@@ -728,10 +728,13 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                     flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "14px 16px",
                     display: "flex", alignItems: "center", gap: 8,
                   }}>
-                    <span style={{
-                      width: 6, height: 6, borderRadius: "50%",
-                      background: ok === null ? "var(--text-tertiary)" : ok ? "var(--live)" : "#ef4444",
-                    }} />
+                    <span
+                      className={ok ? "beacon-pulse" : undefined}
+                      style={{
+                        width: 6, height: 6, borderRadius: "50%",
+                        background: ok === null ? "var(--text-tertiary)" : ok ? "var(--live)" : "#ef4444",
+                      }}
+                    />
                     <span style={{ ...TYPE.sm, fontFamily: MONO, color: ok === null ? "var(--text-tertiary)" : ok ? "var(--text-secondary)" : "#ef4444" }}>
                       {api.name}
                     </span>
@@ -749,14 +752,23 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
 
           {/* ── Layer Coverage ── */}
           <div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-              <div style={{ ...labelStyle, letterSpacing: "0.04em" }}>
+            <div style={{ marginBottom: 10 }}>
+              <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 6 }}>
                 Layer Coverage
               </div>
-              <div style={{ display: "flex", gap: 16 }}>
-                <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>volume</span>
-                <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", width: 50, textAlign: "right" }}>annot.</span>
-                <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", width: 40, textAlign: "right" }}>urg.</span>
+              {/* Column headers — match LayerBar layout: 80px name + 28px count + flex bar + 50px annot + 40px urg */}
+              <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "0 14px" }}>
+                <div style={{ width: 80, flexShrink: 0 }} />
+                <div style={{ width: 28, flexShrink: 0, textAlign: "right" }}>
+                  <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>vol</span>
+                </div>
+                <div style={{ flex: 1 }} />
+                <div style={{ width: 50, flexShrink: 0, textAlign: "right" }}>
+                  <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>annot.</span>
+                </div>
+                <div style={{ width: 40, flexShrink: 0, textAlign: "right" }}>
+                  <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>urg.</span>
+                </div>
               </div>
             </div>
             <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "10px 14px" }}>

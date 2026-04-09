@@ -234,6 +234,16 @@ html, body {
   100% { opacity: 1; translate: 0 0; scale: 1; }
 }
 
+/* Pulse beacon — active API connections */
+@keyframes beacon-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4); }
+  70%  { box-shadow: 0 0 0 4px rgba(74, 222, 128, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+.beacon-pulse {
+  animation: beacon-pulse 2s ease-out infinite;
+}
+
 /* Gallery curation buttons — reveal on hover */
 .gallery-card:hover .gallery-curate {
   opacity: 1 !important;
