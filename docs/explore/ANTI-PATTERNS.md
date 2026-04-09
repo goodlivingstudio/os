@@ -3,7 +3,9 @@ Established: 2026-04-09 (stub)
 
 *This document is the stop list for Explore. It enumerates specific UI patterns, visual treatments, component behaviors, voice moves, and design decisions that are prohibited in the Explore interface. SYSTEM-BRIEF.md says what to build; this document says what to never build.*
 
-*This document inherits from `../os/ANTI-PATTERNS.md` (if it exists) for universal OS-wide prohibitions, and adds Explore-specific prohibitions calibrated to the civic / federal / team context Explore serves.*
+*Universal OS-wide design convictions and the anti-patterns they imply live at `../os/DOCTRINE.md` (no dashboards, no widgets, no sycophancy, no celebratory animations, no pulsing badges, no emoji, no "Hey there!" greetings, gallery discipline including the anti-watermark rule). Those apply to Explore without exception. This document adds Explore-specific prohibitions calibrated to the civic / federal / team context Explore serves.*
+
+*Note: there is no separate `../os/ANTI-PATTERNS.md` file — OS-wide prohibitions are folded into DOCTRINE.md as the positive-and-negative expression of each shared conviction. If the project grows enough OS-wide prohibitions to justify their own file, we can promote them later.*
 
 *See `SYSTEM-BRIEF.md` for the positive design guidance. See `../os/DOCTRINE.md` for the shared design convictions these prohibitions enforce. See `MANDATE.md` for the context that makes these prohibitions necessary.*
 
@@ -13,7 +15,7 @@ Established: 2026-04-09 (stub)
 
 **Stub.** Content to be written. This file exists so Explore's doc set matches the canonical 14-file product doc set shape defined at `../os/DOC-AUTHORITY.md`.
 
-Dispatch has a mature ANTI-PATTERNS at `../dispatch/ANTI-PATTERNS.md` — use it as the structural template. Many Dispatch anti-patterns will apply to Explore too (those are universal OS-level prohibitions and should be pulled up into `../os/ANTI-PATTERNS.md` rather than duplicated here).
+Dispatch has a mature ANTI-PATTERNS at `../dispatch/ANTI-PATTERNS.md` — use it as the structural template. Many Dispatch anti-patterns will apply to Explore too. Universal prohibitions (the ones that should hold across every OS product) belong in `../os/DOCTRINE.md` rather than being duplicated in each product's ANTI-PATTERNS. If a Dispatch anti-pattern turns out to be universal, promote it to DOCTRINE first, then remove the duplicate from both product files.
 
 ---
 
@@ -47,7 +49,7 @@ When written, each anti-pattern entry will follow this shape (matching Dispatch'
 ## QUESTIONS TO ANSWER BEFORE WRITING
 
 1. What specific patterns have already been proposed for Explore that should be rejected?
-2. Which Dispatch anti-patterns apply wholesale to Explore and should be pulled up into `../os/ANTI-PATTERNS.md`?
+2. Which Dispatch anti-patterns apply wholesale to Explore and should be promoted to `../os/DOCTRINE.md` as shared convictions (with their implied prohibitions)?
 3. Are there federal design standards (USWDS, 21st Century IDEA, Plain Language Act) that should be referenced for civic-context prohibitions?
 4. What voice moves are acceptable for the station chief (Dispatch) but prohibited for the field correspondent (Explore)?
 5. What gallery aesthetics should Explore reject that Dispatch might accept, and vice versa?

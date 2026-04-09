@@ -849,8 +849,8 @@ This is the canonical checklist. Use it when spinning up Lilly Direct (2026-04-1
 6. **Populate the layer taxonomy.** Each product can define its own intelligence layers. Dispatch uses Opportunity/Position/Discipline/Landscape/Culture; Explore uses a different set calibrated to civic intelligence. Lilly Direct will define its own. This is the most bespoke part of the config.
 7. **Populate feeds, podcasts, gallery sources.** These derive from `docs/<product>/SOURCES.md`. Start with a curated core set; move candidates from `docs/<product>/SOURCES-MEGALIST.md` into the active feed as they earn it.
 8. **Populate skins and theming.** Define the product's material skins and the default. Each skin is an aesthetic commitment that lives in `lib/styles.ts` downstream — new skins may require adding entries there.
-9. **Add npm scripts.** Add `dev:<product>` and `build:<product>` to `package.json` following the Explore pattern (`NEXT_PUBLIC_INSTANCE=<product> next dev -p <port>`).
-10. **Create the product doc set.** Scaffold all 14 canonical files under `docs/<product>/` per `docs/os/DOC-AUTHORITY.md` § THE CANONICAL PRODUCT DOC SET. Stubs are acceptable; missing files are not.
+9. **Add npm scripts.** Add `dev:<product>` and `build:<product>` to `package.json` following the Explore pattern (`NEXT_PUBLIC_INSTANCE=<product> next dev -p <port>`). Also add a matching entry to `.claude/launch.json` so dev-server preview tooling (`preview_start` in Claude Code) can launch the instance by name. The launch.json entry mirrors the npm script: same name, same port, same `NEXT_PUBLIC_INSTANCE` env var, with the full paths to node and npm.
+10. **Create the product doc set.** Scaffold all 14 canonical files under `docs/<product>/` per `docs/os/DOC-AUTHORITY.md` § THE CANONICAL PRODUCT DOC SET. Stubs are acceptable; missing files are not. Also regenerate `docs-export/<product>-complete.md` per the script in `docs-export/README.md` so Claude.ai sessions can paste the full doc set as context.
 11. **Create the Vercel project.** New Vercel project, connected to the same GitHub repo, with `NEXT_PUBLIC_INSTANCE=<product>` set in the project's environment variables. Assign a CNAME (`<product>.goodliving.studio` or a client-specific domain).
 12. **Set the secrets.** `ANTHROPIC_API_KEY` is required. `EXA_API_KEY`, `KV_REST_API_URL`, `KV_REST_API_TOKEN` are optional but expected for full functionality.
 13. **Verify the boot.** Run `npm run dev:<product>` locally, confirm the instance renders with its own branding, confirm the feed populates, confirm KV cache keys are namespaced with the new instance ID, confirm Cerebro carries the new voice. Run `npx tsc --noEmit` to confirm types still resolve. Update the product's `status` in `lib/config/products.ts` from `"upcoming"` to `"wip"` once the instance boots and renders.
@@ -1135,7 +1135,7 @@ The TypeScript interface in `lib/config/types.ts` that every instance implements
 The environment variable that selects which instance loads at boot. Defaults to `dispatch`. Set to `explore` to run the Explore instance, and so on. See `ARCHITECTURE.md` § THE INSTANCE BOOT SEQUENCE.
 
 ### Instance ID
-The lowercase slug that identifies a product instance in the loader map, in storage keys, in KV keys, and in the `NEXT_PUBLIC_INSTANCE` env var. Dispatch's is `dispatch`, Explore's is `explore`. Lilly Direct's TBD (likely `lilly-direct` or `lilly`).
+The lowercase slug that identifies a product instance in the loader map, in storage keys, in KV keys, and in the `NEXT_PUBLIC_INSTANCE` env var. Dispatch's is `dispatch`, Explore's is `explore`, Lilly Direct's is `lilly-direct`. Atlas does not currently run as an instance (separate repo).
 
 ### Storage key / KV key namespacing
 The helpers `storageKey(key)` and `kvKey(key)` in `lib/config/index.ts` prefix all localStorage and Vercel KV keys with the instance ID. This is how multiple instances coexist on shared infrastructure without collision. Dispatch's KV keys start with `dispatch:`, Explore's with `explore:`.
@@ -1145,6 +1145,32 @@ The serverless key-value store used for conversation memory (30-day TTL, max 30 
 
 ### ISR (Incremental Static Regeneration)
 Next.js pattern for caching API route output with periodic revalidation. Used by the brief and synthesis surfaces so the operator opens the product and sees a brief that was already rendered, rather than waiting for one to generate synchronously.
+
+### INSTANCE_PREAMBLE
+The config-derived constant exported from `lib/prompts.ts` that contains the full AI system preamble for whichever instance is currently running. Assembled by `buildPreamble(config)` in `lib/config/index.ts` from the active instance's `mandate.operator`, `mandate.clientContext`, the layer block, `mandate.sourceModes`, and `mandate.voice`. Every AI surface route (chat, brief, synthesis, annotate, dispatch, audio-brief) imports this constant rather than hardcoding preamble text. Prior to 2026-04-09 this was named `DISPATCH_PREAMBLE` as a historical artifact of the pre-white-label codebase; the rename removed the Dispatch-shaped naming bias so the semantics match the behavior.
+
+### Products registry
+The canonical enumeration of all Good Living Studio products, living at `lib/config/products.ts` as the `PRODUCTS` array. Distinct from the per-instance configs at `lib/config/<product>.ts` — the instance configs describe ONE product in full; the products registry is a compact metadata list of ALL products with `id`, `name`, `url`, `status` (production / wip / upcoming / on-hold), `description`, and `isOsInstance`. Every UI surface that needs cross-product navigation (product switcher, enumeration, status pills) reads from `PRODUCTS` rather than hardcoding the list. When a new product is added, the registry entry lands in the same commit as the instance config.
+
+### Feature flags (`config.features`)
+Per-instance feature flags for shared-layer behaviors that only apply to some products. Defined in the `FeatureFlags` interface in `lib/config/types.ts` and accessed via `instanceConfig.features?.<flagName>`. Default behavior for every flag is "off" — a product opts in by setting the flag in its config file. Currently one flag exists: `galleryBiomes` (enabled on Explore, off on Dispatch and Lilly Direct). Feature flags are the right pattern when the BEHAVIOR is product-specific (biome classification runs or it doesn't); for product-specific CONTENT (different sources, different skins, different mandate prose), use instance config fields directly instead. Feature flag gating should be enforced at both the data layer and the UI layer (the double-guard pattern) — see `docs/os/ARCHITECTURE.md § config.features`.
+
+---
+
+## GALLERY DISCIPLINE
+
+### Gallery discipline (OS-wide)
+The shared conviction that every gallery surface inherits three non-negotiable rules: (1) images must say something the operator would not have found on their own, (2) images must earn their frame (removing them would make the gallery worse), (3) images must be unencumbered by watermarks, promo stamps, or preview tags. Named "gallery discipline" in `docs/os/DOCTRINE.md § Gallery discipline`. Applies to Dispatch's Surface, Explore's visual formation layer, and any future product's gallery.
+
+### Anti-watermark rule
+A specific expression of gallery discipline: watermarked images are prohibited from every Good Living Studio gallery. Not because of aesthetics or licensing — because a watermark gives the image two competing authorships (the photographer and the distributor) and destroys the atmospheric quality every gallery is trying to hold. A watermarked image stops being a place the operator rejoins and becomes an interruption. Enforcement currently operates at three layers: source-level filtering at ingest, operator-level curation via the `low-quality` action, and a keyword safety net. Automatic vision-based pre-filtering is a known drift point in `docs/os/ARCHITECTURE.md § KNOWN DRIFT`.
+
+### The four curation actions
+The gallery curation API at `app/api/gallery/curate/route.ts` accepts four actions via POST:
+- **`approve`** — Thumbs up. Protects the image from auto-archiving and records a positive taste signal.
+- **`reject`** — Thumbs down. Removes the image from future renders, adds it to the blocklist, and teaches the taste pipeline to avoid similar content.
+- **`low-quality`** — Frown. Removes the image but doesn't teach the taste pipeline to avoid the subject matter. The right action for watermarks, blurry captures, and bad crops.
+- **`wrong-biome`** — Globe (added 2026-04-10). Keeps the image in the gallery, strips only its biome classification. Use when the keyword classifier in `lib/gallery.ts` put a lovely image in the wrong biome bucket (a coastal photo tagged "arctic," a street photograph tagged "forest"). Only meaningful for instances with `features.galleryBiomes` enabled — currently just Explore. The Globe button only renders on biome-tagged images under biome-enabled instances.
 
 ---
 
