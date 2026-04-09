@@ -3,7 +3,7 @@ Established: 2026-04-09 (stub)
 
 *This document is the stop list for Explore. It enumerates specific UI patterns, visual treatments, component behaviors, voice moves, and design decisions that are prohibited in the Explore interface. SYSTEM-BRIEF.md says what to build; this document says what to never build.*
 
-*Universal OS-wide design convictions and the anti-patterns they imply live at `../os/DOCTRINE.md` (no dashboards, no widgets, no sycophancy, no celebratory animations, no pulsing badges, no emoji, no "Hey there!" greetings, gallery discipline including the anti-watermark rule). Those apply to Explore without exception. This document adds Explore-specific prohibitions calibrated to the civic / federal / team context Explore serves.*
+*Universal OS-wide design convictions and the anti-patterns they imply live at `../os/DOCTRINE.md` (no dashboards, no widgets, no sycophancy, no celebratory animations, no pulsing badges, no emoji, no "Hey there!" greetings, the visual-surfaces-earn-their-place rule including the anti-watermark prohibition). Those apply to Explore without exception. This document adds Explore-specific prohibitions calibrated to the civic / federal / team context Explore serves.*
 
 *Note: there is no separate `../os/ANTI-PATTERNS.md` file — OS-wide prohibitions are folded into DOCTRINE.md as the positive-and-negative expression of each shared conviction. If the project grows enough OS-wide prohibitions to justify their own file, we can promote them later.*
 

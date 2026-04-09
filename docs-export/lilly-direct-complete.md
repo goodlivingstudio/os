@@ -131,7 +131,7 @@ Established: 2026-04-10 (scaffold — content lands at kickoff)
 
 *Read MANDATE.md and CEREBRO-CHARTER.md before this document. The visual language must support the voice character and the engagement purpose.*
 
-*OS-level design convictions (restraint as proof of quality, signal/synthesis duality, no sycophancy, token constraints, clarity over density, gallery discipline) live at `../os/DOCTRINE.md` and apply without exception. This document describes the product-specific EXPRESSION of those convictions.*
+*OS-level design convictions (restraint as proof of quality, craft is non-negotiable, source and synthesis stay visible, visual surfaces earn their place, analytical voice in service of the mandate, design systems are governance, clarity over density) live at `../os/DOCTRINE.md` and apply without exception. This document describes the product-specific EXPRESSION of those convictions.*
 
 ---
 
@@ -389,8 +389,8 @@ Established: 2026-04-10
 
 Lilly Direct is one of four sibling products living under OS — the ambient intelligence layer that holds the Good Living Studio philosophy, operator context, and shared authority. Lilly Direct inherits from eight OS-level documents at `../os/`:
 
-- **OPERATOR.md** — Canonical for operator identity (Jeremy Grant), five-year target, professional evolution thesis, and active engagements. Lilly Direct's MANDATE.md references it rather than restating the operator profile.
-- **DOCTRINE.md** — Canonical for shared design convictions (restraint as proof of quality, signal/synthesis duality, no sycophancy, token constraints, clarity over density, gallery discipline). Lilly Direct's SYSTEM-BRIEF.md and ANTI-PATTERNS.md implement these convictions in Lilly Direct-specific form.
+- **OPERATOR.md** — Canonical for operator identity (Jeremy Grant), five-year target, professional evolution thesis, and priority intelligence targets (Eli Lilly is one of them). Lilly Direct's MANDATE.md references it rather than restating the operator profile.
+- **DOCTRINE.md** — Canonical for shared design convictions (restraint as proof of quality, craft is non-negotiable, source and synthesis stay visible, visual surfaces earn their place, analytical voice in service of the mandate, design systems are governance, clarity over density). Lilly Direct's SYSTEM-BRIEF.md and ANTI-PATTERNS.md implement these convictions in Lilly Direct-specific form.
 - **PASSAGE.md** — Canonical for interaction philosophy. Lilly Direct's SYSTEM-BRIEF.md § Interaction philosophy translates Passage into specific Lilly Direct commitments.
 - **VOICE.md** — Canonical for universal analytical voice disciplines (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density). Lilly Direct's CEREBRO-CHARTER.md expresses these through a product-specific character.
 - **PIPELINE.md** — Canonical for the six-stage intelligence pipeline (Ingest → Annotate → Score → Brief → Synthesize → Act). Lilly Direct's ARCHITECTURE.md describes how this product implements each stage.

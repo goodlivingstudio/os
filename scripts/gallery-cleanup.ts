@@ -18,10 +18,11 @@ process.env.NEXT_PUBLIC_INSTANCE = instanceArg
 
 import dispatchConfig from "../lib/config/dispatch.js"
 import exploreConfig from "../lib/config/explore.js"
+import lillyDirectConfig from "../lib/config/lilly-direct.js"
 import type { InstanceConfig } from "../lib/config/types.js"
 import { visionFilter } from "./lib/vision-filter.js"
 
-const CONFIGS: Record<string, InstanceConfig> = { dispatch: dispatchConfig, explore: exploreConfig }
+const CONFIGS: Record<string, InstanceConfig> = { dispatch: dispatchConfig, explore: exploreConfig, "lilly-direct": lillyDirectConfig }
 const config = CONFIGS[instanceArg] || dispatchConfig
 
 const useUgc = args.includes("--ugc")

@@ -117,7 +117,7 @@ export interface FeatureFlags {
 
 export interface InstanceConfig {
   // Identity
-  id: string                // "dispatch" | "explore" | "lilly"
+  id: string                // "dispatch" | "explore" | "lilly-direct"
   branding: BrandingConfig
 
   // Mandate — AI personality and framing

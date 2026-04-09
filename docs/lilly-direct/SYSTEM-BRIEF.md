@@ -5,7 +5,7 @@ Established: 2026-04-10 (scaffold — content lands at kickoff)
 
 *Read MANDATE.md and CEREBRO-CHARTER.md before this document. The visual language must support the voice character and the engagement purpose.*
 
-*OS-level design convictions (restraint as proof of quality, signal/synthesis duality, no sycophancy, token constraints, clarity over density, gallery discipline) live at `../os/DOCTRINE.md` and apply without exception. This document describes the product-specific EXPRESSION of those convictions.*
+*OS-level design convictions (restraint as proof of quality, craft is non-negotiable, source and synthesis stay visible, visual surfaces earn their place, analytical voice in service of the mandate, design systems are governance, clarity over density) live at `../os/DOCTRINE.md` and apply without exception. This document describes the product-specific EXPRESSION of those convictions.*
 
 ---
 
