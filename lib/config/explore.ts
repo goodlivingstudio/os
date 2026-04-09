@@ -268,18 +268,16 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
 
   galleryScraper: {
     arenaChannelSlug: "explore-t7o5uh83n2s",
-    tastePrompt: `You are curating a visual gallery that celebrates AMERICAN public lands — the national parks, forests, waterways, and open spaces of the UNITED STATES ONLY.
-
-CRITICAL RULE: Every image MUST be of an American place. If the alt text or URL suggests a location outside the United States (Machu Picchu, Patagonia, Alps, Dolomites, Iceland, Norway, New Zealand, Kilimanjaro, any non-US location), rate it 1 IMMEDIATELY regardless of quality. When in doubt about location, rate it 1.
+    tastePrompt: `You are curating a gallery about the mysticism and romance of nature. The feeling of standing somewhere vast and being changed by it. American public lands are the heart, but the spirit is universal — anywhere the natural world reminds you that you are small.
 
 Rate each image 1-5:
-1 = NOT American land. Or: UI screenshot, logo, text-heavy, urban, indoors, design portfolio, commercial product, gear ad, AI-generated, stock with watermarks
-2 = Possibly American but generic — could be anywhere, no sense of specific place
-3 = Likely American landscape but ordinary — no emotional weight
-4 = Strong — recognizably American landscape with presence and scale (Southwest desert, Pacific coast, Rocky Mountain alpine, Appalachian forest, Great Plains, Alaskan wilderness). Or: real people on American trails, at American campsites, in American parks. Diverse representation matters.
-5 = Exceptional — unmistakably American. Grand Canyon, Yosemite, Yellowstone, Glacier, Olympic, Denali, Smokies, Everglades, Big Sur, Badlands. The kind of image that makes you want to visit. Documentary quality.
+1 = Urban, indoors, commercial, product, logo, UI, AI-generated, staged influencer content, watermarks. Anything that breaks the spell.
+2 = Nature but generic — no feeling, no atmosphere, no soul
+3 = Pleasant landscape but you've seen it a thousand times
+4 = You feel something. Mist in old growth, light breaking through a canyon, a creature in its element, the ocean at a scale that humbles. The image has atmosphere, not just subject matter.
+5 = Transcendent. The image changes how you see the world for a moment. Ansel Adams gravity. Planet Earth scale. Goldsworthy impermanence. The sublime — beauty laced with awe.
 
-AMERICAN LANDSCAPES ONLY. No exceptions.`,
+This gallery should make someone want to leave their desk and stand outside. Prioritize mystery, atmosphere, and emotional weight over technical perfection.`,
     targets: [
       // ── Iconic Parks — West ────────────────────────────────────────────
       { url: "https://unsplash.com/s/photos/yosemite", name: "Yosemite", category: "photography" },
@@ -378,12 +376,36 @@ AMERICAN LANDSCAPES ONLY. No exceptions.`,
       // ── Outdoor Adventure Brands (editorial imagery) ──────────────────
       { url: "https://www.patagonia.com/stories/", name: "Patagonia Stories", category: "editorial" },
 
+      // ── Land Art + Nature Documentarians ───────────────────────────────
+      // The emotional register — wonderment, scale, reverence
+      { url: "https://www.goldsworthy.cc.gla.ac.uk/", name: "Andy Goldsworthy Archive", category: "archive" },
+      { url: "https://unsplash.com/s/photos/andy-goldsworthy-land-art", name: "Land Art", category: "photography" },
+      { url: "https://unsplash.com/s/photos/planet-earth-documentary", name: "Planet Earth", category: "photography" },
+      { url: "https://unsplash.com/s/photos/blue-planet-ocean", name: "Blue Planet", category: "photography" },
+      { url: "https://unsplash.com/s/photos/nature-documentary-cinematic", name: "Nature Documentary", category: "photography" },
+      { url: "https://unsplash.com/s/photos/aerial-landscape-earth", name: "Aerial Landscape", category: "photography" },
+      { url: "https://unsplash.com/s/photos/deep-ocean-underwater", name: "Deep Ocean", category: "photography" },
+      { url: "https://unsplash.com/s/photos/volcanic-landscape", name: "Volcanic Landscape", category: "photography" },
+      { url: "https://unsplash.com/s/photos/northern-lights-aurora", name: "Northern Lights", category: "photography" },
+      { url: "https://unsplash.com/s/photos/coral-reef-underwater", name: "Coral Reef", category: "photography" },
+
+      // ── Epic Scale — the overview effect ──────────────────────────────
+      { url: "https://unsplash.com/s/photos/earth-from-space", name: "Earth From Space", category: "photography" },
+      { url: "https://unsplash.com/s/photos/glacier-ice-formation", name: "Glaciers", category: "photography" },
+      { url: "https://unsplash.com/s/photos/cave-underground", name: "Caves", category: "photography" },
+      { url: "https://unsplash.com/s/photos/fog-mountain-dramatic", name: "Dramatic Fog", category: "photography" },
+      { url: "https://unsplash.com/s/photos/old-growth-forest-ancient", name: "Old Growth Forest", category: "photography" },
+      { url: "https://unsplash.com/s/photos/tidal-pool-ocean", name: "Tidal Pools", category: "photography" },
+      { url: "https://unsplash.com/s/photos/bioluminescence", name: "Bioluminescence", category: "photography" },
+
       // ── Pexels — different pool from Unsplash ─────────────────────────
       { url: "https://www.pexels.com/search/national%20park/", name: "Pexels National Parks", category: "photography" },
       { url: "https://www.pexels.com/search/american%20wilderness/", name: "Pexels Wilderness", category: "photography" },
       { url: "https://www.pexels.com/search/wildlife%20america/", name: "Pexels Wildlife", category: "photography" },
       { url: "https://www.pexels.com/search/camping%20outdoors/", name: "Pexels Camping", category: "photography" },
       { url: "https://www.pexels.com/search/hiking%20mountain%20trail/", name: "Pexels Hiking", category: "photography" },
+      { url: "https://www.pexels.com/search/nature%20documentary%20cinematic/", name: "Pexels Cinematic Nature", category: "photography" },
+      { url: "https://www.pexels.com/search/underwater%20ocean%20life/", name: "Pexels Ocean Life", category: "photography" },
     ],
   },
 
