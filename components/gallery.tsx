@@ -13,7 +13,7 @@ import { Ticker } from "@/components/ticker"
 const MOOD_LABELS: Record<ColorMood, string> = {
   warm: "Warm",
   cool: "Cool",
-  earth: "Earth",
+  sapling: "Sapling",
   vivid: "Vivid",
   neutral: "Neutral",
 }
@@ -21,7 +21,7 @@ const MOOD_LABELS: Record<ColorMood, string> = {
 const MOOD_COLORS: Record<ColorMood, string> = {
   warm: "#D4A05A",
   cool: "#5A9EB0",
-  earth: "#7BAF6A",
+  sapling: "#7BAF6A",
   vivid: "#C87A6A",
   neutral: "#888888",
 }
@@ -255,7 +255,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
   const curatedCount = sourceFiltered.length - ugcCount
 
   // Mood counts from server-classified data
-  const moodCounts: Record<ColorMood, number> = { warm: 0, cool: 0, earth: 0, vivid: 0, neutral: 0 }
+  const moodCounts: Record<ColorMood, number> = { warm: 0, cool: 0, sapling: 0, vivid: 0, neutral: 0 }
   for (const img of includedImages) { if (img.mood) moodCounts[img.mood]++ }
   const classifiedCount = includedImages.filter(img => img.mood).length
 

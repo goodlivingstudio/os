@@ -145,10 +145,10 @@ export function classifyMood(r: number, g: number, b: number): ColorMood {
   if (s < 0.08) return "neutral"
   if (s < 0.15 && l > 0.3 && l < 0.7) return "neutral"
   if (s > 0.55) return "vivid"
-  if (s < 0.45 && ((h >= 20 && h <= 170)) && l < 0.7) return "earth"
+  if (s < 0.45 && ((h >= 20 && h <= 170)) && l < 0.7) return "sapling"
   if (h <= 50 || h >= 320) return "warm"
   if (h >= 180 && h <= 310) return "cool"
-  if (h > 50 && h < 180) return s < 0.35 ? "earth" : "cool"
+  if (h > 50 && h < 180) return s < 0.35 ? "sapling" : "cool"
   return "warm"
 }
 

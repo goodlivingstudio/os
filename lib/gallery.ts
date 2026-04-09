@@ -6,7 +6,7 @@ export type { GallerySource } from "@/lib/config/types"
 
 export const GALLERY_SOURCES = config.gallerySources
 
-export type ColorMood = "warm" | "cool" | "earth" | "vivid" | "neutral"
+export type ColorMood = "warm" | "cool" | "sapling" | "vivid" | "neutral"
 
 export type Biome = "alpine" | "forest" | "desert" | "coastal" | "wetland" | "prairie" | "arctic" | "underwater"
 
