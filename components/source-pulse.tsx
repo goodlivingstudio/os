@@ -767,12 +767,12 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
 
           {/* ── Layer Coverage ── */}
           <div>
-            <div style={{ marginBottom: 10 }}>
-              <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 6 }}>
-                Layer Coverage
-              </div>
-              {/* Column headers — match LayerBar layout: 80px name + 28px count + flex bar + 50px annot + 40px urg */}
-              <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "0 14px" }}>
+            <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
+              Layer Coverage
+            </div>
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "10px 14px" }}>
+              {/* Column headers — match LayerBar layout */}
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
                 <div style={{ width: 80, flexShrink: 0 }} />
                 <div style={{ width: 28, flexShrink: 0, textAlign: "right" }}>
                   <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>vol</span>
@@ -785,8 +785,6 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                   <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>urg.</span>
                 </div>
               </div>
-            </div>
-            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "10px 14px" }}>
               {layerHealth.map(lh => (
                 <LayerBar key={lh.layer} layer={lh} health={0} maxArticles={maxLayerArticles} />
               ))}
