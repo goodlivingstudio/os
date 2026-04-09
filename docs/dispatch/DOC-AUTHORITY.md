@@ -29,11 +29,18 @@ When updating derived content, update the canonical source first, then propagate
 ## AUTHORITY MAP
 
 ### MANDATE.md — *The Why*
-**Owns:** The station chief model. Three intelligence modes (Intelligence / Formation / Positioning). Five annotation layers. Cerebro behavioral charter. Synthesis purpose. Generative brief cluster purpose. Dispatch-specific operator context (what Dispatch needs to know beyond the shared operator profile).
+**Owns:** The station chief model. Three intelligence modes (Intelligence / Formation / Positioning). Five annotation layers. Synthesis purpose. Generative brief cluster purpose. Dispatch-specific operator context (what Dispatch needs to know beyond the shared operator profile).
 
 **Derives from:** `../os/OPERATOR.md` for operator identity, five-year target, professional evolution thesis, operating thesis, and active engagement context (Lilly, Code and Theory).
 
-**Rule:** If you need to know *what Dispatch is and why it exists*, MANDATE is the answer. For *who the operator is*, see `../os/OPERATOR.md`. Everything in PROMPTS.md's context blocks derives from MANDATE (for Dispatch-specific content) and from `../os/OPERATOR.md` (for shared operator context).
+**Rule:** If you need to know *what Dispatch is and why it exists*, MANDATE is the answer. For *who the operator is*, see `../os/OPERATOR.md`. For *how the analytical function reasons and what disciplines it carries*, see `CEREBRO-CHARTER.md`. Everything in PROMPTS.md's context blocks derives from MANDATE (for Dispatch-specific content), from CEREBRO-CHARTER (for voice and discipline), and from `../os/OPERATOR.md` (for shared operator context).
+
+### CEREBRO-CHARTER.md — *The Voice*
+**Owns:** Behavioral contract for Cerebro, Dispatch's analytical function. The Station Chief model. The behavioral directive (station chief vs counselor, synthesis first, challenge weak reasoning, no preamble, no bullet points, push forward, flag noise). The analytical discipline (gap accounting, confidence tiers, amplification check, weakest claim). What Cerebro knows.
+
+**Derives from:** `../os/VOICE.md` for the universal analytical voice disciplines shared across all OS products. The station chief character is Dispatch-specific; the underlying disciplines are OS-wide.
+
+**Rule:** If you need to know *how Cerebro reasons and what disciplines it carries in every response*, CEREBRO-CHARTER is the answer. Cross-reference with `../explore/CEREBRO-CHARTER.md` — the two are structural siblings (Station Chief vs Field Correspondent) under the same OS-level voice discipline. The VOICE block in PROMPTS.md is derived from this document.
 
 ### PROMPTS.md — *The Words*
 **Owns:** All copyable prompt text for `lib/prompts.ts`. Context blocks (OPERATOR, LILLY_CONTEXT, FIVE_LAYERS, SOURCE_MODES, VOICE). Surface prompts (DCOS, Cerebro, Annotation, Synthesis, Dispatch). Prompt assembly pattern. Prompt maintenance schedule.
