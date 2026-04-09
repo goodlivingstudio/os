@@ -1,6 +1,6 @@
 // Gallery API — aggregates images from Are.na and RSS feeds
 // Core fetch + classify logic lives in lib/gallery-fetch.ts
-import { GALLERY_SOURCES } from "@/lib/gallery"
+import { GALLERY_SOURCES, classifyBiome } from "@/lib/gallery"
 import { fetchAndClassifyGalleryImages } from "@/lib/gallery-fetch"
 import { kv } from "@vercel/kv"
 import { kvKey } from "@/lib/config"
@@ -23,6 +23,13 @@ export async function GET() {
         filtered = classified.filter(img => !blocked.has(img.url))
       }
     } catch { /* KV unavailable — serve unfiltered */ }
+  }
+
+  // Classify biomes from title/source/URL keywords
+  for (const img of filtered) {
+    if (!img.biome) {
+      img.biome = classifyBiome(img.title, img.source, img.url)
+    }
   }
 
   // Shuffle for variety

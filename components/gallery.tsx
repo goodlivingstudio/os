@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from "react"
 import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle, ThumbsUp, ThumbsDown, Frown } from "lucide-react"
 import { TYPE, MONO } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
-import { GALLERY_SOURCES, type GalleryImage, type ColorMood } from "@/lib/gallery"
+import { GALLERY_SOURCES, type GalleryImage, type ColorMood, type Biome } from "@/lib/gallery"
 import type { Skin, Article } from "@/lib/types"
 import { Ticker } from "@/components/ticker"
 
@@ -177,6 +177,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
   const [activeMood, setActiveMood] = useState<ColorMood | null>(null)
   const [sourceType, setSourceType] = useState<"all" | "curated" | "ugc">("all")
+  const [activeBiome, setActiveBiome] = useState<Biome | null>(null)
   // Trends + Sources panels removed — sources now in Config view
 
   // Detect if this instance has UGC sources (Are.na UGC channel)
@@ -258,12 +259,25 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
   for (const img of includedImages) { if (img.mood) moodCounts[img.mood]++ }
   const classifiedCount = includedImages.filter(img => img.mood).length
 
-  // Apply mood filter + sort by hue for tonal coherence
+  // Biome counts (Explore only)
+  const BIOME_LABELS: Record<Biome, string> = {
+    alpine: "Alpine", forest: "Forest", desert: "Desert", coastal: "Coastal",
+    wetland: "Wetland", prairie: "Prairie", arctic: "Arctic", underwater: "Underwater",
+  }
+  const biomeCounts: Record<Biome, number> = { alpine: 0, forest: 0, desert: 0, coastal: 0, wetland: 0, prairie: 0, arctic: 0, underwater: 0 }
+  for (const img of includedImages) { if (img.biome) biomeCounts[img.biome]++ }
+  const hasBiomes = Object.values(biomeCounts).some(c => c > 0)
+
+  // Apply biome filter first, then mood filter
+  const biomeFiltered = activeBiome
+    ? includedImages.filter(img => img.biome === activeBiome)
+    : includedImages
+
   const filtered = activeMood
-    ? includedImages
+    ? biomeFiltered
         .filter(img => img.mood === activeMood)
         .sort((a, b) => (a.hue ?? 0) - (b.hue ?? 0))
-    : includedImages
+    : biomeFiltered
 
   // Fisher-Yates shuffle, seeded by shuffleKey
   const images = useMemo(() => {
@@ -480,6 +494,36 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                       >
                         {opt.label}
                         {opt.count > 0 && <span style={{ opacity: 0.5 }}>{opt.count}</span>}
+                      </button>
+                    )
+                  })}
+                </>
+              )}
+              {/* Biome filter chips — Explore only, after mood filters */}
+              {hasBiomes && (
+                <>
+                  <span style={{ width: 1, height: 16, background: "var(--border)", flexShrink: 0, margin: "0 4px" }} />
+                  {(Object.keys(BIOME_LABELS) as Biome[]).map(biome => {
+                    const count = biomeCounts[biome]
+                    if (count === 0) return null
+                    const isActive = activeBiome === biome
+                    return (
+                      <button
+                        key={biome}
+                        onClick={() => setActiveBiome(isActive ? null : biome)}
+                        style={{
+                          ...TYPE.sm, padding: "3px 10px", borderRadius: 8, border: "none",
+                          display: "inline-flex", alignItems: "center", gap: 5,
+                          background: isActive ? "var(--accent-primary)" : "transparent",
+                          color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                          fontWeight: 400,
+                          cursor: "pointer", transition: "all 0.15s",
+                        }}
+                        onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
+                        onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = "transparent" }}
+                      >
+                        {BIOME_LABELS[biome]}
+                        <span style={{ opacity: 0.5 }}>{count}</span>
                       </button>
                     )
                   })}
