@@ -269,6 +269,16 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
   ],
   defaultSkin: "cascadia",
 
+  // ─── Feature Flags — Explore-specific opt-ins ──────────────────────────────
+
+  features: {
+    // Biome taxonomy classification for gallery images (alpine, forest, desert,
+    // coastal, wetland, prairie, arctic, underwater). Explore's public-lands
+    // subject matter makes biome a meaningful filter; Dispatch and other products
+    // leave this off.
+    galleryBiomes: true,
+  },
+
   // ─── Gallery Scraper — Public lands imagery + civic design excellence ──────
 
   galleryScraper: {

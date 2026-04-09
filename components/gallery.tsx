@@ -259,14 +259,22 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
   for (const img of includedImages) { if (img.mood) moodCounts[img.mood]++ }
   const classifiedCount = includedImages.filter(img => img.mood).length
 
-  // Biome counts (Explore only)
+  // Biome counts — only for instances that opt in via config.features.galleryBiomes.
+  // Explore uses biome as a first-class filter taxonomy for public-lands imagery;
+  // Dispatch and other products leave this off. The hasBiomes check requires BOTH
+  // the feature flag to be true AND at least one image to actually carry a biome
+  // tag (a double-guard: config off → classification skipped in /api/gallery; UI
+  // off → filter chips never render even if a stale cached image sneaks through).
+  const biomesEnabled = instanceConfig.features?.galleryBiomes === true
   const BIOME_LABELS: Record<Biome, string> = {
     alpine: "Alpine", forest: "Forest", desert: "Desert", coastal: "Coastal",
     wetland: "Wetland", prairie: "Prairie", arctic: "Arctic", underwater: "Underwater",
   }
   const biomeCounts: Record<Biome, number> = { alpine: 0, forest: 0, desert: 0, coastal: 0, wetland: 0, prairie: 0, arctic: 0, underwater: 0 }
-  for (const img of includedImages) { if (img.biome) biomeCounts[img.biome]++ }
-  const hasBiomes = Object.values(biomeCounts).some(c => c > 0)
+  if (biomesEnabled) {
+    for (const img of includedImages) { if (img.biome) biomeCounts[img.biome]++ }
+  }
+  const hasBiomes = biomesEnabled && Object.values(biomeCounts).some(c => c > 0)
 
   // Apply biome filter first, then mood filter
   const biomeFiltered = activeBiome

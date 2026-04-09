@@ -803,8 +803,10 @@ export default function Page() {
             </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            {/* Skin dots — large touch targets */}
-            {instanceConfig.skins.map(({ id: s, dot: color }) => {
+            {/* Skin dots — only render when the instance has multiple skins to choose from.
+                Single-skin instances (like Dispatch with its sole "ink" skin) skip the picker
+                and rely on the day/night toggle for color mode switching. */}
+            {instanceConfig.skins.length > 1 && instanceConfig.skins.map(({ id: s, dot: color }) => {
               const isActive = skin === s
               return (
                 <button

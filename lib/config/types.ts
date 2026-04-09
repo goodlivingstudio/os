@@ -92,6 +92,27 @@ export interface GalleryScraperConfig {
   tastePrompt: string        // Claude Vision curatorial mandate for this instance
 }
 
+// ─── Feature Flags — per-instance opt-ins ──────────────────────────────────
+// Optional map of feature flags controlling shared-layer behavior that only
+// applies to certain products. Default behavior for every flag is `false` or
+// equivalent — the shared layer treats an omitted flag as "off." A product
+// opts in by setting the flag in its config file.
+//
+// Rule: features here are always OS-level features that some products want
+// and others don't. Product-specific UI surfaces that no other product will
+// ever need belong in the product config, not as a feature flag.
+
+export interface FeatureFlags {
+  /**
+   * Classify gallery images by biome taxonomy (alpine, forest, desert, coastal,
+   * wetland, prairie, arctic, underwater) using keyword matching in title/source/URL.
+   * When enabled, the gallery overlay renders biome filter chips. Currently used
+   * by Explore for its public-lands imagery; Dispatch and other products leave
+   * it off (default).
+   */
+  galleryBiomes?: boolean
+}
+
 // ─── Instance Config — the full contract ────────────────────────────────────
 
 export interface InstanceConfig {
@@ -128,4 +149,7 @@ export interface InstanceConfig {
   galleryScraper?: GalleryScraperConfig
   // UGC scraper — separate channel for authentic user-generated content
   ugcScraper?: GalleryScraperConfig
+
+  // Feature flags — per-instance opt-ins for shared-layer behaviors
+  features?: FeatureFlags
 }

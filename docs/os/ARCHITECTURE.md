@@ -104,6 +104,29 @@ Any UI surface that needs to render a cross-product switcher, product selector, 
 
 When a new product is added, the registry entry is added here in the same commit that creates the instance config. When a product changes lifecycle status (wip → production, on-hold → wip), the status field updates here and every consumer rerenders accordingly. Status pills in the project switcher ("soon" for upcoming, "on hold" for on-hold) are derived from this field.
 
+### `config.features` — per-instance feature flags
+
+The `InstanceConfig` schema includes an optional `features` map (`FeatureFlags` interface in `lib/config/types.ts`) for per-instance opt-ins to shared-layer behaviors that only apply to some products. Default behavior for every flag is `false` or equivalent — the shared layer treats an omitted flag as "off." A product opts in by setting the flag in its config file.
+
+**When to use a feature flag vs an instance-specific config field:**
+
+- Use a **feature flag** when the behavior lives in the shared layer and some products want it while others don't. Example: `features.galleryBiomes` — the biome classification logic, filter chip UI, and data pipeline all live in shared code; Explore wants them on; Dispatch wants them off.
+- Use an **instance-specific config field** (like `config.skins` or `config.feeds`) when the product is providing *content* that the shared layer will consume. The shared layer always renders skins; what varies is *which* skins and *how many*.
+- Use **UI gating on config state** when a shared surface adapts to a product's content. Example: the mobile skin picker renders only when `instanceConfig.skins.length > 1` — no feature flag needed, because the content itself (the length of the skins array) is what determines whether the UI is meaningful.
+
+**Current feature flags:**
+
+- **`galleryBiomes`** (default: `false`) — Classify gallery images by biome taxonomy (alpine, forest, desert, coastal, wetland, prairie, arctic, underwater) using keyword matching in title/source/URL. When enabled, the gallery overlay renders biome filter chips and `/api/gallery` tags every image with a biome field. Currently enabled on Explore for its public-lands imagery. Dispatch and other products leave this off.
+
+**The double-guard pattern:** feature flags should be enforced at BOTH the data layer (the API route that produces the tagged data) AND the UI layer (the component that renders it). The biome flag is a good example — the API route in `app/api/gallery/route.ts` skips classification entirely when the flag is off, and the gallery component in `components/gallery.tsx` also gates rendering on the flag. Either guard alone would be sufficient in practice, but the combination makes the behavior robust against stale caches, race conditions, and future changes to the data pipeline.
+
+When a new feature flag is added:
+1. Add the field to `FeatureFlags` in `lib/config/types.ts` with a JSDoc comment explaining what it controls
+2. Enable it in the config files of the products that want it (leave omitted for products that don't)
+3. Gate the behavior at both the data layer and the UI layer
+4. Document the flag in this document under § Current feature flags
+5. Add a runtime verification that confirms the flag works as expected in both enabled and disabled states
+
 ---
 
 ## SHARED VS BESPOKE — THE HARDCODING RULES
@@ -143,8 +166,9 @@ This codebase exists because four sibling products (Dispatch, Explore, Atlas, Li
 3. **Never hardcode a layer name, layer taxonomy, or annotation label.** Read from `instanceConfig.layers` (runtime) or derive via `layerLabelsSlash(cfg)` / `layerIdsPipe(cfg)` helpers (prompts).
 4. **Never hardcode an operator context block, engagement context block, or voice directive in `.tsx` or `.ts` files.** These live in `config.mandate.*` fields and are assembled into prompts by `buildPreamble()` and exported as `INSTANCE_PREAMBLE`.
 5. **Never hardcode a source URL, podcast URL, or gallery source URL outside the config file.** Sources belong in `config.feeds`, `config.podcasts`, `config.gallerySources`.
-6. **Never hardcode a skin name or material token.** The skin system is config-driven; themes live in `lib/styles.ts` and are selected by the active instance's `defaultSkin`.
+6. **Never hardcode a skin name or material token.** The skin system is config-driven; themes live in `lib/styles.ts` and are selected by the active instance's `defaultSkin`. UI surfaces that render skin pickers must gate on `instanceConfig.skins.length > 1` — products with a single skin should not see a picker with one useless option.
 7. **Never hardcode "Dispatch" as a fallback label for a generic UI element.** The fallback is `instanceConfig.branding.name` — whichever product is currently running.
+8. **Never hardcode product-specific UI features into shared components.** If a feature belongs to one product (biome filters on Explore's gallery, the weekly content pipeline on Dispatch), put it behind a `config.features.*` flag and gate the behavior at both the data layer and the UI layer. See § `config.features` above for the pattern. Default to off; opt in per product.
 
 **The one exception:** strings that describe functionality the shared layer itself owns, not a product. "Cerebro" is shared vocabulary for the analytical function across all products and may appear as a hardcoded label in chrome (the right rail, the chat surface). "Signal," "Synthesis," "Source," "All," and "Config" are shared surface names. "SIGNAL" as a panel header is shared. These exist as string literals because they describe *the shared layer*, not any specific product.
 

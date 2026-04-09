@@ -3,7 +3,7 @@
 import { GALLERY_SOURCES, classifyBiome } from "@/lib/gallery"
 import { fetchAndClassifyGalleryImages } from "@/lib/gallery-fetch"
 import { kv } from "@vercel/kv"
-import { kvKey } from "@/lib/config"
+import instanceConfig, { kvKey } from "@/lib/config"
 
 export const revalidate = 3600 // 1 hour — gallery images don't need frequent refresh
 
@@ -25,10 +25,15 @@ export async function GET() {
     } catch { /* KV unavailable — serve unfiltered */ }
   }
 
-  // Classify biomes from title/source/URL keywords
-  for (const img of filtered) {
-    if (!img.biome) {
-      img.biome = classifyBiome(img.title, img.source, img.url)
+  // Classify biomes from title/source/URL keywords — only for instances that
+  // opt in via config.features.galleryBiomes. Explore uses biome as a first-
+  // class filter taxonomy for public-lands imagery; Dispatch and other products
+  // leave this off, and their images never carry a biome field.
+  if (instanceConfig.features?.galleryBiomes) {
+    for (const img of filtered) {
+      if (!img.biome) {
+        img.biome = classifyBiome(img.title, img.source, img.url)
+      }
     }
   }
 
