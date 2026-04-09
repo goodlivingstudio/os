@@ -173,17 +173,18 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
     // Are.na — curated visual intelligence (parks, wildlife, adventure)
     { url: "https://api.are.na/v2/channels/explore-t7o5uh83n2s/contents?per=200", name: "Are.na", type: "arena" },
     // Outdoor editorial — adventure photography, expedition stories
-    { url: "https://www.outsideonline.com/feed/all/",                              name: "Outside",              type: "rss" },
     { url: "https://adventure-journal.com/feed/",                                  name: "Adventure Journal",    type: "rss" },
     { url: "https://www.backpacker.com/feed/",                                     name: "Backpacker",           type: "rss" },
     { url: "https://gearjunkie.com/feed",                                          name: "GearJunkie",           type: "rss" },
+    { url: "https://modernhiker.com/feed/",                                        name: "Modern Hiker",         type: "rss" },
     // Landscape & nature photography
     { url: "https://www.thisiscolossal.com/category/photography/feed/",            name: "Colossal Photography", type: "rss" },
     { url: "https://www.featureshoot.com/feed/",                                   name: "Feature Shoot",        type: "rss" },
-    // Conservation & public lands visual culture
-    { url: "https://www.nationalparkstraveler.org/feed",                           name: "NP Traveler",          type: "rss" },
-    { url: "https://www.hcn.org/rss.xml",                                         name: "High Country News",    type: "rss" },
-    { url: "https://orionmagazine.org/feed/",                                      name: "Orion",                type: "rss" },
+    { url: "https://petapixel.com/feed/",                                          name: "PetaPixel",            type: "rss" },
+    { url: "https://www.outdoorphotographer.com/feed/",                            name: "Outdoor Photographer", type: "rss" },
+    { url: "https://www.michaelfrye.com/feed/",                                    name: "Michael Frye",         type: "rss" },
+    { url: "https://visualwilderness.com/feed",                                    name: "Visual Wilderness",    type: "rss" },
+    { url: "https://blog.flickr.net/feed/",                                        name: "Flickr Blog",          type: "rss" },
   ],
 
   // ─── Ticker — rewritten for Platform/Policy/Culture/Industry/Craft ────────
@@ -363,10 +364,26 @@ AMERICAN LANDSCAPES ONLY. No exceptions.`,
       { url: "https://www.thisiscolossal.com/category/photography/", name: "Colossal Photography", category: "photography" },
       { url: "https://www.featureshoot.com/category/landscape/", name: "Feature Shoot Landscape", category: "photography" },
 
+      // ── Photographer Portfolios — American landscape masters ──────────
+      { url: "https://chrisburkard.com/", name: "Chris Burkard", category: "photography" },
+      { url: "https://www.jimmychin.com/", name: "Jimmy Chin", category: "photography" },
+      { url: "https://www.michaelfrye.com/", name: "Michael Frye", category: "photography" },
+      { url: "https://www.maxfoster.com/", name: "Max Foster", category: "photography" },
+      { url: "https://www.seanbbagshaw.com/", name: "Sean Bagshaw", category: "photography" },
+      { url: "https://www.anseladams.com/gallery/", name: "Ansel Adams Gallery", category: "archive" },
+      { url: "https://artofvisuals.com/", name: "Art of Visuals", category: "photography" },
+      { url: "https://modernhiker.com/", name: "Modern Hiker", category: "editorial" },
+      { url: "https://petapixel.com/category/landscape/", name: "PetaPixel Landscape", category: "photography" },
+
+      // ── Outdoor Adventure Brands (editorial imagery) ──────────────────
+      { url: "https://www.patagonia.com/stories/", name: "Patagonia Stories", category: "editorial" },
+
       // ── Pexels — different pool from Unsplash ─────────────────────────
       { url: "https://www.pexels.com/search/national%20park/", name: "Pexels National Parks", category: "photography" },
       { url: "https://www.pexels.com/search/american%20wilderness/", name: "Pexels Wilderness", category: "photography" },
       { url: "https://www.pexels.com/search/wildlife%20america/", name: "Pexels Wildlife", category: "photography" },
+      { url: "https://www.pexels.com/search/camping%20outdoors/", name: "Pexels Camping", category: "photography" },
+      { url: "https://www.pexels.com/search/hiking%20mountain%20trail/", name: "Pexels Hiking", category: "photography" },
     ],
   },
 

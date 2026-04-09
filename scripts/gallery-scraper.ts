@@ -48,7 +48,7 @@ const { arenaChannelSlug, targets: TARGETS, tastePrompt } = scraperConfig
 // ─── Settings ──────────────────────────────────────────────────────────────
 
 const ARENA_API = "https://api.are.na/v2"
-const MAX_IMAGES_PER_SITE = 8
+const MAX_IMAGES_PER_SITE = 20
 const SCROLL_PAUSE = 1500
 const MAX_SCROLLS = 5
 
