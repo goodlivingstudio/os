@@ -18,7 +18,7 @@ Established: 2026-04-07
 *Target: operational before the EEOB onsite debrief. Core intelligence pipeline running.*
 
 ### Priority 1 — Prompt Architecture → Code
-**What:** Transcribe EXPLORE-PROMPTS.md into `lib/prompts.ts`. All six named exports (ENGAGEMENT, NDS_CONTEXT, FIVE_LAYERS, SOURCE_MODES, VOICE, EXPLORE_PREAMBLE). All six surface prompt strings. Assembly pattern as documented.
+**What:** Transcribe PROMPTS.md into `lib/prompts.ts`. All six named exports (ENGAGEMENT, NDS_CONTEXT, FIVE_LAYERS, SOURCE_MODES, VOICE, EXPLORE_PREAMBLE). All six surface prompt strings. Assembly pattern as documented.
 
 **Why first:** Nothing runs without this. Every other build item depends on the prompts being in code.
 
@@ -149,13 +149,13 @@ Established: 2026-04-07
 ## ARCHIVE — COMPLETED (April 7, 2026)
 
 ### Doctrine Layer (complete)
-- EXPLORE-MANDATE.md — engagement context, three intelligence modes, five annotation layers, field desk model
-- EXPLORE-SOURCES.md — consolidated source inventory v2, 75+ sources, three modes, gallery sources
-- EXPLORE-LIVE-ENVIRONMENT.md — political context, NDS credibility problem, Burgum-Gebbia tension, equity imperative, July 4 deadline analysis
-- EXPLORE-CEREBRO-CHARTER.md — field correspondent model, behavioral directives, analytical protocols, what the function will not do
-- EXPLORE-WATCHFILE.md — six active watch items with severity ratings, log format, escalation protocol
-- EXPLORE-PROMPTS.md — full prompt architecture, six context blocks, six surface prompts, TypeScript assembly pattern
-- EXPLORE-DOC-AUTHORITY.md — canonical ownership map, conflict resolution rules, known drift
+- MANDATE.md — engagement context, three intelligence modes, five annotation layers, field desk model
+- SOURCES.md — consolidated source inventory v2, 75+ sources, three modes, gallery sources
+- LIVE-ENVIRONMENT.md — political context, NDS credibility problem, Burgum-Gebbia tension, equity imperative, July 4 deadline analysis
+- CEREBRO-CHARTER.md — field correspondent model, behavioral directives, analytical protocols, what the function will not do
+- WATCHFILE.md — six active watch items with severity ratings, log format, escalation protocol
+- PROMPTS.md — full prompt architecture, six context blocks, six surface prompts, TypeScript assembly pattern
+- DOC-AUTHORITY.md — canonical ownership map, conflict resolution rules, known drift
 
 ### Research Layer (complete)
 - NDS institutional research pass — Gebbia background, NDS founding, prior work criticism, team size and composition

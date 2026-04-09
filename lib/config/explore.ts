@@ -16,7 +16,7 @@ const config: InstanceConfig = {
     favicon: { light: "/favicon-light.png", dark: "/favicon-dark.png", apple: "/apple-touch-icon.png" },
   },
 
-  // ─── Mandate — from EXPLORE-PROMPTS.md context blocks ─────────────────────
+  // ─── Mandate — from PROMPTS.md context blocks ─────────────────────
 
   mandate: {
     operator: `You are operating in service of a design and strategy team: the National Design Studio's explore.gov engagement, working under Code and Theory creative direction.
@@ -95,7 +95,7 @@ POSITIONING sources: where the platform stands in the landscape of analogous ser
 When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. Weight FORMATION sources for synthesis value and depth. Weight POSITIONING sources for competitive and institutional awareness.`,
   },
 
-  // ─── Intelligence layers — from EXPLORE-PROMPTS.md FIVE_LAYERS block ──────
+  // ─── Intelligence layers — from PROMPTS.md FIVE_LAYERS block ──────
 
   layers: [
     { id: "platform", label: "Platform", description: "Digital product, UX, service design, and civic platform signals. What's happening in the broader platform landscape that informs how explore.gov should be designed, differentiated, or evolved. High scores: civic digital transformation, federal design standards, analogous platform launches (AllTrails, Hipcamp, state parks systems), discovery architecture, reservation system design, accessibility compliance, mobile performance." },
@@ -113,7 +113,7 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
     craft:    "var(--accent-muted)",
   },
 
-  // ─── Feeds — from EXPLORE-SOURCES-MEGALIST.md ─────────────────────────────
+  // ─── Feeds — from SOURCES-MEGALIST.md ─────────────────────────────
 
   feeds: [
     // ── SIGNAL: Federal Government ──────────────────────────────────────────
@@ -152,7 +152,7 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
     { url: "https://www.propublica.org/feeds/propublica/main",                       source: "ProPublica",            category: "Investigative",           tag: "policy",   layer: "policy" },
   ],
 
-  // ─── Podcasts — curated active set from EXPLORE-SOURCES.md ────────────────
+  // ─── Podcasts — curated active set from SOURCES.md ────────────────
 
   podcasts: [
     // Signal

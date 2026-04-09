@@ -1,7 +1,7 @@
 # EXPLORE — Source Mega List
 Established: 2026-04-07
 
-*Ready to plug in. Organized by type: News/RSS, Podcasts, Visual/Gallery. URLs included where confirmed. This list extends and complements EXPLORE-SOURCES.md — cross-reference before adding to avoid duplication.*
+*Ready to plug in. Organized by type: News/RSS, Podcasts, Visual/Gallery. URLs included where confirmed. This list extends and complements SOURCES.md — cross-reference before adding to avoid duplication.*
 
 ---
 
@@ -191,4 +191,4 @@ Established: 2026-04-07
 
 ---
 
-*Cross-reference with EXPLORE-SOURCES.md before adding any of these to the active feed. These are discovery-layer sources — some belong in Signal, some in Formation, some are gallery-only. Assign mode before activating.*
+*Cross-reference with SOURCES.md before adding any of these to the active feed. These are discovery-layer sources — some belong in Signal, some in Formation, some are gallery-only. Assign mode before activating.*
