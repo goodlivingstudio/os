@@ -1,49 +1,214 @@
 # OS — Shared Architecture
-Established: 2026-04-09 (stub)
+Established: 2026-04-09
 
-*This document is canonical for OS's shared codebase — the infrastructure that every product instance inherits when it runs. It describes what lives in the shared layer (one codebase, many instances) vs what lives in each product's instance config. It is the structural counterpart to each product's own ARCHITECTURE.md, which describes the product-specific decisions sitting on top of this shared foundation.*
+*This document is canonical for OS's shared codebase — the infrastructure every product instance inherits when it runs. It describes what lives in the shared layer (one codebase, many instances) versus what lives in each product's instance config. It is the structural counterpart to each product's own `ARCHITECTURE.md`, which describes the product-specific decisions sitting on top of this shared foundation.*
 
-*See `DOC-AUTHORITY.md` for the inheritance model. See `PIPELINE.md` for the shared intelligence pipeline pattern every product implements. See each product's ARCHITECTURE.md (`../dispatch/ARCHITECTURE.md`, `../explore/ARCHITECTURE.md`) for the product-specific architectural decisions.*
-
----
-
-## STATUS
-
-**Stub.** Content to be written. This file exists so OS's doc set includes a canonical description of the shared codebase — currently a real gap. Each product has its own ARCHITECTURE.md, but the shared infrastructure underneath has no canonical home. This file closes that gap.
+*See `DOC-AUTHORITY.md` for the inheritance model. See `PIPELINE.md` for the intelligence pipeline pattern the infrastructure implements. See `../dispatch/ARCHITECTURE.md` and `../explore/ARCHITECTURE.md` for product-specific architectural decisions on top of this shared foundation.*
 
 ---
 
-## WHAT THIS DOCUMENT WILL OWN
+## THE PATTERN
 
-When written, ARCHITECTURE.md will describe:
+OS is a single Next.js codebase that runs as multiple **instances** via a white-label configuration system. One repository, one `node_modules`, one deployment pipeline — multiple products. Each instance is defined by a single file in `lib/config/` and selected at runtime via the `NEXT_PUBLIC_INSTANCE` environment variable.
 
-- **The shared stack.** Next.js 16 (App Router), React 19, TypeScript, Anthropic Claude via `@anthropic-ai/sdk`, Tailwind CSS v4, Vercel KV for persistence, Vercel deployment. Why these choices and what they enable.
-- **The white-label pattern.** How `lib/config/` works. The `InstanceConfig` schema in `lib/config/types.ts`. The `NEXT_PUBLIC_INSTANCE` environment variable. How `lib/config/index.ts` selects the active config and exposes it to the rest of the codebase. The boot sequence when a new instance starts.
-- **The shared API routes.** What lives in `app/api/` and is shared across all instances: chat (Cerebro), news (RSS aggregation), annotate (relevance scoring), brief (synthesis), health (diagnostics). How each route reads instance-specific config and behaves differently per product.
-- **Shared components and lib.** The shared `components/` (ticker, analytics-panel, etc.) and shared `lib/` (memory, skin system, annotation engine, prompt assembly). What's truly shared vs what should eventually be pulled into instance-specific code.
-- **The instance boot sequence.** What happens when `NEXT_PUBLIC_INSTANCE=explore npm run dev` runs. How the config loads, how the branding applies, how the source list gets injected, how the prompt blocks get assembled.
-- **How a new product instance is added.** The concrete steps: create `lib/config/<product>.ts`, add to `lib/config/index.ts`, create `docs/<product>/` with the canonical doc set shape, create a Vercel project and domain, set environment variables. This is the spin-up checklist as a canonical reference.
-- **Deployment topology.** How Vercel hosts multiple instances from one repo. How domains map (`dispatch.goodliving.studio`, `explore.goodliving.studio`, etc.). How environment variables scope per deployment.
-- **The historical naming artifact.** The on-disk folder and GitHub repo are named `dispatch/` for historical reasons — this section explains the situation, the rename-to-`os` operation that's pending, and why it hasn't been done yet.
+The architectural commitment: **the shared codebase owns everything except identity, mandate, sources, and branding.** Every product inherits the full intelligence pipeline, the analytical function, the UI components, the theming engine, the API routes, and the persistence layer from the shared code. Every product owns what makes it specifically itself — its mandate prompt, its source list, its branding, its skins, its tagline — through its instance config.
+
+This is the architecture that lets four sibling products (Dispatch, Explore, Atlas, Lilly) exist as peers without fragmenting the codebase. When a new capability ships, every product inherits it. When a product needs something specific, the config extends. When the shared layer can't accommodate a product's real need, the need either gets promoted into the shared layer or the product forks that specific concern — but the shared layer stays the default.
 
 ---
 
-## WHY THIS DOCUMENT EXISTS
+## THE STACK
 
-Right now the shared codebase is undocumented. New sessions learning the OS have to reconstruct the white-label pattern from reading `lib/config/` source, which works but is expensive and error-prone. Product-level ARCHITECTURE docs describe individual products, not the shared foundation — which means the thing that actually runs all four products has no canonical description.
+Version numbers are current as of 2026-04-09; update this section when the stack is upgraded materially.
 
-This document closes that gap. It's the doc a new contributor would read first to understand how the OS is built. It's also the doc that governs shared-infra decisions — when should a pattern be promoted from one product into the shared layer? When should a shared pattern be forked for product-specific needs? This file owns those decisions.
+| Layer | Choice | Notes |
+|---|---|---|
+| **Framework** | Next.js 16 (App Router) | Turbopack dev server. ISR for cached API routes. Catch-all routing via `app/[[...view]]/`. |
+| **UI** | React 19 + TypeScript 5 | Server components by default, client components where interaction lives. |
+| **Styling** | Tailwind CSS v4 | Multi-skin theme system driven by instance config. |
+| **AI** | Anthropic Claude via `@anthropic-ai/sdk` ^0.80 | Sonnet for reasoning surfaces (Cerebro, synthesis, briefs). Haiku for annotation. No OpenAI. |
+| **Persistence** | Vercel KV via `@vercel/kv` ^3.0 | Conversation memory (30-day TTL), article cache, annotation cache. All keys prefixed by instance ID. |
+| **Web search** | Exa (Cerebro only) | Up to 5 results per query, up to 5 iterations per response. |
+| **Images** | Sharp, ColorThief | Gallery image processing, color palette extraction. |
+| **Scraping** | Playwright | Gallery source scraping. |
+| **Hosting** | Vercel | One Vercel project per instance (Dispatch → `dispatch.goodliving.studio`, Explore → `explore.goodliving.studio`, etc.). |
+| **Source** | GitHub, single repo historically named `dispatch` | Rename to `os` pending a dedicated operation. See § HISTORICAL NAMING ARTIFACT. |
+
+Next.js 16 has breaking changes from prior versions. Agents working in this codebase must read the relevant guide in `node_modules/next/dist/docs/` before writing code — the project's AGENTS.md enforces this rule.
 
 ---
 
-## QUESTIONS TO ANSWER BEFORE WRITING
+## THE WHITE-LABEL PATTERN
 
-1. What's the authoritative boot sequence when a new instance spins up? (The instance spinup checklist memory has 12 steps — can those become canonical here?)
-2. What's currently in the shared layer that should actually be product-specific, and vice versa?
-3. How should the document handle forks? When Explore diverges from a shared route, should the divergence be documented here, in Explore's ARCHITECTURE, or both?
-4. Should this file include the Vercel / CNAME / GitHub topology, or should that be its own doc?
-5. When the rename-to-`os` operation happens, this file becomes the authoritative migration plan. Should we start drafting that plan here now, or wait until the operation is scheduled?
+### `lib/config/` — the contract
+
+Every instance provides a single TypeScript file conforming to the `InstanceConfig` interface in `lib/config/types.ts`. The interface is the contract between the shared mother codebase and its child instances:
+
+- **Identity** — `id`, `branding` (name, tagline, domain, dev port, favicons)
+- **Mandate** — `operator`, `clientContext`, `voice`, `sourceModes` (the AI preamble blocks this product wants assembled into every prompt)
+- **Taxonomy** — `layers` (the intelligence layers this product scores against), `layerColors`
+- **Content** — `feeds` (RSS), `podcasts`, `gallerySources`
+- **Ticker** — `headlines`, `categoryStyleDay`, `categoryStyleNight`
+- **Theme** — `skins`, `defaultSkin`
+- **Cerebro** — `provocations` (rotating prompt suggestions), `cerebroWelcome`
+- **Gallery scraper** — `galleryScraper`, optional `ugcScraper` (arena slug, scrape targets, taste prompt)
+
+The comment at the top of `types.ts` describes the division of labor precisely: *"The mother (shared infrastructure) reads from this contract. Children own: identity, mandate, content sources, branding. Mother owns: components, layout, views, AI pipeline, theme engine, caching."* That comment is canonical — this document echoes it.
+
+### `lib/config/index.ts` — the loader
+
+The instance loader reads `process.env.NEXT_PUBLIC_INSTANCE` at module load time and returns the matching config object. Dispatch is the default when no instance is specified.
+
+```typescript
+const CONFIGS: Record<string, InstanceConfig> = {
+  dispatch: dispatchConfig,
+  explore: exploreConfig,
+  // lilly: lillyConfig,  // TODO: add when ready
+}
+
+const instanceId = process.env.NEXT_PUBLIC_INSTANCE || "dispatch"
+const config: InstanceConfig = CONFIGS[instanceId] || dispatchConfig
+
+export default config
+```
+
+The loader also exposes helpers that the rest of the codebase uses to build prompts from config:
+
+- **`storageKey(key)`** / **`kvKey(key)`** — prefix all localStorage and KV cache keys with the instance ID. This is how multiple instances coexist on the shared Vercel KV without namespace collisions. Dispatch's cache keys start with `dispatch:`, Explore's with `explore:`, and so on.
+- **`layerLabelsSlash(cfg)`** / **`layerIdsPipe(cfg)`** — format the instance's intelligence layers for prompt insertion (e.g., `Opportunity / Position / Discipline / Landscape / Culture`).
+- **`scoreJsonExample(cfg)`** / **`scoreJsonRange(cfg)`** — generate JSON skeletons for the annotation prompt so Claude knows what shape to return.
+- **`buildPreamble(cfg)`** — assemble the full AI system preamble from `mandate.operator`, `mandate.clientContext`, the layer block, `mandate.sourceModes`, and `mandate.voice`. This is the function every AI surface reaches for when it needs the product's voice and context injected.
+- **`getLayerConfig(cfg)`** / **`getLayerIds(cfg)`** — format layer lists for UI filters.
+
+### `lib/prompts.ts` — the thin derivation layer
+
+This file used to hold hard-coded prompt blocks. It now reads from the active config and exports config-derived constants for backward compatibility:
+
+```typescript
+export const OPERATOR = config.mandate.operator
+export const FIVE_LAYERS = (...) // built from config.layers
+export const DISPATCH_PREAMBLE = buildPreamble(config)
+```
+
+The constant is still named `DISPATCH_PREAMBLE` for historical reasons (it predates the white-label refactor) but it contains whichever instance's preamble was loaded at module init. When Lilly's config is added, `DISPATCH_PREAMBLE` running under `NEXT_PUBLIC_INSTANCE=lilly-direct` returns Lilly's preamble, not Dispatch's. The name is a lagging historical artifact; consider renaming it if the opportunity arises, but it's low priority because nothing breaks.
+
+### `lib/feeds.ts`, `lib/podcasts.ts`, `lib/gallery.ts`
+
+These files do the same thing: `import config from "@/lib/config"` and re-export `config.feeds`, `config.podcasts`, etc., as named exports. They exist as adapters so the rest of the codebase can keep using imports like `FEEDS` from `lib/feeds` without knowing about the config system. When a new source shows up in `lib/config/<product>.ts`, every consumer picks it up automatically.
 
 ---
 
-*Update this document when: a new pattern is promoted into the shared layer; a shared pattern is forked for product-specific needs; a new product instance is added; the deployment topology changes; the stack is upgraded materially; the rename-to-`os` operation is planned or executed.*
+## THE INSTANCE BOOT SEQUENCE
+
+When a dev server starts or a Vercel build runs, this is what happens:
+
+1. **Environment read.** `process.env.NEXT_PUBLIC_INSTANCE` is evaluated. If set (e.g., `NEXT_PUBLIC_INSTANCE=explore`), that instance is selected. Otherwise Dispatch is the default.
+2. **Config load.** `lib/config/index.ts` imports the matching config file from the `CONFIGS` map and returns it as the default export. Any instance not in the map falls back to Dispatch.
+3. **Config propagation.** Every module that imports from `lib/config` (directly or through adapters like `lib/feeds.ts` and `lib/prompts.ts`) receives the active instance's values. No runtime switching — the config is frozen at module init.
+4. **Prompt assembly.** `buildPreamble(cfg)` assembles the full AI preamble from the instance's `mandate` block. Every Claude API call that includes the preamble inherits the product's voice and context.
+5. **Cache namespacing.** `storageKey()` and `kvKey()` prefix every cache key with the instance ID. Dispatch and Explore running simultaneously on different Vercel deployments don't collide because their KV entries are in separate namespaces.
+6. **UI render.** Server components read the active config for branding, skin defaults, layer taxonomy, and navigation. Client components read the same config (it's statically embedded at build time via `NEXT_PUBLIC_*` env vars).
+7. **Surface routing.** `app/[[...view]]/page.tsx` is a catch-all that handles all view routing client-side. The shared API routes (`app/api/*`) serve every instance and read config for any instance-specific behavior.
+
+---
+
+## THE SHARED SURFACE INVENTORY
+
+As of 2026-04-09, these are the shared API routes in `app/api/`:
+
+- **`/api/chat`** — Cerebro agent. Agentic loop, web search via Exa, three-direction follow-ups, KV-backed conversation memory.
+- **`/api/news`** — RSS aggregation. Pulls from `config.feeds`, deduplicates, caches, returns annotated articles.
+- **`/api/annotate`** — Per-article relevance scoring. Reads `config.layers`, sends each article to Claude Haiku with the scoring prompt, returns the five-layer JSON plus urgency.
+- **`/api/brief`** — Daily intelligence brief synthesis. Reads the annotated feed and produces three urgency-sorted signal cards (the DCOS surface in Dispatch).
+- **`/api/synthesis`** — Pattern layer. Operates on the full 7-day Redis article history to surface week-over-week patterns rather than single-day summaries.
+- **`/api/audio-brief`** — Audio rendering of the brief output.
+- **`/api/dispatch`** — Weekly content brief generation (Dispatch's "Act" surface in the pipeline).
+- **`/api/dispatch-purge`** — Cache clearing for dispatch-specific surfaces.
+- **`/api/gallery`** — Gallery image fetch and curation.
+- **`/api/history`** — Historical article access (7-day window).
+- **`/api/memory`** — Direct KV session persistence access.
+- **`/api/podcasts`** — Podcast feed aggregation from `config.podcasts`.
+- **`/api/health`** — Deployment diagnostics.
+- **`/api/synthesis-purge`** — Synthesis cache clearing.
+- **`/api/cache-status`** — Cache introspection for debugging.
+- **`/api/figma-push`** — Figma integration (design token sync).
+- **`/api/purge-images`** — Gallery image cleanup.
+- **`/api/usage`** — API usage tracking and reporting.
+
+Every route reads `config` at request time and adapts its behavior to the active instance. Adding a new product instance does not require touching any of these routes.
+
+Shared library files in `lib/`:
+
+- **`lib/config/`** — the white-label contract (this document's main subject)
+- **`lib/prompts.ts`** — config-derived prompt exports
+- **`lib/feeds.ts`** / **`lib/podcasts.ts`** / **`lib/gallery.ts`** — config adapters for content sources
+- **`lib/memory.ts`** — Vercel KV conversation persistence (30-day TTL, `MAX_STORED = 30` messages per session)
+- **`lib/article-store.ts`** — 7-day Redis article history for synthesis
+- **`lib/styles.ts`** — skin system and theme engine
+- **`lib/color-utils.ts`** — color palette extraction (gallery + skin support)
+- **`lib/gallery-fetch.ts`** — gallery scraping runtime
+- **`lib/image-gen.ts`** / **`lib/image-utils.ts`** — image generation and processing
+- **`lib/usage-tracker.ts`** — API usage accounting
+- **`lib/use-scroll-guard.ts`** — scroll state hook used in Passage-pattern scroll restoration
+
+Shared UI in `app/` and `components/` — not enumerated here because the component surface evolves frequently and this document would drift. The rule is: anything that reads from `config` is shared; anything hard-coded to a specific product is a fork and should be flagged.
+
+---
+
+## HOW A NEW PRODUCT INSTANCE IS ADDED
+
+This is the canonical checklist. Use it when spinning up Lilly Direct (2026-04-10), when Atlas comes off hold, or for any future product.
+
+1. **Create the config file.** Copy `lib/config/dispatch.ts` or `lib/config/explore.ts` as a template to `lib/config/<product-id>.ts`. Rename the exported config object. The product ID is the lowercase slug used in env vars, storage keys, and the loader map.
+2. **Register the instance in the loader.** Add the new import and CONFIGS entry to `lib/config/index.ts`. Uncomment the `// TODO: add when ready` line if it's already scaffolded.
+3. **Populate identity and branding.** Name, tagline, domain, dev port, favicons. Pick a dev port that doesn't collide (Dispatch is 3001, Explore is 3002; pick 3003+ for Lilly, Atlas).
+4. **Populate the mandate.** Write the `operator`, `clientContext`, `voice`, and `sourceModes` prompt blocks. These derive from the product's `docs/<product>/MANDATE.md` and `docs/<product>/CEREBRO-CHARTER.md`. Do not write these inline without corresponding canonical sources in the doc set.
+5. **Populate the layer taxonomy.** Each product can define its own intelligence layers. Dispatch uses Opportunity/Position/Discipline/Landscape/Culture; Explore uses a different set calibrated to civic intelligence. Lilly Direct will define its own. This is the most bespoke part of the config.
+6. **Populate feeds, podcasts, gallery sources.** These derive from `docs/<product>/SOURCES.md`. Start with a curated core set; move candidates from `docs/<product>/SOURCES-MEGALIST.md` into the active feed as they earn it.
+7. **Populate skins and theming.** Define the product's material skins and the default. Each skin is an aesthetic commitment that lives in `lib/styles.ts` downstream — new skins may require adding entries there.
+8. **Add npm scripts.** Add `dev:<product>` and `build:<product>` to `package.json` following the Explore pattern (`NEXT_PUBLIC_INSTANCE=<product> next dev -p <port>`).
+9. **Create the product doc set.** Scaffold all 14 canonical files under `docs/<product>/` per `docs/os/DOC-AUTHORITY.md` § THE CANONICAL PRODUCT DOC SET. Stubs are acceptable; missing files are not.
+10. **Create the Vercel project.** New Vercel project, connected to the same GitHub repo, with `NEXT_PUBLIC_INSTANCE=<product>` set in the project's environment variables. Assign a CNAME (`<product>.goodliving.studio` or a client-specific domain).
+11. **Set the secrets.** `ANTHROPIC_API_KEY` is required. `EXA_API_KEY`, `KV_REST_API_URL`, `KV_REST_API_TOKEN` are optional but expected for full functionality.
+12. **Verify the boot.** Run `npm run dev:<product>` locally, confirm the instance renders with its own branding, confirm the feed populates, confirm KV cache keys are namespaced with the new instance ID, confirm Cerebro carries the new voice. Run `npx tsc --noEmit` to confirm types still resolve.
+13. **Deploy.** Push to main. Vercel picks up the new project and deploys. Verify the production deployment renders the new instance by visiting the assigned domain.
+14. **Document the instance.** Update `AGENTS.md` with the new product row (role, instance, dev port, status). Update `README.md` product table. Update `docs/os/DOC-AUTHORITY.md` project-level authority section.
+
+Steps 1-8 are the actual code work. Steps 9-14 are the alignment work that keeps the instance legible to future sessions and to the operator. Both are non-optional.
+
+---
+
+## DEPLOYMENT TOPOLOGY
+
+- **One GitHub repo** (historically named `dispatch`, conceptually `os`). All instances live here.
+- **One `main` branch.** Every instance deploys from `main`. Feature branches are used for product work and merged via PR or fast-forward.
+- **N Vercel projects** — one per instance. Each project's build differs only by the `NEXT_PUBLIC_INSTANCE` environment variable.
+- **N domains** — one per instance. Dispatch is live at `dispatch.goodliving.studio`. Explore will live at `explore.goodliving.studio` when production-ready. Lilly Direct's domain TBD depending on whether it's hosted under the studio domain or the client's.
+- **One Vercel KV database** — shared across instances, with instance-prefixed keys for namespace isolation.
+- **Shared secrets** — `ANTHROPIC_API_KEY`, `EXA_API_KEY`, and the KV keys are set once per Vercel project (not globally). Each instance has its own copy.
+
+---
+
+## HISTORICAL NAMING ARTIFACT
+
+The repository's on-disk folder, GitHub remote, and `package.json` `name` field are all `dispatch`. This is an artifact of the first product that lived here — before the white-label refactor, this repo *was* Dispatch. The white-label pattern lifted Dispatch's product-specific content into `lib/config/dispatch.ts` and left a shared codebase that was suddenly OS-shaped, but the repository name didn't get updated in the same operation.
+
+**Conceptually, the repository is OS.** The name-on-disk is historical. A rename operation is planned as a separate, dedicated session — it touches the GitHub repo, the git remote URL, the Vercel project links, the CNAME pointer at `dispatch.goodliving.studio`, local working copies and worktrees, `package.json`'s `name` field, and hardcoded paths in `AGENTS.md`, `CLAUDE.md`, `.claude/settings.local.json`, and any scripts. It's a real operation with a real blast radius, and it deserves its own session rather than being bundled with other work.
+
+Until the rename happens, treat the repo-name-as-`dispatch` as an artifact. Never rely on it as identity. The active instance is determined by `NEXT_PUBLIC_INSTANCE`, not by the folder name.
+
+---
+
+## KNOWN DRIFT AND OPPORTUNITIES
+
+A short list of things this architecture document will grow to address:
+
+- **`DISPATCH_PREAMBLE` naming.** `lib/prompts.ts` exports a constant named `DISPATCH_PREAMBLE` that actually contains whichever instance's preamble was loaded. Cosmetic, not broken. Rename opportunity.
+- **`package.json` typo.** Lines 17-18 contain two identical `"collect:explore"` script entries (duplicate key). Harmless but worth fixing in a cleanup pass.
+- **`lilly` entry in CONFIGS.** Line 17 of `lib/config/index.ts` has `// lilly: lillyConfig, // TODO: add when ready` commented out. Lilly Direct kickoff (2026-04-10) will uncomment this and add the import.
+- **Shared `components/` documentation.** This doc enumerates shared API routes and lib files but not shared components. Components evolve quickly; enumerating them here would drift. A separate shared-components reference may be worth writing if the component surface stabilizes.
+- **Migration to real monorepo.** At some scale, the single-codebase white-label pattern will hit limits and the right move will be a proper monorepo with `apps/` and `packages/`. The current scale (four products, single operator) does not justify that migration. The decision trigger is: when the second piece of non-trivial shared code gets copied between two products, it's time to extract it into a package and move to monorepo structure.
+
+---
+
+*Update this document when: the stack is upgraded materially; a new shared API route or lib file is added; a pattern is promoted from product-specific code into the shared layer; a shared pattern is forked for product-specific needs; the deployment topology changes; the rename-to-`os` operation is planned or executed; or the boot sequence changes.*
