@@ -19,7 +19,7 @@ The operator's practice — the personal brand, the intellectual infrastructure,
 An instance of the OS defined by a config file in `lib/config/` and a matching doc set in `docs/<product>/`. Every product must implement the canonical 14-file doc set shape defined in `DOC-AUTHORITY.md`.
 
 ### Dispatch
-The personal intelligence product. Serves a single operator. In production. Uses the Station Chief voice character. Historically the first product built in the codebase, which is why the repository is still named `dispatch` on disk.
+The personal intelligence product. Serves a single operator. In production. Uses the Station Chief voice character. Historically the first product built in this codebase, which is why the repository was originally named `dispatch` before being renamed to `os` to reflect the white-label foundation it became.
 
 ### Explore
 The civic/team intelligence product. Serves the National Design Studio's explore.gov engagement team. WIP — doctrine complete, code being built. Uses the Field Correspondent voice character.

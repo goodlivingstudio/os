@@ -4,7 +4,7 @@
 
 OS is the shared codebase and shared philosophy for Jeremy Grant's personal body of work across technology, culture, healthcare, and client engagement. Each product runs as a white-label instance of OS, driven by a config in `lib/config/`. Shared convictions (operator context, design doctrine, interaction philosophy) live once in `docs/os/` and are inherited by every product.
 
-> **Naming note:** This repository is historically named `dispatch` on disk because Dispatch was the first product built here. Conceptually, the repository IS OS. The rename to `os` is planned as a separate operation. See `AGENTS.md` for the full framing.
+> **Naming discipline:** OS is the repository (renamed from `dispatch` to `os` on 2026-04-09). Dispatch is the first product built inside it. Don't conflate them. See `AGENTS.md` for the framing.
 
 ## The four products
 
@@ -27,7 +27,7 @@ Personal field intelligence platform. Aggregates curated signal feeds, synthesiz
 - **AI:** Anthropic Claude (Sonnet) via `@anthropic-ai/sdk`
 - **Data:** Curated RSS sources across policy, AI, design, healthcare, market, culture (source mix varies per instance)
 - **Persistence:** Vercel KV for conversation memory
-- **Styling:** Tailwind CSS v4, multi-skin theme system per instance
+- **Styling:** Tailwind CSS v4, multi-theme system per instance
 - **Hosting:** Vercel (API + SSR), GitHub (source)
 
 ## Architecture
@@ -36,7 +36,7 @@ Personal field intelligence platform. Aggregates curated signal feeds, synthesiz
 app/
   page.tsx             Main client — feed, signals, Cerebro chat
   layout.tsx           Root layout, metadata, skip link
-  globals.css          Skin system, animations, a11y
+  globals.css          Theme system, animations, a11y
   api/
     chat/              Cerebro agent (agentic loop, web search, follow-ups)
     news/              RSS aggregation + annotation
@@ -55,7 +55,7 @@ docs/
   dispatch/            Dispatch product docs (14 canonical files)
   explore/             Explore product docs (14 canonical files)
   atlas/               Atlas placeholder README (on hold, separate repo)
-  lilly/               Lilly Direct product docs (14 canonical files, currently stubs)
+  lilly-direct/        Lilly Direct product docs (14 canonical files, currently stubs)
 ```
 
 ## Environment

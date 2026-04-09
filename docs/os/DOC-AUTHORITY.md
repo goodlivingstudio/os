@@ -24,8 +24,6 @@ docs/atlas/                       ← Atlas product (on hold)
 docs/lilly-direct/                ← Lilly Direct product
 ```
 
-*The OS and its product doc sets live inside a single repository historically named `dispatch/` on disk. Conceptually, the repository is the OS. See `ARCHITECTURE.md` § HISTORICAL NAMING ARTIFACT.*
-
 ---
 
 ## THE CANONICAL PRODUCT DOC SET

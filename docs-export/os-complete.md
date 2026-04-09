@@ -695,7 +695,7 @@ Version numbers are current as of 2026-04-09; update this section when the stack
 | **Images** | Sharp, ColorThief | Gallery image processing, color palette extraction. |
 | **Scraping** | Playwright | Gallery source scraping. |
 | **Hosting** | Vercel | One Vercel project per instance, each on its own subdomain. |
-| **Source** | GitHub, single repo | See § HISTORICAL NAMING ARTIFACT. |
+| **Source** | GitHub | Single repo at `goodlivingstudio/os`. Each product instance is its own Vercel project pulling from this repo. |
 
 Next.js 16 has breaking changes from prior versions. Agents working in this codebase must read the relevant guide in `node_modules/next/dist/docs/` before writing code — the project's AGENTS.md enforces this rule.
 
@@ -893,12 +893,6 @@ Steps 1–9 are the code work. Steps 10–15 are the alignment work. Both are no
 
 ---
 
-## HISTORICAL NAMING ARTIFACT
-
-The repository's on-disk name, GitHub remote, and `package.json` name field are historically `dispatch` — an artifact of the first product that lived here before the white-label refactor. Conceptually, the repository is OS. A rename operation is planned as a dedicated session; it touches the GitHub remote, Vercel project links, CNAME pointers, local working copies, and hardcoded paths in project configuration files. Until the rename happens, treat the repo name as an artifact. The active instance is determined by `NEXT_PUBLIC_INSTANCE`, not by the folder name.
-
----
-
 ## KNOWN DRIFT AND OPPORTUNITIES
 
 - **Design system documentation.** The shared UI components, tokens, and patterns lack a single living reference outside the code itself. A dedicated design system document or tooling (Figma source of truth, Storybook, or equivalent) would reduce the time spent troubleshooting UI in Claude Code and establish the visual governance this architecture needs. This is a separate workstream — see the Design R&D session for direction.
@@ -947,7 +941,7 @@ The operator's practice — the personal brand, the intellectual infrastructure,
 An instance of the OS defined by a config file in `lib/config/` and a matching doc set in `docs/<product>/`. Every product must implement the canonical 14-file doc set shape defined in `DOC-AUTHORITY.md`.
 
 ### Dispatch
-The personal intelligence product. Serves a single operator. In production. Uses the Station Chief voice character. Historically the first product built in the codebase, which is why the repository is still named `dispatch` on disk.
+The personal intelligence product. Serves a single operator. In production. Uses the Station Chief voice character. Historically the first product built in this codebase, which is why the repository was originally named `dispatch` before being renamed to `os` to reflect the white-label foundation it became.
 
 ### Explore
 The civic/team intelligence product. Serves the National Design Studio's explore.gov engagement team. WIP — doctrine complete, code being built. Uses the Field Correspondent voice character.
@@ -1210,8 +1204,6 @@ docs/explore/                     ← Explore product (WIP)
 docs/atlas/                       ← Atlas product (on hold)
 docs/lilly-direct/                ← Lilly Direct product
 ```
-
-*The OS and its product doc sets live inside a single repository historically named `dispatch/` on disk. Conceptually, the repository is the OS. See `ARCHITECTURE.md` § HISTORICAL NAMING ARTIFACT.*
 
 ---
 

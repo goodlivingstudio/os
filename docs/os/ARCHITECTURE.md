@@ -79,7 +79,7 @@ Version numbers are current as of 2026-04-09; update this section when the stack
 | **Images** | Sharp, ColorThief | Gallery image processing, color palette extraction. |
 | **Scraping** | Playwright | Gallery source scraping. |
 | **Hosting** | Vercel | One Vercel project per instance, each on its own subdomain. |
-| **Source** | GitHub, single repo | See § HISTORICAL NAMING ARTIFACT. |
+| **Source** | GitHub | Single repo at `goodlivingstudio/os`. Each product instance is its own Vercel project pulling from this repo. |
 
 Next.js 16 has breaking changes from prior versions. Agents working in this codebase must read the relevant guide in `node_modules/next/dist/docs/` before writing code — the project's AGENTS.md enforces this rule.
 
@@ -274,12 +274,6 @@ Steps 1–9 are the code work. Steps 10–15 are the alignment work. Both are no
 - **N domains** — one per instance, each on a subdomain of `goodliving.studio` or a product-specific domain.
 - **One Vercel KV database** — shared across instances, with instance-prefixed keys for namespace isolation.
 - **Per-project secrets** — API keys are set per Vercel project, not globally.
-
----
-
-## HISTORICAL NAMING ARTIFACT
-
-The repository's on-disk name, GitHub remote, and `package.json` name field are historically `dispatch` — an artifact of the first product that lived here before the white-label refactor. Conceptually, the repository is OS. A rename operation is planned as a dedicated session; it touches the GitHub remote, Vercel project links, CNAME pointers, local working copies, and hardcoded paths in project configuration files. Until the rename happens, treat the repo name as an artifact. The active instance is determined by `NEXT_PUBLIC_INSTANCE`, not by the folder name.
 
 ---
 

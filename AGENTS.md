@@ -2,11 +2,11 @@
 
 This repository is **OS** — the ambient intelligence layer that holds shared philosophy, operator context, and authority for four sibling products: **Dispatch**, **Explore**, **Atlas**, and **Lilly**. OS is not a command center. It is the atmosphere that's already present before any of the four products start thinking.
 
-## Naming note — READ FIRST
+## Naming discipline — READ FIRST
 
-The repository's on-disk folder, GitHub remote, and package.json `name` are historically **`dispatch`** because Dispatch was the first product built here. Conceptually this folder IS OS. A future dedicated operation will rename the folder and remote to `os`; until then, treat the on-disk name as an artifact of history, not as identity.
+The repository is **OS** — that is its name on GitHub (`goodlivingstudio/os`) and in `package.json`. It was originally named `dispatch` because Dispatch was the first product built here, and was renamed to `os` on 2026-04-09 to reflect the white-label foundation it became. The on-disk folder at `~/claude-projects/dispatch/` may still carry the old name; that is purely cosmetic and does not change the repository's identity.
 
-**When speaking about the container, call it OS. When speaking about the personal intelligence product, call it Dispatch.** Do not conflate them. Do not call the container "the dispatch repo" or "the Mother repo" — both are wrong.
+**When speaking about the container, call it OS. When speaking about the personal intelligence product, call it Dispatch.** Do not conflate them. Do not call the container "the dispatch repo" — that name is gone. Do not call it "the Mother repo." It is OS.
 
 ## The four products
 
