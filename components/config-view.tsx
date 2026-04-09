@@ -74,6 +74,7 @@ function generateInventoryMarkdown(excludedSources: Set<string>): string {
 
 const sectionLabel: React.CSSProperties = {
   ...labelStyle, letterSpacing: "0.04em", marginBottom: 10,
+  color: "var(--text-secondary)",
 }
 const rowStyle: React.CSSProperties = {
   display: "flex", alignItems: "center", gap: 10,
@@ -401,7 +402,7 @@ function SourceGrid({ sources, type, excludedSources, onToggleSource, sourceCoun
         const getName = (f: { source?: string; show?: string }) => type === "show" ? f.show || "" : f.source || ""
         return (
           <div key={layer} style={{ marginBottom: 16 }}>
-            <div style={{ ...TYPE.sm, fontWeight: 500, color: LAYER_DOT[layer], textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, paddingLeft: 4 }}>
+            <div style={{ ...TYPE.sm, fontWeight: 500, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, paddingLeft: 4 }}>
               {LAYER_LABELS[layer]}
               <span style={{ color: "var(--text-tertiary)", marginLeft: 6 }}>
                 ({items.filter(f => !excludedSources.has(getName(f))).length})
@@ -411,23 +412,37 @@ function SourceGrid({ sources, type, excludedSources, onToggleSource, sourceCoun
               {items.map(feed => {
                 const name = getName(feed)
                 const active = !excludedSources.has(name)
+                const count = sourceCounts[name] || 0
                 return (
                   <div
                     key={feed.url}
-                    onClick={() => onToggleSource(name)}
                     style={{ ...rowStyle, opacity: active ? 1 : 0.5, padding: "8px 10px" }}
                     onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
                     <Toggle active={active} onToggle={() => onToggleSource(name)} />
-                    <span style={{ ...TYPE.body, color: active ? "var(--text-primary)" : "var(--text-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
+                    <a
+                      href={feed.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()}
+                      style={{
+                        ...TYPE.body, color: active ? "var(--text-primary)" : "var(--text-tertiary)",
+                        overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1,
+                        textDecoration: "none",
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.textDecoration = "underline" }}
+                      onMouseLeave={e => { e.currentTarget.style.textDecoration = "none" }}
+                    >
                       {name}
+                    </a>
+                    <span style={{
+                      ...TYPE.xs, fontVariantNumeric: "tabular-nums", flexShrink: 0,
+                      color: count > 0 ? "var(--text-tertiary)" : "var(--text-tertiary)",
+                      opacity: count > 0 ? 0.6 : 0.3,
+                    }}>
+                      {count > 0 ? count : "—"}
                     </span>
-                    {active && (
-                      <span style={{ ...TYPE.xs, color: (sourceCounts[name] || 0) > 0 ? "var(--text-tertiary)" : "var(--text-tertiary)", opacity: (sourceCounts[name] || 0) > 0 ? 0.6 : 0.3, fontVariantNumeric: "tabular-nums", flexShrink: 0 }}>
-                        {(sourceCounts[name] || 0) > 0 ? sourceCounts[name] : "—"}
-                      </span>
-                    )}
                   </div>
                 )
               })}
@@ -541,15 +556,26 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [] }: C
                   return (
                     <div
                       key={src.url}
-                      onClick={() => onToggleSource(src.name)}
                       style={{ ...rowStyle, opacity: active ? 1 : 0.5, padding: "8px 10px" }}
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                     >
                       <Toggle active={active} onToggle={() => onToggleSource(src.name)} />
-                      <span style={{ ...TYPE.body, color: active ? "var(--text-primary)" : "var(--text-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <a
+                        href={src.url.includes("are.na") ? "https://www.are.na/" : src.url.replace(/\/feed\/?$|\/rss\/?$|\/feed\/.*$/, "/")}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        style={{
+                          ...TYPE.body, color: active ? "var(--text-primary)" : "var(--text-tertiary)",
+                          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1,
+                          textDecoration: "none",
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.textDecoration = "underline" }}
+                        onMouseLeave={e => { e.currentTarget.style.textDecoration = "none" }}
+                      >
                         {src.name}
-                      </span>
+                      </a>
                       <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginLeft: "auto", textTransform: "uppercase", letterSpacing: "0.04em" }}>
                         {src.type}
                       </span>
@@ -574,7 +600,7 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [] }: C
                   const categories = [...new Set(instanceConfig.galleryScraper!.targets.map(t => t.category))]
                   return categories.map(cat => (
                     <div key={cat} style={{ marginBottom: 12 }}>
-                      <div style={{ ...TYPE.sm, fontWeight: 500, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, paddingLeft: 4 }}>
+                      <div style={{ ...TYPE.sm, fontWeight: 500, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, paddingLeft: 4 }}>
                         {cat}
                         <span style={{ color: "var(--text-tertiary)", marginLeft: 6 }}>
                           ({instanceConfig.galleryScraper!.targets.filter(t => t.category === cat).length})
@@ -582,25 +608,32 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [] }: C
                       </div>
                       <div className="source-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
                         {instanceConfig.galleryScraper!.targets.filter(t => t.category === cat).map(target => (
-                          <a
+                          <div
                             key={target.url}
-                            href={target.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{
-                              ...rowStyle, padding: "6px 10px", textDecoration: "none",
-                            }}
+                            style={{ ...rowStyle, padding: "8px 10px" }}
                             onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                             onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                           >
-                            <span style={{ width: 6, height: 6, borderRadius: "50%", flexShrink: 0, background: "var(--accent-muted)" }} />
-                            <span style={{ ...TYPE.body, color: "var(--text-secondary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            <Toggle active={true} onToggle={() => {}} />
+                            <a
+                              href={target.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={e => e.stopPropagation()}
+                              style={{
+                                ...TYPE.body, color: "var(--text-primary)",
+                                overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1,
+                                textDecoration: "none",
+                              }}
+                              onMouseEnter={e => { e.currentTarget.style.textDecoration = "underline" }}
+                              onMouseLeave={e => { e.currentTarget.style.textDecoration = "none" }}
+                            >
                               {target.name}
-                            </span>
-                            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginLeft: "auto", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                            </a>
+                            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
                               fetch
                             </span>
-                          </a>
+                          </div>
                         ))}
                       </div>
                     </div>
