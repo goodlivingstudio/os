@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# scratch / session-local working artifacts
+# These are reference documents the operator keeps open while working across
+# multiple surfaces (Claude.ai, editor, browser). Intentionally uncommitted —
+# they are working notes, not doctrine. Delete after the relevant session ends.
+.claude/PHASE-PLAN.md
+.claude/SCRATCH-*.md
