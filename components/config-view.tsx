@@ -15,6 +15,7 @@ import { RefreshCw } from "lucide-react"
 interface ConfigViewProps {
   excludedSources: Set<string>
   onToggleSource: (source: string) => void
+  articles?: Array<{ source: string; tag: string }>
 }
 
 const LAYERS = instanceConfig.layers.map(l => l.id)
@@ -385,11 +386,12 @@ function CerebroStation() {
 
 // ─── Source Grid — two-column layout for source lists ───────────────────
 
-function SourceGrid({ sources, type, excludedSources, onToggleSource }: {
+function SourceGrid({ sources, type, excludedSources, onToggleSource, sourceCounts = {} }: {
   sources: Record<string, Array<{ url: string; source?: string; show?: string; category: string; layer: string }>>
   type: "source" | "show"
   excludedSources: Set<string>
   onToggleSource: (name: string) => void
+  sourceCounts?: Record<string, number>
 }) {
   return (
     <>
@@ -418,9 +420,14 @@ function SourceGrid({ sources, type, excludedSources, onToggleSource }: {
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
                     <Toggle active={active} onToggle={() => onToggleSource(name)} />
-                    <span style={{ ...TYPE.body, color: active ? "var(--text-primary)" : "var(--text-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <span style={{ ...TYPE.body, color: active ? "var(--text-primary)" : "var(--text-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
                       {name}
                     </span>
+                    {active && (
+                      <span style={{ ...TYPE.xs, color: (sourceCounts[name] || 0) > 0 ? "var(--text-tertiary)" : "var(--text-tertiary)", opacity: (sourceCounts[name] || 0) > 0 ? 0.6 : 0.3, fontVariantNumeric: "tabular-nums", flexShrink: 0 }}>
+                        {(sourceCounts[name] || 0) > 0 ? sourceCounts[name] : "—"}
+                      </span>
+                    )}
                   </div>
                 )
               })}
@@ -434,7 +441,13 @@ function SourceGrid({ sources, type, excludedSources, onToggleSource }: {
 
 // ─── ConfigView ─────────────────────────────────────────────────────────────
 
-export function ConfigView({ excludedSources, onToggleSource }: ConfigViewProps) {
+export function ConfigView({ excludedSources, onToggleSource, articles = [] }: ConfigViewProps) {
+  // Per-source article counts from live feed data
+  const sourceCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    for (const a of articles) { counts[a.source] = (counts[a.source] || 0) + 1 }
+    return counts
+  }, [articles])
   const newsFeedsOnly = useMemo(() => FEEDS.filter(f => f.type !== "social"), [])
   const socialFeeds = useMemo(() => FEEDS.filter(f => f.type === "social"), [])
   const newsGroups = useMemo(() => groupByLayer(newsFeedsOnly, "source"), [newsFeedsOnly])
@@ -483,7 +496,7 @@ export function ConfigView({ excludedSources, onToggleSource }: ConfigViewProps)
               </span>
             </div>
             <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
-              <SourceGrid sources={newsGroups} type="source" excludedSources={excludedSources} onToggleSource={onToggleSource} />
+              <SourceGrid sources={newsGroups} type="source" excludedSources={excludedSources} onToggleSource={onToggleSource} sourceCounts={sourceCounts} />
             </div>
           </div>
 
@@ -496,7 +509,7 @@ export function ConfigView({ excludedSources, onToggleSource }: ConfigViewProps)
               </span>
             </div>
             <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
-              <SourceGrid sources={socialGroups} type="source" excludedSources={excludedSources} onToggleSource={onToggleSource} />
+              <SourceGrid sources={socialGroups} type="source" excludedSources={excludedSources} onToggleSource={onToggleSource} sourceCounts={sourceCounts} />
             </div>
           </div>
 
@@ -509,7 +522,7 @@ export function ConfigView({ excludedSources, onToggleSource }: ConfigViewProps)
               </span>
             </div>
             <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
-              <SourceGrid sources={podGroups} type="show" excludedSources={excludedSources} onToggleSource={onToggleSource} />
+              <SourceGrid sources={podGroups} type="show" excludedSources={excludedSources} onToggleSource={onToggleSource} sourceCounts={sourceCounts} />
             </div>
           </div>
 

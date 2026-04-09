@@ -129,68 +129,7 @@ function LayerBar({ layer, health, maxArticles }: { layer: LayerHealth; health: 
   )
 }
 
-// ─── Source Row ──────────────────────────────────────────────────────────────
-
-function SourceRow({ source }: { source: SourceStat }) {
-  const isPersistentFailure = source.consecutiveFailures >= 5
-  const isWarning = source.consecutiveFailures >= 2
-
-  return (
-    <div style={{
-      display: "flex", alignItems: "center", gap: 8, padding: "6px 0",
-      background: isPersistentFailure ? "rgba(239, 68, 68, 0.06)" : "transparent",
-      borderRadius: isPersistentFailure ? 4 : 0,
-      margin: isPersistentFailure ? "0 -4px" : 0,
-      paddingLeft: isPersistentFailure ? 4 : 0,
-      paddingRight: isPersistentFailure ? 4 : 0,
-    }}>
-      <span style={{
-        width: 6, height: 6, borderRadius: "50%", flexShrink: 0,
-        background: source.live ? "var(--live)" : "#ef4444",
-      }} />
-      <span style={{
-        flex: 1, ...TYPE.sm, fontFamily: MONO,
-        color: isPersistentFailure ? "#ef4444" : source.live ? "var(--text-secondary)" : "var(--text-tertiary)",
-        opacity: source.live && !isPersistentFailure ? 1 : isPersistentFailure ? 0.9 : 0.5,
-        overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-      }}>
-        {source.name}
-        {isWarning && (
-          <span style={{
-            ...TYPE.xs, fontFamily: MONO, marginLeft: 6,
-            color: isPersistentFailure ? "#ef4444" : "#D4A05A",
-            fontWeight: 600,
-          }}>
-            {source.consecutiveFailures}x
-          </span>
-        )}
-      </span>
-      <span style={{
-        ...TYPE.xs, fontFamily: MONO, color: LAYER_COLOR[source.tag] || "var(--text-tertiary)",
-        textTransform: "uppercase", width: 30, textAlign: "center",
-      }}>
-        {source.tag.slice(0, 3)}
-      </span>
-      <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)", width: 24, textAlign: "right" }}>
-        {source.count}
-      </span>
-      <span style={{
-        ...TYPE.xs, fontFamily: MONO, width: 28, textAlign: "right",
-        color: source.annotated > 0 ? "var(--accent-muted)" : "var(--text-tertiary)",
-        opacity: source.annotated > 0 ? 1 : 0.3,
-      }}>
-        {source.annotated > 0 ? `${source.annotated}` : "—"}
-      </span>
-      <span style={{
-        ...TYPE.xs, fontFamily: MONO, width: 24, textAlign: "right",
-        color: source.highestUrgency >= 8 ? "#D4A05A" : source.highestUrgency >= 6 ? "var(--text-tertiary)" : "var(--text-tertiary)",
-        opacity: source.highestUrgency > 0 ? 1 : 0.3,
-      }}>
-        {source.highestUrgency > 0 ? source.highestUrgency : "—"}
-      </span>
-    </div>
-  )
-}
+// SourceRow removed — source health now shown in Config view
 
 // ─── Cache Management ─────────────────────────────────────────────────────
 
@@ -855,29 +794,6 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                   <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)" }}>Unannotated ({pipeline.unannotated})</span>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* ── Source Grid ── */}
-          <div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-              <div style={{ ...labelStyle, letterSpacing: "0.04em" }}>
-                Source Grid
-                <span style={{ color: "var(--text-tertiary)", marginLeft: 8, fontWeight: 400 }}>
-                  {sourceStats.length} sources
-                </span>
-              </div>
-              <div style={{ display: "flex", gap: 12 }}>
-                <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", fontFamily: MONO }}>layer</span>
-                <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", fontFamily: MONO, width: 24, textAlign: "right" }}>qty</span>
-                <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", fontFamily: MONO, width: 28, textAlign: "right" }}>ann</span>
-                <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", fontFamily: MONO, width: 24, textAlign: "right" }}>urg</span>
-              </div>
-            </div>
-            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "10px 14px" }}>
-              {sourceStats.map(source => (
-                <SourceRow key={source.name} source={source} />
-              ))}
             </div>
           </div>
 
