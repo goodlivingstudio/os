@@ -416,7 +416,8 @@ function SourceGrid({ sources, type, excludedSources, onToggleSource, sourceCoun
                 const active = !excludedSources.has(name)
                 const count = sourceCounts[name] || 0
                 const failures = sourceFailures[name] || 0
-                const dotColor = !active ? "var(--text-tertiary)" : count > 0 ? "var(--live)" : failures >= 5 ? "#ef4444" : "var(--text-tertiary)"
+                const hasData = type === "source" // podcasts don't have article counts
+                const dotColor = !active ? "var(--text-tertiary)" : !hasData ? "var(--accent-muted)" : count > 0 ? "var(--live)" : failures >= 5 ? "#ef4444" : "var(--text-tertiary)"
                 return (
                   <div
                     key={feed.url}
@@ -442,13 +443,15 @@ function SourceGrid({ sources, type, excludedSources, onToggleSource, sourceCoun
                     >
                       {name}
                     </a>
-                    <span style={{
-                      ...TYPE.xs, fontVariantNumeric: "tabular-nums", flexShrink: 0,
-                      color: count > 0 ? "var(--text-tertiary)" : "var(--text-tertiary)",
-                      opacity: count > 0 ? 0.6 : 0.3,
-                    }}>
-                      {count > 0 ? count : "—"}
-                    </span>
+                    {hasData && (
+                      <span style={{
+                        ...TYPE.xs, fontVariantNumeric: "tabular-nums", flexShrink: 0,
+                        color: "var(--text-tertiary)",
+                        opacity: count > 0 ? 0.6 : 0.3,
+                      }}>
+                        {count > 0 ? count : "—"}
+                      </span>
+                    )}
                   </div>
                 )
               })}
