@@ -3,7 +3,7 @@ Generated: 2026-04-09
 
 This file concatenates all 14 canonical product doc files for Dispatch. Paste os-complete.md first as shared context, then paste this file for focused Dispatch product work.
 
-**Current state:** Dispatch is in production at dispatch.goodliving.studio. Many files below are substantial and complete. Four files are structural stubs waiting for real content: LIVE-ENVIRONMENT, WATCHFILE, SOURCES-MEGALIST, REPLICATE-PROMPTS.
+**Current state:** Dispatch is in production at dispatch.goodliving.studio. Many files below are substantial and complete. Four files are structural stubs waiting for real content: LIVE-ENVIRONMENT, WATCHFILE, SOURCES-MEGALIST, REPLICATE-PROMPTS. The stubs include 'WHAT THIS DOCUMENT WILL OWN' and 'QUESTIONS TO ANSWER BEFORE WRITING' sections to guide their fill-in.
 
 ---
 
