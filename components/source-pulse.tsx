@@ -781,24 +781,31 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
             <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
               Intelligence Layers
             </div>
-            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px", display: "flex", flexDirection: "column", gap: 16 }}>
-              {instanceConfig.layers.map((l, i) => ({
-                layer: l.label,
-                color: ["#D4A05A", "#5A9EB0", "#7BAF6A", "#9A85B8", "#C87A6A"][i] || "#888",
-                what: l.description.split(". ")[0],
-                why: l.description,
-              })).map(item => (
-                <div key={item.layer}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                    <span style={{ width: 8, height: 8, borderRadius: 3, background: item.color, flexShrink: 0 }} />
-                    <span style={{ ...TYPE.body, color: "var(--text-primary)", fontWeight: 500 }}>{item.layer}</span>
-                    <span style={{ ...TYPE.sm, color: "var(--text-tertiary)" }}>{item.what}</span>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              {instanceConfig.layers.map((l) => {
+                // First sentence as the short description
+                const shortDesc = l.description.split(". ")[0]
+                // High scores examples (after "High scores:")
+                const highScores = l.description.split("High scores: ")[1] || ""
+                return (
+                  <div key={l.id} style={{
+                    background: "var(--bg-surface)", borderRadius: 10, padding: "14px 16px",
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                      <span style={{ width: 8, height: 8, borderRadius: 3, background: "var(--accent-secondary)", flexShrink: 0 }} />
+                      <span style={{ ...TYPE.body, color: "var(--text-primary)", fontWeight: 500 }}>{l.label}</span>
+                    </div>
+                    <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.6, paddingLeft: 16 }}>
+                      {shortDesc}.
+                    </div>
+                    {highScores && (
+                      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", lineHeight: 1.5, paddingLeft: 16, marginTop: 6 }}>
+                        {highScores}
+                      </div>
+                    )}
                   </div>
-                  <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7, paddingLeft: 16 }}>
-                    {item.why}
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
 
