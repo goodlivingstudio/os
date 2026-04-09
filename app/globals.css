@@ -534,6 +534,76 @@ html, body {
   --shadow-tooltip:   0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(42,74,106,0.06);
 }
 
+/* ── Prairie — American Midwest ───────────────────────────────── */
+/* Wheat fields, open plains, golden hour on the Great Plains */
+:root.skin-prairie {
+  --bg-primary:       #0E0C08;
+  --bg-surface:       #1A1810;
+  --bg-elevated:      #24221A;
+  --card-tint:        #201E14;
+  --accent-primary:   #2A2410;
+  --accent-secondary: #C8A840;
+  --accent-muted:     #D8C068;
+  --text-primary:     #F0ECE0;
+  --text-secondary:   #A8A090;
+  --text-tertiary:    #8A826E;
+  --border:           #2C2818;
+  --live:             #4ade80;
+  --synth-indicator:  #2A2414;
+  --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(200,168,64,0.08);
+}
+:root.skin-prairie.day {
+  --bg-primary:       #FAF6E8;
+  --bg-surface:       #F0EADC;
+  --bg-elevated:      #E6DECC;
+  --card-tint:        #F4EED8;
+  --accent-primary:   #F0E4C8;
+  --accent-secondary: #8A7020;
+  --accent-muted:     #9E8428;
+  --text-primary:     #1A1610;
+  --text-secondary:   #3A3420;
+  --text-tertiary:    #5A5040;
+  --border:           #DED4BE;
+  --live:             #166534;
+  --synth-indicator:  #EAE0C8;
+  --shadow-tooltip:   0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(138,112,32,0.06);
+}
+
+/* ── Bayou — Dirty South ─────────────────────────────────────── */
+/* Purple haze, double cup, chopped not slopped */
+:root.skin-bayou {
+  --bg-primary:       #0C0810;
+  --bg-surface:       #16101E;
+  --bg-elevated:      #201828;
+  --card-tint:        #1A1224;
+  --accent-primary:   #1E1428;
+  --accent-secondary: #A06CC0;
+  --accent-muted:     #7A5098;
+  --text-primary:     #E4DCF0;
+  --text-secondary:   #9A8EAA;
+  --text-tertiary:    #7A6E90;
+  --border:           #2A2038;
+  --live:             #4ade80;
+  --synth-indicator:  #221830;
+  --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(160,108,192,0.08);
+}
+:root.skin-bayou.day {
+  --bg-primary:       #F4EEF8;
+  --bg-surface:       #E8DEF0;
+  --bg-elevated:      #DCD0E4;
+  --card-tint:        #EEE4F4;
+  --accent-primary:   #E4D8EE;
+  --accent-secondary: #5C3070;
+  --accent-muted:     #6E4088;
+  --text-primary:     #1A1020;
+  --text-secondary:   #302440;
+  --text-tertiary:    #483860;
+  --border:           #D0C4DA;
+  --live:             #166534;
+  --synth-indicator:  #DED0EA;
+  --shadow-tooltip:   0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(92,48,112,0.06);
+}
+
 /* ─── Ticker scroll ────────────────────────────────────────────── */
 @keyframes ticker-scroll {
   from { transform: translateX(0); }
