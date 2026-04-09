@@ -100,6 +100,23 @@ The Wise Counselor voice — composed, direct, unhurried — extends to the visu
 
 ---
 
+### Interaction philosophy: Passage
+
+Dispatch operates under the Passage philosophy defined at `../os/PASSAGE.md`. The core commitment: every surface is a place you rejoin, not a place you visit. The system was running before you opened it and continues after you close it. The interface should reflect that continuity.
+
+What this means for Dispatch specifically:
+
+- **No termination language in microcopy.** "Close" transitions, it doesn't end. Empty states are silence, not greeting cards. The system never says "welcome back" because it never acknowledged you leaving.
+- **The DCOS brief doesn't greet, it briefs.** You open Dispatch and the day's intelligence is already scored and waiting. No orientation preamble. No "here's what's new." The current was moving. Now you're looking at it.
+- **Cerebro conversations persist.** The 30-day KV memory is not a convenience feature — it is the structural implementation of Passage. The conversation didn't end. It paused.
+- **Signal view is always populated.** The feed never shows an empty state because the feed is never empty. If sources haven't updated, show the most recent scored articles. The pipeline runs regardless of whether the operator is watching.
+
+Passage is OS-level atmosphere — ambient, present before Dispatch starts thinking about a given screen. Dispatch's job is to translate the philosophy into specific interaction patterns, transitions, microcopy, and component behavior. When a Dispatch design decision diverges from Passage, name the divergence and justify it.
+
+See `../os/PASSAGE.md` for the full philosophy, including the honest edges: rest is valid, completion is real, and the dark twin (infinite scroll) is named and rejected.
+
+---
+
 ## 3 — Core Design Principles
 
 ### Clarity over density

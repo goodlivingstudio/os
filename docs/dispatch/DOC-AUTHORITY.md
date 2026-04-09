@@ -5,6 +5,19 @@ Established: 2026-04-06
 
 ---
 
+## OS-LEVEL INHERITANCE
+
+Dispatch is one of four sibling products living under OS — the ambient intelligence layer that holds the Good Living Studio philosophy, operator context, and shared authority. Dispatch inherits from four OS-level documents at `../os/`:
+
+- **OPERATOR.md** — Canonical for operator identity, five-year target, professional evolution thesis, and active engagements. Dispatch `MANDATE.md` references it rather than restating the full operator profile.
+- **DOCTRINE.md** — Canonical for shared design convictions (restraint as proof of quality, signal/synthesis duality, no sycophancy, token constraints, clarity over density). Dispatch `SYSTEM-BRIEF.md` and `ANTI-PATTERNS.md` implement these convictions in Dispatch-specific form.
+- **PASSAGE.md** — Canonical for interaction philosophy (every surface is a place you rejoin; no termination language; no dead surfaces; no hierarchy of realness). Dispatch `SYSTEM-BRIEF.md` § *Interaction philosophy: Passage* translates the philosophy into specific Dispatch interaction patterns.
+- **DOC-AUTHORITY.md** (OS-level) — Resolves authority conflicts that cross product boundaries or involve OS-level documents.
+
+**Rule:** When Dispatch docs conflict with OS-level docs, the OS-level document wins on principle and intent. Dispatch docs win on project-specific implementation. See `../os/DOC-AUTHORITY.md` for the full inheritance model.
+
+---
+
 ## THE RULE
 
 Every piece of system knowledge has exactly one canonical home. Other documents may reference or summarize that knowledge, but they must explicitly mark it as derived: *"See [CANONICAL DOC] for the authoritative version."*
@@ -16,9 +29,11 @@ When updating derived content, update the canonical source first, then propagate
 ## AUTHORITY MAP
 
 ### MANDATE.md — *The Why*
-**Owns:** Operator identity and context. Five-year target. Professional evolution thesis. Operating thesis. Lilly engagement context. Intelligence mode definitions (Intelligence / Formation / Positioning). Annotation layer definitions. Cerebro behavioral charter. Synthesis purpose. Generative brief cluster purpose. The station chief model.
+**Owns:** The station chief model. Three intelligence modes (Intelligence / Formation / Positioning). Five annotation layers. Cerebro behavioral charter. Synthesis purpose. Generative brief cluster purpose. Dispatch-specific operator context (what Dispatch needs to know beyond the shared operator profile).
 
-**Rule:** If you need to know *who this system serves and why it exists*, MANDATE is the answer. Everything in PROMPTS.md's context blocks derives from MANDATE.
+**Derives from:** `../os/OPERATOR.md` for operator identity, five-year target, professional evolution thesis, operating thesis, and active engagement context (Lilly, Code and Theory).
+
+**Rule:** If you need to know *what Dispatch is and why it exists*, MANDATE is the answer. For *who the operator is*, see `../os/OPERATOR.md`. Everything in PROMPTS.md's context blocks derives from MANDATE (for Dispatch-specific content) and from `../os/OPERATOR.md` (for shared operator context).
 
 ### PROMPTS.md — *The Words*
 **Owns:** All copyable prompt text for `lib/prompts.ts`. Context blocks (OPERATOR, LILLY_CONTEXT, FIVE_LAYERS, SOURCE_MODES, VOICE). Surface prompts (DCOS, Cerebro, Annotation, Synthesis, Dispatch). Prompt assembly pattern. Prompt maintenance schedule.

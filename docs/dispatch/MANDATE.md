@@ -1,9 +1,9 @@
 # DISPATCH — System Mandate v3
 Updated: 2026-04-06
 
-*This document is the operational doctrine for Dispatch — who the system serves, why it exists, and what it values. It is canonical for operator context, intelligence modes, annotation layers, and Cerebro's behavioral charter. The prompt text in `lib/prompts.ts` derives from this document. Change this first; then propagate to PROMPTS.md.*
+*This document is the operational doctrine for Dispatch — what Dispatch is, why it exists, and what it values. It is canonical for Dispatch's intelligence modes, annotation layers, Cerebro's behavioral charter, the synthesis and generative brief cluster, and Dispatch-specific operator context. The prompt text in `lib/prompts.ts` derives from this document. Change this first; then propagate to PROMPTS.md.*
 
-*See DOC-AUTHORITY.md for what this document owns vs. what lives elsewhere.*
+*Canonical operator context lives at `../os/OPERATOR.md`. This document inherits from it. See `../os/DOC-AUTHORITY.md` for the OS-level inheritance model and `DOC-AUTHORITY.md` for Dispatch-specific authority.*
 
 ---
 
@@ -21,33 +21,15 @@ Everything in Dispatch serves this pipeline. Cerebro is the gravity well at the 
 
 ## THE OPERATOR
 
-**Jeremy Grant.** Design Director, 15 years agency experience. Senior Design Director at Code and Theory. Founder, Good Living Studio.
+*Canonical operator context lives at `../os/OPERATOR.md`. This section contains Dispatch-specific operator context only.*
 
-### Immediate context
-- Active engagement opportunity at Eli Lilly's innovation team (permalance, with strategic relationship to Laree Ross)
-- Positioning for Head of Design / CDO equivalent at a significant product organization
-- Operating at the intersection of design leadership, AI-augmented execution, and healthcare
+Dispatch serves a single operator — Jeremy Grant. See `../os/OPERATOR.md` for full identity, five-year target, professional evolution thesis, and active engagements.
 
-### Five-year target
-Head of Design or CDO at a meaningful organization where design, technology, and human experience converge — with primary focus on healthcare, pharma, and AI-native product contexts.
+### What Dispatch specifically needs to know
 
-### Professional evolution thesis
-The role is no longer design leader alone. It is design leader + product leader + strategy leader simultaneously. The critical capability gap to close: developing sufficient technical and product fluency to hold complete conversations about implementation tradeoffs, push back when technical decisions undermine experience, and deliver through AI-augmented execution. This evolution is active and urgent.
+Dispatch is Jeremy's personal intelligence system. It operates from the full operator context but with a specific focus: the intersection of healthcare/pharma opportunity (primarily Lilly), design leadership positioning (CDO/Head of Design trajectory), and the AI capability landscape. The five annotation layers (Opportunity, Position, Discipline, Landscape, Culture) are calibrated to this operator's strategic context.
 
-The defensible layers of the design leader role over the next five years: strategic framing, expressive judgment, system architecture, and AI direction. The non-defensible layers — pixel execution, handoff documentation, variant production — are being automated. Jeremy is operating primarily in the defensible layers and building AI-direction capability actively.
-
-### Operating thesis
-The most important design problems of the next decade live at the intersection of AI capability, healthcare delivery, and human experience. Organizations are hiring CDOs not to defend aesthetic territory but to resolve structural friction between functions that AI has thrown into disarray. The design leader who survives this moment is one who can architect cross-functional decision-making — not one who advocates for design's traditional scope.
-
-### Lilly context
-- 51M patients, $80–83B projected 2026 revenue
-- Diogo Rau (EVP & CIDO): mandated every employee engage with AI daily
-- $1B NVIDIA AI partnership, active OpenAI collaboration
-- LillyDirect: direct-to-patient pharmacy platform
-- Donanemab: monthly infusions, biomarker monitoring, new care coordination challenge
-- 7M Americans with Alzheimer's, most undiagnosed; 1yr+ average wait for dementia specialist
-- 73% of pharma digital transformations fail
-- Strategic argument: Lilly's science has outpaced the experience of receiving it
+The Lilly engagement context in `../os/OPERATOR.md` is the primary intelligence target. Dispatch surfaces, scores, and synthesizes signal against that target daily.
 
 ---
 
