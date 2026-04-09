@@ -138,8 +138,8 @@ export interface InstanceConfig {
   categoryStyleNight: Record<string, CategoryStyle>
 
   // Theme
-  skins: SkinDef[]
-  defaultSkin: string
+  themes: SkinDef[]
+  defaultTheme: string
 
   // Cerebro
   provocations?: string[]              // rotating prompt suggestions for Cerebro

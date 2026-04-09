@@ -356,10 +356,10 @@ When scoring and surfacing signals, weight INTELLIGENCE and POSITIONING sources 
 
   // ─── Theme ──────────────────────────────────────────────────────────────────
 
-  skins: [
+  themes: [
     { id: "ink", label: "Ink", dot: "#C83028" },
   ],
-  defaultSkin: "ink",
+  defaultTheme: "ink",
 
   // ─── Gallery Scraper ──────────────────────────────────────────────────────
 

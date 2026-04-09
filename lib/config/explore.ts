@@ -260,14 +260,14 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
 
   // ─── Theme — Three regions of America ───────────────────────────────────────
 
-  skins: [
+  themes: [
     { id: "cascadia", label: "Cascadia", dot: "#4A8E6A" },
     { id: "mesa",     label: "Mesa",     dot: "#D4764A" },
     { id: "marina",   label: "Marina",   dot: "#6A90B8" },
     { id: "prairie",  label: "Prairie",  dot: "#C8A840" },
     { id: "bayou",    label: "Bayou",    dot: "#A06CC0" },
   ],
-  defaultSkin: "cascadia",
+  defaultTheme: "cascadia",
 
   // ─── Feature Flags — Explore-specific opt-ins ──────────────────────────────
 

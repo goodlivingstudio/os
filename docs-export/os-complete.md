@@ -712,7 +712,7 @@ Every instance provides a single TypeScript file conforming to the `InstanceConf
 - **Taxonomy** — `layers` (the intelligence layers this product scores against), `layerColors`
 - **Content** — `feeds` (RSS), `podcasts`, `gallerySources`
 - **Ticker** — `headlines`, `categoryStyleDay`, `categoryStyleNight`
-- **Theme** — `skins`, `defaultSkin`
+- **Theme** — `themes`, `defaultTheme`
 - **Cerebro** — `provocations` (rotating prompt suggestions), `cerebroWelcome`
 - **Gallery scraper** — `galleryScraper`, optional `ugcScraper`
 
@@ -1101,7 +1101,7 @@ An annotated article that scores high on two or more intelligence layers simulta
 A product defined by a single config file in `lib/config/<product>.ts` conforming to the `InstanceConfig` interface. The shared codebase reads the config at boot and adapts every surface to that instance's identity, mandate, sources, and branding. See `ARCHITECTURE.md` § THE WHITE-LABEL PATTERN.
 
 ### InstanceConfig
-The TypeScript interface in `lib/config/types.ts` that every instance implements. Owns: identity, branding, mandate, layer taxonomy, feeds, podcasts, gallery sources, ticker, skins, Cerebro provocations, optional gallery scraper. See `ARCHITECTURE.md`.
+The TypeScript interface in `lib/config/types.ts` that every instance implements. Owns: identity, branding, mandate, layer taxonomy, feeds, podcasts, gallery sources, ticker, themes, Cerebro provocations, optional gallery scraper. See `ARCHITECTURE.md`.
 
 ### NEXT_PUBLIC_INSTANCE
 The environment variable that selects which instance loads at boot. See `ARCHITECTURE.md` § THE INSTANCE BOOT SEQUENCE.

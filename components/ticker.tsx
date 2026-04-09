@@ -8,8 +8,8 @@ import config from "@/lib/config"
 
 // ─── Config-driven data ─────────────────────────────────────────────────────
 
-const SKIN_DOT: Record<string, string> = Object.fromEntries(config.skins.map(s => [s.id, s.dot]))
-const SKIN_LABEL: Record<string, string> = Object.fromEntries(config.skins.map(s => [s.id, s.label]))
+const SKIN_DOT: Record<string, string> = Object.fromEntries(config.themes.map(s => [s.id, s.dot]))
+const SKIN_LABEL: Record<string, string> = Object.fromEntries(config.themes.map(s => [s.id, s.label]))
 const CAT_STYLE_DAY = config.categoryStyleDay
 const HEADLINES = config.headlines
 const CAT_STYLE = config.categoryStyleNight
@@ -126,7 +126,7 @@ export function Ticker({
       </div>
 
       {/* Skin picker */}
-      {onSkinChange && config.skins.length > 1 && (
+      {onSkinChange && config.themes.length > 1 && (
         <div
           style={{
             flexShrink: 0,
@@ -138,7 +138,7 @@ export function Ticker({
             height: 52,
           }}
         >
-          {config.skins.map(({ id: s }) => (
+          {config.themes.map(({ id: s }) => (
             <button
               key={s}
               onClick={() => onSkinChange(s)}

@@ -152,10 +152,10 @@ const config: InstanceConfig = {
   // a single skin like Dispatch. Decision deferred to kickoff from
   // docs/lilly-direct/SYSTEM-BRIEF.md.
 
-  skins: [
+  themes: [
     { id: "clinical", label: "Clinical", dot: "#C83028" },  // Placeholder vermillion — matches Dispatch ink for now
   ],
-  defaultSkin: "clinical",
+  defaultTheme: "clinical",
 
   // ─── Feature flags — none enabled at scaffold ────────────────────────────
   // Lilly Direct starts with all shared-layer features off. Opt in selectively

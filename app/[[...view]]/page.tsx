@@ -31,13 +31,13 @@ function applyThemeClasses(skin: Skin, day: boolean) {
   // Remove all possible skin classes (from all instances)
   el.classList.remove("day", "skin-mineral", "skin-slate", "skin-forest",
     "skin-cascadia", "skin-mesa", "skin-marina",
-    ...instanceConfig.skins.map(s => `skin-${s.id}`))
+    ...instanceConfig.themes.map(s => `skin-${s.id}`))
   if (day) el.classList.add("day")
   // Always apply skin class — :root is Dispatch Mineral, other instances need their class
   el.classList.add(`skin-${skin}`)
 }
 
-const DEFAULT_SKIN = instanceConfig.defaultSkin
+const DEFAULT_SKIN = instanceConfig.defaultTheme
 const STORAGE_PREFIX = instanceConfig.id  // "dispatch" | "explore" | "lilly"
 
 function useTheme() {
@@ -48,7 +48,7 @@ function useTheme() {
 
   useEffect(() => {
     const rawSkin = localStorage.getItem(`${STORAGE_PREFIX}-skin`)
-    const validSkinIds = instanceConfig.skins.map(s => s.id)
+    const validSkinIds = instanceConfig.themes.map(s => s.id)
     const skinValid = rawSkin && validSkinIds.includes(rawSkin)
     const storedSkin = (skinValid ? rawSkin : DEFAULT_SKIN) as Skin
     // If skin was stale, clean up all theme storage and write the correct skin
@@ -806,7 +806,7 @@ export default function Page() {
             {/* Skin dots — only render when the instance has multiple skins to choose from.
                 Single-skin instances (like Dispatch with its sole "ink" skin) skip the picker
                 and rely on the day/night toggle for color mode switching. */}
-            {instanceConfig.skins.length > 1 && instanceConfig.skins.map(({ id: s, dot: color }) => {
+            {instanceConfig.themes.length > 1 && instanceConfig.themes.map(({ id: s, dot: color }) => {
               const isActive = skin === s
               return (
                 <button

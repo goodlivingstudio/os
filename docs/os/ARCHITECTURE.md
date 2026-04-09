@@ -96,7 +96,7 @@ Every instance provides a single TypeScript file conforming to the `InstanceConf
 - **Taxonomy** — `layers` (the intelligence layers this product scores against), `layerColors`
 - **Content** — `feeds` (RSS), `podcasts`, `gallerySources`
 - **Ticker** — `headlines`, `categoryStyleDay`, `categoryStyleNight`
-- **Theme** — `skins`, `defaultSkin`
+- **Theme** — `themes`, `defaultTheme`
 - **Cerebro** — `provocations` (rotating prompt suggestions), `cerebroWelcome`
 - **Gallery scraper** — `galleryScraper`, optional `ugcScraper`
 
