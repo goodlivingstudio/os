@@ -71,7 +71,11 @@ jobs:
 
     strategy:
       matrix:
-        instance: [dispatch, explore]
+        # All OS instances. Instances without a galleryScraper config (e.g.
+        # lilly-direct currently) will gracefully no-op via the script's
+        # missing-config check. When a new instance is added or one gains a
+        # galleryScraper, this matrix needs no change.
+        instance: [dispatch, explore, lilly-direct]
       fail-fast: false # don't cancel one instance if the other fails
 
     steps:

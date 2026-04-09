@@ -36,8 +36,8 @@ const useUgc = args.includes("--ugc")
 const scraperConfig = useUgc ? config.ugcScraper : config.galleryScraper
 
 if (!scraperConfig) {
-  console.error(`Instance "${instanceArg}" has no ${useUgc ? "ugcScraper" : "galleryScraper"} config.`)
-  process.exit(1)
+  console.log(`Instance "${instanceArg}" has no ${useUgc ? "ugcScraper" : "galleryScraper"} config — no work to do, exiting cleanly.`)
+  process.exit(0)
 }
 
 const { arenaChannelSlug } = scraperConfig
