@@ -1,6 +1,6 @@
 # OS — Good Living Studio
 
-**An ambient intelligence layer for four sibling products: Dispatch, Explore, Atlas, and Lilly.**
+**An ambient intelligence layer for four sibling products: Dispatch, Explore, Atlas, and Lilly Direct.**
 
 OS is the shared codebase and shared philosophy for Jeremy Grant's personal body of work across technology, culture, healthcare, and client engagement. Each product runs as a white-label instance of OS, driven by a config in `lib/config/`. Shared convictions (operator context, design doctrine, interaction philosophy) live once in `docs/os/` and are inherited by every product.
 

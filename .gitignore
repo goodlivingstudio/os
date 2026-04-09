@@ -46,3 +46,8 @@ next-env.d.ts
 # they are working notes, not doctrine. Delete after the relevant session ends.
 .claude/PHASE-PLAN.md
 .claude/SCRATCH-*.md
+
+# scraper runtime logs (gallery scraper writes these to repo root)
+.scraper-log.txt
+.scraper-stderr.log
+.scraper-stdout.log

@@ -1,6 +1,6 @@
 # OS — Good Living Studio
 
-This repository is **OS** — the ambient intelligence layer that holds shared philosophy, operator context, and authority for four sibling products: **Dispatch**, **Explore**, **Atlas**, and **Lilly**. OS is not a command center. It is the atmosphere that's already present before any of the four products start thinking.
+This repository is **OS** — the ambient intelligence layer that holds shared philosophy, operator context, and authority for four sibling products: **Dispatch**, **Explore**, **Atlas**, and **Lilly Direct**. OS is not a command center. It is the atmosphere that's already present before any of the four products start thinking.
 
 ## Naming discipline — READ FIRST
 
