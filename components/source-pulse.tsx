@@ -773,7 +773,9 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
             <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "10px 14px" }}>
               {/* Column headers — match LayerBar layout */}
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
-                <div style={{ width: 80, flexShrink: 0 }} />
+                <div style={{ width: 80, flexShrink: 0 }}>
+                  <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>layer</span>
+                </div>
                 <div style={{ width: 28, flexShrink: 0, textAlign: "right" }}>
                   <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>vol</span>
                 </div>
