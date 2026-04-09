@@ -358,7 +358,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
         style={{ flex: 1, overflowY: "auto", padding: "24px 0 40px", display: "flex", flexDirection: "column", alignItems: maxWidth ? "center" : "stretch" }}
       ><div style={maxWidth ? { width: "100%", maxWidth } : undefined}>
         {messages.length === 0 && (
-          <div style={{ padding: "32px 24px" }}>
+          <div style={{ padding: "32px 16px" }}>
             <div
               style={{
                 fontSize: 12.5,

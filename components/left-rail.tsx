@@ -570,7 +570,6 @@ export function LeftRail({
               <div style={{
                 ...TYPE.body,
                 color: "var(--text-tertiary)",
-                fontStyle: "italic",
                 lineHeight: 1.7,
                 opacity: 0.8,
               }}>
