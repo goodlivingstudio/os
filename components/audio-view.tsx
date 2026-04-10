@@ -231,186 +231,6 @@ const LAYER_LABELS: Record<string, string> = Object.fromEntries(
   instanceConfig.layers.map(l => [l.id, l.label])
 )
 
-// ─── Episode Modal ──────────────────────────────────────────────────────────
-
-function EpisodeModal({ episode, onClose, onDeliberate, artworkMode = "off" }: { episode: Episode; onClose: () => void; onDeliberate?: (text: string) => void; artworkMode?: "off" | "source" }) {
-  return (
-    <div
-      style={{
-        position: "fixed", inset: 0, zIndex: 2000,
-        background: "rgba(0,0,0,0.6)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-      }}
-      onClick={e => { if (e.target === e.currentTarget) onClose() }}
-    >
-      <div
-        style={{
-          background: "var(--bg-surface)",
-          borderRadius: 14,
-          width: "80vw",
-          maxWidth: 720,
-          maxHeight: "85vh",
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-          boxShadow: "0 32px 80px rgba(0,0,0,0.3)",
-        }}
-      >
-        {/* Header with artwork */}
-        <div style={{
-          display: "flex", gap: 24, padding: "24px 24px 24px",
-          borderBottom: "1px solid var(--border)",
-          flexShrink: 0,
-        }}>
-          {artworkMode === "source" && (
-            (episode.artworkUrl) ? (
-              <img
-                src={episode.artworkUrl}
-                alt={episode.showName}
-                onError={(e) => { e.currentTarget.style.display = "none" }}
-                style={{ width: 96, height: 96, borderRadius: 14, objectFit: "cover", flexShrink: 0, background: "var(--bg-elevated)" }}
-              />
-            ) : (
-              <div style={{
-                width: 96, height: 96, borderRadius: 14, background: "var(--bg-elevated)",
-                flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 28, color: "var(--text-tertiary)",
-              }}>
-                ◉
-              </div>
-            )
-          )}
-          <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div style={{ ...TYPE.body, color: "var(--text-tertiary)", marginBottom: 6 }}>
-              {episode.showName}
-            </div>
-            <div style={{ fontSize: 18, fontWeight: 650, color: "var(--text-primary)", lineHeight: 1.35 }}>
-              {episode.title}
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            style={{
-              background: "none", border: "none", color: "var(--text-tertiary)",
-              cursor: "pointer", fontSize: 20, lineHeight: 1, padding: "4px 8px",
-              borderRadius: 4, alignSelf: "flex-start", flexShrink: 0,
-            }}
-          >
-            ×
-          </button>
-        </div>
-
-        {/* Scrollable content */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "24px 32px" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-
-            {/* THE WHAT — Synopsis */}
-            <div style={{ marginBottom: 24 }}>
-              <div style={{
-                ...metaStyle, textTransform: "uppercase",
-                fontWeight: 600, marginBottom: 8,
-              }}>
-                Synopsis
-              </div>
-              <div style={{ ...TYPE.reading, color: "var(--text-secondary)" }}>
-                {episode.summary || "Episode synopsis will be available when the annotation engine is active. This section provides an AI-generated summary of what this episode covers, distilled for relevance to your mandate."}
-              </div>
-            </div>
-
-            {/* THE META — Particulars */}
-            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 24 }}>
-              <div style={{
-                ...metaStyle, textTransform: "uppercase",
-                fontWeight: 600, marginBottom: 16,
-              }}>
-                Details
-              </div>
-              <div className="episode-details-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
-                <div>
-                  <div style={{ ...metaStyle, marginBottom: 3 }}>Show</div>
-                  <div style={{ ...TYPE.reading, color: "var(--text-primary)", fontWeight: 500 }}>{episode.showName}</div>
-                </div>
-                <div>
-                  <div style={{ ...metaStyle, marginBottom: 3 }}>Duration</div>
-                  <div style={{ ...TYPE.reading, color: "var(--text-primary)", fontWeight: 500 }}>{episode.duration || "—"}</div>
-                </div>
-                <div>
-                  <div style={{ ...metaStyle, marginBottom: 3 }}>Published</div>
-                  <div style={{ ...TYPE.reading, color: "var(--text-primary)", fontWeight: 500 }}>{formatDate(episode.publishedAt)}</div>
-                </div>
-                <div>
-                  <div style={{ ...metaStyle, marginBottom: 3 }}>Category</div>
-                  <div style={{ ...TYPE.reading, color: "var(--text-primary)", fontWeight: 500 }}>{episode.category}</div>
-                </div>
-                <div>
-                  <div style={{ ...metaStyle, marginBottom: 3 }}>Layer</div>
-                  <div style={{ ...TYPE.reading, color: "var(--text-primary)", fontWeight: 500 }}>{LAYER_LABELS[episode.layer] || episode.layer}</div>
-                </div>
-              </div>
-            </div>
-
-            {/* THE WHY — Mandate relevance */}
-            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, marginBottom: 24 }}>
-              <div style={{
-                ...metaStyle, textTransform: "uppercase",
-                fontWeight: 600, marginBottom: 8,
-              }}>
-                Why It Matters
-              </div>
-              <div style={{ ...TYPE.reading, color: "var(--text-secondary)" }}>
-                Mandate relevance analysis will appear here when the annotation engine is active. This section explains how this episode connects to your five intelligence layers and what you should listen for relative to your strategic positioning.
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24, display: "flex", alignItems: "center", gap: 12 }}>
-              {episode.url && episode.url !== "#" && (
-                <a
-                  href={episode.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: "inline-flex", alignItems: "center", gap: 8,
-                    padding: "8px 16px", borderRadius: 8,
-                    background: "var(--accent-secondary)", color: "var(--bg-primary)",
-                    textDecoration: "none", ...TYPE.reading, fontWeight: 600,
-                    transition: "opacity 0.15s",
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.opacity = "0.85" }}
-                  onMouseLeave={e => { e.currentTarget.style.opacity = "1" }}
-                >
-                  Listen
-                  <ExternalLink size={13} strokeWidth={2} />
-                </a>
-              )}
-              {onDeliberate && (
-                <button
-                  onClick={() => {
-                    onDeliberate(`I just came across this podcast episode: "${episode.title}" from ${episode.showName}. ${episode.summary ? `Here's what it covers: ${episode.summary}` : ""} How does this connect to my mandate? What should I listen for?`)
-                    onClose()
-                  }}
-                  style={{
-                    display: "inline-flex", alignItems: "center", gap: 8,
-                    padding: "8px 16px", borderRadius: 8,
-                    background: "var(--bg-elevated)", border: "none",
-                    color: "var(--accent-secondary)", ...TYPE.reading, fontWeight: 600,
-                    cursor: "pointer", transition: "all 0.15s",
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-                >
-                  BUMP
-                  <ArrowUpRight size={13} strokeWidth={2} />
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 // ─── Episode Card ────────────────────────────────────────────────────────────
 
 function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onSignalLeave, artworkMode = "off", isPinned, onTogglePin }: {
@@ -571,7 +391,6 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [loading, setLoading] = useState(true)
   const [showCount, setShowCount] = useState(0)
-  const [activeEpisode, setActiveEpisode] = useState<Episode | null>(null)
   const [activeLayer, setActiveLayer] = useState("all")
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
   const [signal, setSignal] = useState<{ episode: Episode; x: number; y: number } | null>(null)
@@ -886,7 +705,11 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
               key={ep.id}
               episode={ep}
               index={i}
-              onClick={() => setActiveEpisode(ep)}
+              onClick={() => {
+                if (ep.url && ep.url !== "#") {
+                  window.open(ep.url, "_blank", "noopener,noreferrer")
+                }
+              }}
               onSignalEnter={(e, x, y) => setSignal({ episode: e, x, y })}
               onSignalMove={(x, y) => setSignal(s => s ? { ...s, x, y } : s)}
               onSignalLeave={() => setSignal(null)}
@@ -937,10 +760,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
         </div>
       )}
 
-      {/* Episode modal */}
-      {activeEpisode && (
-        <EpisodeModal episode={activeEpisode} onClose={() => setActiveEpisode(null)} onDeliberate={onDeliberate} artworkMode={artworkMode} />
-      )}
+      {/* Episode modal removed — click now links out directly; hover signal card provides insight */}
       </div>
     </main>
   )
