@@ -297,8 +297,10 @@ function ExpandedNavButton({ icon, label, isActive, onClick }: {
       style={{
         display: "flex", alignItems: "center", gap: 10, width: "100%",
         padding: "10px 16px",
-        background: isActive ? "#1E1E1E" : hovered ? "#1A1A1A" : "transparent",
-        border: "none", cursor: "pointer", transition: "background 0.15s, color 0.15s",
+        background: isActive ? "#2A2A2A" : hovered ? "#222222" : "transparent",
+        border: "none",
+        borderLeft: isActive ? "2px solid var(--accent-secondary)" : "2px solid transparent",
+        cursor: "pointer", transition: "background 0.15s, color 0.15s, border-color 0.15s",
         color: isActive ? "var(--text-primary)" : hovered ? "var(--text-secondary)" : "var(--text-tertiary)",
         fontSize: 13, fontWeight: isActive ? 500 : 400,
       }}
@@ -323,7 +325,7 @@ function TriageExploreButton({ label, isActive, onClick }: {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background: isActive ? "#1E1E1E" : hovered ? "#1A1A1A" : "transparent",
+        background: isActive ? "#2A2A2A" : hovered ? "#222222" : "transparent",
         border: "none", cursor: "pointer",
         fontSize: 11, fontWeight: isActive ? 600 : 400,
         color: isActive ? "var(--accent-secondary)" : hovered ? "var(--text-primary)" : "var(--text-tertiary)",
