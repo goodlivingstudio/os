@@ -308,16 +308,17 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span
             style={{
-              fontSize: 11,
+              fontSize: 12,
               fontFamily: MONO,
               textTransform: "uppercase",
+              letterSpacing: "0.06em",
               color: "var(--accent-muted)",
             }}
           >
             Cerebro
           </span>
           {tokens > 0 && (
-            <span style={{ fontSize: 11, fontFamily: MONO, fontVariantNumeric: "tabular-nums", color: "var(--text-primary)" }}>
+            <span style={{ fontSize: 12, fontFamily: MONO, fontVariantNumeric: "tabular-nums", color: "var(--text-primary)" }}>
               {tokens.toLocaleString()}
             </span>
           )}
@@ -337,7 +338,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
                 border: "1px solid var(--border)",
                 background: escalateCopied ? "var(--accent-secondary)" : "transparent",
                 color: escalateCopied ? "var(--bg-primary)" : "var(--text-tertiary)",
-                fontSize: 10,
+                fontSize: 12,
                 fontFamily: MONO,
                 cursor: "pointer",
                 transition: "all 0.2s",
@@ -361,7 +362,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
           <div style={{ padding: "32px 16px" }}>
             <div
               style={{
-                fontSize: 12.5,
+                fontSize: 13,
                 fontFamily: MONO,
                 color: "var(--text-tertiary)",
                 lineHeight: 1.8,
@@ -443,7 +444,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
             /* ── Search: marginalia — small, grouped, subordinate ── */
             ) : m.role === "search" ? (
               <div style={{
-                padding: "0 32px", fontSize: 10,
+                padding: "0 32px", fontSize: 12,
                 fontFamily: MONO,
                 color: "var(--text-tertiary)", lineHeight: 1.5,
                 display: "flex", alignItems: "center", gap: 6,
@@ -466,7 +467,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
                     <div
                       key={pi}
                       style={{
-                        fontSize: 12.5,
+                        fontSize: 13,
                         fontFamily: MONO,
                         color: "var(--text-secondary)",
                         lineHeight: 1.9,
@@ -503,7 +504,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
               }}
             >
               <div style={{
-                fontSize: 12.5, fontFamily: MONO,
+                fontSize: 13, fontFamily: MONO,
                 color: "var(--accent-muted)", lineHeight: 1.8,
                 transition: "color 0.15s",
               }}
@@ -524,7 +525,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
                       display: "flex", alignItems: "baseline", gap: 8,
                       background: "transparent", border: "none",
                       padding: "4px 0", borderRadius: 0,
-                      fontSize: 11, fontFamily: MONO,
+                      fontSize: 12, fontFamily: MONO,
                       color: "var(--text-tertiary)", cursor: "pointer",
                       transition: "color 0.15s", textAlign: "left", lineHeight: 1.5,
                       opacity: 0.6,
@@ -584,14 +585,14 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
                 {att.preview ? (
                   <img src={att.preview} alt={att.name} style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 8, border: "1px solid var(--border)" }} />
                 ) : (
-                  <div style={{ width: 48, height: 48, borderRadius: 8, border: "1px solid var(--border)", background: "var(--bg-elevated)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+                  <div style={{ width: 48, height: 48, borderRadius: 8, border: "1px solid var(--border)", background: "var(--bg-elevated)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, color: "var(--text-tertiary)", textTransform: "uppercase" }}>
                     {att.name.split(".").pop()}
                   </div>
                 )}
                 <button
                   onClick={() => setAttachments(prev => prev.filter((_, j) => j !== i))}
                   aria-label={`Remove ${att.name}`}
-                  style={{ position: "absolute", top: -4, right: -4, width: 16, height: 16, borderRadius: "50%", background: "var(--text-tertiary)", color: "var(--bg-primary)", border: "none", cursor: "pointer", fontSize: 11, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center" }}
+                  style={{ position: "absolute", top: -4, right: -4, width: 16, height: 16, borderRadius: "50%", background: "var(--text-tertiary)", color: "var(--bg-primary)", border: "none", cursor: "pointer", fontSize: 12, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center" }}
                 >
                   ×
                 </button>

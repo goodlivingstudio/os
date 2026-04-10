@@ -114,7 +114,7 @@ export function Ticker({
                 <span
                   className="ticker-text"
                   style={{
-                    fontSize: 12.5,
+                    fontSize: 13,
                   }}
                 >
                   {h.text}

@@ -1087,7 +1087,7 @@ export default function Page() {
                     />
                     <span
                       style={{
-                        fontSize: 10,
+                        fontSize: 11,
                         textTransform: "uppercase",
                         fontWeight: 500,
                         letterSpacing: "0.06em",

@@ -1,11 +1,11 @@
-// ─── Dispatch Type Scale ────────────────────────────────────────────────────
+// ─── OS Type Scale ──────────────────────────────────────────────────────────
 // Six sizes. No exceptions outside Cerebro.
 //
-// xs      10px  — tiny chrome: badges, dots, remove buttons
-// sm      11px  — labels, metadata, eyebrows, counts
-// body    12px  — body text, descriptions, summaries
-// reading 13px  — primary reading: user input, episode details
-// heading 15px  — article headlines, card titles
+// xs      11px  — minimum chrome: badges, dots, status indicators
+// sm      12px  — labels, metadata, eyebrows, counts
+// body    13px  — body text, descriptions, summaries
+// reading 14px  — primary reading: user input, episode details
+// heading 16px  — article headlines, card titles
 // display 18px+ — masthead, clock (set per-component, not tokenized)
 
 import type { CSSProperties } from "react"
@@ -21,11 +21,11 @@ export const DISPLAY = "var(--font-sohne-schmal), system-ui, sans-serif"
 // ─── Type scale tokens ──────────────────────────────────────────────────────
 
 export const TYPE = {
-  xs:      { fontSize: 10 } as CSSProperties,
-  sm:      { fontSize: 11 } as CSSProperties,
-  body:    { fontSize: 12, lineHeight: 1.6 } as CSSProperties,
-  reading: { fontSize: 13, lineHeight: 1.6 } as CSSProperties,
-  heading: { fontSize: 15, fontWeight: 600, lineHeight: 1.4 } as CSSProperties,
+  xs:      { fontSize: 11 } as CSSProperties,
+  sm:      { fontSize: 12 } as CSSProperties,
+  body:    { fontSize: 13, lineHeight: 1.6 } as CSSProperties,
+  reading: { fontSize: 14, lineHeight: 1.6 } as CSSProperties,
+  heading: { fontSize: 16, fontWeight: 600, lineHeight: 1.4 } as CSSProperties,
 }
 
 // ─── Semantic composites ────────────────────────────────────────────────────

@@ -681,7 +681,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                           )}
                           {pitch.wildcard && (
                             <span style={{
-                              padding: "1px 6px", borderRadius: 8, fontSize: 9,
+                              padding: "1px 6px", borderRadius: 8, fontSize: 11,
                               background: "rgba(184, 150, 106, 0.12)",
                               color: "var(--accent-secondary)",
                               fontWeight: 600, letterSpacing: "0.03em",
@@ -691,7 +691,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                           )}
                           {pitchStatuses[pitchKey(pitch.title)] && (
                             <span style={{
-                              padding: "1px 6px", borderRadius: 8, fontSize: 9,
+                              padding: "1px 6px", borderRadius: 8, fontSize: 11,
                               background: `${STATUS_COLORS[pitchStatuses[pitchKey(pitch.title)]]}18`,
                               color: STATUS_COLORS[pitchStatuses[pitchKey(pitch.title)]],
                               textTransform: "capitalize", fontWeight: 500,
