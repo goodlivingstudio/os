@@ -48,9 +48,18 @@ Changes how the operator thinks. Culture, craft, deep POV, sensibility-building.
 *Consumption mode: slower cadence, real attention, no daily triage pressure.*
 
 ### Positioning
-Tells the operator where to stand in the market. The discourse around design leadership, CDO roles, org design evolution, and what senior design roles are currently being hired to solve. The career market read as intelligence. This is the most underdeveloped mode in the current feed relative to the operator's five-year target.
+Tells the operator where to stand in the market. Not career advice — career intelligence. The difference: advice says what to do, intelligence says what the terrain looks like so the operator can decide for themselves.
 
-*Consumption mode: active reading, deliberation-ready, direct Cerebro input.*
+Positioning operates across four sub-domains:
+
+- **Hiring intelligence.** CDO and Head of Design searches at companies where the role carries consequence. What the JDs actually say about what the role is being hired to solve — not just the title, but the organizational problem behind it. Who's hiring, who just left, what the talent flow reveals about where design leadership is consolidating.
+- **Compensation and market dynamics.** Design leadership comp benchmarks by tier. Agency-to-in-house transition economics. Equity and advisory structures. What the market pays for the operator's specific capability profile versus adjacent ones.
+- **Org design signals.** How product/design/engineering organizational structures are evolving at institutions that matter. Where is design reporting? Who does the CDO report to? What's the span of influence? When an organization restructures around a CDO, what does the restructuring reveal about what they expect the role to solve?
+- **Reputation and visibility.** The operator's externally visible body of work — speaking, publishing, the products themselves — as positioning assets. The competitive landscape among peers at the same career stage. What's being produced by the people the operator will be measured against, and what's conspicuously absent from the operator's own output.
+
+*Priority positioning signals:* Executive search firm commentary on design leadership market. CDO appointments and departures at healthcare, pharma, and AI-native companies. Org design writing from people who've held the role. Comp benchmark reports. Conference and publication opportunities with positioning value.
+
+*Consumption mode: active reading, deliberation-ready, direct Cerebro input. This mode feeds the five-year target directly.*
 
 ---
 
