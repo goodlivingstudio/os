@@ -12,11 +12,11 @@ import type { CSSProperties } from "react"
 
 // ─── Font stacks ────────────────────────────────────────────────────────────
 
-/** Monospace — Cerebro voice only */
-export const MONO = "var(--font-geist-mono), monospace"
+/** Söhne Mono — Cerebro's voice (machine intelligence register) */
+export const MONO = "var(--font-sohne-mono), monospace"
 
-/** Editorial serif — Dispatch view headlines and editorial content */
-export const EDITORIAL = "var(--font-grenette), Georgia, serif"
+/** Söhne Breit — headlines and display type across all products */
+export const DISPLAY = "var(--font-sohne-breit), system-ui, sans-serif"
 
 // ─── Type scale tokens ──────────────────────────────────────────────────────
 

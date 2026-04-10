@@ -10,24 +10,24 @@ export const viewport: Viewport = {
   userScalable: false,
 }
 
-const geist = localFont({
-  src: "./fonts/Geist-Medium.woff2",
-  weight: "500",
-  variable: "--font-geist-sans",
-  display: "swap",
-})
-
-const geistMono = localFont({
-  src: "./fonts/GeistMono-Medium.woff2",
-  weight: "500",
-  variable: "--font-geist-mono",
-  display: "swap",
-})
-
-const grenette = localFont({
-  src: "../public/fonts/GrenettePro-Regular.ttf",
+const sohne = localFont({
+  src: "./fonts/Sohne-Buch.otf",
   weight: "400",
-  variable: "--font-grenette",
+  variable: "--font-sohne",
+  display: "swap",
+})
+
+const sohneMono = localFont({
+  src: "./fonts/SohneMono-Buch.otf",
+  weight: "400",
+  variable: "--font-sohne-mono",
+  display: "swap",
+})
+
+const sohneBreit = localFont({
+  src: "./fonts/SohneBreit-Halbfett.otf",
+  weight: "600",
+  variable: "--font-sohne-breit",
   display: "swap",
 })
 
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable} ${grenette.variable} h-full`}>
+    <html lang="en" className={`${sohne.variable} ${sohneMono.variable} ${sohneBreit.variable} h-full`}>
       <body className="h-full antialiased">
         <a href="#main-feed" className="skip-link">Skip to feed</a>
         {children}

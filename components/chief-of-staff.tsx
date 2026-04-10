@@ -168,7 +168,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
               <div
                 key={i}
                 style={{
-                  ...TYPE.sm, fontFamily: "var(--font-geist-mono), monospace",
+                  ...TYPE.sm, fontFamily: "var(--font-sohne-mono), monospace",
                   color: i === statusIdx ? "var(--accent-muted)" : "var(--text-tertiary)",
                   opacity: i === statusIdx ? 1 : 0.5,
                   animation: i === statusIdx ? "status-fade 0.2s ease both" : "none",

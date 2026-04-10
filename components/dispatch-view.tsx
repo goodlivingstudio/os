@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { Copy, Check, ArrowUpRight, X, RefreshCw, ChevronLeft, ChevronRight, Pen } from "lucide-react"
-import { TYPE, MONO, EDITORIAL, labelStyle, metaStyle } from "@/lib/styles"
+import { TYPE, MONO, DISPLAY, labelStyle, metaStyle } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
 import { renderCitedBody } from "@/components/citation"
 import type { CitationSource } from "@/lib/types"
@@ -194,7 +194,7 @@ function PerspectiveCard({ perspective, index, onDeliberate }: {
       <div style={{
         fontSize: 20,
         fontWeight: 400,
-        fontFamily: EDITORIAL,
+        fontFamily: DISPLAY,
         color: "var(--text-primary)",
         lineHeight: 1.35,
         letterSpacing: "-0.01em",
@@ -250,7 +250,7 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
           </button>
         </div>
 
-        <div style={{ fontSize: 22, fontWeight: 400, fontFamily: EDITORIAL, color: "var(--text-primary)", marginBottom: 8, lineHeight: 1.35, letterSpacing: "-0.01em" }}>{pitch.title}</div>
+        <div style={{ fontSize: 22, fontWeight: 400, fontFamily: DISPLAY, color: "var(--text-primary)", marginBottom: 8, lineHeight: 1.35, letterSpacing: "-0.01em" }}>{pitch.title}</div>
         <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7, marginBottom: isConvergence(pitch) ? 12 : 24 }}>{pitch.thesis}</div>
 
         {/* Convergence callout */}
@@ -536,11 +536,11 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
               }}>
                 New ideas and opportunities for week of {formatWeekRange(data.generatedAt)}
               </div>
-              {/* Headline — Grenette Pro display serif, centered */}
+              {/* Headline — Söhne Breit display, centered */}
               <div className="dispatch-headline" style={{
                 fontSize: 34,
                 fontWeight: 400,
-                fontFamily: EDITORIAL,
+                fontFamily: DISPLAY,
                 color: "var(--text-primary)",
                 lineHeight: 1.4,
                 letterSpacing: "-0.01em",
@@ -711,7 +711,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                         <div style={{
                           fontSize: 18,
                           fontWeight: 400,
-                          fontFamily: EDITORIAL,
+                          fontFamily: DISPLAY,
                           color: "var(--text-primary)",
                           lineHeight: 1.35,
                           letterSpacing: "-0.01em",
