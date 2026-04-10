@@ -3,6 +3,7 @@
 import Anthropic from "@anthropic-ai/sdk"
 import { INSTANCE_PREAMBLE } from "@/lib/prompts"
 import { trackUsage } from "@/lib/usage-tracker"
+import { layerLabelsSlash } from "@/lib/config"
 
 function getClient() {
   const key = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
@@ -17,22 +18,17 @@ Your task: generate exactly 3 signal cards from the podcast episodes below. Thes
 SELECTION CRITERIA:
 - Select the 3 episodes most relevant to the mandate right now
 - Prefer episodes that surface insights not available in the news feed (interviews, practitioner perspective, long-form analysis)
-- Each card should represent distinct territory
+- Each card should represent distinct territory — do not pick three signals from the same layer
 
 CARD FORMAT:
 Each card must contain:
-- headline: A sharp statement of why this episode matters. Max 12 words.
-- body: ONE sentence only. Max 30 words. What this episode reveals or demands.
+- layer: Primary intelligence layer (${layerLabelsSlash()}) — uppercase
+- headline: A sharp declarative statement of the signal (not a news headline — a synthesis statement). Max 12 words.
+- body: 2-3 sentences. What this episode reveals. Why it matters to this operator specifically. What it might demand.
 
 TONE: Direct. The card should make someone want to listen immediately.
 
-FORMAT — return exactly three signals separated by the literal string |||
-
-Each signal must be:
-LINE 1: The label (2-4 words, uppercase)
-LINE 2: One sentence with the episode reference.
-
-Nothing else. No preamble. No sign-off. Three signals, one ||| between each.`
+Return as a JSON array with exactly 3 items. No preamble. No sign-off. Valid JSON only.`
 
 interface EpisodeInput {
   title: string
@@ -48,9 +44,9 @@ export async function POST(req: Request) {
     if (!episodes?.length) {
       return Response.json({
         signals: [
-          { label: "NO EPISODES", body: "", sources: [] },
-          { label: "—", body: "", sources: [] },
-          { label: "—", body: "", sources: [] },
+          { headline: "FEED UNAVAILABLE", body: "No episodes to analyze.", layer: "", sources: [] },
+          { headline: "—", body: "", layer: "", sources: [] },
+          { headline: "—", body: "", layer: "", sources: [] },
         ],
       })
     }
@@ -69,17 +65,27 @@ export async function POST(req: Request) {
     trackUsage({ endpoint: "audio-brief", provider: "anthropic", model: "claude-haiku-4-5-20251001", inputTokens: response.usage?.input_tokens, outputTokens: response.usage?.output_tokens }).catch(() => {})
 
     const text = response.content[0]?.type === "text" ? response.content[0].text.trim() : ""
-    const parts = text.split("|||").map(s => s.trim()).filter(Boolean)
 
-    const signals = parts.slice(0, 3).map(part => {
-      const lines = part.split("\n").map(l => l.trim()).filter(Boolean)
-      const label = lines[0] || "SIGNAL"
-      const body = lines.slice(1).join(" ").trim() || ""
-      return { label, body, sources: [] }
-    })
+    let parsed: { headline?: string; body?: string; layer?: string; label?: string }[] = []
+    try {
+      const jsonText = text.replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/, "")
+      parsed = JSON.parse(jsonText)
+    } catch {
+      const match = text.match(/\[[\s\S]*\]/)
+      if (match) {
+        try { parsed = JSON.parse(match[0]) } catch { /* */ }
+      }
+    }
+
+    const signals = parsed.slice(0, 3).map(item => ({
+      headline: item.headline || item.label || "SIGNAL",
+      body: item.body || "",
+      layer: item.layer || "",
+      sources: [],
+    }))
 
     while (signals.length < 3) {
-      signals.push({ label: "—", body: "", sources: [] })
+      signals.push({ headline: "—", body: "", layer: "", sources: [] })
     }
 
     return Response.json({ signals })
@@ -87,9 +93,9 @@ export async function POST(req: Request) {
     const message = err instanceof Error ? err.message : String(err)
     return Response.json({
       signals: [
-        { label: "BRIEF ERROR", body: message, sources: [] },
-        { label: "—", body: "", sources: [] },
-        { label: "—", body: "", sources: [] },
+        { headline: "BRIEF ERROR", body: message, layer: "", sources: [] },
+        { headline: "—", body: "", layer: "", sources: [] },
+        { headline: "—", body: "", layer: "", sources: [] },
       ],
     })
   }

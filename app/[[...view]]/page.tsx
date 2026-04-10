@@ -652,7 +652,7 @@ export default function Page() {
           </div>
         ) : (
           /* ── Desktop: pills ── */
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 2, marginBottom: 8 }}>
             <button
               onClick={() => setActiveLayers(new Set())}
               style={{
