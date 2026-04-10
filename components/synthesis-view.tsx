@@ -8,6 +8,10 @@ import type { Article } from "@/lib/types"
 import { TYPE, MONO, DISPLAY, labelStyle } from "@/lib/styles"
 import { renderCitedBody } from "@/components/citation"
 
+const LAYER_LABELS: Record<string, string> = Object.fromEntries(
+  instanceConfig.layers.map(l => [l.id, l.label])
+)
+
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 interface SynthesisViewProps {
