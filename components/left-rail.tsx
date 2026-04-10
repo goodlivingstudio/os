@@ -446,12 +446,13 @@ export function LeftRail({
                   title={item.label}
                   style={{
                     display: "flex", alignItems: "center", gap: 10, width: "100%",
-                    padding: "10px 16px", background: isActive ? "var(--bg-elevated)" : "transparent",
-                    border: "none", cursor: "pointer", transition: "background 0.15s",
+                    padding: "10px 16px",
+                    background: isActive ? "rgba(255,255,255,0.06)" : "transparent",
+                    border: "none", cursor: "pointer", transition: "background 0.15s, color 0.15s",
                     color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
                   }}
-                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
-                  onMouseLeave={e => { e.currentTarget.style.background = isActive ? "var(--bg-elevated)" : "transparent" }}
+                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "rgba(255,255,255,0.04)" }}
+                  onMouseLeave={e => { e.currentTarget.style.background = isActive ? "rgba(255,255,255,0.06)" : "transparent" }}
                 >
                   <item.Icon size={16} strokeWidth={1.5} />
                   <span style={{ fontSize: 13, fontWeight: isActive ? 500 : 400 }}>{item.label}</span>
@@ -483,14 +484,14 @@ export function LeftRail({
                   style={{
                     display: "flex", alignItems: "center", gap: 10, width: "100%",
                     padding: "10px 16px",
-                    background: isActive ? "var(--bg-elevated)" : "transparent",
+                    background: isActive ? "rgba(255,255,255,0.06)" : "transparent",
                     border: "none", cursor: "pointer", transition: "background 0.15s, color 0.15s",
                     fontSize: 13,
                     color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
                     fontWeight: isActive ? 500 : 400,
                   }}
-                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
-                  onMouseLeave={e => { e.currentTarget.style.background = isActive ? "var(--bg-elevated)" : "transparent" }}
+                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "rgba(255,255,255,0.04)" }}
+                  onMouseLeave={e => { e.currentTarget.style.background = isActive ? "rgba(255,255,255,0.06)" : "transparent" }}
                 >
                   <item.Icon size={16} strokeWidth={1.5} />
                   <span>{item.label}</span>
