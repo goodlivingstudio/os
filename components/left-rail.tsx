@@ -846,8 +846,8 @@ export function LeftRail({
       )}
       </>}
 
-      {/* ═══ MODE TOGGLE — shared between both modes ═══ */}
-      <div style={{
+      {/* ═══ MODE TOGGLE — compact mode only (expanded uses header chevron) ═══ */}
+      {railMode === "compact" && <div style={{
         flexShrink: 0, padding: "8px 16px 12px", borderTop: "1px solid var(--border)",
         display: "flex", alignItems: "center", justifyContent: "center",
       }}>
@@ -872,7 +872,7 @@ export function LeftRail({
             transform: railMode === "expanded" ? "translateX(16px)" : "translateX(0)",
           }} />
         </button>
-      </div>
+      </div>}
     </aside>
   )
 }
