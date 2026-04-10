@@ -73,7 +73,7 @@ Every piece of system knowledge has exactly one canonical home. Other documents 
 ---
 
 ### SYSTEM-BRIEF.md — *The Look*
-**Owns:** Art direction ("In wildness is the preservation of the world"). The Ranger Station design philosophy. Signal/synthesis duality expressed through typographic register (Geist for sources, Grenette Pro for ranger intelligence). Passage commitments. Five biome themes (Cascadia, Mesa, Marina, Prairie, Bayou). Token architecture. "What Explore is not" boundaries. Agent instructions for UI generation.
+**Owns:** Art direction ("In wildness is the preservation of the world"). The Ranger Station design philosophy. Signal/synthesis duality expressed through typographic register (Söhne for sources, Söhne Mono for ranger intelligence). Passage commitments. Five biome themes (Cascadia, Mesa, Marina, Prairie, Bayou). Token architecture. "What Explore is not" boundaries. Agent instructions for UI generation.
 
 **Rule:** If you need to know *how the interface should look and feel*, SYSTEM-BRIEF is the answer. The art direction is specific and load-bearing — read it completely before generating any UI.
 

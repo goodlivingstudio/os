@@ -116,7 +116,7 @@ When generating UI for Explore:
 1. **Read this document completely before writing any code.** The art direction is specific and load-bearing. Do not default to generic UI patterns.
 2. **Use the Cascadia theme as the default** unless explicitly told otherwise. Cascadia is the canonical expression of Explore's visual identity.
 3. **Check every element against the accent rule.** If you're using the accent color, the system should be doing analytical work at that element. If it's decorative, remove the accent.
-4. **Distinguish source from synthesis typographically.** Source material in Geist (sans). System intelligence in Grenette Pro (serif). No exceptions.
+4. **Distinguish source from synthesis typographically.** Source material in Söhne (proportional). System intelligence in Söhne Mono (monospace). No exceptions.
 5. **Spacing defaults to generous.** When in doubt, add more space. Explore's interface should never feel cramped.
 6. **No literal outdoor imagery in the UI itself.** The gallery curates landscape photography and generated imagery. The UI chrome is abstract and atmospheric — earned from the land's palette but never depicting it literally.
 7. **Reference `../os/DOCTRINE.md`** for the shared design convictions. Restraint, craft, source/synthesis visibility, visual surfaces earning their place — all apply without exception.
