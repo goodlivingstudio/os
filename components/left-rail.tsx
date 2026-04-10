@@ -376,14 +376,31 @@ export function LeftRail({
       {/* ═══ EXPANDED MODE ═══ */}
       {railMode === "expanded" && (
         <div style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
-          {/* Header — matches 40px height of Cerebro + Synthesis headers */}
+          {/* Header — 40px, matches Cerebro + Synthesis. Three-column: title | time | toggle */}
           <div style={{
             height: 40, flexShrink: 0,
-            display: "flex", alignItems: "center", justifyContent: "space-between",
+            display: "grid", gridTemplateColumns: "1fr auto 1fr",
+            alignItems: "center",
             padding: "0 16px", borderBottom: "1px solid var(--border)",
           }}>
             <span style={{ ...labelStyle, marginBottom: 0 }}>{instanceConfig.branding.name}</span>
             <span style={{ fontFamily: "var(--font-sohne-mono)", fontSize: 11, color: "var(--text-tertiary)" }}>{time}</span>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <button
+                onClick={toggleRailMode}
+                title="Switch to compact view (or press [)"
+                style={{
+                  background: "transparent", border: "none", cursor: "pointer",
+                  color: "var(--text-tertiary)", padding: 4, display: "flex",
+                  alignItems: "center", justifyContent: "center", borderRadius: 4,
+                  transition: "color 0.15s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)" }}
+                onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)" }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+            </div>
           </div>
 
           {/* View navigation */}
