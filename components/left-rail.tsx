@@ -403,22 +403,28 @@ export function LeftRail({
                 {([
                   { id: "urgency" as const, label: "Triage" },
                   { id: "layer" as const,   label: "Explore" },
-                ]).map((mode, i) => (
-                  <span key={mode.id}>
-                    {i > 0 && <span style={{ color: "var(--border)", margin: "0 4px" }}>/</span>}
-                    <button
-                      onClick={() => onSortChange(mode.id)}
-                      style={{
-                        background: "transparent", border: "none", cursor: "pointer",
-                        fontSize: 11, fontWeight: sortBy === mode.id ? 500 : 400,
-                        color: sortBy === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
-                        padding: 0, transition: "color 0.15s",
-                      }}
-                    >
-                      {mode.label}
-                    </button>
-                  </span>
-                ))}
+                ]).map((mode, i) => {
+                  const isActive = sortBy === mode.id
+                  return (
+                    <span key={mode.id}>
+                      {i > 0 && <span style={{ color: "var(--border)", margin: "0 4px" }}>/</span>}
+                      <button
+                        onClick={() => onSortChange(mode.id)}
+                        style={{
+                          background: "transparent", border: "none", cursor: "pointer",
+                          fontSize: 11, fontWeight: isActive ? 600 : 400,
+                          color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                          padding: "2px 4px", borderRadius: 4,
+                          transition: "color 0.15s, background 0.15s",
+                        }}
+                        onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = "var(--text-primary)" }}
+                        onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = "var(--text-tertiary)" }}
+                      >
+                        {mode.label}
+                      </button>
+                    </span>
+                  )
+                })}
               </div>
             )}
           </div>
