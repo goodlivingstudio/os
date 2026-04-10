@@ -482,13 +482,15 @@ export function LeftRail({
                   title={item.label}
                   style={{
                     display: "flex", alignItems: "center", gap: 10, width: "100%",
-                    padding: "10px 16px", background: "transparent",
-                    border: "none", cursor: "pointer", transition: "background 0.15s",
-                    fontSize: 13, color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                    padding: "10px 16px",
+                    background: isActive ? "var(--bg-elevated)" : "transparent",
+                    border: "none", cursor: "pointer", transition: "background 0.15s, color 0.15s",
+                    fontSize: 13,
+                    color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
                     fontWeight: isActive ? 500 : 400,
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
+                  onMouseLeave={e => { e.currentTarget.style.background = isActive ? "var(--bg-elevated)" : "transparent" }}
                 >
                   <item.Icon size={16} strokeWidth={1.5} />
                   <span>{item.label}</span>
