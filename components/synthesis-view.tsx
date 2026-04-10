@@ -295,10 +295,10 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ SIGNAL VELOCITY ─ */}
             {data.velocity && (data.velocity.accelerating.length > 0 || data.velocity.decelerating.length > 0) && (
               <div style={{
-                padding: "32px 0 16px",
+                padding: "40px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 12 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 12, fontSize: 12 }}>
                   Signal Velocity
                 </div>
                 <div className="synthesis-velocity" style={{ display: "flex", gap: 12 }}>
@@ -339,7 +339,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ CONVERGENCES ─ */}
             {data.patterns.length > 0 && (
               <div style={{
-                paddingTop: 32,
+                paddingTop: 40,
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 200ms both",
               }}>
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 8, fontSize: 12 }}>
@@ -400,10 +400,10 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ URGENCY HEATMAP ─ */}
             {!isTriage && data.heatmap && data.heatmap.layers.length > 0 && (
               <div style={{
-                padding: "32px 0 16px",
+                padding: "40px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 300ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 12 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 12, fontSize: 12 }}>
                   Urgency Heatmap
                 </div>
                 <div className="synthesis-heatmap" style={{
@@ -462,7 +462,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ BLIND SPOTS — 3 cards ─ */}
             {data.blindSpots && data.blindSpots.length > 0 && (
               <div style={{
-                padding: isMobile ? "32px 0 8px 16px" : "32px 0 8px",
+                padding: isMobile ? "40px 0 0 16px" : "40px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 400ms both",
               }}>
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 8, fontSize: 12, paddingLeft: isMobile ? 4 : 0 }}>
@@ -507,10 +507,10 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ ASK CEREBRO — 4 cards ─ */}
             {cerebroTopics.length > 0 && (
               <div style={{
-                padding: "32px 0 16px",
+                padding: "40px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 500ms both",
               }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 14 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
                   <ArrowUpRight size={12} style={{ color: "var(--accent-secondary)" }} />
                   <span style={{ ...labelStyle, letterSpacing: "0.04em", fontSize: 12, color: "var(--accent-secondary)" }}>
                     Ask Cerebro
