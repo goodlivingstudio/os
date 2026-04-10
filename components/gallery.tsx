@@ -398,7 +398,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                     style={{
                       display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
                       padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                      ...TYPE.sm, color: !activeMood ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: !activeMood ? 600 : 400,
+                      ...TYPE.sm, color: !activeMood ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
                     }}
                   >
                     <span>All</span>
@@ -415,7 +415,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                         style={{
                           display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
                           padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                          ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: isActive ? 600 : 400,
+                          ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
                         }}
                       >
                         <span style={{ display: "flex", alignItems: "center", gap: 6 }}>

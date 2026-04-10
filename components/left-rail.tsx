@@ -305,7 +305,7 @@ function ExpandedNavButton({ icon, label, isActive, onClick }: {
         borderLeft: isActive ? "2px solid var(--accent-secondary)" : "2px solid transparent",
         cursor: "pointer", transition: "background 0.15s, color 0.15s, border-color 0.15s",
         color: isActive || pressed ? "var(--text-primary)" : hovered ? "var(--text-secondary)" : "var(--text-tertiary)",
-        fontSize: 13, fontWeight: isActive ? 500 : 400,
+        fontSize: 13, fontWeight: 400,
       }}
     >
       {icon}

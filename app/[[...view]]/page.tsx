@@ -585,7 +585,7 @@ export default function Page() {
                     style={{
                       display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
                       padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                      ...TYPE.sm, color: activeLayers.size === 0 ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: activeLayers.size === 0 ? 600 : 400,
+                      ...TYPE.sm, color: activeLayers.size === 0 ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
                     }}
                   >
                     <span>All</span>
@@ -610,7 +610,7 @@ export default function Page() {
                         style={{
                           display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
                           padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                          ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: isActive ? 600 : 400,
+                          ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
                         }}
                       >
                         <span>{cat.label}</span>
@@ -664,7 +664,7 @@ export default function Page() {
               onMouseEnter={e => { if (activeLayers.size > 0) e.currentTarget.style.background = "var(--bg-elevated)" }}
               onMouseLeave={e => { if (activeLayers.size > 0) e.currentTarget.style.background = "transparent" }}
             >
-              <span style={{ ...TYPE.sm, color: activeLayers.size === 0 ? "var(--accent-secondary)" : "var(--text-tertiary)", fontWeight: activeLayers.size === 0 ? 600 : 400 }}>
+              <span style={{ ...TYPE.sm, color: activeLayers.size === 0 ? "var(--accent-secondary)" : "var(--text-tertiary)", fontWeight: 400 }}>
                 All
               </span>
               <span style={{ ...TYPE.xs, fontVariantNumeric: "tabular-nums", color: activeLayers.size === 0 ? "var(--accent-muted)" : "var(--text-tertiary)", opacity: 0.5 }}>
@@ -693,7 +693,7 @@ export default function Page() {
                   onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
                   onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? "var(--accent-primary)" : "transparent" }}
                 >
-                  <span style={{ ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)", fontWeight: isActive ? 600 : 400 }}>
+                  <span style={{ ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)", fontWeight: 400 }}>
                     {cat.label}
                   </span>
                   <span style={{ ...TYPE.xs, fontVariantNumeric: "tabular-nums", color: isActive ? "var(--accent-muted)" : "var(--text-tertiary)", opacity: 0.5 }}>
@@ -863,7 +863,7 @@ export default function Page() {
                           style={{
                             flex: 1, padding: "6px 0", borderRadius: 5, border: "none",
                             background: feedImageMode === mode.id ? "var(--bg-surface)" : "transparent",
-                            ...TYPE.xs, fontWeight: feedImageMode === mode.id ? 600 : 400,
+                            ...TYPE.xs, fontWeight: 400,
                             color: feedImageMode === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
                             textTransform: "uppercase", letterSpacing: "0.04em",
                             cursor: "pointer", transition: "all 0.15s",
@@ -888,7 +888,7 @@ export default function Page() {
                           style={{
                             flex: 1, padding: "6px 0", borderRadius: 5, border: "none",
                             background: showDcos === mode.id ? "var(--bg-surface)" : "transparent",
-                            ...TYPE.xs, fontWeight: showDcos === mode.id ? 600 : 400,
+                            ...TYPE.xs, fontWeight: 400,
                             color: showDcos === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
                             textTransform: "uppercase", letterSpacing: "0.04em",
                             cursor: "pointer", transition: "all 0.15s",
@@ -920,7 +920,7 @@ export default function Page() {
                             ...TYPE.sm,
                             background: isCurrent ? "var(--accent-secondary)" : "transparent",
                             color: isCurrent ? "var(--bg-primary)" : isNavigable ? "var(--text-secondary)" : "var(--text-tertiary)",
-                            fontWeight: isCurrent ? 600 : 400,
+                            fontWeight: 400,
                             cursor: isNavigable ? "pointer" : "default",
                             opacity: isNavigable || isCurrent ? 1 : 0.6,
                             transition: "all 0.15s",
