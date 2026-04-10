@@ -266,18 +266,19 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
 
             {/* ─ WEEKLY SHIFT banner ─ */}
             <div style={{
-              background: "var(--bg-primary)", padding: "28px 0",
+              background: "var(--bg-primary)", padding: "40px 0",
+              minHeight: 160,
               display: "flex", flexDirection: "column", justifyContent: "center",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
-              <div style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 10 }}>
+              <div style={{ ...labelStyle, marginBottom: 8 }}>
                 Weekly Shift
               </div>
-              <div style={{ fontSize: 28, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1 }}>
+              <div style={{ fontSize: 32, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.05 }}>
                 {data.headline || data.briefing.split(/[.!?]\s/)[0]}
               </div>
               {data.headline && data.briefing && (
-                <div style={{ ...TYPE.reading, color: "var(--text-secondary)", lineHeight: 1.4, marginTop: 10 }}>
+                <div style={{ ...TYPE.reading, color: "var(--text-secondary)", lineHeight: 1.4, marginTop: 12 }}>
                   {data.briefing}
                 </div>
               )}
@@ -374,13 +375,9 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         {/* Eyebrow: layers + signal count */}
-                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                          <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>
-                            {pattern.layers.map(l => LAYER_LABELS[l] || l).join(" · ")}
-                          </span>
-                          <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-                            {pattern.signalCount} Signals
-                          </span>
+                        <div style={{ ...labelStyle, marginBottom: 4 }}>
+                          {pattern.layers.map(l => LAYER_LABELS[l] || l).join(" · ")}
+                          <span style={{ opacity: 0.5, marginLeft: 6 }}>({pattern.signalCount})</span>
                         </div>
                         {/* Title */}
                         <div style={{ fontSize: 28, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1 }}>
