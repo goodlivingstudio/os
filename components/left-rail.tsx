@@ -4,8 +4,8 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import { Radio, AudioLines, Blend, Newspaper, Settings, Aperture, Keyboard, FileDown, Activity, X } from "lucide-react"
 import type { Article, FeedHealth, ViewMode } from "@/lib/types"
 import { LAYER_CONFIG, LAYER_COLOR } from "@/lib/types"
-import { TYPE, metaStyle, labelStyle } from "@/lib/styles"
-import instanceConfig from "@/lib/config"
+import { TYPE, DISPLAY, metaStyle, labelStyle } from "@/lib/styles"
+import instanceConfig, { storageKey } from "@/lib/config"
 
 // ─── Live Clock — 24hr with seconds ──────────────────────────────────────────
 
@@ -322,6 +322,32 @@ export function LeftRail({
   pinnedArticles?: Article[]
   onUnpinArticle?: (articleId: string) => void
 }) {
+  const RAIL_MODE_KEY = storageKey("rail-mode")
+  const [railMode, setRailMode] = useState<"compact" | "expanded">("compact")
+  useEffect(() => {
+    const saved = localStorage.getItem(RAIL_MODE_KEY)
+    if (saved === "expanded") setRailMode("expanded")
+  }, [RAIL_MODE_KEY])
+  const toggleRailMode = useCallback(() => {
+    setRailMode(prev => {
+      const next = prev === "compact" ? "expanded" : "compact"
+      localStorage.setItem(RAIL_MODE_KEY, next)
+      return next
+    })
+  }, [RAIL_MODE_KEY])
+
+  // Keyboard shortcut: [ to toggle rail mode
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "[" && !e.metaKey && !e.ctrlKey && !e.altKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
+        e.preventDefault()
+        toggleRailMode()
+      }
+    }
+    window.addEventListener("keydown", handler)
+    return () => window.removeEventListener("keydown", handler)
+  }, [toggleRailMode])
+
   const time = useClock()
   const now  = new Date()
   const date = now.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
@@ -347,6 +373,87 @@ export function LeftRail({
         overflow: "hidden",
       }}
     >
+      {/* ═══ EXPANDED MODE ═══ */}
+      {railMode === "expanded" && (
+        <div style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
+          {/* Header */}
+          <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--border)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span style={{ ...labelStyle, marginBottom: 0 }}>{instanceConfig.branding.name}</span>
+              <span style={{ fontFamily: "var(--font-sohne-mono)", fontSize: 11, color: "var(--text-tertiary)" }}>{time}</span>
+            </div>
+          </div>
+
+          {/* View navigation */}
+          <div style={{ flex: 1, padding: "8px 0" }}>
+            {([
+              { id: "signal" as const,    Icon: Radio,      label: "Signal" },
+              { id: "synthesis" as const, Icon: Blend,      label: "Synthesis" },
+              { id: "audio" as const,     Icon: AudioLines, label: "Audio" },
+              { id: "dispatch" as const,  Icon: Newspaper,  label: "Dispatch" },
+              { id: "gallery" as const,   Icon: Aperture,   label: "Gallery", action: "gallery" },
+            ]).map(item => {
+              const isActive = item.action === "gallery" ? false : viewMode === item.id
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => item.action === "gallery" && onGalleryOpen ? onGalleryOpen() : onViewChange(item.id as ViewMode)}
+                  title={item.label}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 10, width: "100%",
+                    padding: "10px 16px", background: isActive ? "var(--bg-elevated)" : "transparent",
+                    border: "none", cursor: "pointer", transition: "background 0.15s",
+                    color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
+                  }}
+                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
+                  onMouseLeave={e => { e.currentTarget.style.background = isActive ? "var(--bg-elevated)" : "transparent" }}
+                >
+                  <item.Icon size={16} strokeWidth={1.5} />
+                  <span style={{ fontSize: 13, fontWeight: isActive ? 500 : 400 }}>{item.label}</span>
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Utility bar */}
+          <div style={{ borderTop: "1px solid var(--border)", padding: "8px 0" }}>
+            {([
+              { id: "config" as const,    Icon: Settings,  label: "Config",       isView: true },
+              { id: "pulse" as const,     Icon: Activity,  label: "Source Pulse",  isView: true },
+              { id: "shortcuts" as const, Icon: Keyboard,  label: "Shortcuts",    isView: false },
+              { id: "export" as const,    Icon: FileDown,  label: "Export",        isView: false },
+            ]).map(item => {
+              const isActive = item.isView && viewMode === item.id
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    if (item.id === "shortcuts" && onHotkeysOpen) onHotkeysOpen()
+                    else if (item.id === "export" && onExportOpen) onExportOpen()
+                    else if (item.isView) onViewChange(item.id as ViewMode)
+                  }}
+                  title={item.label}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 10, width: "100%",
+                    padding: "8px 16px", background: "transparent",
+                    border: "none", cursor: "pointer", transition: "background 0.15s",
+                    fontSize: 12, color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                    fontWeight: isActive ? 500 : 400,
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+                >
+                  <item.Icon size={14} strokeWidth={1.5} />
+                  <span>{item.label}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ═══ COMPACT MODE (original) ═══ */}
+      {railMode === "compact" && <>
       {/* ── Identity zone ── */}
       <div style={{ padding: "24px 16px 20px" }}>
         <h1
@@ -648,7 +755,8 @@ export function LeftRail({
 
       </nav>
 
-      {/* Bottom bar — Config, Pulse, Shortcuts, Export, Dispatch */}
+      {/* Bottom bar — Config, Pulse, Shortcuts, Export, Dispatch (compact only) */}
+      {railMode === "compact" && (
       <div style={{ flexShrink: 0, padding: "12px 10px", borderTop: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         {([
           { id: "config" as const,   Icon: Settings,  title: "Configuration",        isView: true },
@@ -690,6 +798,36 @@ export function LeftRail({
             </button>
           )
         })}
+      </div>
+      )}
+      </>}
+
+      {/* ═══ MODE TOGGLE — shared between both modes ═══ */}
+      <div style={{
+        flexShrink: 0, padding: "8px 16px 12px", borderTop: "1px solid var(--border)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}>
+        <button
+          onClick={toggleRailMode}
+          title={`Switch to ${railMode === "compact" ? "expanded" : "compact"} view (or press [)`}
+          aria-label={`Switch to ${railMode === "compact" ? "expanded" : "compact"} rail mode`}
+          style={{
+            display: "flex", alignItems: "center",
+            background: "var(--bg-elevated)", border: "none", borderRadius: 10,
+            padding: 2, cursor: "pointer", position: "relative",
+            width: 36, height: 20,
+            transition: "background 0.15s",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = "var(--border)" }}
+          onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+        >
+          <span style={{
+            width: 16, height: 16, borderRadius: 8,
+            background: "var(--text-tertiary)",
+            transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+            transform: railMode === "expanded" ? "translateX(16px)" : "translateX(0)",
+          }} />
+        </button>
       </div>
     </aside>
   )
