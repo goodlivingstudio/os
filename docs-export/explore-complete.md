@@ -415,8 +415,8 @@ Color is earned from the land. Each biome theme defines ten semantic color slots
 
 Two faces, two registers:
 
-- **The reading face** — body text, source material, article content. Set in the OS's shared type system (Geist). Clean, neutral, high legibility. This is the world's voice.
-- **The intelligence face** — ranger briefings, synthesis, annotations, Cerebro responses. Set in the serif complement (Grenette Pro). This is the system's voice. The typographic shift from sans to serif is how the reader knows the ranger is speaking.
+- **The reading face** — body text, source material, article content. Set in Söhne. Clean, neutral, high legibility. This is the world's voice — the operator's voice, the sources' voice, the voice of what arrived from outside.
+- **The intelligence face** — ranger briefings, synthesis, annotations, Cerebro responses. Set in Söhne Mono. This is the system's voice. The typographic shift from proportional to monospace is how the reader knows the ranger is speaking.
 
 ### Spacing
 

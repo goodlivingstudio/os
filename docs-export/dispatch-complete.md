@@ -366,9 +366,9 @@ The accent is **never decorative**. If an element uses the accent color, Cerebro
 
 The typography system encodes the Signal/Synthesis duality:
 
-- **Geist** — the signal voice. Used for: headlines, article summaries, operator input, episode titles, feed content, and any text that arrived from the world or was written by the operator. Its character says: *this came from outside the machine.*
+- **Söhne** — the signal voice. Used for: headlines, article summaries, operator input, episode titles, feed content, and any text that arrived from the world or was written by the operator. Its character says: *this came from outside the machine.*
 
-- **Geist Mono** — the synthesis voice. Used for: Cerebro briefings, signal analysis, pattern descriptions, provocation text, section labels, system status, and any content the machine produced. Its character says: *the machine processed this.*
+- **Söhne Mono** — the synthesis voice. Used for: Cerebro briefings, signal analysis, pattern descriptions, provocation text, section labels, system status, and any content the machine produced. Its character says: *the machine processed this.*
 
 This split is **semantic, not decorative**. It embodies the core duality — Signal and Synthesis made typographically visible. Do not mix them within a single card. A card is either signal or synthesis. If you are unsure which typeface to use, ask: "Did this come from the world, or did the machine produce it?"
 
@@ -466,16 +466,16 @@ Derived through split-complementary color theory anchored to Mineral's warm ambe
 
 | Role | Family | Weight | Size | Line Height | Voice |
 |------|--------|--------|------|-------------|-------|
-| Page title | Geist | 400 | 32px | 1.15 | Signal |
-| Card heading | Geist | 600 | 22px | 1 | Signal |
-| Feed headline | Geist | 600 | 15px | 21px | Signal |
-| Signal body | Geist | 400 | 13px | 20.8px | Signal |
-| Ticker text | Geist | 400 | 12.5px | — | Signal |
-| Eyebrow metadata | Geist | 400 | 10px | — | Signal |
-| Synthesis body | Geist Mono | 500 | 12px | 19px | Synthesis |
-| Cerebro label | Geist Mono | 500 | 10px | — | Synthesis (uppercase, accent color) |
-| System status | Geist Mono | 500 | 11px | — | Synthesis (uppercase) |
-| Category badge | Geist | 500 | 9px | — | Signal (uppercase) |
+| Page title | Söhne | 400 | 32px | 1.15 | Signal |
+| Card heading | Söhne | 600 | 22px | 1 | Signal |
+| Feed headline | Söhne | 600 | 15px | 21px | Signal |
+| Signal body | Söhne | 400 | 13px | 20.8px | Signal |
+| Ticker text | Söhne | 400 | 12.5px | — | Signal |
+| Eyebrow metadata | Söhne | 400 | 10px | — | Signal |
+| Synthesis body | Söhne Mono | 500 | 12px | 19px | Synthesis |
+| Cerebro label | Söhne Mono | 500 | 10px | — | Synthesis (uppercase, accent color) |
+| System status | Söhne Mono | 500 | 11px | — | Synthesis (uppercase) |
+| Category badge | Söhne | 500 | 9px | — | Signal (uppercase) |
 
 ### Spacing
 
@@ -515,7 +515,7 @@ Derived through split-complementary color theory anchored to Mineral's warm ambe
 Every component must:
 
 1. **Use CSS variables, never hardcode values.** No hex colors, no pixel values for spacing in component files. Everything references the token system via `var(--token-name)`.
-2. **Respect the voice assignment.** Components displaying signal content use Geist. Components displaying synthesis content use Geist Mono. The typeface choice documents the content's origin.
+2. **Respect the voice assignment.** Components displaying signal content use Söhne. Components displaying synthesis content use Söhne Mono. The typeface choice documents the content's origin.
 3. **Use only the four radius tokens.** 4px, 8px, 14px, or 9999px. If none of these feel right, reconsider the component's structure.
 4. **Label machine intelligence.** Every Cerebro section label uses `accent-secondary` color. This is the consistent marker that says "the machine processed this."
 5. **Organize by voice.** Cards are either signal or synthesis — never mixed. The spatial grouping on a page should cluster signal cards together and synthesis cards together.
@@ -786,8 +786,8 @@ All system prompts import from `lib/prompts.ts`:
 ## DESIGN SYSTEM
 
 ### Typography
-- **Geist Sans** — all interface text (labels, metadata, headlines, body)
-- **Geist Mono** — Cerebro voice only (chat responses, processing animations, diagnostics terminal, DCOS/Cerebro/Dispatch headers)
+- **Söhne** — all interface text (labels, metadata, headlines, body)
+- **Söhne Mono** — Cerebro voice only (chat responses, processing animations, diagnostics terminal, DCOS/Cerebro/Dispatch headers)
 - **Type scale:** 6 tokens defined in `lib/styles.ts`
   - `TYPE.xs` (10px) — badges, dots
   - `TYPE.sm` (11px) — labels, metadata
@@ -1301,7 +1301,7 @@ The test is not "does this look good." The test is: **does this look like it bel
 Dispatch headlines use 600 (semibold). Never 700, never 800, never "font-bold" in Tailwind. Heavy weights signal urgency and retail energy. Dispatch is composed and unhurried. If something needs emphasis, it earns it through hierarchy and position, not weight.
 
 ### Never mix voice typefaces within a single card
-A card is either signal (Geist) or synthesis (Geist Mono). Never both. If you are unsure which typeface to use, ask: "Did this come from the world, or did the machine produce it?" That answer determines the typeface. There is no third option.
+A card is either signal (Söhne) or synthesis (Söhne Mono). Never both. If you are unsure which typeface to use, ask: "Did this come from the world, or did the machine produce it?" That answer determines the typeface. There is no third option.
 
 ### Never use decorative or display typefaces
 No serif accent fonts. No handwritten fonts. No display faces for "personality." Dispatch has two typefaces and they are semantically assigned. A third typeface breaks the voice system and makes the interface feel themed rather than systematic.
@@ -1361,7 +1361,7 @@ No success toasts with checkmarks. No "Great choice!" confirmations. No confetti
 No pulsing notification dots. No bouncing badges. No shake animations on form errors. The only animation vocabulary in Dispatch is the staggered `signal-reveal` entrance and subtle hover state shifts. Urgency is communicated through scoring and language, never through animation theater.
 
 ### Never create generic empty states with illustrations
-No sad-face icons. No "Nothing here yet!" with a cartoon. Empty states in Dispatch should either be invisible (the section simply doesn't appear) or carry a single line of system text in Geist Mono at `text-tertiary`. The machine acknowledges absence without performing friendliness about it.
+No sad-face icons. No "Nothing here yet!" with a cartoon. Empty states in Dispatch should either be invisible (the section simply doesn't appear) or carry a single line of system text in Söhne Mono at `text-tertiary`. The machine acknowledges absence without performing friendliness about it.
 
 ### Never add tooltips or info icons to explain UI
 If a component requires an (i) icon with a hover tooltip to explain what it does, the component has failed. The interface should be self-evident through labeling, hierarchy, and spatial logic. Tooltip-driven UI is a sign that the visual language isn't doing its job.
@@ -2194,7 +2194,7 @@ Updated: 2026-04-02
 - Dispatch: Weekly content pitch pipeline (4–5 pitches with platform targeting)
 
 ### Design System
-- Typography: Geist Sans everywhere, Mono reserved for Cerebro voice
+- Typography: Söhne everywhere, Söhne Mono reserved for Cerebro voice
 - Type scale: 6 tokens (xs / sm / body / reading / heading / display)
 - Letter-spacing: 0.04em on all section labels globally
 - Card system: 12px radius, 8px gaps, bg-surface fill, uniform across all views

@@ -82,7 +82,7 @@ Updated: 2026-04-02
 - Dispatch: Weekly content pitch pipeline (4–5 pitches with platform targeting)
 
 ### Design System
-- Typography: Geist Sans everywhere, Mono reserved for Cerebro voice
+- Typography: Söhne everywhere, Söhne Mono reserved for Cerebro voice
 - Type scale: 6 tokens (xs / sm / body / reading / heading / display)
 - Letter-spacing: 0.04em on all section labels globally
 - Card system: 12px radius, 8px gaps, bg-surface fill, uniform across all views

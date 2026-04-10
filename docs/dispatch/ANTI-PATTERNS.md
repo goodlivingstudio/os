@@ -23,7 +23,7 @@ The test is not "does this look good." The test is: **does this look like it bel
 Dispatch headlines use 600 (semibold). Never 700, never 800, never "font-bold" in Tailwind. Heavy weights signal urgency and retail energy. Dispatch is composed and unhurried. If something needs emphasis, it earns it through hierarchy and position, not weight.
 
 ### Never mix voice typefaces within a single card
-A card is either signal (Geist) or synthesis (Geist Mono). Never both. If you are unsure which typeface to use, ask: "Did this come from the world, or did the machine produce it?" That answer determines the typeface. There is no third option.
+A card is either signal (Söhne) or synthesis (Söhne Mono). Never both. If you are unsure which typeface to use, ask: "Did this come from the world, or did the machine produce it?" That answer determines the typeface. There is no third option.
 
 ### Never use decorative or display typefaces
 No serif accent fonts. No handwritten fonts. No display faces for "personality." Dispatch has two typefaces and they are semantically assigned. A third typeface breaks the voice system and makes the interface feel themed rather than systematic.
@@ -83,7 +83,7 @@ No success toasts with checkmarks. No "Great choice!" confirmations. No confetti
 No pulsing notification dots. No bouncing badges. No shake animations on form errors. The only animation vocabulary in Dispatch is the staggered `signal-reveal` entrance and subtle hover state shifts. Urgency is communicated through scoring and language, never through animation theater.
 
 ### Never create generic empty states with illustrations
-No sad-face icons. No "Nothing here yet!" with a cartoon. Empty states in Dispatch should either be invisible (the section simply doesn't appear) or carry a single line of system text in Geist Mono at `text-tertiary`. The machine acknowledges absence without performing friendliness about it.
+No sad-face icons. No "Nothing here yet!" with a cartoon. Empty states in Dispatch should either be invisible (the section simply doesn't appear) or carry a single line of system text in Söhne Mono at `text-tertiary`. The machine acknowledges absence without performing friendliness about it.
 
 ### Never add tooltips or info icons to explain UI
 If a component requires an (i) icon with a hover tooltip to explain what it does, the component has failed. The interface should be self-evident through labeling, hierarchy, and spatial logic. Tooltip-driven UI is a sign that the visual language isn't doing its job.

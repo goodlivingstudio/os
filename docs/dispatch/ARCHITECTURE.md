@@ -223,8 +223,8 @@ All system prompts import from `lib/prompts.ts`:
 ## DESIGN SYSTEM
 
 ### Typography
-- **Geist Sans** — all interface text (labels, metadata, headlines, body)
-- **Geist Mono** — Cerebro voice only (chat responses, processing animations, diagnostics terminal, DCOS/Cerebro/Dispatch headers)
+- **Söhne** — all interface text (labels, metadata, headlines, body)
+- **Söhne Mono** — Cerebro voice only (chat responses, processing animations, diagnostics terminal, DCOS/Cerebro/Dispatch headers)
 - **Type scale:** 6 tokens defined in `lib/styles.ts`
   - `TYPE.xs` (10px) — badges, dots
   - `TYPE.sm` (11px) — labels, metadata
