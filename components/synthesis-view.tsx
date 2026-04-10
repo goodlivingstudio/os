@@ -466,39 +466,40 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ BLIND SPOTS — 3 cards ─ */}
             {data.blindSpots && data.blindSpots.length > 0 && (
               <div style={{
-                padding: isMobile ? "16px 0 16px 16px" : "16px 16px",
+                padding: isMobile ? "8px 0 8px 16px" : "8px 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 400ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 12, paddingLeft: isMobile ? 4 : 0 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 8, fontSize: 12, paddingLeft: isMobile ? 4 : 0 }}>
                   Blind Spots
                 </div>
                 <div className="synthesis-blindspots" onScroll={scroll.onScroll} style={isMobile ? {
-                  display: "flex", gap: 12, overflowX: "auto", overflowY: "hidden",
+                  display: "flex", gap: 8, overflowX: "auto", overflowY: "hidden",
                   WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory",
                   paddingRight: 16, paddingBottom: 4,
                   msOverflowStyle: "none", scrollbarWidth: "none",
-                } as React.CSSProperties : { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+                } as React.CSSProperties : { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
                   {data.blindSpots.map((spot, i) => (
                     <button
                       type="button"
                       key={i}
                       onClick={scroll.guardedClick(() => onDeliberate(`Explore this blind spot:\n\n**${BLIND_SPOT_LABELS[spot.type] || "Blind Spot"}: ${spot.title}**\n\n${spot.body}\n\nWhat am I missing and what should I do about it?`))}
                       style={{
-                        background: "var(--bg-surface)", borderRadius: 10, padding: "18px 20px",
+                        background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px",
                         cursor: "pointer", transition: "background 0.15s",
                         border: "none", textAlign: "left", font: "inherit", color: "inherit",
+                        display: "flex", flexDirection: "column",
                         ...(isMobile ? { flex: "0 0 80%", scrollSnapAlign: "start" } : {}),
                       }}
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     >
-                      <div style={{ ...TYPE.sm, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600, marginBottom: 10 }}>
+                      <div style={{ ...labelStyle, marginBottom: 4 }}>
                         {BLIND_SPOT_LABELS[spot.type] || "Blind Spot"}
                       </div>
-                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, marginBottom: 8, fontSize: 14 }}>
+                      <div style={{ fontSize: 28, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1, marginBottom: 10 }}>
                         {spot.title}
                       </div>
-                      <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.6 }}>
+                      <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.4, flex: 1 }}>
                         {spot.body}
                       </div>
                     </button>
