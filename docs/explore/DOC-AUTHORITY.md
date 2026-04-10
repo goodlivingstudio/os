@@ -100,10 +100,10 @@ Every piece of system knowledge has exactly one canonical home. Other documents 
 
 ---
 
-### VOICE-CALIBRATION.md — *The Feedback* *(not yet built)*
-**Owns:** Current voice directive summary (derived from PROMPTS.md VOICE block). Watch-for checklist adapted for the ranger model. Calibration log entries from real usage sessions.
+### VOICE-CALIBRATION.md — *The Feedback*
+**Owns:** Compressed voice directive summary (what the Ranger should sound like, derived from CEREBRO-CHARTER). Watch-for checklist with 14 specific failure modes organized by register drift, discipline failure, civic-context failure, and tone/texture. Calibration log entries from real usage sessions (empty until real Cerebro usage generates observations).
 
-**Rule:** Observation instrument, not a directive document. Directives live in PROMPTS.md and CEREBRO-CHARTER. This document tracks whether they're working. Build after first 10–15 real Cerebro sessions.
+**Rule:** Observation instrument, not a directive document. Directives live in PROMPTS.md and CEREBRO-CHARTER. This document tracks whether they're working. The checklist is ready; the log populates from real usage. Audit every 10-15 Cerebro sessions.
 
 ---
 
@@ -157,7 +157,7 @@ ROADMAP (references all, owns none)                       lib/prompts.ts
 
 **ARCHITECTURE.md, SYSTEM-BRIEF.md, and ANTI-PATTERNS.md now have real content** (written 2026-04-10). They are no longer scaffolds. Content will iterate as the codebase and visual language mature, but the structural foundation is in place.
 
-**VOICE-CALIBRATION.md remains a scaffold.** Build after the first 10–15 real Cerebro sessions produce drift observations against the ranger character. Until then, the ranger's behavioral directives live in CEREBRO-CHARTER.md and are implemented in PROMPTS.md VOICE block.
+**VOICE-CALIBRATION.md now has real content** — compressed voice directive summary and a 14-item watch-for checklist covering register drift, discipline failure, civic-context failure, and tone/texture. The calibration LOG section is empty until real Cerebro sessions produce observations. Audit every 10-15 sessions.
 
 **Operator section in MANDATE.md has been clarified.** A frame at the top of THE OPERATOR section establishes that Explore's operator is the team (not Jeremy individually) and that the team's five-year target and operating thesis are sibling-distinct from the OS-level operator's. No further action needed unless the team structure changes.
 
