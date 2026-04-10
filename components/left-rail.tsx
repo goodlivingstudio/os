@@ -669,7 +669,7 @@ export function LeftRail({
           >
             {/* Sliding indicator — hidden when config is active */}
             {(() => {
-              const modes = ["signal", "audio", "synthesis", "gallery"]
+              const modes = ["signal", "audio", "gallery", "synthesis"]
               const idx = modes.indexOf(viewMode)
               return (
                 <div
