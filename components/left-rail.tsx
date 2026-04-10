@@ -428,9 +428,9 @@ export function LeftRail({
 
           {/* Row 2 — Clock + Triage/Explore */}
           <div style={{
-            flexShrink: 0,
+            height: 52, flexShrink: 0,
             display: "flex", alignItems: "center", justifyContent: "space-between",
-            padding: "10px 16px", borderBottom: "1px solid var(--border)",
+            padding: "0 16px", borderBottom: "1px solid var(--border)",
           }}>
             <span style={{ fontFamily: "var(--font-sohne-mono)", fontSize: 11, color: "var(--text-tertiary)" }}>{time}</span>
             {(viewMode === "signal" || viewMode === "audio" || viewMode === "synthesis") && (
