@@ -303,7 +303,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                 </div>
                 <div className="synthesis-velocity" style={{ display: "flex", gap: 12 }}>
                   {/* Accelerating */}
-                  <div style={{ flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "16px 20px" }}>
+                  <div style={{ flex: 1, background: "var(--bg-primary)", borderRadius: 8, padding: "16px 20px", border: "1px solid var(--border)" }}>
                     <div style={{ ...TYPE.sm, color: "#61BF6B", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 12 }}>
                       Accelerating
                     </div>
@@ -318,7 +318,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     )}
                   </div>
                   {/* Decelerating */}
-                  <div style={{ flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "16px 20px" }}>
+                  <div style={{ flex: 1, background: "var(--bg-primary)", borderRadius: 8, padding: "16px 20px", border: "1px solid var(--border)" }}>
                     <div style={{ ...TYPE.sm, color: "#BF6161", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 12 }}>
                       Decelerating
                     </div>
@@ -406,7 +406,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                   Urgency Heatmap
                 </div>
                 <div className="synthesis-heatmap" style={{
-                  background: "var(--bg-surface)", borderRadius: 8,
+                  background: "var(--bg-primary)", borderRadius: 8, border: "1px solid var(--border)",
                   overflowX: "scroll", overflowY: "hidden",
                   WebkitOverflowScrolling: "touch",
                 } as React.CSSProperties}>
