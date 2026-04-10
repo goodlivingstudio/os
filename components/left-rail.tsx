@@ -382,31 +382,42 @@ export function LeftRail({
       {/* ═══ EXPANDED MODE ═══ */}
       {railMode === "expanded" && (
         <div style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
-          {/* Header — 40px, matches Cerebro + Synthesis. Three-column: title | time | toggle */}
+          {/* Row 1 — Title, matches content header height */}
           <div style={{
             height: 40, flexShrink: 0,
-            display: "grid", gridTemplateColumns: "1fr auto 1fr",
-            alignItems: "center",
+            display: "flex", alignItems: "center",
             padding: "0 16px", borderBottom: "1px solid var(--border)",
           }}>
             <span style={{ fontSize: 12, lineHeight: "18px", letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--accent-muted)" }}>{instanceConfig.branding.name}</span>
+          </div>
+
+          {/* Row 2 — Clock + mode toggle */}
+          <div style={{
+            flexShrink: 0,
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            padding: "10px 16px", borderBottom: "1px solid var(--border)",
+          }}>
             <span style={{ fontFamily: "var(--font-sohne-mono)", fontSize: 11, color: "var(--text-tertiary)" }}>{time}</span>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <button
-                onClick={toggleRailMode}
-                title="Switch to compact view (or press [)"
-                style={{
-                  background: "transparent", border: "none", cursor: "pointer",
-                  color: "var(--text-tertiary)", padding: 4, display: "flex",
-                  alignItems: "center", justifyContent: "center", borderRadius: 4,
-                  transition: "color 0.15s",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)" }}
-                onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)" }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="15 18 9 12 15 6"/></svg>
-              </button>
-            </div>
+            <button
+              onClick={toggleRailMode}
+              title="Switch to compact view (or press [)"
+              style={{
+                display: "flex", alignItems: "center",
+                background: "var(--bg-elevated)", border: "none", borderRadius: 10,
+                padding: 2, cursor: "pointer",
+                width: 32, height: 18,
+                transition: "background 0.15s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "var(--border)" }}
+              onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+            >
+              <span style={{
+                width: 14, height: 14, borderRadius: 7,
+                background: "var(--text-tertiary)",
+                transform: "translateX(14px)",
+                transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+              }} />
+            </button>
           </div>
 
           {/* View navigation */}
