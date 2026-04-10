@@ -76,7 +76,7 @@ function CitationChip({ num, src }: { num: string; src: CitationSource }) {
             rel="noopener noreferrer"
             onClick={e => e.stopPropagation()}
             style={{
-              ...TYPE.sm, color: "var(--text-primary)", lineHeight: 1.5,
+              ...TYPE.sm, color: "var(--text-primary)",
               textDecoration: "none", display: "block",
               transition: "color 0.15s",
             }}

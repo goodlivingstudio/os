@@ -271,13 +271,13 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
 
         <div style={{ marginBottom: 24 }}>
           <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Brief</div>
-          <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>{pitch.brief}</div>
+          <div style={{ ...TYPE.body, color: "var(--text-secondary)" }}>{pitch.brief}</div>
         </div>
 
         {pitch.angle && (
           <div style={{ marginBottom: 24 }}>
             <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Angle</div>
-            <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>{pitch.angle}</div>
+            <div style={{ ...TYPE.body, color: "var(--text-secondary)" }}>{pitch.angle}</div>
           </div>
         )}
 
@@ -292,7 +292,7 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
         <div style={{ marginBottom: 24 }}>
           <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Evidence</div>
           {pitch.evidence.map((e, i) => (
-            <div key={i} style={{ ...TYPE.body, color: "var(--text-secondary)", marginBottom: 6, lineHeight: 1.7 }}>
+            <div key={i} style={{ ...TYPE.body, color: "var(--text-secondary)", marginBottom: 6 }}>
               {renderCitedBody(e, pitch.evidenceSources?.[i])}
             </div>
           ))}
@@ -300,7 +300,7 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
 
         <div style={{ marginBottom: 28 }}>
           <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Why Now</div>
-          <div style={{ ...TYPE.body, color: "var(--accent-muted)", lineHeight: 1.7 }}>{pitch.urgency}</div>
+          <div style={{ ...TYPE.body, color: "var(--accent-muted)" }}>{pitch.urgency}</div>
         </div>
 
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
@@ -709,14 +709,13 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                         <div style={{
                           ...TYPE.body,
                           color: "var(--text-secondary)",
-                          lineHeight: 1.7,
                           marginBottom: pitch.evidence?.length > 0 ? 8 : 0,
                         }}>
                           {pitch.thesis}
                         </div>
                         {/* Evidence sources — with interactive citations */}
                         {pitch.evidence && pitch.evidence.length > 0 && (
-                          <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", lineHeight: 1.5 }}>
+                          <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
                             {pitch.evidence.slice(0, 2).map((e, ei) => (
                               <span key={ei}>
                                 {ei > 0 && <span style={{ opacity: 0.4 }}> · </span>}
@@ -748,7 +747,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
         {/* ── Empty ── */}
         {!loading && !data?.pitches?.length && !data?.message && !data?.weekSummary && (
           <div style={{ padding: "48px 20px", maxWidth: 520 }}>
-            <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.8 }}>
+            <div style={{ ...TYPE.body, color: "var(--text-tertiary)" }}>
               Content pitches will appear after the weekly intelligence brief generates.
             </div>
           </div>

@@ -751,11 +751,11 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
                       <span style={{ width: 8, height: 8, borderRadius: 3, background: "var(--accent-secondary)", flexShrink: 0 }} />
                       <span style={{ ...TYPE.body, color: "var(--text-primary)", fontWeight: 500 }}>{l.label}</span>
                     </div>
-                    <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.6, paddingLeft: 16 }}>
+                    <div style={{ ...TYPE.body, color: "var(--text-secondary)", paddingLeft: 16 }}>
                       {shortDesc}.
                     </div>
                     {highScores && (
-                      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", lineHeight: 1.5, paddingLeft: 16, marginTop: 6 }}>
+                      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", paddingLeft: 16, marginTop: 6 }}>
                         {highScores.charAt(0).toUpperCase() + highScores.slice(1).replace(/, ([A-Z])(?![A-Z])/g, (_, l) => `, ${l.toLowerCase()}`)}
                       </div>
                     )}

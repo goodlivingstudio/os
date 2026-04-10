@@ -249,7 +249,7 @@ function CerebroStation() {
         Cerebro Station
       </div>
 
-      <div style={{ ...TYPE.body, color: "var(--text-tertiary)", marginBottom: 20, lineHeight: 1.7 }}>
+      <div style={{ ...TYPE.body, color: "var(--text-tertiary)", marginBottom: 20 }}>
         Conversation memory persists across sessions. Export threads for deeper analysis in Claude Desktop, or purge selectively to keep memory focused.
       </div>
 
@@ -300,7 +300,7 @@ function CerebroStation() {
                 }}
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ ...TYPE.body, color: "var(--text-primary)", marginBottom: 4, lineHeight: 1.5 }}>
+                  <div style={{ ...TYPE.body, color: "var(--text-primary)", marginBottom: 4 }}>
                     {thread.topic}
                   </div>
                   <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>

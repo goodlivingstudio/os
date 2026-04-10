@@ -152,7 +152,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
           }}>
             API Unavailable
           </div>
-          <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.7 }}>
+          <div style={{ ...TYPE.body, color: "var(--text-tertiary)" }}>
             Intelligence briefing will resume when the API connection is restored.
           </div>
         </div>

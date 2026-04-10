@@ -41,7 +41,6 @@ export function SignalCard({ x, y, article }: { x: number; y: number; article: A
           </div>
           <div style={{
             ...bodyStyle,
-            lineHeight: 1.55,
           }}>
             {article.synopsis}
           </div>
@@ -62,7 +61,7 @@ export function SignalCard({ x, y, article }: { x: number; y: number; article: A
           </div>
           <div style={{
             ...TYPE.body,
-            lineHeight: 1.55, color: "var(--text-primary)",
+            color: "var(--text-primary)",
           }}>
             {article.relevance}
           </div>
