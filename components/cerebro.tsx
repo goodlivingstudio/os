@@ -365,7 +365,6 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
                 fontSize: 13,
                 fontFamily: MONO,
                 color: "var(--text-tertiary)",
-                lineHeight: 1.8,
               }}
             >
               {instanceConfig.cerebroWelcome?.title || "Intelligence ready."}
@@ -433,7 +432,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
             {m.role === "user" ? (
               <div style={{ padding: "0 32px", display: "flex", justifyContent: maxWidth ? "flex-end" : "flex-start" }}>
                 <div style={{
-                  fontSize: 13, color: "var(--text-primary)", lineHeight: 1.7,
+                  fontSize: 13, color: "var(--text-primary)",
                   wordBreak: "break-word", fontWeight: 500, textAlign: maxWidth ? "right" : "left",
                   maxWidth: maxWidth ? "68%" : undefined,
                 }}>
@@ -446,7 +445,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
               <div style={{
                 padding: "0 32px", fontSize: 12,
                 fontFamily: MONO,
-                color: "var(--text-tertiary)", lineHeight: 1.5,
+                color: "var(--text-tertiary)",
                 display: "flex", alignItems: "center", gap: 6,
               }}>
                 <span style={{ color: "var(--accent-muted)", opacity: 0.5 }}>↗</span>
@@ -470,7 +469,6 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
                         fontSize: 13,
                         fontFamily: MONO,
                         color: "var(--text-secondary)",
-                        lineHeight: 1.9,
                         wordBreak: "break-word",
                         // Paragraph spacing: generous but not equal to turn spacing.
                         // Last paragraph gets no bottom margin.
@@ -505,7 +503,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
             >
               <div style={{
                 fontSize: 13, fontFamily: MONO,
-                color: "var(--accent-muted)", lineHeight: 1.8,
+                color: "var(--accent-muted)",
                 transition: "color 0.15s",
               }}
                 onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)" }}
@@ -527,7 +525,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
                       padding: "4px 0", borderRadius: 0,
                       fontSize: 12, fontFamily: MONO,
                       color: "var(--text-tertiary)", cursor: "pointer",
-                      transition: "color 0.15s", textAlign: "left", lineHeight: 1.5,
+                      transition: "color 0.15s", textAlign: "left",
                       opacity: 0.6,
                     }}
                     onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)"; e.currentTarget.style.opacity = "1" }}

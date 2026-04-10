@@ -501,7 +501,7 @@ export function PaletteTrends({ snapshot, paletteIntel, totalImages, images }: P
         <div style={{ fontSize: 24, color: "var(--text-primary)", marginBottom: 12 }}>
           Analyzing the visual landscape
         </div>
-        <div style={{ ...TYPE.body, color: "var(--text-tertiary)", maxWidth: 400, margin: "0 auto", lineHeight: 1.7 }}>
+        <div style={{ ...TYPE.body, color: "var(--text-tertiary)", maxWidth: 400, margin: "0 auto" }}>
           Palettes will emerge as gallery images are classified. Check back after the next refresh cycle.
         </div>
       </div>

@@ -714,7 +714,6 @@ export function ExportPanel({ onClose, signals, articles }: {
             <pre style={{
               ...TYPE.sm, fontFamily: MONO, color: "var(--text-tertiary)",
               whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0,
-              lineHeight: 1.6,
             }}>
               {previewText.slice(0, 600)}{previewText.length > 600 ? "\n..." : ""}
             </pre>

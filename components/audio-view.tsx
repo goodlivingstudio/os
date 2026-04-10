@@ -785,13 +785,13 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
           {signal.episode.synopsis && (
             <div style={{ padding: "12px 14px", borderBottom: signal.episode.relevance ? "1px solid var(--border)" : "none" }}>
               <div style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.04em", marginBottom: 6 }}>Synopsis</div>
-              <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.55 }}>{signal.episode.synopsis}</div>
+              <div style={{ ...TYPE.body, color: "var(--text-secondary)" }}>{signal.episode.synopsis}</div>
             </div>
           )}
           {signal.episode.relevance && (
             <div style={{ padding: "12px 14px" }}>
               <div style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.04em", marginBottom: 6 }}>Relevance</div>
-              <div style={{ ...TYPE.body, color: "var(--text-primary)", lineHeight: 1.55 }}>{signal.episode.relevance}</div>
+              <div style={{ ...TYPE.body, color: "var(--text-primary)" }}>{signal.episode.relevance}</div>
             </div>
           )}
         </div>

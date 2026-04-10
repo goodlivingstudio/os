@@ -232,7 +232,7 @@ function SourcePulse({ articles, feedHealth }: {
                 {healthPct}%
               </span>
             </div>
-            <div style={{ ...TYPE.sm, color: "var(--text-tertiary)", lineHeight: 1.5 }}>
+            <div style={{ ...TYPE.sm, color: "var(--text-tertiary)" }}>
               {liveCount} live · {failedCount} failed · {articles.length} articles
               {feedHealth?.stubCategories && feedHealth.stubCategories.length > 0 && (
                 <span> · Stubs: {feedHealth.stubCategories.join(", ")}</span>
@@ -608,7 +608,6 @@ export function LeftRail({
             ...TYPE.body,
             color: "var(--text-tertiary)",
             marginTop: 8,
-            lineHeight: 1.5,
           }}
         >
           {instanceConfig.branding.tagline}
