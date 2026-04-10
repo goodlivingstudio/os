@@ -15,8 +15,8 @@ import type { CSSProperties } from "react"
 /** Söhne Mono — Cerebro's voice (machine intelligence register) */
 export const MONO = "var(--font-sohne-mono), monospace"
 
-/** Söhne Breit — headlines and display type across all products */
-export const DISPLAY = "var(--font-sohne-breit), system-ui, sans-serif"
+/** Söhne Schmal — headlines and display type across all products */
+export const DISPLAY = "var(--font-sohne-schmal), system-ui, sans-serif"
 
 // ─── Type scale tokens ──────────────────────────────────────────────────────
 

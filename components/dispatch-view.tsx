@@ -531,7 +531,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
               }}>
                 New ideas and opportunities for week of {formatWeekRange(data.generatedAt)}
               </div>
-              {/* Headline — Söhne Breit display, centered */}
+              {/* Headline — Söhne Schmal display, centered */}
               <div className="dispatch-headline" style={{
                 fontSize: 34,
                 fontWeight: 400,

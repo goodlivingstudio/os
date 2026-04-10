@@ -24,10 +24,10 @@ const sohneMono = localFont({
   display: "swap",
 })
 
-const sohneBreit = localFont({
-  src: "./fonts/SohneBreit-Halbfett.otf",
+const sohneSchmal = localFont({
+  src: "./fonts/SohneSchmal-Halbfett.otf",
   weight: "600",
-  variable: "--font-sohne-breit",
+  variable: "--font-sohne-schmal",
   display: "swap",
 })
 
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sohne.variable} ${sohneMono.variable} ${sohneBreit.variable} h-full`}>
+    <html lang="en" className={`${sohne.variable} ${sohneMono.variable} ${sohneSchmal.variable} h-full`}>
       <body className="h-full antialiased">
         <a href="#main-feed" className="skip-link">Skip to feed</a>
         {children}
