@@ -245,8 +245,8 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
           </button>
         </div>
 
-        <div style={{ fontSize: 24, fontWeight: 600, fontFamily: DISPLAY, color: "var(--text-primary)", marginBottom: 10, lineHeight: 1 }}>{pitch.title}</div>
-        <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.4, marginBottom: isConvergence(pitch) ? 12 : 24 }}>{pitch.thesis}</div>
+        <div style={{ fontSize: 32, fontWeight: 600, fontFamily: DISPLAY, color: "var(--text-primary)", marginBottom: 10, lineHeight: 1 }}>{pitch.title}</div>
+        <div style={{ ...TYPE.body, color: "var(--text-secondary)", marginBottom: isConvergence(pitch) ? 12 : 24 }}>{pitch.thesis}</div>
 
         {/* Convergence callout */}
         {isConvergence(pitch) && (
@@ -513,7 +513,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
 
             {/* ─ EDITORIAL HEADER — centered broadsheet ─ */}
             <div className="dispatch-header-content" style={{
-              padding: "36px 0 32px",
+              padding: "34px 0 60px",
               borderBottom: "1px solid var(--border)",
               textAlign: "center",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
@@ -528,7 +528,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
               </div>
               {/* Headline — Söhne Schmal display, centered */}
               <div className="dispatch-headline" style={{
-                fontSize: 34,
+                fontSize: 44,
                 fontWeight: 600,
                 fontFamily: DISPLAY,
                 color: "var(--text-primary)",
@@ -596,7 +596,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             {/* ─ PERSPECTIVES — intelligence layer cards ─ */}
             {data.perspectives && data.perspectives.length > 0 && (
               <div style={{
-                padding: "24px 20px",
+                padding: "40px 0 0",
                 borderBottom: "1px solid var(--border)",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
@@ -696,7 +696,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                         </div>
                         {/* Title */}
                         <div style={{
-                          fontSize: 24,
+                          fontSize: 32,
                           fontWeight: 600,
                           fontFamily: DISPLAY,
                           color: "var(--text-primary)",
