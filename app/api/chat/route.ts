@@ -219,7 +219,7 @@ export async function POST(req: Request) {
         system:     SYSTEM_PROMPT,
         tools:      tools.length > 0 ? tools : undefined,
         messages:   currentMessages,
-      })
+      }, { timeout: 60_000 })
 
       totalInput  += response.usage?.input_tokens || 0
       totalOutput += response.usage?.output_tokens || 0

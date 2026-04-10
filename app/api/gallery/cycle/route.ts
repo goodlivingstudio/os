@@ -32,8 +32,11 @@ interface ArenaBlock {
 
 // Vercel Cron handler
 export async function GET(req: Request) {
-  // Verify cron secret in production
+  // Verify cron secret — mandatory in production
   const authHeader = req.headers.get("authorization")
+  if (process.env.VERCEL && !process.env.CRON_SECRET) {
+    return Response.json({ error: "CRON_SECRET must be configured in production" }, { status: 500 })
+  }
   if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return Response.json({ error: "Unauthorized" }, { status: 401 })
   }

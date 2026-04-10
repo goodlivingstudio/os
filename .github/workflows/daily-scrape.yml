@@ -59,10 +59,9 @@
 name: Daily Gallery Scrape
 
 on:
-  workflow_dispatch: # manual trigger only (for now)
-  # schedule:
-  #   - cron: "0 13 * * *" # 9 AM ET daily (13:00 UTC during EDT)
-  # ACTIVATE THE ABOVE LINES TO MIGRATE FROM LOCAL LAUNCHD JOB
+  workflow_dispatch:
+  schedule:
+    - cron: "0 13 * * *" # 9 AM ET daily (13:00 UTC during EDT)
 
 jobs:
   scrape:

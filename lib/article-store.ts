@@ -106,6 +106,9 @@ export interface SourceFailures {
 /**
  * Record which sources succeeded and which failed in this cycle.
  * Increment consecutive count for failures, reset to 0 for successes.
+ * NOTE: Uses read-modify-write (not atomic). Acceptable here — the object is
+ * small and fixed-size (one key per source), so a lost write just delays a
+ * failure counter increment by one cycle.
  */
 export async function recordSourceHealth(
   succeeded: string[],

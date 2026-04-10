@@ -583,7 +583,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
             {attachments.map((att, i) => (
               <div key={i} style={{ position: "relative" }}>
                 {att.preview ? (
-                  <img src={att.preview} alt={att.name} style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 8, border: "1px solid var(--border)" }} />
+                  <img src={att.preview} alt={att.name} loading="lazy" style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 8, border: "1px solid var(--border)" }} />
                 ) : (
                   <div style={{ width: 48, height: 48, borderRadius: 8, border: "1px solid var(--border)", background: "var(--bg-elevated)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, color: "var(--text-tertiary)", textTransform: "uppercase" }}>
                     {att.name.split(".").pop()}

@@ -227,7 +227,7 @@ async function annotateBatch(
       max_tokens: 6000,
       system: ANNOTATE_PROMPT,
       messages: [{ role: "user", content: items + "\n\nReturn JSON array." }],
-    })
+    }, { timeout: 30_000 })
     trackUsage({ endpoint: "news-annotate", provider: "anthropic", model: "claude-haiku-4-5-20251001", inputTokens: response.usage?.input_tokens, outputTokens: response.usage?.output_tokens }).catch(() => {})
     const text = response.content[0]?.type === "text" ? response.content[0].text : ""
     const match = text.match(/\[[\s\S]*\]/)
@@ -366,10 +366,19 @@ export async function GET() {
     return true
   })
 
+  // ── Drop stale articles — nothing older than 31 days ────────────────────
+  const MAX_AGE_MS = 31 * 24 * 60 * 60 * 1000
+  const cutoff = Date.now() - MAX_AGE_MS
+  const fresh = deduped.filter(a => {
+    if (a.url === "#") return true // keep stubs
+    const published = new Date(a.publishedAt).getTime()
+    return published >= cutoff
+  })
+
   const LAYER_ORDER = ALL_LAYERS
 
   const sorted = interleave(
-    deduped.sort((a, b) =>
+    fresh.sort((a, b) =>
       LAYER_ORDER.indexOf(a.tag) - LAYER_ORDER.indexOf(b.tag)
     )
   )

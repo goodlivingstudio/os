@@ -87,9 +87,7 @@ export function computeCost(
 
 /**
  * Log a single API usage event. Fire-and-forget — never throws, never blocks.
- * NOTE: Uses read-append-write on KV which is not atomic. Under concurrent API
- * calls (e.g., annotation + brief firing simultaneously), one event may be dropped.
- * Acceptable for a single-user tool — the cost tracking is approximate, not billing-grade.
+ * Uses Redis list ops (lpush/ltrim) so concurrent calls never drop events.
  */
 export async function trackUsage(event: Omit<UsageEvent, "ts" | "cost"> & { cost?: number }): Promise<void> {
   if (!KV_AVAILABLE) return
@@ -108,11 +106,9 @@ export async function trackUsage(event: Omit<UsageEvent, "ts" | "cost"> & { cost
     }
 
     const key = eventsKey()
-    const existing = await kv.get<UsageEvent[]>(key) || []
-    // Cap at MAX_EVENTS — drop oldest if exceeded
-    if (existing.length >= MAX_EVENTS) existing.splice(0, existing.length - MAX_EVENTS + 1)
-    existing.push(record)
-    await kv.set(key, existing, { ex: EVENTS_TTL })
+    await kv.lpush(key, JSON.stringify(record))
+    await kv.ltrim(key, 0, MAX_EVENTS - 1)
+    await kv.expire(key, EVENTS_TTL)
 
     // Lazy rollup: if yesterday's events exist but no rollup, compute it
     const yesterday = new Date()
@@ -121,8 +117,8 @@ export async function trackUsage(event: Omit<UsageEvent, "ts" | "cost"> & { cost
     const yDailyKey = dailyKey(yStr)
     const hasRollup = await kv.exists(yDailyKey)
     if (!hasRollup) {
-      const yEvents = await kv.get<UsageEvent[]>(eventsKey(yStr))
-      if (yEvents && yEvents.length > 0) {
+      const yEvents = await readEventsList(eventsKey(yStr))
+      if (yEvents.length > 0) {
         const rollup = buildRollup(yStr, yEvents)
         await kv.set(yDailyKey, rollup, { ex: DAILY_TTL })
       }
@@ -189,7 +185,7 @@ function buildRollup(date: string, events: UsageEvent[]): DailyRollup {
 export async function getTodayUsage(): Promise<{ events: UsageEvent[]; summary: DailyRollup }> {
   if (!KV_AVAILABLE) return { events: [], summary: emptyRollup(today()) }
   try {
-    const events = await kv.get<UsageEvent[]>(eventsKey()) || []
+    const events = await readEventsList(eventsKey())
     return { events, summary: buildRollup(today(), events) }
   } catch {
     return { events: [], summary: emptyRollup(today()) }
@@ -210,8 +206,8 @@ export async function getDailyRollups(days: number): Promise<DailyRollup[]> {
       // Try rollup first, fall back to computing from events
       let rollup = await kv.get<DailyRollup>(dailyKey(dateStr))
       if (!rollup) {
-        const events = await kv.get<UsageEvent[]>(eventsKey(dateStr))
-        if (events && events.length > 0) {
+        const events = await readEventsList(eventsKey(dateStr))
+        if (events.length > 0) {
           rollup = buildRollup(dateStr, events)
           await kv.set(dailyKey(dateStr), rollup, { ex: DAILY_TTL })
         }
@@ -225,6 +221,13 @@ export async function getDailyRollups(days: number): Promise<DailyRollup[]> {
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
+
+/** Read events stored as a Redis list (each element is a JSON string). */
+async function readEventsList(key: string): Promise<UsageEvent[]> {
+  const raw = await kv.lrange<string>(key, 0, -1)
+  if (!raw || raw.length === 0) return []
+  return raw.map(item => typeof item === "string" ? JSON.parse(item) : item as unknown as UsageEvent)
+}
 
 function today(): string {
   return new Date().toISOString().slice(0, 10)

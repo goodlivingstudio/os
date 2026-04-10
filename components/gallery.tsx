@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle, ThumbsUp, ThumbsDown, Frown, Globe } from "lucide-react"
 import { TYPE, MONO } from "@/lib/styles"
-import instanceConfig, { storageKey } from "@/lib/config"
+import instanceConfig, { storageKey, MOBILE_BREAKPOINT } from "@/lib/config"
 import { GALLERY_SOURCES, type GalleryImage, type ColorMood, type Biome } from "@/lib/gallery"
 import type { Skin, Article } from "@/lib/types"
 import { Ticker } from "@/components/ticker"
@@ -56,6 +56,7 @@ function Lightbox({ image, onClose, onPrev, onNext }: {
     >
       <button
         onClick={e => { e.stopPropagation(); onClose() }}
+        aria-label="Close gallery"
         style={{
           position: "absolute", top: 20, right: 20, zIndex: 2,
           background: "transparent", border: "none",
@@ -70,6 +71,7 @@ function Lightbox({ image, onClose, onPrev, onNext }: {
 
       <button
         onClick={e => { e.stopPropagation(); onPrev() }}
+        aria-label="Previous image"
         style={{
           position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)",
           background: "transparent", border: "none",
@@ -84,6 +86,7 @@ function Lightbox({ image, onClose, onPrev, onNext }: {
 
       <button
         onClick={e => { e.stopPropagation(); onNext() }}
+        aria-label="Next image"
         style={{
           position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)",
           background: "transparent", border: "none",
@@ -186,7 +189,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
   const [shuffleKey, setShuffleKey] = useState(0)
   const [curatedIds, setCuratedIds] = useState<Set<string>>(new Set()) // curated this session (any of approve/reject/low-quality/wrong-biome)
   const [approvedUrls, setApprovedUrls] = useState<Set<string>>(new Set()) // persistent approved set from server — hydrated on mount
-  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= MOBILE_BREAKPOINT
 
   // Hydrate the persistent approved set from the server on mount. This is what
   // makes liked images remember across sessions — the server-side APPROVED_KEY

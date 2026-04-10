@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useScrollGuard } from "@/lib/use-scroll-guard"
-import instanceConfig, { storageKey } from "@/lib/config"
+import instanceConfig, { storageKey, MOBILE_BREAKPOINT } from "@/lib/config"
 import { ArrowUpRight } from "lucide-react"
 import type { Article } from "@/lib/types"
 import { TYPE, MONO, DISPLAY, labelStyle } from "@/lib/styles"
@@ -95,7 +95,7 @@ const LAYER_DOT: Record<string, string> = Object.fromEntries(
 
 export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: SynthesisViewProps) {
   const isTriage = sortBy === "urgency"
-  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= MOBILE_BREAKPOINT
   const scroll = useScrollGuard()
   const [data, setData] = useState<SynthesisData | null>(null)
   const [loading, setLoading] = useState(false)
@@ -346,18 +346,17 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                   Convergences
                 </div>
                 {data.patterns.map((pattern, i) => (
-                  <div
+                  <button
+                    type="button"
                     key={i}
-                    role="button"
-                    tabIndex={0}
                     onClick={scroll.guardedClick(() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`))}
-                    onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
                     style={{
                       padding: "20px 0",
                       margin: "0 -20px",
                       paddingLeft: 20, paddingRight: 20,
                       borderBottom: "1px solid var(--border)",
-                      cursor: "pointer", transition: "background 0.15s", outline: "none",
+                      cursor: "pointer", transition: "background 0.15s",
+                      border: "none", background: "transparent", textAlign: "left", width: "100%", font: "inherit", color: "inherit",
                     }}
                     onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
@@ -369,7 +368,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                         background: pattern.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
                       }}>
                         {pattern.imageUrl && (
-                          <img src={pattern.imageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          <img src={pattern.imageUrl} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                         )}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
@@ -397,7 +396,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                         )}
                       </div>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             )}
@@ -480,15 +479,14 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                   msOverflowStyle: "none", scrollbarWidth: "none",
                 } as React.CSSProperties : { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
                   {data.blindSpots.map((spot, i) => (
-                    <div
+                    <button
+                      type="button"
                       key={i}
-                      role="button"
-                      tabIndex={0}
                       onClick={scroll.guardedClick(() => onDeliberate(`Explore this blind spot:\n\n**${BLIND_SPOT_LABELS[spot.type] || "Blind Spot"}: ${spot.title}**\n\n${spot.body}\n\nWhat am I missing and what should I do about it?`))}
-                      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`Explore this blind spot: ${spot.title}`) } }}
                       style={{
                         background: "var(--bg-surface)", borderRadius: 10, padding: "18px 20px",
-                        cursor: "pointer", transition: "background 0.15s", outline: "none",
+                        cursor: "pointer", transition: "background 0.15s",
+                        border: "none", textAlign: "left", font: "inherit", color: "inherit",
                         ...(isMobile ? { flex: "0 0 80%", scrollSnapAlign: "start" } : {}),
                       }}
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
@@ -503,7 +501,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.6 }}>
                         {spot.body}
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -527,15 +525,14 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                   paddingBottom: 4, msOverflowStyle: "none", scrollbarWidth: "none",
                 } as React.CSSProperties : { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {cerebroTopics.slice(0, 4).map((topic, i) => (
-                    <div
+                    <button
+                      type="button"
                       key={i}
-                      role="button"
-                      tabIndex={0}
                       onClick={scroll.guardedClick(() => onDeliberate(topic.prompt))}
-                      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(topic.prompt) } }}
                       style={{
                         background: "var(--bg-surface)", borderRadius: 10, padding: "18px 20px",
-                        cursor: "pointer", transition: "background 0.15s", outline: "none",
+                        cursor: "pointer", transition: "background 0.15s",
+                        border: "none", textAlign: "left", font: "inherit", color: "inherit",
                         ...(isMobile ? { flex: "0 0 80%", scrollSnapAlign: "start" } : {}),
                       }}
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
@@ -551,7 +548,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                           {topic.body}
                         </div>
                       )}
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
