@@ -14,7 +14,7 @@ interface AudioSignal {
   layer: string
 }
 
-const AUDIO_BRIEF_CACHE_KEY = storageKey("dcos-audio-brief")
+const AUDIO_BRIEF_CACHE_KEY = storageKey("dcos-audio-brief-v2")
 const AUDIO_BRIEF_TTL = 4 * 60 * 60 * 1000 // 4 hours — resilient to weak connections
 const FETCH_TIMEOUT = 10_000 // 10s — fail fast on slow networks
 
