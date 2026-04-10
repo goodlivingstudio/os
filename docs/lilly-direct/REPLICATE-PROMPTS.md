@@ -27,8 +27,8 @@ The default assumption until kickoff is option 1 (no gallery) because an engagem
 
 If Lilly Direct activates a generated gallery surface, REPLICATE-PROMPTS.md will contain:
 
-- **The aesthetic frame.** A prose paragraph describing what "a Lilly Direct image" should look like and why — tied to the engagement context (pharma, healthcare, innovation) and the material skins in SYSTEM-BRIEF.md.
-- **Subject prompts by category.** Reusable prompt templates for the kinds of images the gallery would need. Possible categories: healthcare environments, clinical settings, patient experience moments, scientific abstraction, pharma innovation contexts, abstract material textures tied to the skin system.
+- **The aesthetic frame.** A prose paragraph describing what "a Lilly Direct image" should look like and why — tied to the engagement context (pharma, healthcare, innovation) and the themes in SYSTEM-BRIEF.md.
+- **Subject prompts by category.** Reusable prompt templates for the kinds of images the gallery would need. Possible categories: healthcare environments, clinical settings, patient experience moments, scientific abstraction, pharma innovation contexts, abstract material textures tied to the theme system.
 - **Style modifiers.** Reusable fragments that can be appended to any prompt to nudge the output toward the product's aesthetic.
 - **Anti-prompts.** Things the image generator must never produce in a Lilly Direct context — stock-photo smiling patients, cyan gradient medical backgrounds, molecule-graphic decoration, pharma marketing aesthetics, anything that reads as a drug advertisement, any image with a visible watermark (per `../os/DOCTRINE.md § Visual surfaces earn their place`).
 - **Platform notes.** Any platform-specific syntax or parameter adjustments for Replicate / Midjourney / Ideogram.
@@ -53,4 +53,4 @@ If the decision is ever revisited (Lilly Direct adds a gallery after a year of n
 
 ---
 
-*Update this document when: a visual gallery surface is activated for Lilly Direct (this file transitions from scaffold to active); a new material skin is added that affects image aesthetics; a prompt convention produces reliably better output and becomes canonical; or a failure mode is identified and an anti-prompt is added.*
+*Update this document when: a visual gallery surface is activated for Lilly Direct (this file transitions from scaffold to active); a new theme is added that affects image aesthetics; a prompt convention produces reliably better output and becomes canonical; or a failure mode is identified and an anti-prompt is added.*

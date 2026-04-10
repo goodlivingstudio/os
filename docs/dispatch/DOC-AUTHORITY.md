@@ -7,11 +7,15 @@ Established: 2026-04-06
 
 ## OS-LEVEL INHERITANCE
 
-Dispatch is one of four sibling products living under OS — the ambient intelligence layer that holds the Good Living Studio philosophy, operator context, and shared authority. Dispatch inherits from four OS-level documents at `../os/`:
+Dispatch is one of four sibling products living under OS — the ambient intelligence layer that holds the Good Living Studio philosophy, operator context, and shared authority. Dispatch inherits from eight OS-level documents at `../os/`:
 
-- **OPERATOR.md** — Canonical for operator identity, five-year target, professional evolution thesis, and priority intelligence targets (Eli Lilly is one of them). Dispatch `MANDATE.md` references it rather than restating the full operator profile.
-- **DOCTRINE.md** — Canonical for shared design convictions (restraint as proof of quality, signal/synthesis duality, no sycophancy, token constraints, clarity over density). Dispatch `SYSTEM-BRIEF.md` and `ANTI-PATTERNS.md` implement these convictions in Dispatch-specific form.
+- **OPERATOR.md** — Canonical for operator identity (Jeremy Grant), five-year target, professional evolution thesis, operating thesis, and priority intelligence targets (Eli Lilly is one of them). Dispatch `MANDATE.md` references it rather than restating the full operator profile.
+- **DOCTRINE.md** — Canonical for shared design convictions (restraint as proof of quality, craft is non-negotiable, source and synthesis stay visible, visual surfaces earn their place, analytical voice in service of the mandate, design systems are governance, clarity over density). Dispatch `SYSTEM-BRIEF.md` and `ANTI-PATTERNS.md` implement these convictions in Dispatch-specific form.
 - **PASSAGE.md** — Canonical for interaction philosophy (every surface is a place you rejoin; no termination language; no dead surfaces; no hierarchy of realness). Dispatch `SYSTEM-BRIEF.md` § *Interaction philosophy: Passage* translates the philosophy into specific Dispatch interaction patterns.
+- **VOICE.md** — Canonical for universal analytical voice disciplines (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density) plus the Wise Counselor posture. Dispatch's `CEREBRO-CHARTER.md` expresses these disciplines through the Station Chief character.
+- **PIPELINE.md** — Canonical for the six-stage intelligence pipeline (Ingest → Annotate → Score → Brief → Synthesize → Act). Dispatch's `ARCHITECTURE.md` describes how Dispatch implements each stage and its weekly cadence for Stage 6.
+- **ARCHITECTURE.md** (OS-level) — Canonical for the shared codebase, white-label pattern, and the new-product spinup checklist. Dispatch's `ARCHITECTURE.md` describes product-specific decisions sitting on top of this shared foundation.
+- **GLOSSARY.md** — Canonical for shared vocabulary. Dispatch uses the same terms (operator, annotation layer, station chief, theme, Passage, etc.) with the same meanings.
 - **DOC-AUTHORITY.md** (OS-level) — Resolves authority conflicts that cross product boundaries or involve OS-level documents.
 
 **Rule:** When Dispatch docs conflict with OS-level docs, the OS-level document wins on principle and intent. Dispatch docs win on project-specific implementation. See `../os/DOC-AUTHORITY.md` for the full inheritance model.
@@ -57,7 +61,7 @@ When updating derived content, update the canonical source first, then propagate
 **Derived content in ARCHITECTURE:** Operator block, Lilly context, five-layer definitions, generative brief cluster description. All derived from MANDATE.
 
 ### SYSTEM-BRIEF.md — *The Look*
-**Owns:** Design philosophy. Signal/Synthesis duality. Material skin definitions. Token architecture (color, typography, spacing, radius). Component patterns and hierarchy. Agent instructions for UI generation. The "what Dispatch is not" boundaries.
+**Owns:** Design philosophy. Signal/Synthesis duality. Theme definitions (the visual expression of Dispatch — color, material, texture). Token architecture (color, typography, spacing, radius). Component patterns and hierarchy. Agent instructions for UI generation. The "what Dispatch is not" boundaries.
 
 **Rule:** If you need to know *how the interface should look and feel*, SYSTEM-BRIEF is the answer. The design system summary in ARCHITECTURE.md is a compressed reference derived from SYSTEM-BRIEF. Voice and behavioral directives referenced in SYSTEM-BRIEF (confidence tiers, Wise Counselor voice) must stay aligned with the VOICE block in PROMPTS.md.
 
@@ -98,9 +102,9 @@ If SOURCES and ARCHITECTURE list different feeds → SOURCES wins.
 
 ---
 
-## KNOWN DRIFT (as of 2026-04-06)
+## KNOWN DRIFT (as of 2026-04-09)
 
-All items resolved this session. No active drift.
+All items resolved at the OS revision and product-doc reframe completed 2026-04-09. No active drift.
 
 ---
 

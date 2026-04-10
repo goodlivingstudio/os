@@ -37,7 +37,7 @@ Explore's visual language has implications Dispatch's doesn't, because Explore s
 
 1. **Should Explore feel institutional?** Or explicitly anti-institutional in the way government websites usually feel? The federal design context argues for a quiet, earned authority rather than either corporate polish or hacky indie.
 2. **How does Explore's gallery differ from Dispatch's?** Explore's tagline is "In wildness is the preservation of the world" — the gallery is a visual formation layer, not a decorative feature.
-3. **What's Explore's material frame?** Dispatch has mineral / slate / forest / ink / sumi / dispatch paper. Explore's current config names "Thoreau" as the branding and "forest skin default" — what are the other material skins, if any?
+3. **What's Explore's material frame?** Dispatch has mineral / slate / forest / ink / sumi / dispatch paper themes. Explore's current config names "Thoreau" as the branding and "forest theme default" — what are the other themes, if any?
 4. **How much of Dispatch's SYSTEM-BRIEF § 2 Design Philosophy applies to Explore?** The Signal/Synthesis duality is shared via `../os/DOCTRINE.md`. What's the Explore-specific equivalent?
 5. **What does "restraint" mean in a civic context?** The federal design tradition (Plain Language Act, 21st Century IDEA, NotebookLM-era federal sites) has its own discipline. Explore's restraint should be legible inside that tradition.
 
@@ -49,4 +49,4 @@ Explore's code is being built. Before UI work starts in earnest, the design inte
 
 ---
 
-*Update this document when: a new material skin is added; a token value changes; a component pattern is promoted or retired; an interaction decision diverges from `../os/PASSAGE.md` (in which case the divergence must be named and justified).*
+*Update this document when: a new theme is added; a token value changes; a component pattern is promoted or retired; an interaction decision diverges from `../os/PASSAGE.md` (in which case the divergence must be named and justified).*

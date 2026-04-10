@@ -1,7 +1,7 @@
 # LILLY DIRECT — Design System Generative Brief (scaffold)
 Established: 2026-04-10 (scaffold — content lands at kickoff)
 
-*This document is the primary context file for any AI agent generating UI components, pages, or patterns for Lilly Direct. When written, it will describe the visual language, token architecture, material skins, component patterns, and interaction philosophy for Lilly Direct — all calibrated to the Eli Lilly engagement context and implementing the OS-level interaction philosophy defined at `../os/PASSAGE.md`.*
+*This document is the primary context file for any AI agent generating UI components, pages, or patterns for Lilly Direct. When written, it will describe the visual language, token architecture, themes, component patterns, and interaction philosophy for Lilly Direct — all calibrated to the Eli Lilly engagement context and implementing the OS-level interaction philosophy defined at `../os/PASSAGE.md`.*
 
 *Read MANDATE.md and CEREBRO-CHARTER.md before this document. The visual language must support the voice character and the engagement purpose.*
 
@@ -13,7 +13,7 @@ Established: 2026-04-10 (scaffold — content lands at kickoff)
 
 **Scaffold.** Content lands at kickoff. Dispatch's `SYSTEM-BRIEF.md` and Explore's `SYSTEM-BRIEF.md` are the two existing templates — Dispatch's is mature, Explore's is itself a scaffold.
 
-The scaffold placeholder in `lib/config/lilly-direct.ts` uses a single "clinical" skin with a vermillion dot matching Dispatch's ink color. This is a deliberate placeholder — Lilly Direct's real material language needs its own argument and probably its own color system. The placeholder exists so the instance boots, not because vermillion is correct for this engagement.
+The scaffold placeholder in `lib/config/lilly-direct.ts` uses a single "clinical" theme with a vermillion dot matching Dispatch's ink color. This is a deliberate placeholder — Lilly Direct's real material language needs its own argument and probably its own color system. The placeholder exists so the instance boots, not because vermillion is correct for this engagement.
 
 ---
 
@@ -24,8 +24,8 @@ When written at kickoff, SYSTEM-BRIEF.md will contain the same sections Dispatch
 - **§ 1 — What Lilly Direct Is** (visual boundaries, the "not a dashboard" framing, what it refuses to look like)
 - **§ 2 — Design Philosophy** including an Interaction Philosophy: Passage subsection translating `../os/PASSAGE.md` into Lilly Direct-specific commitments. The passage philosophy must hold even inside a client engagement context — the engagement does not pause when Jeremy closes the product
 - **§ 3 — Core Design Principles** (the product-specific expression of OS doctrine)
-- **§ 4 — Token Architecture** (color, typography, spacing, radius — probably narrower than Dispatch's multi-skin system, probably more institutional than Explore's regional skins, TBD)
-- **§ 5 — Material Skins** (the argument for one vs many skins. Dispatch has one ("ink"). Explore has five (regional biomes). Lilly Direct may want one clinical-appropriate skin, or a small set of skins that reflect engagement phases (pre-kickoff / active / post-deliverable), or skins per therapeutic area. Decide at kickoff.)
+- **§ 4 — Token Architecture** (color, typography, spacing, radius — probably narrower than Dispatch's multi-theme system, probably more institutional than Explore's regional themes, TBD)
+- **§ 5 — Themes** (the argument for one vs many themes. Dispatch has one ("ink"). Explore has five (regional biomes). Lilly Direct may want one clinical-appropriate theme, or a small set of themes that reflect engagement phases (pre-kickoff / active / post-deliverable), or themes per therapeutic area. Decide at kickoff.)
 - **§ 6 — Component Patterns**
 - **§ 7 — Lilly Direct's Character in the Interface** (how the voice character shows up visually)
 - **§ 8 — What This System Is Not** (the anti-aesthetics)
@@ -51,4 +51,4 @@ Without a written SYSTEM-BRIEF, any AI agent asked to generate UI for Lilly Dire
 
 ---
 
-*Update this document when: a new material skin is added; a token value changes; a component pattern is promoted or retired; an interaction decision diverges from `../os/PASSAGE.md` (in which case the divergence must be named and justified); or when a real agent-generated UI run produces something that feels wrong and reveals a gap in the brief.*
+*Update this document when: a new theme is added; a token value changes; a component pattern is promoted or retired; an interaction decision diverges from `../os/PASSAGE.md` (in which case the divergence must be named and justified); or when a real agent-generated UI run produces something that feels wrong and reveals a gap in the brief.*

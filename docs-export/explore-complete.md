@@ -1,12 +1,6 @@
 # Explore — Complete Product Documentation Export
 Generated: 2026-04-09
 
-This file concatenates all 14 canonical product doc files for Explore. Paste os-complete.md first as shared context, then paste this file for focused Explore product work.
-
-**Current state:** Explore is WIP — doctrine complete, code being built. Strategic tier files are stubs waiting for real content: SYSTEM-BRIEF, ARCHITECTURE, ANTI-PATTERNS, VOICE-CALIBRATION.
-
----
-
 
 ================================================================
 ## FILE: docs/explore/MANDATE.md
@@ -365,7 +359,7 @@ Explore's visual language has implications Dispatch's doesn't, because Explore s
 
 1. **Should Explore feel institutional?** Or explicitly anti-institutional in the way government websites usually feel? The federal design context argues for a quiet, earned authority rather than either corporate polish or hacky indie.
 2. **How does Explore's gallery differ from Dispatch's?** Explore's tagline is "In wildness is the preservation of the world" — the gallery is a visual formation layer, not a decorative feature.
-3. **What's Explore's material frame?** Dispatch has mineral / slate / forest / ink / sumi / dispatch paper. Explore's current config names "Thoreau" as the branding and "forest skin default" — what are the other material skins, if any?
+3. **What's Explore's material frame?** Dispatch has mineral / slate / forest / ink / sumi / dispatch paper themes. Explore's current config names "Thoreau" as the branding and "forest theme default" — what are the other themes, if any?
 4. **How much of Dispatch's SYSTEM-BRIEF § 2 Design Philosophy applies to Explore?** The Signal/Synthesis duality is shared via `../os/DOCTRINE.md`. What's the Explore-specific equivalent?
 5. **What does "restraint" mean in a civic context?** The federal design tradition (Plain Language Act, 21st Century IDEA, NotebookLM-era federal sites) has its own discipline. Explore's restraint should be legible inside that tradition.
 
@@ -377,7 +371,7 @@ Explore's code is being built. Before UI work starts in earnest, the design inte
 
 ---
 
-*Update this document when: a new material skin is added; a token value changes; a component pattern is promoted or retired; an interaction decision diverges from `../os/PASSAGE.md` (in which case the divergence must be named and justified).*
+*Update this document when: a new theme is added; a token value changes; a component pattern is promoted or retired; an interaction decision diverges from `../os/PASSAGE.md` (in which case the divergence must be named and justified).*
 
 
 ================================================================
@@ -1203,7 +1197,7 @@ Established: 2026-04-09 (stub)
 
 *This document is the stop list for Explore. It enumerates specific UI patterns, visual treatments, component behaviors, voice moves, and design decisions that are prohibited in the Explore interface. SYSTEM-BRIEF.md says what to build; this document says what to never build.*
 
-*Universal OS-wide design convictions and the anti-patterns they imply live at `../os/DOCTRINE.md` (no dashboards, no widgets, no sycophancy, no celebratory animations, no pulsing badges, no emoji, no "Hey there!" greetings, gallery discipline including the anti-watermark rule). Those apply to Explore without exception. This document adds Explore-specific prohibitions calibrated to the civic / federal / team context Explore serves.*
+*Universal OS-wide design convictions and the anti-patterns they imply live at `../os/DOCTRINE.md` (no dashboards, no widgets, no sycophancy, no celebratory animations, no pulsing badges, no emoji, no "Hey there!" greetings, the visual-surfaces-earn-their-place rule including the anti-watermark prohibition). Those apply to Explore without exception. This document adds Explore-specific prohibitions calibrated to the civic / federal / team context Explore serves.*
 
 *Note: there is no separate `../os/ANTI-PATTERNS.md` file — OS-wide prohibitions are folded into DOCTRINE.md as the positive-and-negative expression of each shared conviction. If the project grows enough OS-wide prohibitions to justify their own file, we can promote them later.*
 

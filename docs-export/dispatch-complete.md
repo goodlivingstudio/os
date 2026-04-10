@@ -230,21 +230,21 @@ Dispatch operates at the intersection of two voices — the world coming in and 
 
 The design system makes this distinction visible through typography, color, and spatial organization. A user should be able to scan any screen and immediately sense which content arrived from the world and which was produced by the machine.
 
-### Three material skins, not themes
+### Three themes, three temperatures
 
-Dispatch expresses itself through three material skins — Mineral, Slate, and Forest — each grounded in physical texture rather than digital abstraction:
+Dispatch expresses itself through three themes — Mineral, Slate, and Forest — each grounded in physical texture rather than digital abstraction:
 
 - **Mineral** — warm earth and amber. The default expression. Feels like sandstone, copper, ochre. The accent is a warm gold that suggests refinement without opulence.
 - **Slate** — cool steel and ink. Feels like brushed metal, deep water, graphite. The accent is a muted cerulean.
 - **Forest** — deep green and moss. Feels like lichen, oxidized copper, wet stone. The accent is a natural green.
 
-Each skin defines ten semantic color slots across dark and light modes, designed as complementary pairs — not inversions. The dark mode is the canonical expression. Light mode exists as a contextual variant.
+Each theme defines ten semantic color slots across dark and light modes, designed as complementary pairs — not inversions. The dark mode is the canonical expression. Light mode exists as a contextual variant.
 
-The skins are not "themes" in the toggle-and-forget sense. Each one shifts the emotional temperature of the entire interface. Mineral is authoritative and warm. Slate is analytical and cool. Forest is grounded and organic. The operator chooses the skin that matches how they want to think.
+These themes are not the toggle-and-forget kind. Each one shifts the emotional temperature of the entire interface. Mineral is authoritative and warm. Slate is analytical and cool. Forest is grounded and organic. The operator chooses the theme that matches how they want to think. The point of the word "theme" here is not decoration — it is atmosphere. See `../os/GLOSSARY.md` for the canonical definition.
 
-### Intelligence has a color: the skin accent
+### Intelligence has a color: the theme accent
 
-Each skin's accent color (`accent-secondary`) is the signal that the machine is present. In Mineral, this is warm amber (#B8956A). It appears on:
+Each theme's accent color (`accent-secondary`) is the signal that the machine is present. In Mineral, this is warm amber (#B8956A). It appears on:
 
 - Cerebro section labels (SYNOPSIS, RELEVANCE, CURRENT BRIEFING, CHALLENGE)
 - Active status indicators
@@ -267,7 +267,7 @@ This split is **semantic, not decorative**. It embodies the core duality — Sig
 
 ### The surface language
 
-Dispatch uses opaque, material fills — not translucent layers. Each skin defines specific hex values for backgrounds, surfaces, and elevated elements. Cards sit on surfaces. Surfaces sit on backgrounds. The hierarchy is:
+Dispatch uses opaque, material fills — not translucent layers. Each theme defines specific hex values for backgrounds, surfaces, and elevated elements. Cards sit on surfaces. Surfaces sit on backgrounds. The hierarchy is:
 
 - `bg-primary` — the ground state
 - `bg-surface` — cards, panels, content containers
@@ -395,7 +395,7 @@ Derived through split-complementary color theory anchored to Mineral's warm ambe
 
 ### The component hierarchy
 
-**Primitives** — Status dots, layer dots, category badges, layer pills, skin dots, dividers
+**Primitives** — Status dots, layer dots, category badges, layer pills, theme dots, dividers
 **Buttons** — Primary (send), Listen, Bump, Pill filter, Close, New Session, Text Link
 **Cards** — Feed Card, Signal Tooltip, Episode Card, Synthesis Card, Provocation Card, Pattern Card
 **Compound** — Ticker Bar, Left Rail (identity + status + toggle + pills), Station Chief Band, Chat Input
@@ -429,7 +429,7 @@ The Wise Counselor voice governs all machine-generated content:
 
 ## 7 — What This System Is Not
 
-- It is not a generic dark UI kit. The specific combination of material skins, dual-typeface voice, and single-accent intelligence signal is what makes it Dispatch. Strip any one and it becomes generic.
+- It is not a generic dark UI kit. The specific combination of substantive themes, dual-typeface voice, and single-accent intelligence signal is what makes it Dispatch. Strip any one and it becomes generic.
 - It is not a dashboard template. Dispatch processes intelligence, it doesn't report metrics. Components should never feel like widgets.
 - It is not decoration-forward. If an element exists only for visual interest, it does not belong.
 - It is not The Machine. Dispatch shares some DNA (the voice duality, the accent-as-intelligence-marker) but has its own material language, its own color theory, its own spatial logic. Do not copy Machine patterns into Dispatch.
@@ -1321,11 +1321,15 @@ Established: 2026-04-06
 
 ## OS-LEVEL INHERITANCE
 
-Dispatch is one of four sibling products living under OS — the ambient intelligence layer that holds the Good Living Studio philosophy, operator context, and shared authority. Dispatch inherits from four OS-level documents at `../os/`:
+Dispatch is one of four sibling products living under OS — the ambient intelligence layer that holds the Good Living Studio philosophy, operator context, and shared authority. Dispatch inherits from eight OS-level documents at `../os/`:
 
-- **OPERATOR.md** — Canonical for operator identity, five-year target, professional evolution thesis, and priority intelligence targets (Eli Lilly is one of them). Dispatch `MANDATE.md` references it rather than restating the full operator profile.
-- **DOCTRINE.md** — Canonical for shared design convictions (restraint as proof of quality, signal/synthesis duality, no sycophancy, token constraints, clarity over density). Dispatch `SYSTEM-BRIEF.md` and `ANTI-PATTERNS.md` implement these convictions in Dispatch-specific form.
+- **OPERATOR.md** — Canonical for operator identity (Jeremy Grant), five-year target, professional evolution thesis, operating thesis, and priority intelligence targets (Eli Lilly is one of them). Dispatch `MANDATE.md` references it rather than restating the full operator profile.
+- **DOCTRINE.md** — Canonical for shared design convictions (restraint as proof of quality, craft is non-negotiable, source and synthesis stay visible, visual surfaces earn their place, analytical voice in service of the mandate, design systems are governance, clarity over density). Dispatch `SYSTEM-BRIEF.md` and `ANTI-PATTERNS.md` implement these convictions in Dispatch-specific form.
 - **PASSAGE.md** — Canonical for interaction philosophy (every surface is a place you rejoin; no termination language; no dead surfaces; no hierarchy of realness). Dispatch `SYSTEM-BRIEF.md` § *Interaction philosophy: Passage* translates the philosophy into specific Dispatch interaction patterns.
+- **VOICE.md** — Canonical for universal analytical voice disciplines (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density) plus the Wise Counselor posture. Dispatch's `CEREBRO-CHARTER.md` expresses these disciplines through the Station Chief character.
+- **PIPELINE.md** — Canonical for the six-stage intelligence pipeline (Ingest → Annotate → Score → Brief → Synthesize → Act). Dispatch's `ARCHITECTURE.md` describes how Dispatch implements each stage and its weekly cadence for Stage 6.
+- **ARCHITECTURE.md** (OS-level) — Canonical for the shared codebase, white-label pattern, and the new-product spinup checklist. Dispatch's `ARCHITECTURE.md` describes product-specific decisions sitting on top of this shared foundation.
+- **GLOSSARY.md** — Canonical for shared vocabulary. Dispatch uses the same terms (operator, annotation layer, station chief, theme, Passage, etc.) with the same meanings.
 - **DOC-AUTHORITY.md** (OS-level) — Resolves authority conflicts that cross product boundaries or involve OS-level documents.
 
 **Rule:** When Dispatch docs conflict with OS-level docs, the OS-level document wins on principle and intent. Dispatch docs win on project-specific implementation. See `../os/DOC-AUTHORITY.md` for the full inheritance model.
@@ -1371,7 +1375,7 @@ When updating derived content, update the canonical source first, then propagate
 **Derived content in ARCHITECTURE:** Operator block, Lilly context, five-layer definitions, generative brief cluster description. All derived from MANDATE.
 
 ### SYSTEM-BRIEF.md — *The Look*
-**Owns:** Design philosophy. Signal/Synthesis duality. Material skin definitions. Token architecture (color, typography, spacing, radius). Component patterns and hierarchy. Agent instructions for UI generation. The "what Dispatch is not" boundaries.
+**Owns:** Design philosophy. Signal/Synthesis duality. Theme definitions (the visual expression of Dispatch — color, material, texture). Token architecture (color, typography, spacing, radius). Component patterns and hierarchy. Agent instructions for UI generation. The "what Dispatch is not" boundaries.
 
 **Rule:** If you need to know *how the interface should look and feel*, SYSTEM-BRIEF is the answer. The design system summary in ARCHITECTURE.md is a compressed reference derived from SYSTEM-BRIEF. Voice and behavioral directives referenced in SYSTEM-BRIEF (confidence tiers, Wise Counselor voice) must stay aligned with the VOICE block in PROMPTS.md.
 
@@ -1412,9 +1416,9 @@ If SOURCES and ARCHITECTURE list different feeds → SOURCES wins.
 
 ---
 
-## KNOWN DRIFT (as of 2026-04-06)
+## KNOWN DRIFT (as of 2026-04-09)
 
-All items resolved this session. No active drift.
+All items resolved at the OS revision and product-doc reframe completed 2026-04-09. No active drift.
 
 ---
 
@@ -1933,9 +1937,9 @@ No real conversations have occurred with the v3 VOICE directive. The v2 directiv
 # DISPATCH — Replicate Prompts
 Established: 2026-04-09 (stub)
 
-*This document contains image generation prompts for Dispatch's visual / gallery surface, calibrated to Dispatch's mood, subject matter, and material skin system. It is named for the Replicate platform convention but is not platform-specific — the prompts here should work across Replicate, Midjourney, Ideogram, or any equivalent image model, with minor syntax adjustments noted inline.*
+*This document contains image generation prompts for Dispatch's visual / gallery surface, calibrated to Dispatch's mood, subject matter, and theme system. It is named for the Replicate platform convention but is not platform-specific — the prompts here should work across Replicate, Midjourney, Ideogram, or any equivalent image model, with minor syntax adjustments noted inline.*
 
-*See `SYSTEM-BRIEF.md` for the material skins (Mineral / Slate / Forest / Ink / Sumi / Dispatch Paper) and visual language that image prompts must respect. See `../os/DOCTRINE.md` § Restraint for the visual discipline that governs when a generated image earns its place.*
+*See `SYSTEM-BRIEF.md` for the themes (Mineral / Slate / Forest / Ink / Sumi / Dispatch Paper) and visual language that image prompts must respect. See `../os/DOCTRINE.md` § Restraint is the proof of quality and § Visual surfaces earn their place for the visual discipline that governs when a generated image earns its place.*
 
 ---
 
@@ -1951,14 +1955,14 @@ Explore has a mature REPLICATE-PROMPTS.md at `../explore/REPLICATE-PROMPTS.md` �
 
 When written, REPLICATE-PROMPTS.md will contain:
 
-- **The aesthetic frame.** A short prose paragraph describing what "a Dispatch image" looks like and why — tied to the material skins, the station chief voice, and the doctrine of restraint.
+- **The aesthetic frame.** A short prose paragraph describing what "a Dispatch image" looks like and why — tied to the themes, the station chief voice, and the doctrine of restraint.
 - **Subject prompts by category.** Reusable prompt templates for the kinds of images Dispatch's gallery is expected to hold. Expected categories:
   - Healthcare and pharma environments (labs, clinics, care settings, instruments)
   - Design leadership and office environments (quiet, high-stakes, not performative)
   - Architecture and urban landscapes (anchoring the Culture annotation layer)
-  - Natural and material textures (tied to the skin system — mineral, ink, forest, etc.)
+  - Natural and material textures (tied to the theme system — mineral, ink, forest, etc.)
   - Abstract compositional studies (for the interstitial / atmospheric gallery slots)
-- **Style modifiers.** Reusable fragments that can be appended to any prompt to nudge the output toward a specific skin's aesthetic (Mineral warmth, Slate coolness, Forest organic, Ink gravity, etc.).
+- **Style modifiers.** Reusable fragments that can be appended to any prompt to nudge the output toward a specific theme's aesthetic (Mineral warmth, Slate coolness, Forest organic, Ink gravity, etc.).
 - **Anti-prompts.** Things the image generator must never produce in a Dispatch context — consumer-grade stock photography, celebratory imagery, corporate handshakes, cartoonish abstraction, AI-hallucinated text, etc.
 - **Platform notes.** Any platform-specific syntax or parameter adjustments (Replicate model versions, Midjourney `--ar` ratios, seed conventions, etc.).
 
@@ -1974,10 +1978,10 @@ Image generation is the most likely failure mode for Dispatch's visual disciplin
 
 1. What does the operator currently use for image generation in other contexts, and what prompt conventions are already working?
 2. How does Dispatch's gallery relate conceptually to Explore's gallery — are they structural siblings with different subject matter, or genuinely different surfaces?
-3. Which skins need explicit prompt calibration first (probably the current default + the two or three in active rotation)?
+3. Which themes need explicit prompt calibration first (probably the current default + the two or three in active rotation)?
 4. Is there a reference library of approved Dispatch imagery that can anchor "what a Dispatch image looks like"?
 
 ---
 
-*Update this document when: a new material skin is added; a prompt convention produces reliably better output and becomes canonical; a failure mode is identified and an anti-prompt is added; the image generation platform changes or gets replaced.*
+*Update this document when: a new theme is added; a prompt convention produces reliably better output and becomes canonical; a failure mode is identified and an anti-prompt is added; the image generation platform changes or gets replaced.*
 

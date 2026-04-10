@@ -41,21 +41,21 @@ Dispatch operates at the intersection of two voices — the world coming in and 
 
 The design system makes this distinction visible through typography, color, and spatial organization. A user should be able to scan any screen and immediately sense which content arrived from the world and which was produced by the machine.
 
-### Three material skins, not themes
+### Three themes, three temperatures
 
-Dispatch expresses itself through three material skins — Mineral, Slate, and Forest — each grounded in physical texture rather than digital abstraction:
+Dispatch expresses itself through three themes — Mineral, Slate, and Forest — each grounded in physical texture rather than digital abstraction:
 
 - **Mineral** — warm earth and amber. The default expression. Feels like sandstone, copper, ochre. The accent is a warm gold that suggests refinement without opulence.
 - **Slate** — cool steel and ink. Feels like brushed metal, deep water, graphite. The accent is a muted cerulean.
 - **Forest** — deep green and moss. Feels like lichen, oxidized copper, wet stone. The accent is a natural green.
 
-Each skin defines ten semantic color slots across dark and light modes, designed as complementary pairs — not inversions. The dark mode is the canonical expression. Light mode exists as a contextual variant.
+Each theme defines ten semantic color slots across dark and light modes, designed as complementary pairs — not inversions. The dark mode is the canonical expression. Light mode exists as a contextual variant.
 
-The skins are not "themes" in the toggle-and-forget sense. Each one shifts the emotional temperature of the entire interface. Mineral is authoritative and warm. Slate is analytical and cool. Forest is grounded and organic. The operator chooses the skin that matches how they want to think.
+These themes are not the toggle-and-forget kind. Each one shifts the emotional temperature of the entire interface. Mineral is authoritative and warm. Slate is analytical and cool. Forest is grounded and organic. The operator chooses the theme that matches how they want to think. The point of the word "theme" here is not decoration — it is atmosphere. See `../os/GLOSSARY.md` for the canonical definition.
 
-### Intelligence has a color: the skin accent
+### Intelligence has a color: the theme accent
 
-Each skin's accent color (`accent-secondary`) is the signal that the machine is present. In Mineral, this is warm amber (#B8956A). It appears on:
+Each theme's accent color (`accent-secondary`) is the signal that the machine is present. In Mineral, this is warm amber (#B8956A). It appears on:
 
 - Cerebro section labels (SYNOPSIS, RELEVANCE, CURRENT BRIEFING, CHALLENGE)
 - Active status indicators
@@ -78,7 +78,7 @@ This split is **semantic, not decorative**. It embodies the core duality — Sig
 
 ### The surface language
 
-Dispatch uses opaque, material fills — not translucent layers. Each skin defines specific hex values for backgrounds, surfaces, and elevated elements. Cards sit on surfaces. Surfaces sit on backgrounds. The hierarchy is:
+Dispatch uses opaque, material fills — not translucent layers. Each theme defines specific hex values for backgrounds, surfaces, and elevated elements. Cards sit on surfaces. Surfaces sit on backgrounds. The hierarchy is:
 
 - `bg-primary` — the ground state
 - `bg-surface` — cards, panels, content containers
@@ -206,7 +206,7 @@ Derived through split-complementary color theory anchored to Mineral's warm ambe
 
 ### The component hierarchy
 
-**Primitives** — Status dots, layer dots, category badges, layer pills, skin dots, dividers
+**Primitives** — Status dots, layer dots, category badges, layer pills, theme dots, dividers
 **Buttons** — Primary (send), Listen, Bump, Pill filter, Close, New Session, Text Link
 **Cards** — Feed Card, Signal Tooltip, Episode Card, Synthesis Card, Provocation Card, Pattern Card
 **Compound** — Ticker Bar, Left Rail (identity + status + toggle + pills), Station Chief Band, Chat Input
@@ -240,7 +240,7 @@ The Wise Counselor voice governs all machine-generated content:
 
 ## 7 — What This System Is Not
 
-- It is not a generic dark UI kit. The specific combination of material skins, dual-typeface voice, and single-accent intelligence signal is what makes it Dispatch. Strip any one and it becomes generic.
+- It is not a generic dark UI kit. The specific combination of substantive themes, dual-typeface voice, and single-accent intelligence signal is what makes it Dispatch. Strip any one and it becomes generic.
 - It is not a dashboard template. Dispatch processes intelligence, it doesn't report metrics. Components should never feel like widgets.
 - It is not decoration-forward. If an element exists only for visual interest, it does not belong.
 - It is not The Machine. Dispatch shares some DNA (the voice duality, the accent-as-intelligence-marker) but has its own material language, its own color theory, its own spatial logic. Do not copy Machine patterns into Dispatch.

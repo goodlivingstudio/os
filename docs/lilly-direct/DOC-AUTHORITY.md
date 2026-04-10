@@ -67,7 +67,7 @@ When updating derived content, update the canonical source first, then propagate
 **Rule:** If you need to know how Lilly Direct is built and where it diverges from shared OS code, ARCHITECTURE is the answer. Infrastructure and patterns common to every product live at `../os/ARCHITECTURE.md`.
 
 ### SYSTEM-BRIEF.md — *The Look*
-**Owns:** Design philosophy. Token architecture (color, typography, spacing, radius). Material skins. Component patterns. Agent instructions for UI generation. The "what Lilly Direct is not" visual boundaries. The § Interaction philosophy: Passage subsection implementing `../os/PASSAGE.md`.
+**Owns:** Design philosophy. Token architecture (color, typography, spacing, radius). Themes. Component patterns. Agent instructions for UI generation. The "what Lilly Direct is not" visual boundaries. The § Interaction philosophy: Passage subsection implementing `../os/PASSAGE.md`.
 
 **Derives from:** `../os/DOCTRINE.md` for shared design convictions; `../os/PASSAGE.md` for interaction philosophy; MANDATE for the purpose the visual language supports; CEREBRO-CHARTER for the voice character the visuals reinforce.
 
