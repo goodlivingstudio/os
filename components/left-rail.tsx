@@ -391,33 +391,36 @@ export function LeftRail({
             <span style={{ fontSize: 12, lineHeight: "18px", letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--accent-muted)" }}>{instanceConfig.branding.name}</span>
           </div>
 
-          {/* Row 2 — Clock + mode toggle */}
+          {/* Row 2 — Clock + Triage/Explore */}
           <div style={{
             flexShrink: 0,
             display: "flex", alignItems: "center", justifyContent: "space-between",
             padding: "10px 16px", borderBottom: "1px solid var(--border)",
           }}>
             <span style={{ fontFamily: "var(--font-sohne-mono)", fontSize: 11, color: "var(--text-tertiary)" }}>{time}</span>
-            <button
-              onClick={toggleRailMode}
-              title="Switch to compact view (or press [)"
-              style={{
-                display: "flex", alignItems: "center",
-                background: "var(--bg-elevated)", border: "none", borderRadius: 10,
-                padding: 2, cursor: "pointer",
-                width: 32, height: 18,
-                transition: "background 0.15s",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.background = "var(--border)" }}
-              onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-            >
-              <span style={{
-                width: 14, height: 14, borderRadius: 7,
-                background: "var(--text-tertiary)",
-                transform: "translateX(14px)",
-                transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-              }} />
-            </button>
+            {(viewMode === "signal" || viewMode === "audio" || viewMode === "synthesis") && (
+              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                {([
+                  { id: "urgency" as const, label: "Triage" },
+                  { id: "layer" as const,   label: "Explore" },
+                ]).map((mode, i) => (
+                  <span key={mode.id}>
+                    {i > 0 && <span style={{ color: "var(--border)", margin: "0 4px" }}>/</span>}
+                    <button
+                      onClick={() => onSortChange(mode.id)}
+                      style={{
+                        background: "transparent", border: "none", cursor: "pointer",
+                        fontSize: 11, fontWeight: sortBy === mode.id ? 500 : 400,
+                        color: sortBy === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
+                        padding: 0, transition: "color 0.15s",
+                      }}
+                    >
+                      {mode.label}
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* View navigation */}
@@ -450,30 +453,7 @@ export function LeftRail({
               )
             })}
 
-            {/* Triage / Explore toggle — visible for Signal, Audio, Synthesis */}
-            {(viewMode === "signal" || viewMode === "audio" || viewMode === "synthesis") && (
-              <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "10px 16px", borderTop: "1px solid var(--border)" }}>
-                {([
-                  { id: "urgency" as const, label: "Triage" },
-                  { id: "layer" as const,   label: "Explore" },
-                ]).map((mode, i) => (
-                  <span key={mode.id}>
-                    {i > 0 && <span style={{ color: "var(--border)", margin: "0 4px" }}>/</span>}
-                    <button
-                      onClick={() => onSortChange(mode.id)}
-                      style={{
-                        background: "transparent", border: "none", cursor: "pointer",
-                        fontSize: 12, fontWeight: sortBy === mode.id ? 500 : 400,
-                        color: sortBy === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
-                        padding: 0, transition: "color 0.15s",
-                      }}
-                    >
-                      {mode.label}
-                    </button>
-                  </span>
-                ))}
-              </div>
-            )}
+            {/* Triage/Explore moved to Row 2 header area */}
           </div>
 
           {/* Utility bar — same sizing as top nav for uniform vertical list */}
@@ -863,8 +843,8 @@ export function LeftRail({
       )}
       </>}
 
-      {/* ═══ MODE TOGGLE — compact mode only, desktop only ═══ */}
-      {railMode === "compact" && !isMobileRail && <div style={{
+      {/* ═══ MODE TOGGLE — both modes, desktop only ═══ */}
+      {!isMobileRail && <div style={{
         flexShrink: 0, padding: "8px 16px 12px", borderTop: "1px solid var(--border)",
         display: "flex", alignItems: "center", justifyContent: "center",
       }}>
@@ -886,7 +866,7 @@ export function LeftRail({
             width: 16, height: 16, borderRadius: 8,
             background: "var(--text-tertiary)",
             transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-            transform: "translateX(0)",
+            transform: railMode === "expanded" ? "translateX(16px)" : "translateX(0)",
           }} />
         </button>
       </div>}
