@@ -188,18 +188,17 @@ function PerspectiveCard({ perspective, index, onDeliberate }: {
       </div>
       {/* Title */}
       <div style={{
-        fontSize: 20,
-        fontWeight: 400,
+        fontSize: 28,
+        fontWeight: 600,
         fontFamily: DISPLAY,
         color: "var(--text-primary)",
-        lineHeight: 1.35,
-        letterSpacing: "0.01em",
-        marginBottom: 8,
+        lineHeight: 1,
+        marginBottom: 10,
       }}>
         {perspective.title}
       </div>
       {/* Body with citations */}
-      <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>
+      <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.4 }}>
         {renderCitedBody(perspective.body, perspective.sources)}
       </div>
     </div>
@@ -246,8 +245,8 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
           </button>
         </div>
 
-        <div style={{ fontSize: 22, fontWeight: 400, fontFamily: DISPLAY, color: "var(--text-primary)", marginBottom: 8, lineHeight: 1.35, letterSpacing: "0.01em" }}>{pitch.title}</div>
-        <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7, marginBottom: isConvergence(pitch) ? 12 : 24 }}>{pitch.thesis}</div>
+        <div style={{ fontSize: 28, fontWeight: 600, fontFamily: DISPLAY, color: "var(--text-primary)", marginBottom: 10, lineHeight: 1 }}>{pitch.title}</div>
+        <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.4, marginBottom: isConvergence(pitch) ? 12 : 24 }}>{pitch.thesis}</div>
 
         {/* Convergence callout */}
         {isConvergence(pitch) && (
@@ -530,11 +529,10 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
               {/* Headline — Söhne Schmal display, centered */}
               <div className="dispatch-headline" style={{
                 fontSize: 34,
-                fontWeight: 400,
+                fontWeight: 600,
                 fontFamily: DISPLAY,
                 color: "var(--text-primary)",
-                lineHeight: 1.4,
-                letterSpacing: "0.01em",
+                lineHeight: 1,
                 maxWidth: 820,
                 margin: "0 auto",
               }}>
@@ -698,13 +696,12 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                         </div>
                         {/* Title */}
                         <div style={{
-                          fontSize: 18,
-                          fontWeight: 400,
+                          fontSize: 28,
+                          fontWeight: 600,
                           fontFamily: DISPLAY,
                           color: "var(--text-primary)",
-                          lineHeight: 1.35,
-                          letterSpacing: "0.01em",
-                          marginBottom: 6,
+                          lineHeight: 1,
+                          marginBottom: 8,
                         }}>
                           {pitch.title}
                         </div>

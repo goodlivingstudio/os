@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { ChevronUp } from "lucide-react"
 import type { Article, Signal } from "@/lib/types"
-import { MONO, TYPE, labelStyle, bodyStyle, metaStyle } from "@/lib/styles"
+import { MONO, DISPLAY, TYPE, labelStyle, bodyStyle, metaStyle } from "@/lib/styles"
 import { renderCitedBody } from "@/components/citation"
 import { storageKey } from "@/lib/config"
 
@@ -258,11 +258,12 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
                       </div>
                     )}
                     <div style={{
-                      ...TYPE.body,
+                      fontSize: 28,
+                      fontFamily: DISPLAY,
+                      fontWeight: 600,
                       color: "var(--text-primary)",
-                      fontWeight: 500,
-                      lineHeight: 1.5,
-                      marginBottom: signal.body ? 8 : 0,
+                      lineHeight: 1,
+                      marginBottom: signal.body ? 10 : 0,
                     }}>
                       {signal.headline}
                     </div>
@@ -270,7 +271,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
                       <div style={{
                         ...TYPE.body,
                         color: hoveredIdx === i ? "var(--text-primary)" : "var(--text-secondary)",
-                        lineHeight: 1.7,
+                        lineHeight: 1.4,
                         flex: 1,
                         transition: "color 0.12s",
                       }}>
@@ -308,14 +309,14 @@ export function AnalysisPanelMobile({ signals, briefLoading }: { signals: Signal
           )}
           <div
             style={{
-              ...TYPE.body, fontWeight: 500, color: "var(--text-primary)", lineHeight: 1.5, marginBottom: 8,
+              fontSize: 28, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1, marginBottom: 10,
             }}
             className={briefLoading && i === 0 ? "loading-pulse" : ""}
           >
             {signal.headline}
           </div>
           {signal.body ? (
-            <div style={{ ...TYPE.body, color: "var(--text-primary)", lineHeight: 1.7 }}>
+            <div style={{ ...TYPE.body, color: "var(--text-primary)", lineHeight: 1.4 }}>
               {signal.body}
             </div>
           ) : briefLoading ? (

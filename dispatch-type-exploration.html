@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dispatch — Type Exploration</title>
+<style>
+  @font-face { font-family: 'Sohne'; src: url('app/fonts/Sohne-Buch.otf'); font-weight: 400; }
+  @font-face { font-family: 'Sohne Mono'; src: url('app/fonts/SohneMono-Buch.otf'); font-weight: 400; }
+  @font-face { font-family: 'Sohne Schmal'; src: url('app/fonts/SohneSchmal-Halbfett.otf'); font-weight: 600; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-primary:       #0A0A0A;
+    --bg-surface:       #151515;
+    --bg-elevated:      #1E1E1E;
+    --accent-secondary: #C83028;
+    --accent-muted:     #E04038;
+    --text-primary:     #F0EEEC;
+    --text-secondary:   #A8A4A0;
+    --text-tertiary:    #888480;
+    --border:           #222222;
+  }
+
+  body {
+    font-family: 'Sohne', system-ui, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    padding: 40px;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ─── Ticker ─── */
+  .ticker {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+  .ticker-cat {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-secondary);
+    white-space: nowrap;
+  }
+  .ticker-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .ticker-dot { color: var(--text-tertiary); opacity: 0.4; margin: 0 8px; }
+
+  /* ─── Eyebrow ─── */
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-secondary);
+    margin-bottom: 10px;
+  }
+
+  /* ─── Meta ─── */
+  .meta {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 6px;
+  }
+  .meta-dot { opacity: 0.4; margin: 0 4px; }
+
+  /* ─── Cards ─── */
+  .card {
+    background: var(--bg-surface);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 8px;
+    transition: background 0.15s;
+  }
+  .card:hover { background: var(--bg-elevated); }
+
+  .card-headline {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .card:hover .card-headline { color: var(--text-primary); }
+
+  .card-summary {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    line-height: 1.6;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ─── DCOS Signal Cards ─── */
+  .dcos {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .dcos-card {
+    background: var(--bg-surface);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .dcos-headline {
+    font-family: 'Sohne Schmal', system-ui, sans-serif;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+  }
+  .dcos-body {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* ─── Synthesis Section ─── */
+  .synthesis-section {
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    margin-top: 32px;
+    margin-bottom: 32px;
+  }
+  .synthesis-headline {
+    font-family: 'Sohne Schmal', system-ui, sans-serif;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.45;
+    letter-spacing: 0.01em;
+    margin-bottom: 10px;
+  }
+  .synthesis-body {
+    font-family: 'Sohne Mono', monospace;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.75;
+  }
+
+  /* ─── Exploration Options ─── */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 40px 0;
+    padding: 32px;
+    background: var(--bg-surface);
+    border-radius: 16px;
+  }
+  .option {
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .option-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-muted);
+    margin-bottom: 12px;
+  }
+  .option-spec {
+    font-family: 'Sohne Mono', monospace;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 12px;
+    line-height: 1.6;
+  }
+
+  h2.section-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-tertiary);
+    margin: 48px 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══ PAGE HEADER ═══ -->
+  <h2 class="section-title">Dispatch — Signal Feed (Ink Theme) — Type Exploration</h2>
+
+  <!-- ═══ TICKER ═══ -->
+  <div class="ticker">
+    <span class="ticker-cat">PHARMA</span>
+    <span class="ticker-text">Lilly's retatrutide triple agonist shows 24.2% weight reduction in Phase 3</span>
+    <span class="ticker-dot">·</span>
+    <span class="ticker-cat">AI</span>
+    <span class="ticker-text">Anthropic ships Claude 4 Opus with 1M context and native computer use</span>
+    <span class="ticker-dot">·</span>
+    <span class="ticker-cat">POSITION</span>
+    <span class="ticker-text">Medtronic posts CDO search — JD describes cross-functional AI architecture role</span>
+  </div>
+
+  <!-- ═══ DCOS SIGNAL CARDS ═══ -->
+  <div class="eyebrow">Daily Brief</div>
+  <div class="dcos">
+    <div class="dcos-card">
+      <div class="eyebrow" style="font-size: 11px; margin-bottom: 6px;">OPPORTUNITY · 9.2</div>
+      <div class="dcos-headline" style="font-size: 18px;">Rau doubles down on AI mandate — every Lilly employee now has Claude access</div>
+      <div class="dcos-body">The CIDO's mandate moved from aspiration to infrastructure this week. Enterprise Claude licenses deployed across all therapeutic areas.</div>
+    </div>
+    <div class="dcos-card">
+      <div class="eyebrow" style="font-size: 11px; margin-bottom: 6px;">POSITION · 8.7</div>
+      <div class="dcos-headline" style="font-size: 18px;">Three CDO searches in healthcare this quarter — JDs reveal a pattern</div>
+      <div class="dcos-body">Medtronic, Baxter, and now Amgen. All three describe the role as "cross-functional design + AI architecture." The operator's thesis is being written into job descriptions.</div>
+    </div>
+    <div class="dcos-card">
+      <div class="eyebrow" style="font-size: 11px; margin-bottom: 6px;">DISCIPLINE · 7.4</div>
+      <div class="dcos-headline" style="font-size: 18px;">Cursor 2.0 ships agent-mode — design-engineering convergence accelerates</div>
+      <div class="dcos-body">Agent-driven development is no longer a feature — it's the operating model. The gap between designers who can direct agents and those who can't is widening.</div>
+    </div>
+  </div>
+
+  <!-- ═══ FEED CARDS ═══ -->
+  <div class="eyebrow">Signal Feed</div>
+
+  <div class="card">
+    <div class="meta">STAT News<span class="meta-dot">·</span>Pharma<span class="meta-dot">·</span>2h</div>
+    <div class="card-headline">Lilly's donanemab care coordination challenge reveals a design leadership gap the company hasn't named yet</div>
+    <div class="card-summary">Monthly infusions, biomarker monitoring, caregiver coordination — the clinical protocol works but the patient experience around it is still institutional rather than human.</div>
+  </div>
+
+  <div class="card">
+    <div class="meta">Spencer Stuart<span class="meta-dot">·</span>Design Leadership<span class="meta-dot">·</span>5h</div>
+    <div class="card-headline">The CDO role is splitting: brand stewardship vs cross-functional architecture</div>
+    <div class="card-summary">Spencer Stuart's Q1 design leadership report shows two distinct CDO archetypes emerging. Healthcare companies are hiring for the architectural one.</div>
+  </div>
+
+  <div class="card">
+    <div class="meta">Anthropic Blog<span class="meta-dot">·</span>AI & Platform<span class="meta-dot">·</span>8h</div>
+    <div class="card-headline">Claude's computer use capability reshapes what design systems can govern at runtime</div>
+    <div class="card-summary">When the AI can see and interact with the UI it's building, the feedback loop between design intent and implementation collapses to near-zero.</div>
+  </div>
+
+  <div class="card">
+    <div class="meta">Harvard Business Review<span class="meta-dot">·</span>Org Design<span class="meta-dot">·</span>1d</div>
+    <div class="card-headline">Why the best CDOs report to the CEO, not the CTO — and what that means for the role's future</div>
+    <div class="card-summary">Reporting line is destiny. CDOs who report to CTOs become design service functions. CDOs who report to CEOs become strategic partners.</div>
+  </div>
+
+  <div class="card">
+    <div class="meta">Places Journal<span class="meta-dot">·</span>Architecture<span class="meta-dot">·</span>2d</div>
+    <div class="card-headline">The hospital lobby as civic space — what healthcare architecture reveals about institutional values</div>
+    <div class="card-summary">When you walk into a hospital designed by someone who understood care, you feel it before you see it. Most hospitals are designed by people who understood cost.</div>
+  </div>
+
+  <!-- ═══ SYNTHESIS SECTION ═══ -->
+  <div class="synthesis-section">
+    <div class="eyebrow">Weekly Shift</div>
+    <div class="synthesis-headline" style="font-size: 20px;">Pharma's AI mandate is accelerating faster than its design leadership can keep up — and three CDO searches this quarter prove it</div>
+    <div class="synthesis-body" style="margin-top: 12px;">
+      The convergence between Rau's AI infrastructure deployment at Lilly and the CDO searches at Medtronic, Baxter, and Amgen isn't coincidence — it's the market naming a gap. Healthcare organizations are building AI capability into every clinical workflow, but they don't have design leaders who can architect the human experience layer on top of it. The operator's positioning thesis — that the CDO role is becoming an AI-architecture role — is being validated in hiring patterns faster than expected.
+    </div>
+  </div>
+
+  <!-- ═══ SCHMAL HEADLINE SIZE OPTIONS ═══ -->
+  <h2 class="section-title">Söhne Schmal — Size Exploration</h2>
+
+  <div class="options-grid">
+    <div class="option">
+      <div class="option-label">Option A — 18px</div>
+      <div style="font-family: 'Sohne Schmal'; font-weight: 600; font-size: 18px; line-height: 1.4; letter-spacing: 0.01em; color: var(--text-primary);">
+        Three signals converging this week point toward a CDO hiring window in healthcare
+      </div>
+      <div class="option-spec">18px / 600 / 0.01em / 1.4 lh</div>
+    </div>
+
+    <div class="option">
+      <div class="option-label">Option B — 20px</div>
+      <div style="font-family: 'Sohne Schmal'; font-weight: 600; font-size: 20px; line-height: 1.35; letter-spacing: 0.01em; color: var(--text-primary);">
+        Three signals converging this week point toward a CDO hiring window in healthcare
+      </div>
+      <div class="option-spec">20px / 600 / 0.01em / 1.35 lh</div>
+    </div>
+
+    <div class="option">
+      <div class="option-label">Option C — 22px</div>
+      <div style="font-family: 'Sohne Schmal'; font-weight: 600; font-size: 22px; line-height: 1.3; letter-spacing: 0.01em; color: var(--text-primary);">
+        Three signals converging this week point toward a CDO hiring window in healthcare
+      </div>
+      <div class="option-spec">22px / 600 / 0.01em / 1.3 lh</div>
+    </div>
+
+    <div class="option">
+      <div class="option-label">Option D — 24px</div>
+      <div style="font-family: 'Sohne Schmal'; font-weight: 600; font-size: 24px; line-height: 1.25; letter-spacing: 0.01em; color: var(--text-primary);">
+        Three signals converging this week point toward a CDO hiring window in healthcare
+      </div>
+      <div class="option-spec">24px / 600 / 0.01em / 1.25 lh</div>
+    </div>
+
+    <div class="option">
+      <div class="option-label">Option E — 20px wider tracking</div>
+      <div style="font-family: 'Sohne Schmal'; font-weight: 600; font-size: 20px; line-height: 1.35; letter-spacing: 0.03em; color: var(--text-primary);">
+        Three signals converging this week point toward a CDO hiring window in healthcare
+      </div>
+      <div class="option-spec">20px / 600 / 0.03em / 1.35 lh</div>
+    </div>
+
+    <div class="option">
+      <div class="option-label">Option F — 22px wider tracking</div>
+      <div style="font-family: 'Sohne Schmal'; font-weight: 600; font-size: 22px; line-height: 1.3; letter-spacing: 0.03em; color: var(--text-primary);">
+        Three signals converging this week point toward a CDO hiring window in healthcare
+      </div>
+      <div class="option-spec">22px / 600 / 0.03em / 1.3 lh</div>
+    </div>
+  </div>
+
+  <!-- ═══ CEREBRO ═══ -->
+  <div class="synthesis-section">
+    <div class="eyebrow">Cerebro</div>
+    <div class="synthesis-body">
+      The Medtronic CDO search is the most interesting signal this week — not because you should apply, but because the JD is a mirror of your positioning thesis. They're describing a role that bridges clinical product, AI infrastructure, and human experience design. Three months ago, that combination would have been unusual in a healthcare CDO search. Now it's the third one this quarter.<br><br>
+      The gap: your public visibility at the intersection of healthcare + AI + design leadership is still thin. The work exists (Dispatch, Lilly Direct, the OS infrastructure), but it's not legible to a search committee yet. <span style="color: var(--accent-secondary);">[informed inference]</span><br><br>
+      ⚠ Weakest claim: the assertion that three CDO searches constitute a "pattern" rather than coincidence. Three is a small sample. Watch for Q2 data.
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
