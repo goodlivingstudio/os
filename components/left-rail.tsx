@@ -869,7 +869,7 @@ export function LeftRail({
             width: 16, height: 16, borderRadius: 8,
             background: "var(--text-tertiary)",
             transition: "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-            transform: railMode === "expanded" ? "translateX(16px)" : "translateX(0)",
+            transform: "translateX(0)",
           }} />
         </button>
       </div>}
