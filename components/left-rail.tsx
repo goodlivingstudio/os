@@ -288,52 +288,28 @@ function ExpandedNavButton({ icon, label, isActive, onClick }: {
   onClick: () => void
 }) {
   const [hovered, setHovered] = useState(false)
+  const [pressed, setPressed] = useState(false)
   return (
     <button
       onClick={onClick}
       title={label}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseLeave={() => { setHovered(false); setPressed(false) }}
+      onMouseDown={() => setPressed(true)}
+      onMouseUp={() => setPressed(false)}
       style={{
         display: "flex", alignItems: "center", gap: 10, width: "100%",
         padding: "10px 16px",
-        background: isActive ? "#2A2A2A" : hovered ? "#222222" : "transparent",
+        background: isActive || pressed ? "var(--bg-elevated)" : hovered ? "var(--bg-elevated)" : "transparent",
         border: "none",
         borderLeft: isActive ? "2px solid var(--accent-secondary)" : "2px solid transparent",
         cursor: "pointer", transition: "background 0.15s, color 0.15s, border-color 0.15s",
-        color: isActive ? "var(--text-primary)" : hovered ? "var(--text-secondary)" : "var(--text-tertiary)",
+        color: isActive || pressed ? "var(--text-primary)" : hovered ? "var(--text-secondary)" : "var(--text-tertiary)",
         fontSize: 13, fontWeight: isActive ? 500 : 400,
       }}
     >
       {icon}
       <span>{label}</span>
-    </button>
-  )
-}
-
-// ─── Triage / Explore Button — tracks hover via React state ──────────────────
-
-function TriageExploreButton({ label, isActive, onClick }: {
-  label: string
-  isActive: boolean
-  onClick: () => void
-}) {
-  const [hovered, setHovered] = useState(false)
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        background: isActive ? "#2A2A2A" : hovered ? "#222222" : "transparent",
-        border: "none", cursor: "pointer",
-        fontSize: 11, fontWeight: isActive ? 600 : 400,
-        color: isActive ? "var(--accent-secondary)" : hovered ? "var(--text-primary)" : "var(--text-tertiary)",
-        padding: "4px 6px", borderRadius: 4,
-        transition: "color 0.15s, background 0.15s",
-      }}
-    >
-      {label}
     </button>
   )
 }
@@ -458,21 +434,37 @@ export function LeftRail({
           }}>
             <span style={{ fontFamily: "var(--font-sohne-mono)", fontSize: 11, color: "var(--text-tertiary)" }}>{time}</span>
             {(viewMode === "signal" || viewMode === "audio" || viewMode === "synthesis") && (
-              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <div role="group" aria-label="Sort mode" style={{
+                display: "flex",
+                gap: 2,
+                background: "var(--bg-elevated)",
+                borderRadius: 8,
+                padding: 3,
+              }}>
                 {([
                   { id: "urgency" as const, label: "Triage" },
                   { id: "layer" as const,   label: "Explore" },
-                ]).map((mode, i) => {
+                ]).map(mode => {
                   const isActive = sortBy === mode.id
                   return (
-                    <span key={mode.id}>
-                      {i > 0 && <span style={{ color: "var(--border)", margin: "0 4px" }}>/</span>}
-                      <TriageExploreButton
-                        label={mode.label}
-                        isActive={isActive}
-                        onClick={() => onSortChange(mode.id)}
-                      />
-                    </span>
+                    <button
+                      key={mode.id}
+                      className="toggle-btn"
+                      aria-pressed={isActive}
+                      onClick={() => onSortChange(mode.id)}
+                      style={{
+                        padding: "4px 12px", border: "none",
+                        borderRadius: 6, cursor: "pointer",
+                        background: isActive ? "var(--bg-surface)" : "transparent",
+                        fontSize: 11, fontWeight: 400,
+                        color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
+                        transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                      }}
+                      onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.color = "var(--text-secondary)" } }}
+                      onMouseLeave={e => { e.currentTarget.style.background = isActive ? "var(--bg-surface)" : "transparent"; e.currentTarget.style.color = isActive ? "var(--text-primary)" : "var(--text-tertiary)" }}
+                    >
+                      {mode.label}
+                    </button>
                   )
                 })}
               </div>
