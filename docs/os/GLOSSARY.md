@@ -47,7 +47,7 @@ The role is no longer design leader alone. It is design leader, product leader, 
 The most consequential design problems of the next decade live where AI capability, institutional complexity, and human experience converge — in healthcare, government, education, anywhere the distance between what an organization can build and what people actually experience is growing faster than the organization can close it. See `OPERATOR.md` § OPERATING THESIS.
 
 ### Priority intelligence target
-An organization or domain the OS monitors closely. Targets shift as the operator's trajectory evolves. Each target is defined by its strategic relevance to the five-year target, not by an active engagement or relationship. See `OPERATOR.md` § PRIORITY INTELLIGENCE TARGETS.
+A field where the operator's trajectory, capability, and ambition converge. The OS currently tracks three strategic domains: healthcare and pharma, design leadership at consequence, and AI-native product contexts. Domains are stable; specific targets within them shift as the trajectory evolves. Product-level mandates name specific organizations and engagements within these domains. See `OPERATOR.md` § STRATEGIC DOMAINS.
 
 ---
 

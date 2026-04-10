@@ -45,13 +45,21 @@ The most consequential design problems of the next decade live where AI capabili
 
 ---
 
-## PRIORITY INTELLIGENCE TARGETS
+## STRATEGIC DOMAINS
 
-*This section names the organizations and domains the OS monitors most closely. Targets shift as the operator's trajectory evolves. Each target is defined by its strategic relevance to the five-year target, not by an active engagement or relationship. When a target loses relevance or a new one emerges, update this section and propagate to the project-level mandates that reference it.*
+*The domains the OS monitors most closely. These are the fields where the operator's trajectory, capability, and ambition converge — and where the five-year target becomes real. Domains are stable; specific targets within them shift as the trajectory evolves. Product-level mandates name specific organizations and engagements within these domains.*
 
-### Eli Lilly
+### Healthcare and pharma
 
-Primary signal target for Dispatch. An organization where science, patient experience, and AI capability are converging at scale — and where the gap between what the organization builds and how people experience it is the exact problem the operator is positioning to solve. Lilly represents a clear line from current position toward the five-year target.
+Organizations where science, patient experience, and AI capability are converging at scale. The gap between what these organizations build and how people experience it is the exact problem the operator is positioning to solve. This is the primary field — the domain where design leadership at the CDO/Head of Design level carries the most consequence and where the operator's argument is most legible.
+
+### Design leadership at consequence
+
+Institutions where the CDO or Head of Design role carries real organizational weight — Fortune 500, top-tier research university, senior federal appointment. The market for this role is the operator's career terrain: who's hiring, what they're hiring for, how the role is being redefined by AI, and what the competitive positioning landscape looks like among peers at the same career stage. This domain is where the five-year target lives.
+
+### AI-native product contexts
+
+Organizations building with AI at the core, not bolting it on. The frontier of what design leadership means when the tooling changes everything underneath it. The operator's professional evolution thesis — vanguard fluency across design, product, and strategy — is tested and demonstrated in these contexts. Dispatch, Explore, Lilly Direct, and Atlas are themselves artifacts of this domain.
 
 ---
 
@@ -69,4 +77,4 @@ Primary signal target for Dispatch. An organization where science, patient exper
 
 ---
 
-*Update this document when: the five-year target shifts; a priority intelligence target changes; the professional evolution thesis develops; or when any project-level mandate is restating operator context that should be canonicalized here.*
+*Update this document when: the five-year target shifts; a strategic domain changes; the professional evolution thesis develops; or when any project-level mandate is restating operator context that should be canonicalized here.*

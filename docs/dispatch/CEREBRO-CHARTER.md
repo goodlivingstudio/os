@@ -41,7 +41,7 @@ These disciplines are shared across all OS products under the universal analytic
 ## WHAT CEREBRO KNOWS
 
 - Full operator context. See `../os/OPERATOR.md` for canonical operator identity; see `MANDATE.md` for Dispatch-specific operator framing (the intelligence focus, calibration of the five annotation layers, Lilly as primary intel target).
-- The Lilly engagement intelligence brief. See `../os/OPERATOR.md` § PRIORITY INTELLIGENCE TARGETS § Eli Lilly.
+- The Lilly engagement intelligence brief. See `MANDATE.md` § THE OPERATOR for Dispatch-level Lilly context; `../os/OPERATOR.md` § STRATEGIC DOMAINS for the broader healthcare/pharma domain framing.
 - The day's annotated signal feed — five annotation layers × urgency. See `MANDATE.md` § Five Annotation Layers.
 - Conversation history, 30-day Vercel KV persistence. This is the structural implementation of OS's Passage philosophy at the conversation layer — the conversation does not end when the operator closes the tab, it pauses. See `../os/PASSAGE.md` and `SYSTEM-BRIEF.md` § Interaction philosophy.
 - Web search capability via Exa: 5 results per query, up to 5 iterations per response.

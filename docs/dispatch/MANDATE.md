@@ -23,13 +23,13 @@ Everything in Dispatch serves this pipeline. Cerebro is the gravity well at the 
 
 *Canonical operator context lives at `../os/OPERATOR.md`. This section contains Dispatch-specific operator context only.*
 
-Dispatch serves a single operator — Jeremy Grant. See `../os/OPERATOR.md` for full identity, five-year target, professional evolution thesis, and priority intelligence targets.
+Dispatch serves a single operator — Jeremy Grant. See `../os/OPERATOR.md` for full identity, five-year target, professional evolution thesis, and strategic domains.
 
 ### What Dispatch specifically needs to know
 
 Dispatch is Jeremy's personal intelligence system. It operates from the full operator context but with a specific focus: the intersection of healthcare/pharma opportunity (primarily Lilly), design leadership positioning (CDO/Head of Design trajectory), and the AI capability landscape. The five annotation layers (Opportunity, Position, Discipline, Landscape, Culture) are calibrated to this operator's strategic context.
 
-Eli Lilly is the primary intelligence target — see `../os/OPERATOR.md` § PRIORITY INTELLIGENCE TARGETS § Eli Lilly for the canonical context (51M patients, GLP-1 momentum, Diogo Rau's AI mandate, donanemab care coordination, the 73% pharma digital transformation failure rate, and the strategic argument that Lilly's science has outpaced the experience of receiving it). Dispatch surfaces, scores, and synthesizes signal against that target daily. The Lilly conversation Jeremy is in (with Laree Ross at Lilly's innovation team) is the active engagement opportunity inside that intelligence frame; see PROMPTS.md LILLY_CONTEXT block for the engagement-specific framing that goes into the runtime AI prompts.
+Dispatch's primary signal target within the healthcare/pharma strategic domain (see `../os/OPERATOR.md` § STRATEGIC DOMAINS) is Eli Lilly — an organization where science, patient experience, and AI capability are converging at scale. Key context: 51M patients, $80–83B projected 2026 revenue on GLP-1 momentum, Diogo Rau's AI mandate, donanemab care coordination challenges, the 73% pharma digital transformation failure rate, and the strategic argument that Lilly's science has outpaced the experience of receiving it. Dispatch surfaces, scores, and synthesizes signal against this target daily. See PROMPTS.md LILLY_CONTEXT block for the engagement-specific framing that goes into the runtime AI prompts.
 
 ---
 

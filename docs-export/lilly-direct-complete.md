@@ -11,7 +11,7 @@ Established: 2026-04-10 (scaffold — content lands at kickoff)
 
 *This document is the operational doctrine for Lilly Direct — what the product is, why it exists, who it serves, and what it values. It is canonical for Lilly Direct's engagement framing, intelligence modes, annotation layers, Cerebro behavioral character, and the generative brief cluster. The prompt text in `lib/prompts.ts` derives from this document via the config in `lib/config/lilly-direct.ts`. Change this first; then propagate to PROMPTS.md.*
 
-*Canonical operator context lives at `../os/OPERATOR.md` — Jeremy Grant, Senior Design Director, five-year target, professional evolution thesis, and priority intelligence targets (Eli Lilly is one of them). This document owns the Lilly-specific framing: what the engagement demands, how Lilly Direct scores signal against it, and what it produces.*
+*Canonical operator context lives at `../os/OPERATOR.md` — Jeremy Grant, five-year target, professional evolution thesis, and strategic domains (healthcare/pharma, design leadership, AI-native contexts). This document owns the Lilly-specific framing: what the engagement demands, how Lilly Direct scores signal against it, and what it produces. Eli Lilly is a specific target within the healthcare/pharma strategic domain — the product-level engagement context lives HERE, not at the OS level.*
 
 ---
 
@@ -389,7 +389,7 @@ Established: 2026-04-10
 
 Lilly Direct is one of four sibling products living under OS — the ambient intelligence layer that holds the Good Living Studio philosophy, operator context, and shared authority. Lilly Direct inherits from eight OS-level documents at `../os/` (linked below):
 
-- **[OPERATOR](../os/OPERATOR.md)** — Canonical for operator identity (Jeremy Grant), five-year target, professional evolution thesis, and priority intelligence targets (Eli Lilly is one of them). Lilly Direct's `MANDATE.md` references it rather than restating the operator profile.
+- **[OPERATOR](../os/OPERATOR.md)** — Canonical for operator identity (Jeremy Grant), five-year target, professional evolution thesis, and strategic domains (healthcare/pharma, design leadership, AI-native contexts). Lilly Direct's `MANDATE.md` references it rather than restating the operator profile. Eli Lilly is a specific target within the healthcare/pharma strategic domain — the engagement context lives at the product level.
 - **[DOCTRINE](../os/DOCTRINE.md)** — Canonical for shared design convictions (restraint as proof of quality, craft is non-negotiable, source and synthesis stay visible, visual surfaces earn their place, analytical voice in service of the mandate, design systems are governance, clarity over density). Lilly Direct's `SYSTEM-BRIEF.md` and `ANTI-PATTERNS.md` implement these convictions in Lilly Direct-specific form.
 - **[PASSAGE](../os/PASSAGE.md)** — Canonical for interaction philosophy. Lilly Direct's `SYSTEM-BRIEF.md` § Interaction philosophy translates Passage into specific Lilly Direct commitments.
 - **[VOICE](../os/VOICE.md)** — Canonical for universal analytical voice disciplines (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density). Lilly Direct's `CEREBRO-CHARTER.md` expresses these through a product-specific character.
@@ -705,7 +705,7 @@ Established: 2026-04-10 (scaffold — content lands at kickoff)
 
 *This document describes the current state of the Eli Lilly engagement environment — the changing terrain Lilly Direct's intelligence is scoring signal against. It is distinct from MANDATE.md (which describes what Lilly Direct is) and from SOURCES.md (which describes where signal comes from). The live environment is the terrain itself — what the signal is scored against.*
 
-*See `../os/OPERATOR.md` § PRIORITY INTELLIGENCE TARGETS § Eli Lilly for the baseline Lilly engagement context (51M patients, GLP-1 momentum, Diogo Rau's AI mandate, donanemab care coordination, LillyDirect platform, the 73% pharma digital transformation failure rate, and the strategic argument that Lilly's science has outpaced the experience of receiving it). This file extends that baseline with engagement-specific, time-sensitive context that changes faster than OS-level operator context.*
+*Lilly-specific engagement context lives at the product level, not in the OS operator profile. See `MANDATE.md` for the canonical Lilly Direct engagement framing. See `../os/OPERATOR.md` § STRATEGIC DOMAINS § Healthcare and pharma for the broader domain framing. This file extends the baseline engagement context with time-sensitive, rapidly-changing terrain that the intelligence function scores signal against.*
 
 ---
 

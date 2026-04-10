@@ -77,7 +77,7 @@ OS-level documents are canonical for shared concerns. Product-level documents in
 ## OS-LEVEL AUTHORITY MAP
 
 ### OPERATOR — *Who this serves*
-**Owns:** Jeremy Grant's identity, Good Living Studio as the operator's practice, the five-year target (Head of Design or CDO at a consequential institution), the professional evolution thesis (vanguard fluency across design, product, and strategy), the operating thesis (AI capability + institutional complexity + human experience), and priority intelligence targets.
+**Owns:** Jeremy Grant's identity, Good Living Studio as the operator's practice, the five-year target (Head of Design or CDO at a consequential institution), the professional evolution thesis (vanguard fluency across design, product, and strategy), the operating thesis (AI capability + institutional complexity + human experience), and strategic domains (healthcare/pharma, design leadership at consequence, AI-native product contexts).
 
 **Rule:** Canonical for all operator context across all products. Product-level mandates reference this document for operator identity. When operator context changes, update here first, then propagate.
 

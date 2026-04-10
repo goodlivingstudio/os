@@ -31,13 +31,13 @@ Everything in Dispatch serves this pipeline. Cerebro is the gravity well at the 
 
 *Canonical operator context lives at `../os/OPERATOR.md`. This section contains Dispatch-specific operator context only.*
 
-Dispatch serves a single operator — Jeremy Grant. See `../os/OPERATOR.md` for full identity, five-year target, professional evolution thesis, and priority intelligence targets.
+Dispatch serves a single operator — Jeremy Grant. See `../os/OPERATOR.md` for full identity, five-year target, professional evolution thesis, and strategic domains.
 
 ### What Dispatch specifically needs to know
 
 Dispatch is Jeremy's personal intelligence system. It operates from the full operator context but with a specific focus: the intersection of healthcare/pharma opportunity (primarily Lilly), design leadership positioning (CDO/Head of Design trajectory), and the AI capability landscape. The five annotation layers (Opportunity, Position, Discipline, Landscape, Culture) are calibrated to this operator's strategic context.
 
-Eli Lilly is the primary intelligence target — see `../os/OPERATOR.md` § PRIORITY INTELLIGENCE TARGETS § Eli Lilly for the canonical context (51M patients, GLP-1 momentum, Diogo Rau's AI mandate, donanemab care coordination, the 73% pharma digital transformation failure rate, and the strategic argument that Lilly's science has outpaced the experience of receiving it). Dispatch surfaces, scores, and synthesizes signal against that target daily. The Lilly conversation Jeremy is in (with Laree Ross at Lilly's innovation team) is the active engagement opportunity inside that intelligence frame; see PROMPTS.md LILLY_CONTEXT block for the engagement-specific framing that goes into the runtime AI prompts.
+Dispatch's primary signal target within the healthcare/pharma strategic domain (see `../os/OPERATOR.md` § STRATEGIC DOMAINS) is Eli Lilly — an organization where science, patient experience, and AI capability are converging at scale. Key context: 51M patients, $80–83B projected 2026 revenue on GLP-1 momentum, Diogo Rau's AI mandate, donanemab care coordination challenges, the 73% pharma digital transformation failure rate, and the strategic argument that Lilly's science has outpaced the experience of receiving it. Dispatch surfaces, scores, and synthesizes signal against this target daily. See PROMPTS.md LILLY_CONTEXT block for the engagement-specific framing that goes into the runtime AI prompts.
 
 ---
 
@@ -173,7 +173,7 @@ These disciplines are shared across all OS products under the universal analytic
 ## WHAT CEREBRO KNOWS
 
 - Full operator context. See `../os/OPERATOR.md` for canonical operator identity; see `MANDATE.md` for Dispatch-specific operator framing (the intelligence focus, calibration of the five annotation layers, Lilly as primary intel target).
-- The Lilly engagement intelligence brief. See `../os/OPERATOR.md` § PRIORITY INTELLIGENCE TARGETS § Eli Lilly.
+- The Lilly engagement intelligence brief. See `MANDATE.md` § THE OPERATOR for Dispatch-level Lilly context; `../os/OPERATOR.md` § STRATEGIC DOMAINS for the broader healthcare/pharma domain framing.
 - The day's annotated signal feed — five annotation layers × urgency. See `MANDATE.md` § Five Annotation Layers.
 - Conversation history, 30-day Vercel KV persistence. This is the structural implementation of OS's Passage philosophy at the conversation layer — the conversation does not end when the operator closes the tab, it pauses. See `../os/PASSAGE.md` and `SYSTEM-BRIEF.md` § Interaction philosophy.
 - Web search capability via Exa: 5 results per query, up to 5 iterations per response.
@@ -503,7 +503,7 @@ The most important design problems of the next decade live at the intersection o
 
 ### Lilly context
 
-*Summary of the Lilly engagement context. Canonical source: `../os/OPERATOR.md` § PRIORITY INTELLIGENCE TARGETS § Eli Lilly. See DOC-AUTHORITY.md for the inheritance model.*
+*Summary of the Lilly engagement context. Canonical source: `MANDATE.md` § THE OPERATOR. Lilly is Dispatch's primary signal target within the healthcare/pharma strategic domain defined at `../os/OPERATOR.md` § STRATEGIC DOMAINS. See DOC-AUTHORITY.md for the inheritance model.*
 
 - 51M patients, $80–83B projected 2026 revenue
 - Diogo Rau (EVP & CIDO): mandated every employee engage with AI daily
@@ -1325,7 +1325,7 @@ Established: 2026-04-06
 
 Dispatch is one of four sibling products living under OS — the ambient intelligence layer that holds the Good Living Studio philosophy, operator context, and shared authority. Dispatch inherits from eight OS-level documents at `../os/` (linked below):
 
-- **[OPERATOR](../os/OPERATOR.md)** — Canonical for operator identity (Jeremy Grant), five-year target, professional evolution thesis, operating thesis, and priority intelligence targets (Eli Lilly is one of them). Dispatch's `MANDATE.md` references it rather than restating the full operator profile.
+- **[OPERATOR](../os/OPERATOR.md)** — Canonical for operator identity (Jeremy Grant), five-year target, professional evolution thesis, operating thesis, and strategic domains (healthcare/pharma, design leadership, AI-native contexts). Dispatch's `MANDATE.md` references it rather than restating the full operator profile. Lilly-specific context lives at the Dispatch product level, not in the OS operator profile.
 - **[DOCTRINE](../os/DOCTRINE.md)** — Canonical for shared design convictions (restraint as proof of quality, craft is non-negotiable, source and synthesis stay visible, visual surfaces earn their place, analytical voice in service of the mandate, design systems are governance, clarity over density). Dispatch's `SYSTEM-BRIEF.md` and `ANTI-PATTERNS.md` implement these convictions in Dispatch-specific form.
 - **[PASSAGE](../os/PASSAGE.md)** — Canonical for interaction philosophy (every surface is a place you rejoin; no termination language; no dead surfaces; no hierarchy of realness). Dispatch's `SYSTEM-BRIEF.md` § *Interaction philosophy: Passage* translates the philosophy into specific Dispatch interaction patterns.
 - **[VOICE](../os/VOICE.md)** — Canonical for universal analytical voice disciplines (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density) plus the Wise Counselor posture. Dispatch's `CEREBRO-CHARTER.md` expresses these disciplines through the Station Chief character.
@@ -1351,7 +1351,7 @@ When updating derived content, update the canonical source first, then propagate
 ### MANDATE.md — *The Why*
 **Owns:** The station chief model. Three intelligence modes (Intelligence / Formation / Positioning). Five annotation layers. Synthesis purpose. Generative brief cluster purpose. Dispatch-specific operator context (what Dispatch needs to know beyond the shared operator profile).
 
-**Derives from:** `../os/OPERATOR.md` for operator identity, five-year target, professional evolution thesis, operating thesis, and priority intelligence targets (Eli Lilly is one of them). Dispatch-specific operator context — including the operator's current employer, the active Lilly engagement framing, and Dispatch-specific intelligence priorities — lives in this MANDATE.md, not in the upstream OS file.
+**Derives from:** `../os/OPERATOR.md` for operator identity, five-year target, professional evolution thesis, operating thesis, and strategic domains. Dispatch-specific operator context — including the active Lilly engagement framing, specific intelligence targets within the OS-level strategic domains, and Dispatch-specific intelligence priorities — lives in this MANDATE.md, not in the upstream OS file.
 
 **Rule:** If you need to know *what Dispatch is and why it exists*, MANDATE is the answer. For *who the operator is*, see `../os/OPERATOR.md`. For *how the analytical function reasons and what disciplines it carries*, see `CEREBRO-CHARTER.md`. Everything in PROMPTS.md's context blocks derives from MANDATE (for Dispatch-specific content), from CEREBRO-CHARTER (for voice and discipline), and from `../os/OPERATOR.md` (for shared operator context).
 
