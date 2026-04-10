@@ -2,15 +2,16 @@
 
 import { useState, useEffect, useRef } from "react"
 import { ExternalLink, ArrowUpRight, ChevronUp, ChevronDown, Bookmark } from "lucide-react"
-import { TYPE, MONO, metaStyle } from "@/lib/styles"
+import { TYPE, MONO, DISPLAY, metaStyle, labelStyle } from "@/lib/styles"
 import type { Article } from "@/lib/types"
 import instanceConfig, { storageKey, MOBILE_BREAKPOINT } from "@/lib/config"
 
 // ─── Audio DCOS Band ────────────────────────────────────────────────────────
 
 interface AudioSignal {
-  label: string
+  headline: string
   body: string
+  layer: string
 }
 
 const AUDIO_BRIEF_CACHE_KEY = storageKey("dcos-audio-brief")
@@ -25,7 +26,7 @@ const AUDIO_SCAN_STATUSES = [
   "▸ composing brief",
 ]
 
-function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episodes: Episode[]; visible: boolean; defaultExpanded?: boolean }) {
+function AudioBriefBand({ episodes, visible, defaultExpanded = true, onDeliberate }: { episodes: Episode[]; visible: boolean; defaultExpanded?: boolean; onDeliberate?: (text: string) => void }) {
   const [signals, setSignals] = useState<AudioSignal[]>([])
   const [loading, setLoading] = useState(false)
   const [expanded, setExpanded] = useState(defaultExpanded)
@@ -33,6 +34,7 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episode
   const [statusIdx, setStatusIdx] = useState(0)
   const [revealed, setRevealed] = useState(false)
   const wasLoading = useRef(false)
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
 
   // Sync expanded state when toggle changes
   useEffect(() => { setExpanded(defaultExpanded) }, [defaultExpanded])
@@ -170,18 +172,53 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true }: { episode
             }} />
           </>
         ) : realSignals.length > 0 ? (
-          <div style={{ display: "grid", gridTemplateColumns: `repeat(${realSignals.length}, 1fr)`, gap: 8, padding: "8px 16px 16px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: `repeat(${realSignals.length}, 1fr)`, gap: 8, padding: "8px 20px 16px" }}>
             {realSignals.map((signal, i) => (
-              <div key={i} style={{
-                padding: "14px 16px", borderRadius: 12, background: "var(--bg-surface)",
-                animation: `signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${i * 120}ms both`,
-              }}>
-                <div style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.04em", marginBottom: 8 }}>
-                  {signal.label}
+              <div
+                key={i}
+                onClick={() => onDeliberate && signal.body && onDeliberate(`I want to explore this audio signal:\n\n"${signal.headline}"\n\n${signal.body}\n\nWhat does this mean strategically?`)}
+                onMouseEnter={() => setHoveredIdx(i)}
+                onMouseLeave={() => setHoveredIdx(null)}
+                style={{
+                  padding: "16px 18px",
+                  borderRadius: 12,
+                  animation: `signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${i * 120}ms both`,
+                  display: "flex",
+                  flexDirection: "column",
+                  cursor: signal.body ? "pointer" : "default",
+                  background: hoveredIdx === i ? "var(--bg-elevated)" : "var(--bg-surface)",
+                  transition: "background 0.15s",
+                }}
+              >
+                {signal.layer && (
+                  <div style={{
+                    ...labelStyle,
+                    marginBottom: 4,
+                  }}>
+                    {signal.layer}
+                  </div>
+                )}
+                <div style={{
+                  fontSize: 28,
+                  fontFamily: DISPLAY,
+                  fontWeight: 600,
+                  color: "var(--text-primary)",
+                  lineHeight: 1,
+                  marginBottom: signal.body ? 10 : 0,
+                }}>
+                  {signal.headline}
                 </div>
-                <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7 }}>
-                  {signal.body}
-                </div>
+                {signal.body && (
+                  <div style={{
+                    ...TYPE.body,
+                    color: hoveredIdx === i ? "var(--text-primary)" : "var(--text-secondary)",
+                    lineHeight: 1.4,
+                    flex: 1,
+                    transition: "color 0.12s",
+                  }}>
+                    {signal.body}
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -486,7 +523,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
     <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}>
 
       {/* Audio DCOS Band — desktop only */}
-      {!isMobile && <AudioBriefBand episodes={episodes} visible={!loading} defaultExpanded={sortBy === "urgency"} />}
+      {!isMobile && <AudioBriefBand episodes={episodes} visible={!loading} defaultExpanded={sortBy === "urgency"} onDeliberate={onDeliberate} />}
 
       {/* Layer filters + artwork toggle — dropdown on mobile, pills on desktop */}
       {!loading && (() => {
