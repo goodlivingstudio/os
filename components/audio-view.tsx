@@ -614,7 +614,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
               </div>
             ) : (
               /* ── Desktop: pills + artwork toggle ── */
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 2, marginBottom: 8 }}>
                 {LAYER_FILTERS.map(layer => {
                   const isActive = activeLayer === layer.id
                   const count = layer.id === "all" ? pool.length : pool.filter(ep => ep.layer === layer.id).length
