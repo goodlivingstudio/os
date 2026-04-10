@@ -28,7 +28,7 @@ The civic/team intelligence product. Serves the National Design Studio's explore
 The decision capture product. The layer that makes the between-state visible — decisions forming, positions developing, work seeded by another product's signal that hasn't resolved yet. Currently on hold. Lives as a separate repository. When Atlas resumes, a decision will be made about whether to fold it into the shared OS codebase or keep it separate.
 
 ### Lilly Direct
-The engagement intelligence product for the Eli Lilly relationship. Working name — final name TBD. Runs as a white-label instance inside the OS.
+The engagement intelligence product for the Eli Lilly relationship. Runs as a white-label instance inside the OS. Scaffolded 2026-04-10; content lands during the kickoff session.
 
 ---
 
@@ -87,7 +87,7 @@ The generic term for whatever analytical layer a product exposes. Every product 
 The name given to the analytical function in Dispatch. The conversational strategic advisor that synthesizes signal, memory, and operator context into counsel. Not a chatbot. See `../dispatch/CEREBRO-CHARTER.md`.
 
 ### Voice character vs voice discipline
-The distinction is load-bearing. **Character** is the voice register and relationship posture — Station Chief vs Field Correspondent — and varies per product. **Discipline** is the set of non-negotiable analytical commitments (gap accounting, confidence tiers, weakest claim, etc.) and is universal. Character lives in product `CEREBRO-CHARTER.md` files. Discipline lives in `VOICE.md`. Do not conflate them.
+The distinction is load-bearing. **Character** is the voice register and relationship posture — Station Chief vs Field Correspondent — and varies per product. **Discipline** is the set of non-negotiable analytical commitments (gap accounting, confidence tiers, weakest claim, etc.) and is universal. Character lives in product CEREBRO-CHARTER files. Discipline lives in `VOICE.md`. Do not conflate them.
 
 ### The Station Chief
 Dispatch's voice character. Authoritative, direct, briefing the principal. Manages what the operator knows and doesn't know. Leads with what's changed or what's at stake. See `../dispatch/CEREBRO-CHARTER.md`.
@@ -231,22 +231,24 @@ See `../dispatch/MANDATE.md` § THREE INTELLIGENCE MODES.
 The 14 files every product doc set must contain. See `DOC-AUTHORITY.md` § THE CANONICAL PRODUCT DOC SET.
 
 **Tier 1 — Strategic:**
-- `MANDATE.md` — what this product is, why it exists
-- `CEREBRO-CHARTER.md` — the analytical function's behavioral contract and voice character
-- `SYSTEM-BRIEF.md` — visual language, tokens, interaction philosophy
-- `ARCHITECTURE.md` — product-specific tech decisions
-- `PROMPTS.md` — copyable prompt text for runtime
-- `ANTI-PATTERNS.md` — product-specific prohibitions
-- `DOC-AUTHORITY.md` — project-level authority map
+- **MANDATE** — what this product is, why it exists
+- **CEREBRO-CHARTER** — the analytical function's behavioral contract and voice character
+- **SYSTEM-BRIEF** — visual language, tokens, interaction philosophy
+- **ARCHITECTURE** — product-specific tech decisions
+- **PROMPTS** — copyable prompt text for runtime
+- **ANTI-PATTERNS** — product-specific prohibitions
+- **DOC-AUTHORITY** — project-level authority map
 
 **Tier 2 — Operational:**
-- `SOURCES.md` — canonical active feed inventory
-- `SOURCES-MEGALIST.md` — discovery/staging layer for candidate sources
-- `LIVE-ENVIRONMENT.md` — the changing external context the product operates inside
-- `WATCHFILE.md` — active watch items with severity and escalation
-- `ROADMAP.md` — active work, priorities, completed archive
-- `VOICE-CALIBRATION.md` — ongoing voice observation log
-- `REPLICATE-PROMPTS.md` — image generation prompts for gallery/visual surfaces
+- **SOURCES** — canonical active feed inventory
+- **SOURCES-MEGALIST** — discovery/staging layer for candidate sources
+- **LIVE-ENVIRONMENT** — the changing external context the product operates inside
+- **WATCHFILE** — active watch items with severity and escalation
+- **ROADMAP** — active work, priorities, completed archive
+- **VOICE-CALIBRATION** — ongoing voice observation log
+- **REPLICATE-PROMPTS** — image generation prompts for gallery/visual surfaces
+
+These are the canonical filenames in every product directory. They are the same in `docs/dispatch/`, `docs/explore/`, and `docs/lilly-direct/`.
 
 ---
 

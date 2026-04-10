@@ -23,7 +23,7 @@ These modes are not tabs or filters. They describe the operator's relationship t
 **Engine:** Anthropic Claude (Haiku 4.5 for annotation/brief/synthesis, Sonnet 4 for Cerebro/Dispatch)
 **Search:** Exa API (live web intelligence)
 **Memory:** Upstash Redis via Vercel KV (conversation persistence + 7-day article history)
-**All projects (Dispatch, Atlas, Lilly) run on Anthropic Claude — OpenAI fully removed.**
+**Every OS instance (Dispatch, Explore, Lilly Direct) runs on Anthropic Claude — OpenAI fully removed. Atlas lives as a separate repository on its own stack and is currently on hold.**
 
 ---
 
@@ -341,4 +341,4 @@ Priority ordered by strategic impact, not technical sequencing.
 
 9. **Gallery expansion** — More image sources, validate URL extraction pipeline.
 
-10. **Integration tier advancement** — Push high-value sources up the integration hierarchy. See `docs/INTEGRATION-DOCTRINE.md` for the full framework: Tier 1 (in-platform), Tier 2 (bidirectional API), Tier 3 (unidirectional pull), Tier 4 (manual bridge). Priority targets: Figma (4→1), Atlas (4→2), LinkedIn (→2).
+10. **Integration tier advancement** — Push high-value sources up the integration hierarchy. The integration framework: Tier 1 (in-platform native UI), Tier 2 (bidirectional API), Tier 3 (unidirectional pull), Tier 4 (manual bridge). Priority targets to advance: Figma (4→1), Atlas (4→2), LinkedIn (→2). When the integration framework grows enough to deserve its own doc, promote it to a dedicated file under `docs/dispatch/`.

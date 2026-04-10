@@ -89,7 +89,7 @@ Established: 2026-04-09
 
 *The design convictions that are true across every surface that lives within the OS. This is not a design system — each product defines its own color, its own content, its own mission. But they share a shell, a component architecture, and a set of beliefs about what intelligence software should feel like. This document is those beliefs.*
 
-*See `PASSAGE.md` for the interaction philosophy. See project-level `SYSTEM-BRIEF.md` files for visual implementation. See `DOC-AUTHORITY.md` for how these documents relate.*
+*See `PASSAGE.md` for the interaction philosophy. See project-level SYSTEM-BRIEF files for visual implementation. See `DOC-AUTHORITY.md` for how these documents relate.*
 
 ---
 
@@ -161,8 +161,8 @@ The OS is the ambient intelligence that holds everything together — the atmosp
 ## WHAT THIS DOCUMENT DOES NOT OWN
 
 - **Interaction philosophy** — How surfaces relate to each other and to time. See `PASSAGE.md`.
-- **Visual implementation** — Token values, component patterns, themes. See project-level `SYSTEM-BRIEF.md` files.
-- **Prohibited patterns** — Specific anti-patterns are project-level. See project-level `ANTI-PATTERNS.md` files. The shared convictions here inform those prohibitions but don't enumerate them.
+- **Visual implementation** — Token values, component patterns, themes. See project-level SYSTEM-BRIEF files.
+- **Prohibited patterns** — Specific anti-patterns are project-level. See project-level ANTI-PATTERNS files. The shared convictions here inform those prohibitions but don't enumerate them.
 - **Operator context** — See `OPERATOR.md`.
 - **Architectural enforcement** — Pipeline implementation, gallery curation mechanics, source filtering. See `ARCHITECTURE.md` and product-level documentation. Doctrine owns the standard. Architecture owns the enforcement.
 
@@ -180,7 +180,7 @@ Established: 2026-04-09
 
 *The interaction philosophy for the OS. Governs how surfaces relate to each other, how they relate to time, and what they refuse to pretend about the experience of using them. This philosophy is forward-looking — it describes how the operator moves through the work, not how the system processes it.*
 
-*See `DOCTRINE.md` for shared design convictions. See `PIPELINE.md` for the structural system that makes this philosophy possible. See project-level `SYSTEM-BRIEF.md` files for how this philosophy manifests in specific visual and interaction decisions.*
+*See `DOCTRINE.md` for shared design convictions. See `PIPELINE.md` for the structural system that makes this philosophy possible. See project-level SYSTEM-BRIEF files for how this philosophy manifests in specific visual and interaction decisions.*
 
 ---
 
@@ -249,7 +249,7 @@ What the OS refuses is the opposite error: ranking surfaces by type or medium in
 - **Design convictions** — Restraint, craft, signal/synthesis duality, no sycophancy. See `DOCTRINE.md`.
 - **Operator context** — See `OPERATOR.md`.
 - **The intelligence pipeline** — Passage describes how the operator experiences the current. The pipeline is the structural system that creates it. See `PIPELINE.md`.
-- **Visual implementation** — How Passage manifests in specific transitions, animations, microcopy, and component behavior. These decisions belong in project-level `SYSTEM-BRIEF.md` files, informed by this philosophy.
+- **Visual implementation** — How Passage manifests in specific transitions, animations, microcopy, and component behavior. These decisions belong in project-level SYSTEM-BRIEF files, informed by this philosophy.
 
 ---
 
@@ -263,9 +263,9 @@ What the OS refuses is the opposite error: ranking surfaces by type or medium in
 # Voice
 Established: 2026-04-09
 
-*The universal analytical voice disciplines for the OS. Every product's analytical function — regardless of character, register, or audience — carries these disciplines. Product-level `CEREBRO-CHARTER.md` files define the voice character. This document defines the discipline every character must carry.*
+*The universal analytical voice disciplines for the OS. Every product's analytical function — regardless of character, register, or audience — carries these disciplines. Product-level CEREBRO-CHARTER files define the voice character. This document defines the discipline every character must carry.*
 
-*Read `DOCTRINE.md` first. This document is the voice-level expression of the convictions DOCTRINE holds. See product-level `CEREBRO-CHARTER.md` files for how each product implements these disciplines inside its specific character and engagement context.*
+*Read `DOCTRINE.md` first. This document is the voice-level expression of the convictions DOCTRINE holds. See product-level CEREBRO-CHARTER files for how each product implements these disciplines inside its specific character and engagement context.*
 
 ---
 
@@ -462,7 +462,7 @@ The fourth paragraph, plus the weakest claim. Everything else cut.
 
 A product may propose to skip a discipline if its character or context genuinely requires it. Divergence should be rare — the disciplines were chosen because they hold across very different engagement contexts. A product proposing to skip one should treat that proposal as evidence that either the product needs to reconsider, or the discipline itself needs revision at the OS level. The protocol:
 
-1. Name the specific discipline being skipped in the product's `CEREBRO-CHARTER.md`.
+1. Name the specific discipline being skipped in the product's CEREBRO-CHARTER.
 2. State the reason the discipline cannot be honored in this product's context.
 3. State what replaces it — what the product will do instead to achieve the same goal.
 4. Commit the divergence and cross-reference this document.
@@ -474,13 +474,13 @@ A product may propose to skip a discipline if its character or context genuinely
 ```
 Voice (this document, universal disciplines + Wise Counselor)
   │
-  ├──► product CEREBRO-CHARTER.md (character + disciplines in product register)
+  ├──► product CEREBRO-CHARTER (character + disciplines in product register)
   │     │
-  │     └──► product PROMPTS.md VOICE block (copyable prompt text)
+  │     └──► product PROMPTS VOICE block (copyable prompt text)
   │           │
   │           └──► lib/prompts.ts (imported at runtime)
   │
-  └──► product VOICE-CALIBRATION.md (observation log: are the disciplines
+  └──► product VOICE-CALIBRATION (observation log: are the disciplines
         actually showing up in real responses?)
 ```
 
@@ -490,9 +490,9 @@ Voice (this document, universal disciplines + Wise Counselor)
 
 - **Design convictions** — The conviction that the analytical voice serves the mandate. See `DOCTRINE.md`.
 - **Operator context** — Who the voice is serving. See `OPERATOR.md`.
-- **Product characters** — The specific voice register and relationship posture. See product-level `CEREBRO-CHARTER.md` files.
+- **Product characters** — The specific voice register and relationship posture. See product-level CEREBRO-CHARTER files.
 - **Interaction philosophy** — How the operator experiences the surfaces the voice lives within. See `PASSAGE.md`.
-- **Voice calibration** — Whether the disciplines are actually showing up in real output. See product-level `VOICE-CALIBRATION.md` files.
+- **Voice calibration** — Whether the disciplines are actually showing up in real output. See product-level VOICE-CALIBRATION files.
 
 ---
 
@@ -528,7 +528,7 @@ This is the structural guarantee behind the Passage philosophy. Passage says eve
 
 **What it does.** Pulls raw signal into the system from configured sources — RSS feeds, podcast feeds, gallery scrapes, manual submissions. Each product defines its own source list calibrated to its mandate.
 
-**Characterizing discipline.** Source curation is not additive. Sources earn their place. The pipeline's signal quality is bounded by the quality of Stage 1 — you cannot annotate your way out of a bad source mix. Each product's `SOURCES.md` is the canonical inventory, and `SOURCES-MEGALIST.md` is the discovery layer where candidates get evaluated before promotion.
+**Characterizing discipline.** Source curation is not additive. Sources earn their place. The pipeline's signal quality is bounded by the quality of Stage 1 — you cannot annotate your way out of a bad source mix. Each product's SOURCES doc is the canonical inventory, and SOURCES-MEGALIST is the discovery layer where candidates get evaluated before promotion.
 
 **Failure mode.** Ingesting everything. The aggregator trap. A pipeline that ingests hundreds of sources produces noise faster than it can annotate, and the operator ends up either ignoring the feed or drowning in it. Restraint at Stage 1 is upstream of every other stage's quality.
 
@@ -599,9 +599,9 @@ Passage and the Pipeline are not in tension. The pipeline describes the structur
 ## WHAT THIS DOCUMENT DOES NOT OWN
 
 - **Implementation details.** Code paths, file locations, API routes, model choices, cadence intervals. See `ARCHITECTURE.md` for the shared layer and product-level `ARCHITECTURE.md` files for product-specific implementation.
-- **The analytical voice.** See `VOICE.md` for the universal disciplines and product-level `CEREBRO-CHARTER.md` files for character.
-- **The operator context the pipeline scores against.** See `OPERATOR.md` and product-level `MANDATE.md`.
-- **The live environment each product's pipeline is pointed at.** See product-level `LIVE-ENVIRONMENT.md`.
+- **The analytical voice.** See `VOICE.md` for the universal disciplines and product-level CEREBRO-CHARTER files for character.
+- **The operator context the pipeline scores against.** See `OPERATOR.md` and product-level MANDATE files.
+- **The live environment each product's pipeline is pointed at.** See product-level LIVE-ENVIRONMENT files.
 - **The interaction philosophy that shapes how pipeline output is surfaced.** See `PASSAGE.md`.
 - **Product-specific cadences.** How often each stage runs, cache intervals, refresh schedules. See product-level `ARCHITECTURE.md`.
 
@@ -697,7 +697,7 @@ Version numbers are current as of 2026-04-09; update this section when the stack
 | **Hosting** | Vercel | One Vercel project per instance, each on its own subdomain. |
 | **Source** | GitHub | Single repo at `goodlivingstudio/os`. Each product instance is its own Vercel project pulling from this repo. |
 
-Next.js 16 has breaking changes from prior versions. Agents working in this codebase must read the relevant guide in `node_modules/next/dist/docs/` before writing code — the project's AGENTS.md enforces this rule.
+Next.js 16 has breaking changes from prior versions. Agents working in this codebase must read the relevant guide in `node_modules/next/dist/docs/` before writing code — the AGENTS doc at the repo root enforces this rule.
 
 ---
 
@@ -808,7 +808,7 @@ The white-label pattern makes architectural sharing possible. The hardcoding rul
 - Cerebro provocations and welcome message
 - Gallery scraper configuration
 - The full canonical doc set under `docs/<product>/`
-- Voice character — expressed through `CEREBRO-CHARTER.md`
+- Voice character — expressed through the product's CEREBRO-CHARTER
 
 **The hardcoding rules:**
 
@@ -863,9 +863,9 @@ This is the canonical checklist. Use it when spinning up any new product.
 2. **Register in the loader.** Add the import and entry to the configs map in `lib/config/index.ts`.
 3. **Register in the products registry.** Add an entry to `lib/config/products.ts` with identity, URL, status, description, and `isOsInstance`.
 4. **Populate identity and branding.** Name, tagline, domain, dev port, favicons. Pick a dev port that doesn't collide with existing instances.
-5. **Populate the mandate.** Write the operator, clientContext, voice, and sourceModes prompt blocks. These derive from the product's `MANDATE.md` and `CEREBRO-CHARTER.md`. Do not write these inline without corresponding canonical sources in the doc set.
+5. **Populate the mandate.** Write the operator, clientContext, voice, and sourceModes prompt blocks. These derive from the product's MANDATE and CEREBRO-CHARTER docs. Do not write these inline without corresponding canonical sources in the doc set.
 6. **Populate the layer taxonomy.** Define the intelligence layers this product scores against. This is the most bespoke part of the config.
-7. **Populate feeds, podcasts, gallery sources.** Derive from `SOURCES.md`. Start with a curated core set; promote candidates from `SOURCES-MEGALIST.md` as they earn it.
+7. **Populate feeds, podcasts, gallery sources.** Derive from the product's SOURCES doc. Start with a curated core set; promote candidates from SOURCES-MEGALIST as they earn it.
 8. **Populate themes.** Define the product's themes and default.
 9. **Add npm scripts and launch config.** Add `dev:<product>` and `build:<product>` to `package.json`. Add a matching entry to `.claude/launch.json` for dev-server preview tooling.
 
@@ -876,7 +876,7 @@ This is the canonical checklist. Use it when spinning up any new product.
 12. **Set secrets.** `ANTHROPIC_API_KEY` required. `EXA_API_KEY`, KV credentials optional but expected for full functionality.
 13. **Verify the boot.** Run the dev script locally. Confirm branding, feed population, KV namespacing, and Cerebro voice. Run type checks. Update status in the products registry.
 14. **Deploy.** Push to main. Verify the production deployment. Update the URL in the products registry. Promote status to production once stable.
-15. **Document.** Update `AGENTS.md`, `README.md`, and `DOC-AUTHORITY.md` with the new product.
+15. **Document.** Update the AGENTS and README docs at the repo root, and `../os/DOC-AUTHORITY.md`, with the new product.
 
 Steps 1–9 are the code work. Steps 10–15 are the alignment work. Both are non-optional.
 
@@ -909,7 +909,7 @@ Steps 1–9 are the code work. Steps 10–15 are the alignment work. Both are no
 - **Operator context.** See `OPERATOR.md`.
 - **Product-specific architectural decisions.** See product-level `ARCHITECTURE.md` files.
 - **Product-specific cadences and refresh intervals.** See product-level `ARCHITECTURE.md` files.
-- **Design system governance.** Visual tokens, component patterns, and material specifications. See product-level `SYSTEM-BRIEF.md` files and the forthcoming design system reference.
+- **Design system governance.** Visual tokens, component patterns, and material specifications. See product-level SYSTEM-BRIEF files and the forthcoming design system reference.
 
 ---
 
@@ -950,7 +950,7 @@ The civic/team intelligence product. Serves the National Design Studio's explore
 The decision capture product. The layer that makes the between-state visible — decisions forming, positions developing, work seeded by another product's signal that hasn't resolved yet. Currently on hold. Lives as a separate repository. When Atlas resumes, a decision will be made about whether to fold it into the shared OS codebase or keep it separate.
 
 ### Lilly Direct
-The engagement intelligence product for the Eli Lilly relationship. Working name — final name TBD. Runs as a white-label instance inside the OS.
+The engagement intelligence product for the Eli Lilly relationship. Runs as a white-label instance inside the OS. Scaffolded 2026-04-10; content lands during the kickoff session.
 
 ---
 
@@ -1009,7 +1009,7 @@ The generic term for whatever analytical layer a product exposes. Every product 
 The name given to the analytical function in Dispatch. The conversational strategic advisor that synthesizes signal, memory, and operator context into counsel. Not a chatbot. See `../dispatch/CEREBRO-CHARTER.md`.
 
 ### Voice character vs voice discipline
-The distinction is load-bearing. **Character** is the voice register and relationship posture — Station Chief vs Field Correspondent — and varies per product. **Discipline** is the set of non-negotiable analytical commitments (gap accounting, confidence tiers, weakest claim, etc.) and is universal. Character lives in product `CEREBRO-CHARTER.md` files. Discipline lives in `VOICE.md`. Do not conflate them.
+The distinction is load-bearing. **Character** is the voice register and relationship posture — Station Chief vs Field Correspondent — and varies per product. **Discipline** is the set of non-negotiable analytical commitments (gap accounting, confidence tiers, weakest claim, etc.) and is universal. Character lives in product CEREBRO-CHARTER files. Discipline lives in `VOICE.md`. Do not conflate them.
 
 ### The Station Chief
 Dispatch's voice character. Authoritative, direct, briefing the principal. Manages what the operator knows and doesn't know. Leads with what's changed or what's at stake. See `../dispatch/CEREBRO-CHARTER.md`.
@@ -1153,22 +1153,24 @@ See `../dispatch/MANDATE.md` § THREE INTELLIGENCE MODES.
 The 14 files every product doc set must contain. See `DOC-AUTHORITY.md` § THE CANONICAL PRODUCT DOC SET.
 
 **Tier 1 — Strategic:**
-- `MANDATE.md` — what this product is, why it exists
-- `CEREBRO-CHARTER.md` — the analytical function's behavioral contract and voice character
-- `SYSTEM-BRIEF.md` — visual language, tokens, interaction philosophy
-- `ARCHITECTURE.md` — product-specific tech decisions
-- `PROMPTS.md` — copyable prompt text for runtime
-- `ANTI-PATTERNS.md` — product-specific prohibitions
-- `DOC-AUTHORITY.md` — project-level authority map
+- **MANDATE** — what this product is, why it exists
+- **CEREBRO-CHARTER** — the analytical function's behavioral contract and voice character
+- **SYSTEM-BRIEF** — visual language, tokens, interaction philosophy
+- **ARCHITECTURE** — product-specific tech decisions
+- **PROMPTS** — copyable prompt text for runtime
+- **ANTI-PATTERNS** — product-specific prohibitions
+- **DOC-AUTHORITY** — project-level authority map
 
 **Tier 2 — Operational:**
-- `SOURCES.md` — canonical active feed inventory
-- `SOURCES-MEGALIST.md` — discovery/staging layer for candidate sources
-- `LIVE-ENVIRONMENT.md` — the changing external context the product operates inside
-- `WATCHFILE.md` — active watch items with severity and escalation
-- `ROADMAP.md` — active work, priorities, completed archive
-- `VOICE-CALIBRATION.md` — ongoing voice observation log
-- `REPLICATE-PROMPTS.md` — image generation prompts for gallery/visual surfaces
+- **SOURCES** — canonical active feed inventory
+- **SOURCES-MEGALIST** — discovery/staging layer for candidate sources
+- **LIVE-ENVIRONMENT** — the changing external context the product operates inside
+- **WATCHFILE** — active watch items with severity and escalation
+- **ROADMAP** — active work, priorities, completed archive
+- **VOICE-CALIBRATION** — ongoing voice observation log
+- **REPLICATE-PROMPTS** — image generation prompts for gallery/visual surfaces
+
+These are the canonical filenames in every product directory. They are the same in `docs/dispatch/`, `docs/explore/`, and `docs/lilly-direct/`.
 
 ---
 
@@ -1211,31 +1213,31 @@ docs/lilly-direct/                ← Lilly Direct product
 
 Every product maintains the same 14-file doc set shape, rigorously bespoke to the product. No product should have a file another product lacks (unless the file genuinely doesn't apply — and that exception must be justified here, not assumed). No product should invent files that don't belong to the canonical shape without first proposing the addition here and getting it promoted to canonical.
 
-**The 14 files:**
+**The 14 files** (filenames are the same in every product directory; refer to them by bare name when speaking generically):
 
 *Tier 1 — Strategic (define intent, exist from day one):*
 
-| # | File | Owns |
+| # | Doc | Owns |
 |---|---|---|
-| 1 | `MANDATE.md` | What this product is, why it exists, who it serves, its intelligence model |
-| 2 | `CEREBRO-CHARTER.md` | Behavioral contract for the analytical function — the product's voice character |
-| 3 | `SYSTEM-BRIEF.md` | Visual language, design tokens, themes, interaction patterns (implements `../os/PASSAGE.md`) |
-| 4 | `ARCHITECTURE.md` | Tech stack, routes, data flow, infrastructure (sits on top of `../os/ARCHITECTURE.md`) |
-| 5 | `PROMPTS.md` | Copyable prompt text for `lib/prompts.ts` |
-| 6 | `ANTI-PATTERNS.md` | Product-specific prohibitions (visual, behavioral, voice) |
-| 7 | `DOC-AUTHORITY.md` | Project-level authority map |
+| 1 | **MANDATE** | What this product is, why it exists, who it serves, its intelligence model |
+| 2 | **CEREBRO-CHARTER** | Behavioral contract for the analytical function — the product's voice character |
+| 3 | **SYSTEM-BRIEF** | Visual language, design tokens, themes, interaction patterns (implements `../os/PASSAGE.md`) |
+| 4 | **ARCHITECTURE** | Tech stack, routes, data flow, infrastructure (sits on top of `../os/ARCHITECTURE.md`) |
+| 5 | **PROMPTS** | Copyable prompt text for `lib/prompts.ts` |
+| 6 | **ANTI-PATTERNS** | Product-specific prohibitions (visual, behavioral, voice) |
+| 7 | **DOC-AUTHORITY** | Project-level authority map |
 
 *Tier 2 — Operational (develop over time, track state):*
 
-| # | File | Owns |
+| # | Doc | Owns |
 |---|---|---|
-| 8 | `SOURCES.md` | Canonical feed inventory, mode assignments, rationale |
-| 9 | `SOURCES-MEGALIST.md` | Discovery/expansion layer for source growth |
-| 10 | `LIVE-ENVIRONMENT.md` | The changing context this product operates inside |
-| 11 | `WATCHFILE.md` | Active watch items being tracked, with severity and escalation |
-| 12 | `ROADMAP.md` | Active work, priorities, completed archive |
-| 13 | `VOICE-CALIBRATION.md` | Ongoing voice observation log, drift detection |
-| 14 | `REPLICATE-PROMPTS.md` | Image generation prompts for gallery/visual surfaces |
+| 8 | **SOURCES** | Canonical feed inventory, mode assignments, rationale |
+| 9 | **SOURCES-MEGALIST** | Discovery/expansion layer for source growth |
+| 10 | **LIVE-ENVIRONMENT** | The changing context this product operates inside |
+| 11 | **WATCHFILE** | Active watch items being tracked, with severity and escalation |
+| 12 | **ROADMAP** | Active work, priorities, completed archive |
+| 13 | **VOICE-CALIBRATION** | Ongoing voice observation log, drift detection |
+| 14 | **REPLICATE-PROMPTS** | Image generation prompts for gallery/visual surfaces |
 
 **Rule for new products:** every new product must establish all 14 files from day one. Stubs are acceptable; missing files are not. The shape is what makes products comparable, transferable, and durable across sessions.
 
@@ -1249,70 +1251,70 @@ Every product maintains the same 14-file doc set shape, rigorously bespoke to th
 
 OS-level documents are canonical for shared concerns. Product-level documents inherit from them and are canonical for product-specific decisions.
 
-**What this means in practice:** when a product MANDATE.md describes the operator, it should reference `OPERATOR.md` rather than restate operator context in full. When a product SYSTEM-BRIEF.md makes interaction design decisions, those decisions should be consistent with `PASSAGE.md` — and if they diverge, the divergence should be named and justified.
+**What this means in practice:** when a product MANDATE describes the operator, it should reference `../os/OPERATOR.md` rather than restate operator context in full. When a product SYSTEM-BRIEF makes interaction design decisions, those decisions should be consistent with `../os/PASSAGE.md` — and if they diverge, the divergence should be named and justified.
 
-**What this does not mean:** OS-level documents do not dictate product-level implementation. `DOCTRINE.md` says restraint is the proof of quality. A product's SYSTEM-BRIEF decides what restraint looks like in its specific visual language. The principle cascades. The implementation does not.
+**What this does not mean:** OS-level documents do not dictate product-level implementation. `../os/DOCTRINE.md` says restraint is the proof of quality. A product's SYSTEM-BRIEF decides what restraint looks like in its specific visual language. The principle cascades. The implementation does not.
 
 ---
 
 ## OS-LEVEL AUTHORITY MAP
 
-### OPERATOR.md — *Who this serves*
+### OPERATOR — *Who this serves*
 **Owns:** Jeremy Grant's identity, Good Living Studio as the operator's practice, the five-year target (Head of Design or CDO at a consequential institution), the professional evolution thesis (vanguard fluency across design, product, and strategy), the operating thesis (AI capability + institutional complexity + human experience), and priority intelligence targets.
 
 **Rule:** Canonical for all operator context across all products. Product-level mandates reference this document for operator identity. When operator context changes, update here first, then propagate.
 
-**Derivation chain:** OPERATOR.md → product MANDATE.md (operator sections) → product PROMPTS.md (operator blocks) → `lib/prompts.ts`
+**Derivation chain:** `../os/OPERATOR.md` → product MANDATE (operator sections) → product PROMPTS (operator blocks) → `lib/prompts.ts`
 
 ---
 
-### DOCTRINE.md — *What we believe*
-**Owns:** Shared design convictions. Restraint as proof of quality. Craft as non-negotiable. Source and synthesis staying visible. Analytical voice in service of the mandate. Design systems as governance. Clarity over density. What connects the products. Operator sovereignty.
+### DOCTRINE — *What we believe*
+**Owns:** Shared design convictions. Restraint as proof of quality. Craft as non-negotiable. Source and synthesis staying visible. Visual surfaces earning their place. Analytical voice in service of the mandate. Design systems as governance. Clarity over density. What connects the products. Operator sovereignty.
 
-**Rule:** Canonical for design philosophy across all products. Product-level SYSTEM-BRIEF.md and ANTI-PATTERNS.md implement these convictions in product-specific form. If a product-level design decision contradicts DOCTRINE, the contradiction should be named and justified — DOCTRINE wins by default.
+**Rule:** Canonical for design philosophy across all products. Product-level SYSTEM-BRIEF and ANTI-PATTERNS files implement these convictions in product-specific form. If a product-level design decision contradicts DOCTRINE, the contradiction should be named and justified — DOCTRINE wins by default.
 
 ---
 
-### PASSAGE.md — *How surfaces relate to time*
+### PASSAGE — *How surfaces relate to time*
 **Owns:** The interaction philosophy. The vending machine critique. The three refusals (no termination language, no dead surfaces, natural weight). The experience of return, movement between surfaces, and what it feels like when the philosophy is working.
 
-**Rule:** Canonical for interaction philosophy across all products. Product-level SYSTEM-BRIEF.md files translate Passage into specific interaction patterns, transitions, microcopy, and component behavior. PASSAGE wins on intent. Product SYSTEM-BRIEF wins on execution.
+**Rule:** Canonical for interaction philosophy across all products. Product-level SYSTEM-BRIEF files translate Passage into specific interaction patterns, transitions, microcopy, and component behavior. PASSAGE wins on intent. Product SYSTEM-BRIEF wins on execution.
 
 ---
 
-### VOICE.md — *The universal analytical disciplines*
+### VOICE — *The universal analytical disciplines*
 **Owns:** The ten analytical voice disciplines every product's analytical function must carry (lead with substance, no sycophancy, confidence tiers, gap accounting, amplification check, weakest claim, flag noise, name absence, editorial discipline, say less mean more). The Wise Counselor framework (assurance, drive, clarity, flow, psychological boundaries, register flexibility). Communication standards. The divergence protocol for when a product needs to skip a discipline. Failure examples.
 
-**Rule:** Canonical for the disciplines and the Wise Counselor posture; does NOT own voice character. Product-level CEREBRO-CHARTER.md files define character. Character is product-specific; discipline and the Wise Counselor are OS-wide. If a product wants to skip a discipline, the divergence must be named and justified per the protocol in VOICE.md.
+**Rule:** Canonical for the disciplines and the Wise Counselor posture; does NOT own voice character. Product-level CEREBRO-CHARTER files define character. Character is product-specific; discipline and the Wise Counselor are OS-wide. If a product wants to skip a discipline, the divergence must be named and justified per the protocol in `../os/VOICE.md`.
 
-**Derivation chain:** VOICE.md → product CEREBRO-CHARTER.md → product PROMPTS.md VOICE block → `lib/prompts.ts`
+**Derivation chain:** `../os/VOICE.md` → product CEREBRO-CHARTER → product PROMPTS VOICE block → `lib/prompts.ts`
 
 ---
 
-### PIPELINE.md — *The shared intelligence pipeline*
+### PIPELINE — *The shared intelligence pipeline*
 **Owns:** The six-stage pipeline pattern (Ingest → Annotate → Score → Brief → Synthesize → Act) that every product implements. What each stage means, how products vary their implementations, how the pipeline relates to Passage, and the cascading failure model.
 
-**Rule:** Canonical for the pattern. Product-level ARCHITECTURE.md files describe how each product implements the stages specifically and at what cadence. PIPELINE wins on pattern; product ARCHITECTURE wins on implementation detail.
+**Rule:** Canonical for the pattern. Product-level ARCHITECTURE files describe how each product implements the stages specifically and at what cadence. PIPELINE wins on pattern; product ARCHITECTURE wins on implementation detail.
 
 ---
 
-### ARCHITECTURE.md — *The shared codebase*
+### ARCHITECTURE — *The shared codebase*
 **Owns:** The shared infrastructure every product inherits: the engine (stack, white-label pattern, boot sequence), the pipeline-to-infrastructure mapping, the global vs local hardcoding rules, promotion guidance, the spinup checklist, deployment topology, and the feature flag pattern. The citadel of governance.
 
-**Rule:** Canonical for the shared layer. Each product's own ARCHITECTURE.md describes product-specific architectural decisions on top of this foundation. When a pattern is promoted from one product into the shared layer, this document is updated.
+**Rule:** Canonical for the shared layer. Each product's own ARCHITECTURE describes product-specific architectural decisions on top of this foundation. When a pattern is promoted from one product into the shared layer, this document is updated.
 
-**Derivation chain:** ARCHITECTURE.md → product ARCHITECTURE.md → product-specific routes and config
+**Derivation chain:** `../os/ARCHITECTURE.md` → product ARCHITECTURE → product-specific routes and config
 
 ---
 
-### GLOSSARY.md — *The shared vocabulary*
+### GLOSSARY — *The shared vocabulary*
 **Owns:** Canonical definitions for terms that appear across multiple product doc sets. Operator terms, pipeline terms, voice and character terms (including the Wise Counselor), philosophy terms, doctrine terms, architecture terms.
 
 **Rule:** When a term appears in multiple product docs, it is defined here. Product docs inherit the meaning rather than redefining. When two docs disagree about a term's meaning, GLOSSARY resolves the conflict.
 
 ---
 
-### DOC-AUTHORITY.md — *This document*
+### DOC-AUTHORITY — *This document*
 **Owns:** The inheritance model. OS-level authority map. Cross-project conflict resolution. The relationship between OS-level and project-level documents.
 
 **Rule:** When authority is ambiguous across the OS, this document resolves it.
@@ -1323,31 +1325,31 @@ OS-level documents are canonical for shared concerns. Product-level documents in
 
 Each project maintains its own doc authority map. Those maps are canonical for project-internal conflicts. This document is canonical for conflicts that cross project boundaries or involve OS-level documents.
 
-### Dispatch — `docs/dispatch/DOC-AUTHORITY.md`
+### Dispatch — [`../dispatch/DOC-AUTHORITY.md`](../dispatch/DOC-AUTHORITY.md)
 Project-level authority map governs all 14 canonical files. Status: complete (all 14 files exist; some operational tier files are stubs filling over time).
 
-### Explore — `docs/explore/DOC-AUTHORITY.md`
+### Explore — [`../explore/DOC-AUTHORITY.md`](../explore/DOC-AUTHORITY.md)
 Project-level authority map governs all 14 canonical files. Status: complete (all 14 files exist; strategic tier stubs for SYSTEM-BRIEF, ARCHITECTURE, ANTI-PATTERNS, VOICE-CALIBRATION fill as the code is built).
 
-### Atlas — `docs/atlas/` *(on hold)*
+### Atlas — [`../atlas/`](../atlas/) *(on hold)*
 Doc set to be established when Atlas development resumes. Must follow the 14-file canonical shape from day one.
 
-### Lilly Direct — `docs/lilly-direct/DOC-AUTHORITY.md`
+### Lilly Direct — [`../lilly-direct/DOC-AUTHORITY.md`](../lilly-direct/DOC-AUTHORITY.md)
 Project-level authority map governs all 14 canonical files. Status: scaffolded. All 14 files exist as structural stubs. Content lands during the engagement.
 
 ---
 
 ## CROSS-PROJECT CONFLICT RESOLUTION
 
-If a project MANDATE and OPERATOR.md say different things about the operator → OPERATOR.md wins.
+If a project MANDATE and `../os/OPERATOR.md` say different things about the operator → OPERATOR wins.
 
-If a project SYSTEM-BRIEF and DOCTRINE.md conflict on a design conviction → DOCTRINE.md wins on principle; project SYSTEM-BRIEF wins on implementation detail.
+If a project SYSTEM-BRIEF and `../os/DOCTRINE.md` conflict on a design conviction → DOCTRINE wins on principle; project SYSTEM-BRIEF wins on implementation detail.
 
-If a project SYSTEM-BRIEF and PASSAGE.md conflict on interaction philosophy → PASSAGE.md wins on intent; project SYSTEM-BRIEF wins on execution. Name the divergence.
+If a project SYSTEM-BRIEF and `../os/PASSAGE.md` conflict on interaction philosophy → PASSAGE wins on intent; project SYSTEM-BRIEF wins on execution. Name the divergence.
 
-If a project's analytical function diverges from VOICE.md disciplines → the divergence protocol in VOICE.md applies. The product's CEREBRO-CHARTER names and justifies the divergence.
+If a project's analytical function diverges from `../os/VOICE.md` disciplines → the divergence protocol in VOICE applies. The product's CEREBRO-CHARTER names and justifies the divergence.
 
-If two project-level documents claim the same territory → the project's own DOC-AUTHORITY.md resolves it.
+If two project-level documents claim the same territory → the project's own DOC-AUTHORITY resolves it.
 
 If a concern spans two projects → OS-level documents govern the shared interface. Project-level documents govern their respective sides.
 
@@ -1356,46 +1358,46 @@ If a concern spans two projects → OS-level documents govern the shared interfa
 ## DOCUMENT RELATIONSHIPS
 
 ```
-OPERATOR.md ──────────────────────────────────────────────────┐
+OPERATOR ─────────────────────────────────────────────────────┐
   │                                                            │
-  └──► product MANDATE.md (operator sections)                 │
+  └──► product MANDATE (operator sections)                    │
          │                                                     │
-         └──► product PROMPTS.md (operator blocks)            │
+         └──► product PROMPTS (operator blocks)               │
                 │                                              │
                 └──► lib/prompts.ts                           │
                                                                │
-DOCTRINE.md ──────────────────────────────────────────────────►│
+DOCTRINE ─────────────────────────────────────────────────────►│
   │                                                            │
-  ├──► product SYSTEM-BRIEF.md (design implementation)        │
-  └──► product ANTI-PATTERNS.md (prohibitions)                │
+  ├──► product SYSTEM-BRIEF (design implementation)           │
+  └──► product ANTI-PATTERNS (prohibitions)                   │
                                                                │
-PASSAGE.md ───────────────────────────────────────────────────►│
+PASSAGE ──────────────────────────────────────────────────────►│
   │                                                            │
-  └──► product SYSTEM-BRIEF.md (interaction implementation)   │
+  └──► product SYSTEM-BRIEF (interaction implementation)      │
                                                                │
-VOICE.md ─────────────────────────────────────────────────────►│
+VOICE ────────────────────────────────────────────────────────►│
   │                                                            │
-  └──► product CEREBRO-CHARTER.md (character + disciplines)   │
+  └──► product CEREBRO-CHARTER (character + disciplines)      │
          │                                                     │
-         └──► product PROMPTS.md (voice blocks)               │
+         └──► product PROMPTS (voice blocks)                  │
                 │                                              │
                 └──► lib/prompts.ts                           │
                                                                │
-PIPELINE.md ──────────────────────────────────────────────────►│
+PIPELINE ─────────────────────────────────────────────────────►│
   │                                                            │
-  └──► product ARCHITECTURE.md (stage implementation)         │
+  └──► product ARCHITECTURE (stage implementation)            │
                                                                │
-ARCHITECTURE.md ──────────────────────────────────────────────►│
+ARCHITECTURE ─────────────────────────────────────────────────►│
   │                                                            │
-  └──► product ARCHITECTURE.md (product-specific decisions)   │
+  └──► product ARCHITECTURE (product-specific decisions)      │
                                                                │
-GLOSSARY.md ──────────────────────────────────────────────────►│
+GLOSSARY ─────────────────────────────────────────────────────►│
   │                                                            │
   └──► (conflict resolution across all product docs)          │
                                                                │
-DOC-AUTHORITY.md (this file) ─────────────────────────────────►│
+DOC-AUTHORITY (this file) ────────────────────────────────────►│
   │                                                            │
-  └──► product DOC-AUTHORITY.md (project-level resolution)    │
+  └──► product DOC-AUTHORITY (project-level resolution)       │
                                                                ▼
                                                         All product docs
 ```

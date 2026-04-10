@@ -81,7 +81,7 @@ Version numbers are current as of 2026-04-09; update this section when the stack
 | **Hosting** | Vercel | One Vercel project per instance, each on its own subdomain. |
 | **Source** | GitHub | Single repo at `goodlivingstudio/os`. Each product instance is its own Vercel project pulling from this repo. |
 
-Next.js 16 has breaking changes from prior versions. Agents working in this codebase must read the relevant guide in `node_modules/next/dist/docs/` before writing code — the project's AGENTS.md enforces this rule.
+Next.js 16 has breaking changes from prior versions. Agents working in this codebase must read the relevant guide in `node_modules/next/dist/docs/` before writing code — the AGENTS doc at the repo root enforces this rule.
 
 ---
 
@@ -192,7 +192,7 @@ The white-label pattern makes architectural sharing possible. The hardcoding rul
 - Cerebro provocations and welcome message
 - Gallery scraper configuration
 - The full canonical doc set under `docs/<product>/`
-- Voice character — expressed through `CEREBRO-CHARTER.md`
+- Voice character — expressed through the product's CEREBRO-CHARTER
 
 **The hardcoding rules:**
 
@@ -247,9 +247,9 @@ This is the canonical checklist. Use it when spinning up any new product.
 2. **Register in the loader.** Add the import and entry to the configs map in `lib/config/index.ts`.
 3. **Register in the products registry.** Add an entry to `lib/config/products.ts` with identity, URL, status, description, and `isOsInstance`.
 4. **Populate identity and branding.** Name, tagline, domain, dev port, favicons. Pick a dev port that doesn't collide with existing instances.
-5. **Populate the mandate.** Write the operator, clientContext, voice, and sourceModes prompt blocks. These derive from the product's `MANDATE.md` and `CEREBRO-CHARTER.md`. Do not write these inline without corresponding canonical sources in the doc set.
+5. **Populate the mandate.** Write the operator, clientContext, voice, and sourceModes prompt blocks. These derive from the product's MANDATE and CEREBRO-CHARTER docs. Do not write these inline without corresponding canonical sources in the doc set.
 6. **Populate the layer taxonomy.** Define the intelligence layers this product scores against. This is the most bespoke part of the config.
-7. **Populate feeds, podcasts, gallery sources.** Derive from `SOURCES.md`. Start with a curated core set; promote candidates from `SOURCES-MEGALIST.md` as they earn it.
+7. **Populate feeds, podcasts, gallery sources.** Derive from the product's SOURCES doc. Start with a curated core set; promote candidates from SOURCES-MEGALIST as they earn it.
 8. **Populate themes.** Define the product's themes and default.
 9. **Add npm scripts and launch config.** Add `dev:<product>` and `build:<product>` to `package.json`. Add a matching entry to `.claude/launch.json` for dev-server preview tooling.
 
@@ -260,7 +260,7 @@ This is the canonical checklist. Use it when spinning up any new product.
 12. **Set secrets.** `ANTHROPIC_API_KEY` required. `EXA_API_KEY`, KV credentials optional but expected for full functionality.
 13. **Verify the boot.** Run the dev script locally. Confirm branding, feed population, KV namespacing, and Cerebro voice. Run type checks. Update status in the products registry.
 14. **Deploy.** Push to main. Verify the production deployment. Update the URL in the products registry. Promote status to production once stable.
-15. **Document.** Update `AGENTS.md`, `README.md`, and `DOC-AUTHORITY.md` with the new product.
+15. **Document.** Update the AGENTS and README docs at the repo root, and `../os/DOC-AUTHORITY.md`, with the new product.
 
 Steps 1–9 are the code work. Steps 10–15 are the alignment work. Both are non-optional.
 
@@ -293,7 +293,7 @@ Steps 1–9 are the code work. Steps 10–15 are the alignment work. Both are no
 - **Operator context.** See `OPERATOR.md`.
 - **Product-specific architectural decisions.** See product-level `ARCHITECTURE.md` files.
 - **Product-specific cadences and refresh intervals.** See product-level `ARCHITECTURE.md` files.
-- **Design system governance.** Visual tokens, component patterns, and material specifications. See product-level `SYSTEM-BRIEF.md` files and the forthcoming design system reference.
+- **Design system governance.** Visual tokens, component patterns, and material specifications. See product-level SYSTEM-BRIEF files and the forthcoming design system reference.
 
 ---
 

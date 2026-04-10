@@ -5,7 +5,7 @@ Established: 2026-04-09 (stub)
 
 *Universal OS-wide design convictions and the anti-patterns they imply live at `../os/DOCTRINE.md` (no dashboards, no widgets, no sycophancy, no celebratory animations, no pulsing badges, no emoji, no "Hey there!" greetings, the visual-surfaces-earn-their-place rule including the anti-watermark prohibition). Those apply to Explore without exception. This document adds Explore-specific prohibitions calibrated to the civic / federal / team context Explore serves.*
 
-*Note: there is no separate `../os/ANTI-PATTERNS.md` file — OS-wide prohibitions are folded into DOCTRINE.md as the positive-and-negative expression of each shared conviction. If the project grows enough OS-wide prohibitions to justify their own file, we can promote them later.*
+*Note: there is no separate OS-level ANTI-PATTERNS file — OS-wide prohibitions are folded into `../os/DOCTRINE.md` as the positive-and-negative expression of each shared conviction. If the project grows enough OS-wide prohibitions to justify their own file, we can promote them later.*
 
 *See `SYSTEM-BRIEF.md` for the positive design guidance. See `../os/DOCTRINE.md` for the shared design convictions these prohibitions enforce. See `MANDATE.md` for the context that makes these prohibitions necessary.*
 

@@ -477,7 +477,7 @@ These modes are not tabs or filters. They describe the operator's relationship t
 **Engine:** Anthropic Claude (Haiku 4.5 for annotation/brief/synthesis, Sonnet 4 for Cerebro/Dispatch)
 **Search:** Exa API (live web intelligence)
 **Memory:** Upstash Redis via Vercel KV (conversation persistence + 7-day article history)
-**All projects (Dispatch, Atlas, Lilly) run on Anthropic Claude — OpenAI fully removed.**
+**Every OS instance (Dispatch, Explore, Lilly Direct) runs on Anthropic Claude — OpenAI fully removed. Atlas lives as a separate repository on its own stack and is currently on hold.**
 
 ---
 
@@ -795,7 +795,7 @@ Priority ordered by strategic impact, not technical sequencing.
 
 9. **Gallery expansion** — More image sources, validate URL extraction pipeline.
 
-10. **Integration tier advancement** — Push high-value sources up the integration hierarchy. See `docs/INTEGRATION-DOCTRINE.md` for the full framework: Tier 1 (in-platform), Tier 2 (bidirectional API), Tier 3 (unidirectional pull), Tier 4 (manual bridge). Priority targets: Figma (4→1), Atlas (4→2), LinkedIn (→2).
+10. **Integration tier advancement** — Push high-value sources up the integration hierarchy. The integration framework: Tier 1 (in-platform native UI), Tier 2 (bidirectional API), Tier 3 (unidirectional pull), Tier 4 (manual bridge). Priority targets to advance: Figma (4→1), Atlas (4→2), LinkedIn (→2). When the integration framework grows enough to deserve its own doc, promote it to a dedicated file under `docs/dispatch/`.
 
 
 ================================================================
@@ -1321,16 +1321,16 @@ Established: 2026-04-06
 
 ## OS-LEVEL INHERITANCE
 
-Dispatch is one of four sibling products living under OS — the ambient intelligence layer that holds the Good Living Studio philosophy, operator context, and shared authority. Dispatch inherits from eight OS-level documents at `../os/`:
+Dispatch is one of four sibling products living under OS — the ambient intelligence layer that holds the Good Living Studio philosophy, operator context, and shared authority. Dispatch inherits from eight OS-level documents at `../os/` (linked below):
 
-- **OPERATOR.md** — Canonical for operator identity (Jeremy Grant), five-year target, professional evolution thesis, operating thesis, and priority intelligence targets (Eli Lilly is one of them). Dispatch `MANDATE.md` references it rather than restating the full operator profile.
-- **DOCTRINE.md** — Canonical for shared design convictions (restraint as proof of quality, craft is non-negotiable, source and synthesis stay visible, visual surfaces earn their place, analytical voice in service of the mandate, design systems are governance, clarity over density). Dispatch `SYSTEM-BRIEF.md` and `ANTI-PATTERNS.md` implement these convictions in Dispatch-specific form.
-- **PASSAGE.md** — Canonical for interaction philosophy (every surface is a place you rejoin; no termination language; no dead surfaces; no hierarchy of realness). Dispatch `SYSTEM-BRIEF.md` § *Interaction philosophy: Passage* translates the philosophy into specific Dispatch interaction patterns.
-- **VOICE.md** — Canonical for universal analytical voice disciplines (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density) plus the Wise Counselor posture. Dispatch's `CEREBRO-CHARTER.md` expresses these disciplines through the Station Chief character.
-- **PIPELINE.md** — Canonical for the six-stage intelligence pipeline (Ingest → Annotate → Score → Brief → Synthesize → Act). Dispatch's `ARCHITECTURE.md` describes how Dispatch implements each stage and its weekly cadence for Stage 6.
-- **ARCHITECTURE.md** (OS-level) — Canonical for the shared codebase, white-label pattern, and the new-product spinup checklist. Dispatch's `ARCHITECTURE.md` describes product-specific decisions sitting on top of this shared foundation.
-- **GLOSSARY.md** — Canonical for shared vocabulary. Dispatch uses the same terms (operator, annotation layer, station chief, theme, Passage, etc.) with the same meanings.
-- **DOC-AUTHORITY.md** (OS-level) — Resolves authority conflicts that cross product boundaries or involve OS-level documents.
+- **[OPERATOR](../os/OPERATOR.md)** — Canonical for operator identity (Jeremy Grant), five-year target, professional evolution thesis, operating thesis, and priority intelligence targets (Eli Lilly is one of them). Dispatch's `MANDATE.md` references it rather than restating the full operator profile.
+- **[DOCTRINE](../os/DOCTRINE.md)** — Canonical for shared design convictions (restraint as proof of quality, craft is non-negotiable, source and synthesis stay visible, visual surfaces earn their place, analytical voice in service of the mandate, design systems are governance, clarity over density). Dispatch's `SYSTEM-BRIEF.md` and `ANTI-PATTERNS.md` implement these convictions in Dispatch-specific form.
+- **[PASSAGE](../os/PASSAGE.md)** — Canonical for interaction philosophy (every surface is a place you rejoin; no termination language; no dead surfaces; no hierarchy of realness). Dispatch's `SYSTEM-BRIEF.md` § *Interaction philosophy: Passage* translates the philosophy into specific Dispatch interaction patterns.
+- **[VOICE](../os/VOICE.md)** — Canonical for universal analytical voice disciplines (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density) plus the Wise Counselor posture. Dispatch's `CEREBRO-CHARTER.md` expresses these disciplines through the Station Chief character.
+- **[PIPELINE](../os/PIPELINE.md)** — Canonical for the six-stage intelligence pipeline (Ingest → Annotate → Score → Brief → Synthesize → Act). Dispatch's `ARCHITECTURE.md` describes how Dispatch implements each stage and its weekly cadence for Stage 6.
+- **[ARCHITECTURE](../os/ARCHITECTURE.md)** (OS-level) — Canonical for the shared codebase, white-label pattern, and the new-product spinup checklist. Dispatch's `ARCHITECTURE.md` describes product-specific decisions sitting on top of this shared foundation.
+- **[GLOSSARY](../os/GLOSSARY.md)** — Canonical for shared vocabulary. Dispatch uses the same terms (operator, annotation layer, station chief, theme, Passage, etc.) with the same meanings.
+- **[DOC-AUTHORITY](../os/DOC-AUTHORITY.md)** (OS-level) — Resolves authority conflicts that cross product boundaries or involve OS-level documents.
 
 **Rule:** When Dispatch docs conflict with OS-level docs, the OS-level document wins on principle and intent. Dispatch docs win on project-specific implementation. See `../os/DOC-AUTHORITY.md` for the full inheritance model.
 
@@ -1837,7 +1837,7 @@ Updated: 2026-04-02
 ## Archive — Completed (April 2, 2026 — ~60 commits)
 
 ### Infrastructure
-- Full Anthropic Claude swap across 3 projects (Dispatch, Atlas, Lilly). OpenAI fully removed.
+- Full Anthropic Claude swap across 3 projects in flight at the time (Dispatch, Atlas, Lilly Direct). OpenAI fully removed. Atlas has since been separated to its own repository on a different stack.
 - Exa web search + Upstash KV conversation memory + article persistence
 - Server-side annotation during ISR (single round-trip feed loading)
 - 7-day article persistence in Redis

@@ -3,7 +3,7 @@ Established: 2026-04-09
 
 *The design convictions that are true across every surface that lives within the OS. This is not a design system — each product defines its own color, its own content, its own mission. But they share a shell, a component architecture, and a set of beliefs about what intelligence software should feel like. This document is those beliefs.*
 
-*See `PASSAGE.md` for the interaction philosophy. See project-level `SYSTEM-BRIEF.md` files for visual implementation. See `DOC-AUTHORITY.md` for how these documents relate.*
+*See `PASSAGE.md` for the interaction philosophy. See project-level SYSTEM-BRIEF files for visual implementation. See `DOC-AUTHORITY.md` for how these documents relate.*
 
 ---
 
@@ -75,8 +75,8 @@ The OS is the ambient intelligence that holds everything together — the atmosp
 ## WHAT THIS DOCUMENT DOES NOT OWN
 
 - **Interaction philosophy** — How surfaces relate to each other and to time. See `PASSAGE.md`.
-- **Visual implementation** — Token values, component patterns, themes. See project-level `SYSTEM-BRIEF.md` files.
-- **Prohibited patterns** — Specific anti-patterns are project-level. See project-level `ANTI-PATTERNS.md` files. The shared convictions here inform those prohibitions but don't enumerate them.
+- **Visual implementation** — Token values, component patterns, themes. See project-level SYSTEM-BRIEF files.
+- **Prohibited patterns** — Specific anti-patterns are project-level. See project-level ANTI-PATTERNS files. The shared convictions here inform those prohibitions but don't enumerate them.
 - **Operator context** — See `OPERATOR.md`.
 - **Architectural enforcement** — Pipeline implementation, gallery curation mechanics, source filtering. See `ARCHITECTURE.md` and product-level documentation. Doctrine owns the standard. Architecture owns the enforcement.
 

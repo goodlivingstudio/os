@@ -35,7 +35,7 @@ When written, ARCHITECTURE.md will contain:
 
 Without an Explore-specific architecture doc, any new session reading Explore's code will have to reconstruct the architectural intent from the source. That reconstruction is expensive, error-prone, and drifts over time. This doc prevents that by stating the intent ahead of — and alongside — the code.
 
-It also serves as the counterpart to Dispatch's ARCHITECTURE.md in the canonical product doc set, which means a future product (Lilly, Atlas) can study both to understand the range of variations the shared OS codebase supports.
+It also serves as the counterpart to Dispatch's ARCHITECTURE.md in the canonical product doc set, which means a sibling product (Lilly Direct) or a future product (Atlas, when it resumes) can study both to understand the range of variations the shared OS codebase supports.
 
 ---
 

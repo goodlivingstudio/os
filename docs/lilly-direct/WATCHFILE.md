@@ -59,7 +59,7 @@ When populated, WATCHFILE.md contains a live, enumerated list of active watch it
 
 ## QUESTIONS TO ANSWER AT KICKOFF
 
-1. **What are the three to five watch items that should be active from day one?** The scaffold is empty but there are probably obvious candidates based on the engagement context in OS OPERATOR.md.
+1. **What are the three to five watch items that should be active from day one?** The scaffold is empty but there are probably obvious candidates based on the engagement context in `../os/OPERATOR.md`.
 2. **What specific Lilly deliverable dates or milestones should be watch items?** If there's a first major engagement meeting, a first deliverable, a specific decision point — those become High-severity items immediately.
 3. **Which competitor moves are most consequential to track?** Every pharma competitor has things happening constantly; the watchfile should capture only the moves that would materially change what Lilly Direct prioritizes.
 4. **Who are the specific named people whose public moves should auto-elevate signal?** Rau, Dave Ricks, specific R&D leaders, specific innovation team leaders — if there are 5-10 specific names whose public statements or moves should automatically become high-signal, list them here.

@@ -23,7 +23,7 @@ When written at kickoff, LIVE-ENVIRONMENT.md will contain:
 
 - **§ THE LILLY CONTEXT (current)** — Time-sensitive pharma context that complements the OS-level baseline: GLP-1 commercial momentum specifically this quarter, donanemab real-world adoption pressure, LillyDirect performance data, current competitive pressure from Novo Nordisk (and their responses), any active board-level strategic decisions that are publicly known.
 
-- **§ DIOGO RAU AND THE AI MANDATE** — Rau's "every employee engages with AI daily" mandate is cited in OPERATOR.md as the operating-context argument that makes Lilly Direct's timing feel inevitable. What's the current state of that mandate? Is it accelerating, stalling, being resisted? What public signals are visible?
+- **§ DIOGO RAU AND THE AI MANDATE** — Rau's "every employee engages with AI daily" mandate is cited in `../os/OPERATOR.md` as the operating-context argument that makes Lilly Direct's timing feel inevitable. What's the current state of that mandate? Is it accelerating, stalling, being resisted? What public signals are visible?
 
 - **§ THE $1B NVIDIA PARTNERSHIP** — Active operational context. Where is that partnership producing visible output? Where is it struggling? What does progress look like in the next 3-6 months?
 
@@ -49,7 +49,7 @@ This is also the document that tells Cerebro what to bring up unprompted. When a
 
 ## QUESTIONS TO ANSWER AT KICKOFF
 
-1. **What exactly has Laree Ross described about the engagement scope?** The OS-level OPERATOR.md describes the engagement as "permalance, strategic relationship to Laree Ross" — but not what the engagement is actually asked to produce. That specificity belongs here.
+1. **What exactly has Laree Ross described about the engagement scope?** The OS-level `../os/OPERATOR.md` describes the engagement as "permalance, strategic relationship to Laree Ross" — but not what the engagement is actually asked to produce. That specificity belongs here.
 2. **What's the cadence?** Weekly meetings? Monthly? Event-driven? That shapes the brief-generation rhythm and the synthesis pattern detection window.
 3. **Who else at Lilly is in the room?** Laree is the primary relationship, but a broader innovation team audience may mean the intelligence has to be legible to more than one reader. That shapes both the voice character and the surface outputs.
 4. **What has Jeremy already committed to deliver?** Any proposed deliverables, shared decks, working hypotheses shared with Lilly — those become part of the live environment because Lilly Direct's intelligence is now producing signal relevant to commitments that have been made.

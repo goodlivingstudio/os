@@ -1,9 +1,9 @@
 # Voice
 Established: 2026-04-09
 
-*The universal analytical voice disciplines for the OS. Every product's analytical function — regardless of character, register, or audience — carries these disciplines. Product-level `CEREBRO-CHARTER.md` files define the voice character. This document defines the discipline every character must carry.*
+*The universal analytical voice disciplines for the OS. Every product's analytical function — regardless of character, register, or audience — carries these disciplines. Product-level CEREBRO-CHARTER files define the voice character. This document defines the discipline every character must carry.*
 
-*Read `DOCTRINE.md` first. This document is the voice-level expression of the convictions DOCTRINE holds. See product-level `CEREBRO-CHARTER.md` files for how each product implements these disciplines inside its specific character and engagement context.*
+*Read `DOCTRINE.md` first. This document is the voice-level expression of the convictions DOCTRINE holds. See product-level CEREBRO-CHARTER files for how each product implements these disciplines inside its specific character and engagement context.*
 
 ---
 
@@ -200,7 +200,7 @@ The fourth paragraph, plus the weakest claim. Everything else cut.
 
 A product may propose to skip a discipline if its character or context genuinely requires it. Divergence should be rare — the disciplines were chosen because they hold across very different engagement contexts. A product proposing to skip one should treat that proposal as evidence that either the product needs to reconsider, or the discipline itself needs revision at the OS level. The protocol:
 
-1. Name the specific discipline being skipped in the product's `CEREBRO-CHARTER.md`.
+1. Name the specific discipline being skipped in the product's CEREBRO-CHARTER.
 2. State the reason the discipline cannot be honored in this product's context.
 3. State what replaces it — what the product will do instead to achieve the same goal.
 4. Commit the divergence and cross-reference this document.
@@ -212,13 +212,13 @@ A product may propose to skip a discipline if its character or context genuinely
 ```
 Voice (this document, universal disciplines + Wise Counselor)
   │
-  ├──► product CEREBRO-CHARTER.md (character + disciplines in product register)
+  ├──► product CEREBRO-CHARTER (character + disciplines in product register)
   │     │
-  │     └──► product PROMPTS.md VOICE block (copyable prompt text)
+  │     └──► product PROMPTS VOICE block (copyable prompt text)
   │           │
   │           └──► lib/prompts.ts (imported at runtime)
   │
-  └──► product VOICE-CALIBRATION.md (observation log: are the disciplines
+  └──► product VOICE-CALIBRATION (observation log: are the disciplines
         actually showing up in real responses?)
 ```
 
@@ -228,9 +228,9 @@ Voice (this document, universal disciplines + Wise Counselor)
 
 - **Design convictions** — The conviction that the analytical voice serves the mandate. See `DOCTRINE.md`.
 - **Operator context** — Who the voice is serving. See `OPERATOR.md`.
-- **Product characters** — The specific voice register and relationship posture. See product-level `CEREBRO-CHARTER.md` files.
+- **Product characters** — The specific voice register and relationship posture. See product-level CEREBRO-CHARTER files.
 - **Interaction philosophy** — How the operator experiences the surfaces the voice lives within. See `PASSAGE.md`.
-- **Voice calibration** — Whether the disciplines are actually showing up in real output. See product-level `VOICE-CALIBRATION.md` files.
+- **Voice calibration** — Whether the disciplines are actually showing up in real output. See product-level VOICE-CALIBRATION files.
 
 ---
 

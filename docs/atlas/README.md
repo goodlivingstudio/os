@@ -8,4 +8,4 @@
 
 **Why Atlas matters:** See `../os/PASSAGE.md` — Atlas is "the decision layer. The product that makes Passage structurally legible. Without Atlas, Dispatch generates insights that evaporate and Explore offers nourishment that doesn't compound. Atlas is where the passage deposits — not endpoints, but sediment."
 
-**When Atlas comes off hold:** Create the full doc set here (MANDATE.md, SYSTEM-BRIEF.md, ARCHITECTURE.md, etc.) and decide whether Atlas should fold into the shared OS codebase as a white-label instance or remain as a separate repository.
+**When Atlas comes off hold:** Create the full canonical 14-file doc set here (MANDATE, SYSTEM-BRIEF, ARCHITECTURE, etc. — see `../os/DOC-AUTHORITY.md` § THE CANONICAL PRODUCT DOC SET) and decide whether Atlas should fold into the shared OS codebase as a white-label instance or remain as a separate repository.

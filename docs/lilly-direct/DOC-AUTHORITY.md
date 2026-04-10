@@ -7,16 +7,16 @@ Established: 2026-04-10
 
 ## OS-LEVEL INHERITANCE
 
-Lilly Direct is one of four sibling products living under OS — the ambient intelligence layer that holds the Good Living Studio philosophy, operator context, and shared authority. Lilly Direct inherits from eight OS-level documents at `../os/`:
+Lilly Direct is one of four sibling products living under OS — the ambient intelligence layer that holds the Good Living Studio philosophy, operator context, and shared authority. Lilly Direct inherits from eight OS-level documents at `../os/` (linked below):
 
-- **OPERATOR.md** — Canonical for operator identity (Jeremy Grant), five-year target, professional evolution thesis, and priority intelligence targets (Eli Lilly is one of them). Lilly Direct's MANDATE.md references it rather than restating the operator profile.
-- **DOCTRINE.md** — Canonical for shared design convictions (restraint as proof of quality, craft is non-negotiable, source and synthesis stay visible, visual surfaces earn their place, analytical voice in service of the mandate, design systems are governance, clarity over density). Lilly Direct's SYSTEM-BRIEF.md and ANTI-PATTERNS.md implement these convictions in Lilly Direct-specific form.
-- **PASSAGE.md** — Canonical for interaction philosophy. Lilly Direct's SYSTEM-BRIEF.md § Interaction philosophy translates Passage into specific Lilly Direct commitments.
-- **VOICE.md** — Canonical for universal analytical voice disciplines (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density). Lilly Direct's CEREBRO-CHARTER.md expresses these through a product-specific character.
-- **PIPELINE.md** — Canonical for the six-stage intelligence pipeline (Ingest → Annotate → Score → Brief → Synthesize → Act). Lilly Direct's ARCHITECTURE.md describes how this product implements each stage.
-- **ARCHITECTURE.md** (OS-level) — Canonical for the shared codebase, white-label pattern, and 15-step new-product spinup checklist. Lilly Direct's ARCHITECTURE.md describes product-specific decisions sitting on top of this foundation.
-- **GLOSSARY.md** — Canonical for shared vocabulary. Lilly Direct uses the same terms (operator, annotation layer, station chief/field correspondent, Passage, etc.) with the same meanings.
-- **DOC-AUTHORITY.md** (OS-level) — Resolves authority conflicts that cross product boundaries or involve OS-level documents.
+- **[OPERATOR](../os/OPERATOR.md)** — Canonical for operator identity (Jeremy Grant), five-year target, professional evolution thesis, and priority intelligence targets (Eli Lilly is one of them). Lilly Direct's `MANDATE.md` references it rather than restating the operator profile.
+- **[DOCTRINE](../os/DOCTRINE.md)** — Canonical for shared design convictions (restraint as proof of quality, craft is non-negotiable, source and synthesis stay visible, visual surfaces earn their place, analytical voice in service of the mandate, design systems are governance, clarity over density). Lilly Direct's `SYSTEM-BRIEF.md` and `ANTI-PATTERNS.md` implement these convictions in Lilly Direct-specific form.
+- **[PASSAGE](../os/PASSAGE.md)** — Canonical for interaction philosophy. Lilly Direct's `SYSTEM-BRIEF.md` § Interaction philosophy translates Passage into specific Lilly Direct commitments.
+- **[VOICE](../os/VOICE.md)** — Canonical for universal analytical voice disciplines (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density). Lilly Direct's `CEREBRO-CHARTER.md` expresses these through a product-specific character.
+- **[PIPELINE](../os/PIPELINE.md)** — Canonical for the six-stage intelligence pipeline (Ingest → Annotate → Score → Brief → Synthesize → Act). Lilly Direct's `ARCHITECTURE.md` describes how this product implements each stage.
+- **[ARCHITECTURE](../os/ARCHITECTURE.md)** (OS-level) — Canonical for the shared codebase, white-label pattern, and the new-product spinup checklist. Lilly Direct's `ARCHITECTURE.md` describes product-specific decisions sitting on top of this foundation.
+- **[GLOSSARY](../os/GLOSSARY.md)** — Canonical for shared vocabulary. Lilly Direct uses the same terms (operator, annotation layer, station chief/field correspondent, Passage, etc.) with the same meanings.
+- **[DOC-AUTHORITY](../os/DOC-AUTHORITY.md)** (OS-level) — Resolves authority conflicts that cross product boundaries or involve OS-level documents.
 
 **Rule:** When Lilly Direct docs conflict with OS-level docs, the OS-level document wins on principle and intent. Lilly Direct docs win on project-specific implementation. See `../os/DOC-AUTHORITY.md` for the full inheritance model.
 

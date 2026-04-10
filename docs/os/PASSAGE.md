@@ -3,7 +3,7 @@ Established: 2026-04-09
 
 *The interaction philosophy for the OS. Governs how surfaces relate to each other, how they relate to time, and what they refuse to pretend about the experience of using them. This philosophy is forward-looking — it describes how the operator moves through the work, not how the system processes it.*
 
-*See `DOCTRINE.md` for shared design convictions. See `PIPELINE.md` for the structural system that makes this philosophy possible. See project-level `SYSTEM-BRIEF.md` files for how this philosophy manifests in specific visual and interaction decisions.*
+*See `DOCTRINE.md` for shared design convictions. See `PIPELINE.md` for the structural system that makes this philosophy possible. See project-level SYSTEM-BRIEF files for how this philosophy manifests in specific visual and interaction decisions.*
 
 ---
 
@@ -72,7 +72,7 @@ What the OS refuses is the opposite error: ranking surfaces by type or medium in
 - **Design convictions** — Restraint, craft, signal/synthesis duality, no sycophancy. See `DOCTRINE.md`.
 - **Operator context** — See `OPERATOR.md`.
 - **The intelligence pipeline** — Passage describes how the operator experiences the current. The pipeline is the structural system that creates it. See `PIPELINE.md`.
-- **Visual implementation** — How Passage manifests in specific transitions, animations, microcopy, and component behavior. These decisions belong in project-level `SYSTEM-BRIEF.md` files, informed by this philosophy.
+- **Visual implementation** — How Passage manifests in specific transitions, animations, microcopy, and component behavior. These decisions belong in project-level SYSTEM-BRIEF files, informed by this philosophy.
 
 ---
 

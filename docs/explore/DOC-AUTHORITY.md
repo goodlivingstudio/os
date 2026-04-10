@@ -153,17 +153,11 @@ ROADMAP (references all, owns none)                       lib/prompts.ts
 
 ---
 
-## KNOWN DRIFT (as of 2026-04-07)
+## KNOWN DRIFT (as of 2026-04-09)
 
-**SOURCES-UPDATE-V2 retired.** Content merged into SOURCES.md v2. SOURCES-UPDATE-V2.md should be deleted from the working directory.
+**ARCHITECTURE.md, SYSTEM-BRIEF.md, ANTI-PATTERNS.md, and VOICE-CALIBRATION.md all exist as scaffolds.** The 14-file canonical doc set is now structurally complete. Each scaffold needs content iteration as Explore matures: ARCHITECTURE.md as the codebase fills in, SYSTEM-BRIEF.md as visual language decisions are made, ANTI-PATTERNS.md as prohibited patterns reveal themselves in practice, and VOICE-CALIBRATION.md after the first 10–15 real Cerebro sessions produce drift observations against the field correspondent character.
 
-**ARCHITECTURE.md not yet built.** References to "ARCHITECTURE" in this authority map are forward-looking. Until it exists, treat PROMPTS.md surface inventory table as the provisional architecture reference.
-
-**SYSTEM-BRIEF.md not yet built.** No visual language decisions are documented. Until it exists, no UI work should begin on the Explore interface.
-
-**ANTI-PATTERNS.md not yet built.** Personal Dispatch ANTI-PATTERNS.md exists but should not be copied wholesale — requires evaluation against Explore's civic team context before any items are adopted.
-
-**VOICE-CALIBRATION.md not yet built.** Build after first 10–15 real Cerebro sessions when the field correspondent model has real usage data to calibrate against.
+**Operator section in MANDATE.md needs slimming.** Currently restates context that lives at OS level. The Phase 2 operator slim added a clarifying frame at the top of THE OPERATOR section establishing that Explore's operator is the team (not Jeremy individually) and that the team's five-year target and operating thesis are sibling-distinct from the OS-level operator's. The body content of THE OPERATOR section is genuinely Explore-team-specific and stays.
 
 ---
 

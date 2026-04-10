@@ -46,7 +46,7 @@ MANDATE.md is the single source of truth for what the product is. PROMPTS.md der
 
 1. **What is Lilly Direct one sentence?** Not the codebase tagline — the mandate-level description. "A _____ for _____ that produces _____." Fill in the blanks before writing anything else.
 2. **Who is the operator's counterpart at Lilly?** Laree Ross is the strategic relationship, but is she the primary user of Lilly Direct's output, or does the output serve a broader Lilly innovation team audience?
-3. **What does Lilly Direct produce that the engagement needs?** Weekly briefs? Meeting prep? Pre-deliverable synthesis? Long-form strategic memos? Some combination? This shapes the Act stage of the pipeline (§ PIPELINE.md in OS).
+3. **What does Lilly Direct produce that the engagement needs?** Weekly briefs? Meeting prep? Pre-deliverable synthesis? Long-form strategic memos? Some combination? This shapes the Act stage of the pipeline (see `../os/PIPELINE.md` § Stage 6 — Act).
 4. **What is the voice character?** Station Chief (inherited from Dispatch) feels wrong for a client engagement — too direct, too personal. Field Correspondent (inherited from Explore) might be closer — editorially independent, writing for a specific audience that has to act on the intelligence. Or Lilly Direct may need a new character entirely — "Innovation Desk" or "Engagement Analyst" or something else that reflects a client-service context without becoming consulting.
 5. **What is the layer taxonomy?** The scaffold placeholder uses Therapeutic / Regulatory / Digital / Organizational / Competitive. Is that right, or does the engagement need different layers? The layers should be calibrated to the questions the engagement actually asks, not to generic pharma taxonomy.
 6. **What's the competitive landscape Lilly Direct tracks?** Novo Nordisk is the obvious GLP-1 counterpart. Pfizer, Sanofi, BMS, Roche, Merck — which specifically belong in the active signal feed?
@@ -94,7 +94,7 @@ When written at kickoff, CEREBRO-CHARTER.md will contain:
 - **§ REGISTER AND DELIVERY** — how the voice sounds. Tone register. Sentence structure. Prose vs bullets. How responses open and close. Specific examples of good vs bad moves.
 - **§ BEHAVIORAL DIRECTIVES** — the numbered directives specific to this engagement. Example patterns: "brief the engagement, not the people," "hold the Lilly internal/external tension without collapsing it," "name regulatory risk explicitly," "flag competitive moves against specific Lilly positions."
 - **§ WHAT THE FUNCTION WILL NOT DO** — the anti-patterns. Example: "does not produce clinical advice," "does not substitute for Lilly internal intelligence the team has access to that Lilly Direct doesn't," "does not take sides in internal Lilly debates the team is reporting on."
-- **§ WHAT THE FUNCTION KNOWS** — the data inventory. Full mandate, live environment (docs/lilly-direct/LIVE-ENVIRONMENT.md), the annotated signal feed across Lilly Direct's layers, conversation history (30-day KV persistence), web search via Exa, and anything engagement-specific (Lilly newsroom live feed, competitive pharma trade press, internal team working questions).
+- **§ WHAT THE FUNCTION KNOWS** — the data inventory. Full mandate, live environment (`LIVE-ENVIRONMENT.md`), the annotated signal feed across Lilly Direct's layers, conversation history (30-day KV persistence), web search via Exa, and anything engagement-specific (Lilly newsroom live feed, competitive pharma trade press, internal team working questions).
 - **§ ANALYTICAL PROTOCOLS** — any engagement-specific checks (parallel to Explore's "Civic Design Test," "Burgum-Gebbia Frame Check," "90-day / Stewardship Split"). Example candidates: "The LillyDirect Frame Check" (does this decision optimize for direct-to-patient clarity vs institutional risk aversion), "The GLP-1 Momentum Check" (is this signal about the core revenue engine or a peripheral concern), "The Therapeutic Area Spread Check" (are we over-indexing on GLP-1 at the expense of Alzheimer's, oncology, immunology).
 - **§ SYNTHESIS DIRECTIVES** — what synthesis produces for this team specifically. Pre-meeting briefs? Weekly patterns? Per-therapeutic-area digests?
 - **§ PUSH FORWARD** — Dispatch's convention of closing every response with three next-directions. Does Lilly Direct inherit this? Or does it use a different convention (questions to bring into the next Laree meeting, deliverables to draft, risks to track)?
@@ -387,16 +387,16 @@ Established: 2026-04-10
 
 ## OS-LEVEL INHERITANCE
 
-Lilly Direct is one of four sibling products living under OS — the ambient intelligence layer that holds the Good Living Studio philosophy, operator context, and shared authority. Lilly Direct inherits from eight OS-level documents at `../os/`:
+Lilly Direct is one of four sibling products living under OS — the ambient intelligence layer that holds the Good Living Studio philosophy, operator context, and shared authority. Lilly Direct inherits from eight OS-level documents at `../os/` (linked below):
 
-- **OPERATOR.md** — Canonical for operator identity (Jeremy Grant), five-year target, professional evolution thesis, and priority intelligence targets (Eli Lilly is one of them). Lilly Direct's MANDATE.md references it rather than restating the operator profile.
-- **DOCTRINE.md** — Canonical for shared design convictions (restraint as proof of quality, craft is non-negotiable, source and synthesis stay visible, visual surfaces earn their place, analytical voice in service of the mandate, design systems are governance, clarity over density). Lilly Direct's SYSTEM-BRIEF.md and ANTI-PATTERNS.md implement these convictions in Lilly Direct-specific form.
-- **PASSAGE.md** — Canonical for interaction philosophy. Lilly Direct's SYSTEM-BRIEF.md § Interaction philosophy translates Passage into specific Lilly Direct commitments.
-- **VOICE.md** — Canonical for universal analytical voice disciplines (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density). Lilly Direct's CEREBRO-CHARTER.md expresses these through a product-specific character.
-- **PIPELINE.md** — Canonical for the six-stage intelligence pipeline (Ingest → Annotate → Score → Brief → Synthesize → Act). Lilly Direct's ARCHITECTURE.md describes how this product implements each stage.
-- **ARCHITECTURE.md** (OS-level) — Canonical for the shared codebase, white-label pattern, and 15-step new-product spinup checklist. Lilly Direct's ARCHITECTURE.md describes product-specific decisions sitting on top of this foundation.
-- **GLOSSARY.md** — Canonical for shared vocabulary. Lilly Direct uses the same terms (operator, annotation layer, station chief/field correspondent, Passage, etc.) with the same meanings.
-- **DOC-AUTHORITY.md** (OS-level) — Resolves authority conflicts that cross product boundaries or involve OS-level documents.
+- **[OPERATOR](../os/OPERATOR.md)** — Canonical for operator identity (Jeremy Grant), five-year target, professional evolution thesis, and priority intelligence targets (Eli Lilly is one of them). Lilly Direct's `MANDATE.md` references it rather than restating the operator profile.
+- **[DOCTRINE](../os/DOCTRINE.md)** — Canonical for shared design convictions (restraint as proof of quality, craft is non-negotiable, source and synthesis stay visible, visual surfaces earn their place, analytical voice in service of the mandate, design systems are governance, clarity over density). Lilly Direct's `SYSTEM-BRIEF.md` and `ANTI-PATTERNS.md` implement these convictions in Lilly Direct-specific form.
+- **[PASSAGE](../os/PASSAGE.md)** — Canonical for interaction philosophy. Lilly Direct's `SYSTEM-BRIEF.md` § Interaction philosophy translates Passage into specific Lilly Direct commitments.
+- **[VOICE](../os/VOICE.md)** — Canonical for universal analytical voice disciplines (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density). Lilly Direct's `CEREBRO-CHARTER.md` expresses these through a product-specific character.
+- **[PIPELINE](../os/PIPELINE.md)** — Canonical for the six-stage intelligence pipeline (Ingest → Annotate → Score → Brief → Synthesize → Act). Lilly Direct's `ARCHITECTURE.md` describes how this product implements each stage.
+- **[ARCHITECTURE](../os/ARCHITECTURE.md)** (OS-level) — Canonical for the shared codebase, white-label pattern, and the new-product spinup checklist. Lilly Direct's `ARCHITECTURE.md` describes product-specific decisions sitting on top of this foundation.
+- **[GLOSSARY](../os/GLOSSARY.md)** — Canonical for shared vocabulary. Lilly Direct uses the same terms (operator, annotation layer, station chief/field correspondent, Passage, etc.) with the same meanings.
+- **[DOC-AUTHORITY](../os/DOC-AUTHORITY.md)** (OS-level) — Resolves authority conflicts that cross product boundaries or involve OS-level documents.
 
 **Rule:** When Lilly Direct docs conflict with OS-level docs, the OS-level document wins on principle and intent. Lilly Direct docs win on project-specific implementation. See `../os/DOC-AUTHORITY.md` for the full inheritance model.
 
@@ -725,7 +725,7 @@ When written at kickoff, LIVE-ENVIRONMENT.md will contain:
 
 - **§ THE LILLY CONTEXT (current)** — Time-sensitive pharma context that complements the OS-level baseline: GLP-1 commercial momentum specifically this quarter, donanemab real-world adoption pressure, LillyDirect performance data, current competitive pressure from Novo Nordisk (and their responses), any active board-level strategic decisions that are publicly known.
 
-- **§ DIOGO RAU AND THE AI MANDATE** — Rau's "every employee engages with AI daily" mandate is cited in OPERATOR.md as the operating-context argument that makes Lilly Direct's timing feel inevitable. What's the current state of that mandate? Is it accelerating, stalling, being resisted? What public signals are visible?
+- **§ DIOGO RAU AND THE AI MANDATE** — Rau's "every employee engages with AI daily" mandate is cited in `../os/OPERATOR.md` as the operating-context argument that makes Lilly Direct's timing feel inevitable. What's the current state of that mandate? Is it accelerating, stalling, being resisted? What public signals are visible?
 
 - **§ THE $1B NVIDIA PARTNERSHIP** — Active operational context. Where is that partnership producing visible output? Where is it struggling? What does progress look like in the next 3-6 months?
 
@@ -751,7 +751,7 @@ This is also the document that tells Cerebro what to bring up unprompted. When a
 
 ## QUESTIONS TO ANSWER AT KICKOFF
 
-1. **What exactly has Laree Ross described about the engagement scope?** The OS-level OPERATOR.md describes the engagement as "permalance, strategic relationship to Laree Ross" — but not what the engagement is actually asked to produce. That specificity belongs here.
+1. **What exactly has Laree Ross described about the engagement scope?** The OS-level `../os/OPERATOR.md` describes the engagement as "permalance, strategic relationship to Laree Ross" — but not what the engagement is actually asked to produce. That specificity belongs here.
 2. **What's the cadence?** Weekly meetings? Monthly? Event-driven? That shapes the brief-generation rhythm and the synthesis pattern detection window.
 3. **Who else at Lilly is in the room?** Laree is the primary relationship, but a broader innovation team audience may mean the intelligence has to be legible to more than one reader. That shapes both the voice character and the surface outputs.
 4. **What has Jeremy already committed to deliver?** Any proposed deliverables, shared decks, working hypotheses shared with Lilly — those become part of the live environment because Lilly Direct's intelligence is now producing signal relevant to commitments that have been made.
@@ -839,7 +839,7 @@ When populated, WATCHFILE.md contains a live, enumerated list of active watch it
 
 ## QUESTIONS TO ANSWER AT KICKOFF
 
-1. **What are the three to five watch items that should be active from day one?** The scaffold is empty but there are probably obvious candidates based on the engagement context in OS OPERATOR.md.
+1. **What are the three to five watch items that should be active from day one?** The scaffold is empty but there are probably obvious candidates based on the engagement context in `../os/OPERATOR.md`.
 2. **What specific Lilly deliverable dates or milestones should be watch items?** If there's a first major engagement meeting, a first deliverable, a specific decision point — those become High-severity items immediately.
 3. **Which competitor moves are most consequential to track?** Every pharma competitor has things happening constantly; the watchfile should capture only the moves that would materially change what Lilly Direct prioritizes.
 4. **Who are the specific named people whose public moves should auto-elevate signal?** Rau, Dave Ricks, specific R&D leaders, specific innovation team leaders — if there are 5-10 specific names whose public statements or moves should automatically become high-signal, list them here.

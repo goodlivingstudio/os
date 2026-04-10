@@ -417,7 +417,7 @@ When written, ARCHITECTURE.md will contain:
 
 Without an Explore-specific architecture doc, any new session reading Explore's code will have to reconstruct the architectural intent from the source. That reconstruction is expensive, error-prone, and drifts over time. This doc prevents that by stating the intent ahead of — and alongside — the code.
 
-It also serves as the counterpart to Dispatch's ARCHITECTURE.md in the canonical product doc set, which means a future product (Lilly, Atlas) can study both to understand the range of variations the shared OS codebase supports.
+It also serves as the counterpart to Dispatch's ARCHITECTURE.md in the canonical product doc set, which means a sibling product (Lilly Direct) or a future product (Atlas, when it resumes) can study both to understand the range of variations the shared OS codebase supports.
 
 ---
 
@@ -1201,7 +1201,7 @@ Established: 2026-04-09 (stub)
 
 *Universal OS-wide design convictions and the anti-patterns they imply live at `../os/DOCTRINE.md` (no dashboards, no widgets, no sycophancy, no celebratory animations, no pulsing badges, no emoji, no "Hey there!" greetings, the visual-surfaces-earn-their-place rule including the anti-watermark prohibition). Those apply to Explore without exception. This document adds Explore-specific prohibitions calibrated to the civic / federal / team context Explore serves.*
 
-*Note: there is no separate `../os/ANTI-PATTERNS.md` file — OS-wide prohibitions are folded into DOCTRINE.md as the positive-and-negative expression of each shared conviction. If the project grows enough OS-wide prohibitions to justify their own file, we can promote them later.*
+*Note: there is no separate OS-level ANTI-PATTERNS file — OS-wide prohibitions are folded into `../os/DOCTRINE.md` as the positive-and-negative expression of each shared conviction. If the project grows enough OS-wide prohibitions to justify their own file, we can promote them later.*
 
 *See `SYSTEM-BRIEF.md` for the positive design guidance. See `../os/DOCTRINE.md` for the shared design convictions these prohibitions enforce. See `MANDATE.md` for the context that makes these prohibitions necessary.*
 
@@ -1414,17 +1414,11 @@ ROADMAP (references all, owns none)                       lib/prompts.ts
 
 ---
 
-## KNOWN DRIFT (as of 2026-04-07)
+## KNOWN DRIFT (as of 2026-04-09)
 
-**SOURCES-UPDATE-V2 retired.** Content merged into SOURCES.md v2. SOURCES-UPDATE-V2.md should be deleted from the working directory.
+**ARCHITECTURE.md, SYSTEM-BRIEF.md, ANTI-PATTERNS.md, and VOICE-CALIBRATION.md all exist as scaffolds.** The 14-file canonical doc set is now structurally complete. Each scaffold needs content iteration as Explore matures: ARCHITECTURE.md as the codebase fills in, SYSTEM-BRIEF.md as visual language decisions are made, ANTI-PATTERNS.md as prohibited patterns reveal themselves in practice, and VOICE-CALIBRATION.md after the first 10–15 real Cerebro sessions produce drift observations against the field correspondent character.
 
-**ARCHITECTURE.md not yet built.** References to "ARCHITECTURE" in this authority map are forward-looking. Until it exists, treat PROMPTS.md surface inventory table as the provisional architecture reference.
-
-**SYSTEM-BRIEF.md not yet built.** No visual language decisions are documented. Until it exists, no UI work should begin on the Explore interface.
-
-**ANTI-PATTERNS.md not yet built.** Personal Dispatch ANTI-PATTERNS.md exists but should not be copied wholesale — requires evaluation against Explore's civic team context before any items are adopted.
-
-**VOICE-CALIBRATION.md not yet built.** Build after first 10–15 real Cerebro sessions when the field correspondent model has real usage data to calibrate against.
+**Operator section in MANDATE.md needs slimming.** Currently restates context that lives at OS level. The Phase 2 operator slim added a clarifying frame at the top of THE OPERATOR section establishing that Explore's operator is the team (not Jeremy individually) and that the team's five-year target and operating thesis are sibling-distinct from the OS-level operator's. The body content of THE OPERATOR section is genuinely Explore-team-specific and stays.
 
 ---
 

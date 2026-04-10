@@ -67,7 +67,7 @@ Updated: 2026-04-02
 ## Archive — Completed (April 2, 2026 — ~60 commits)
 
 ### Infrastructure
-- Full Anthropic Claude swap across 3 projects (Dispatch, Atlas, Lilly). OpenAI fully removed.
+- Full Anthropic Claude swap across 3 projects in flight at the time (Dispatch, Atlas, Lilly Direct). OpenAI fully removed. Atlas has since been separated to its own repository on a different stack.
 - Exa web search + Upstash KV conversation memory + article persistence
 - Server-side annotation during ISR (single round-trip feed loading)
 - 7-day article persistence in Redis

@@ -23,7 +23,7 @@ This is the structural guarantee behind the Passage philosophy. Passage says eve
 
 **What it does.** Pulls raw signal into the system from configured sources — RSS feeds, podcast feeds, gallery scrapes, manual submissions. Each product defines its own source list calibrated to its mandate.
 
-**Characterizing discipline.** Source curation is not additive. Sources earn their place. The pipeline's signal quality is bounded by the quality of Stage 1 — you cannot annotate your way out of a bad source mix. Each product's `SOURCES.md` is the canonical inventory, and `SOURCES-MEGALIST.md` is the discovery layer where candidates get evaluated before promotion.
+**Characterizing discipline.** Source curation is not additive. Sources earn their place. The pipeline's signal quality is bounded by the quality of Stage 1 — you cannot annotate your way out of a bad source mix. Each product's SOURCES doc is the canonical inventory, and SOURCES-MEGALIST is the discovery layer where candidates get evaluated before promotion.
 
 **Failure mode.** Ingesting everything. The aggregator trap. A pipeline that ingests hundreds of sources produces noise faster than it can annotate, and the operator ends up either ignoring the feed or drowning in it. Restraint at Stage 1 is upstream of every other stage's quality.
 
@@ -94,9 +94,9 @@ Passage and the Pipeline are not in tension. The pipeline describes the structur
 ## WHAT THIS DOCUMENT DOES NOT OWN
 
 - **Implementation details.** Code paths, file locations, API routes, model choices, cadence intervals. See `ARCHITECTURE.md` for the shared layer and product-level `ARCHITECTURE.md` files for product-specific implementation.
-- **The analytical voice.** See `VOICE.md` for the universal disciplines and product-level `CEREBRO-CHARTER.md` files for character.
-- **The operator context the pipeline scores against.** See `OPERATOR.md` and product-level `MANDATE.md`.
-- **The live environment each product's pipeline is pointed at.** See product-level `LIVE-ENVIRONMENT.md`.
+- **The analytical voice.** See `VOICE.md` for the universal disciplines and product-level CEREBRO-CHARTER files for character.
+- **The operator context the pipeline scores against.** See `OPERATOR.md` and product-level MANDATE files.
+- **The live environment each product's pipeline is pointed at.** See product-level LIVE-ENVIRONMENT files.
 - **The interaction philosophy that shapes how pipeline output is surfaced.** See `PASSAGE.md`.
 - **Product-specific cadences.** How often each stage runs, cache intervals, refresh schedules. See product-level `ARCHITECTURE.md`.
 
