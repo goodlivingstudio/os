@@ -380,6 +380,8 @@ export function LeftRail({
           <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--border)" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <span style={{ ...labelStyle, marginBottom: 0 }}>{instanceConfig.branding.name}</span>
+            </div>
+            <div style={{ textAlign: "center", marginTop: 8 }}>
               <span style={{ fontFamily: "var(--font-sohne-mono)", fontSize: 11, color: "var(--text-tertiary)" }}>{time}</span>
             </div>
           </div>
