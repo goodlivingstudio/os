@@ -1548,24 +1548,24 @@ Every piece of system knowledge has exactly one canonical home. Other documents 
 
 ---
 
-### ARCHITECTURE.md — *The How* *(not yet built)*
-**Owns:** Tech stack and infrastructure. API routes and models. Data flow (ISR, annotation pipeline, Redis persistence). Navigation structure. Design system summary (summary only — not canonical). AI surface specifications. Six-surface inventory.
+### ARCHITECTURE.md — *The How*
+**Owns:** Shared foundation inheritance. Explore-specific instance config differences from Dispatch (team operator, ranger voice, 5 biome themes, galleryBiomes feature flag, extended taste prompt). Surface inventory. AI model assignments. Deployment topology (`explore.goodliving.studio`, port 3002). Known divergences from Dispatch.
 
-**Rule:** If you need to know *how the system is built*, ARCHITECTURE is the answer. The operator context in ARCHITECTURE is a summary derived from MANDATE. The design system summary in ARCHITECTURE is derived from SYSTEM-BRIEF. Do not update these sections in ARCHITECTURE without updating the canonical source first.
-
----
-
-### SYSTEM-BRIEF.md — *The Look* *(not yet built)*
-**Owns:** Design philosophy for the Explore interface. Visual language decisions. Token architecture (color, typography, spacing, radius) for the team-facing tool. Component patterns. Agent instructions for UI generation. The "what Explore is not" boundaries adapted for a multi-operator team tool vs. a personal intelligence system.
-
-**Rule:** If you need to know *how the interface should look and feel*, SYSTEM-BRIEF is the answer. The design system summary in ARCHITECTURE.md is a compressed reference derived from SYSTEM-BRIEF.
+**Rule:** If you need to know *how the system is built*, ARCHITECTURE is the answer. Read `../os/ARCHITECTURE.md` first for the shared layer; this document only covers what's different.
 
 ---
 
-### ANTI-PATTERNS.md — *The Stop List* *(not yet built)*
-**Owns:** Prohibited UI patterns, visual treatments, component behaviors, and design decisions specific to the Explore civic platform context. Each entry is a pattern proposed, implemented, or suggested and rejected.
+### SYSTEM-BRIEF.md — *The Look*
+**Owns:** Art direction ("In wildness is the preservation of the world"). The Ranger Station design philosophy. Signal/synthesis duality expressed through typographic register (Geist for sources, Grenette Pro for ranger intelligence). Passage commitments. Five biome themes (Cascadia, Mesa, Marina, Prairie, Bayou). Token architecture. "What Explore is not" boundaries. Agent instructions for UI generation.
 
-**Rule:** SYSTEM-BRIEF says what to build. ANTI-PATTERNS says what to never build. Both are required reading before any UI work. Note: some anti-patterns from personal Dispatch apply here; some do not (Explore is a team tool with different register requirements). Do not copy personal Dispatch ANTI-PATTERNS wholesale — evaluate each for applicability to civic team context.
+**Rule:** If you need to know *how the interface should look and feel*, SYSTEM-BRIEF is the answer. The art direction is specific and load-bearing — read it completely before generating any UI.
+
+---
+
+### ANTI-PATTERNS.md — *The Stop List*
+**Owns:** Civic-context-specific prohibitions: voice register (no station chief authority, no consultant deference, no manufactured urgency), visual aesthetics (no consumer outdoor-app, no government-website defaults, no synthetic color), team context (no single-user assumptions, no intelligence hierarchy), gallery (no extractive imagery, no watermarks/AI/stock), accessibility (WCAG 2.1 AA non-negotiable).
+
+**Rule:** SYSTEM-BRIEF says what to build. ANTI-PATTERNS says what to never build. Both are required reading before any UI work. Universal OS prohibitions from `../os/DOCTRINE.md` also apply without exception.
 
 ---
 
@@ -1636,11 +1636,13 @@ ROADMAP (references all, owns none)                       lib/prompts.ts
 
 ---
 
-## KNOWN DRIFT (as of 2026-04-09)
+## KNOWN DRIFT (as of 2026-04-10)
 
-**ARCHITECTURE.md, SYSTEM-BRIEF.md, ANTI-PATTERNS.md, and VOICE-CALIBRATION.md all exist as scaffolds.** The 14-file canonical doc set is now structurally complete. Each scaffold needs content iteration as Explore matures: ARCHITECTURE.md as the codebase fills in, SYSTEM-BRIEF.md as visual language decisions are made, ANTI-PATTERNS.md as prohibited patterns reveal themselves in practice, and VOICE-CALIBRATION.md after the first 10–15 real Cerebro sessions produce drift observations against the ranger character.
+**ARCHITECTURE.md, SYSTEM-BRIEF.md, and ANTI-PATTERNS.md now have real content** (written 2026-04-10). They are no longer scaffolds. Content will iterate as the codebase and visual language mature, but the structural foundation is in place.
 
-**Operator section in MANDATE.md needs slimming.** Currently restates context that lives at OS level. The Phase 2 operator slim added a clarifying frame at the top of THE OPERATOR section establishing that Explore's operator is the team (not Jeremy individually) and that the team's five-year target and operating thesis are sibling-distinct from the OS-level operator's. The body content of THE OPERATOR section is genuinely Explore-team-specific and stays.
+**VOICE-CALIBRATION.md remains a scaffold.** Build after the first 10–15 real Cerebro sessions produce drift observations against the ranger character. Until then, the ranger's behavioral directives live in CEREBRO-CHARTER.md and are implemented in PROMPTS.md VOICE block.
+
+**Operator section in MANDATE.md has been clarified.** A frame at the top of THE OPERATOR section establishes that Explore's operator is the team (not Jeremy individually) and that the team's five-year target and operating thesis are sibling-distinct from the OS-level operator's. No further action needed unless the team structure changes.
 
 ---
 
