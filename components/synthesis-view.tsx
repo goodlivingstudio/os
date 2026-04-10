@@ -381,7 +381,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                           </span>
                         </div>
                         {/* Title */}
-                        <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, letterSpacing: "-0.01em" }}>
+                        <div style={{ ...TYPE.heading, fontFamily: DISPLAY, color: "var(--text-primary)", lineHeight: 1.4, letterSpacing: "-0.01em" }}>
                           {pattern.title}
                         </div>
                         {/* Description — aligned with eyebrow and title */}
