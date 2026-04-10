@@ -813,7 +813,6 @@ export function LeftRail({
               <div style={{
                 ...TYPE.body,
                 color: "var(--text-tertiary)",
-                lineHeight: 1.7,
                 opacity: 0.8,
               }}>
                 {dailyBrief}
