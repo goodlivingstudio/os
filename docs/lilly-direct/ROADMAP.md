@@ -111,7 +111,7 @@ Established: 2026-04-10
 
 ## OPEN QUESTIONS FOR KICKOFF
 
-1. Does Lilly Direct need its own domain, or does it live under `lilly.goodliving.studio` (studio-owned), `dispatch.goodliving.studio/lilly` (nested), or a client-owned domain?
+1. What domain does Lilly Direct deploy to? Options: a new studio-owned subdomain (placeholder is currently `lilly-direct.goodliving.studio`), a nested path under another OS instance, or a client-owned domain. NOTE: `lilly.goodliving.studio` is taken by an unrelated older project and is NOT available.
 2. Is there anything in the engagement that requires confidentiality handling beyond normal operating practice?
 3. What's the first engagement deliverable Lilly Direct is supposed to support? That deliverable should become the first WATCHFILE item and should shape the Act-stage surface inventory in ARCHITECTURE.md.
 4. Does Lilly Direct need a visual surface (gallery) at all? If not, delete the gallery-related scaffold files? (Current answer: keep them scaffolded; activating or deleting is a future decision.)

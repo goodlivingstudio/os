@@ -43,7 +43,12 @@ const config: InstanceConfig = {
   branding: {
     name: "Lilly Direct",
     tagline: "Engagement intelligence for Eli Lilly.",  // TBD: final tagline
-    domain: "lilly.goodliving.studio",                   // TBD: final domain (may be client-owned)
+    // Placeholder subdomain. NOTE: lilly.goodliving.studio is TAKEN by an
+    // unrelated older project — do NOT use that domain for Lilly Direct.
+    // Final domain decision happens at kickoff (this placeholder, or a
+    // client-owned URL if Lilly hosts it). The Vercel project for Lilly
+    // Direct production has not yet been created.
+    domain: "lilly-direct.goodliving.studio",
     port: 3003,                                           // Dispatch=3001, Explore=3002, Lilly Direct=3003
     favicon: { light: "/favicon-light.png", dark: "/favicon-dark.png", apple: "/apple-touch-icon.png" },
   },

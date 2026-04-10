@@ -210,7 +210,7 @@ When written, ARCHITECTURE.md will describe:
 - **§ Surface inventory** — which of the shared surfaces Lilly Direct exposes (Signal feed? Cerebro chat? Synthesis? Gallery? Audio brief? Dispatch-style content pipeline?) and which it omits. Not every product needs every surface, and Lilly Direct's client-engagement context may argue for surfacing less than Dispatch does by default.
 - **§ Engagement-specific data flow** — how signal flows through the pipeline for this product. Where does it diverge from the shared pattern? Any additional filters, annotation rules, or caching behaviors specific to pharma intelligence? Any additional KV keys or deployment-specific state?
 - **§ AI surface specifications** — which Claude model each surface uses (inherited defaults unless a surface genuinely needs a different model), context window strategy, and how the voice character from `CEREBRO-CHARTER.md` gets enforced at the prompt assembly layer.
-- **§ Deployment topology** — where Lilly Direct deploys. Vercel project naming. Domain (`lilly.goodliving.studio` per the placeholder config, or a client-owned domain, or nothing public-facing at all if it's a private tool). Environment variables beyond the shared set.
+- **§ Deployment topology** — where Lilly Direct deploys. Vercel project naming. Domain (the placeholder config currently uses `lilly-direct.goodliving.studio`, but the final domain is TBD — it may be a different studio-owned subdomain, a client-owned URL, or nothing public-facing if it's a private tool. NOTE: `lilly.goodliving.studio` is taken by an unrelated older project and is NOT available for Lilly Direct). Environment variables beyond the shared set.
 - **§ Known divergences from the shared OS** — any place Lilly Direct has forked shared behavior for engagement-specific needs. Flagged explicitly so the divergence can be revisited later (either promoted back into shared code if another product needs the same behavior, or kept as an intentional fork).
 - **§ Confidentiality and data handling** — does the engagement impose any constraints on how Lilly Direct handles signal data? Client-sensitive intelligence, embargoed information, internal Lilly context — what's in scope and what's not? This section may not exist if the engagement doesn't impose constraints beyond normal operating practice.
 
@@ -523,7 +523,7 @@ If a concern spans Lilly Direct and Dispatch (e.g., how Dispatch's content pipel
 
 **Surface inventory is undefined.** `ARCHITECTURE.md` doesn't yet name which shared surfaces Lilly Direct exposes. Decision at kickoff.
 
-**Deployment target is undefined.** The scaffold config uses `lilly.goodliving.studio` as a placeholder domain. The real domain depends on whether the product is publicly hosted, privately hosted, or client-hosted.
+**Deployment target is undefined.** The scaffold config uses `lilly-direct.goodliving.studio` as a placeholder domain (chosen because the more obvious `lilly.goodliving.studio` is taken by an unrelated older project). The real domain depends on whether the product is publicly hosted, privately hosted, or client-hosted. The Vercel project for Lilly Direct production has not yet been created.
 
 ---
 
@@ -975,7 +975,7 @@ Established: 2026-04-10
 
 ## OPEN QUESTIONS FOR KICKOFF
 
-1. Does Lilly Direct need its own domain, or does it live under `lilly.goodliving.studio` (studio-owned), `dispatch.goodliving.studio/lilly` (nested), or a client-owned domain?
+1. What domain does Lilly Direct deploy to? Options: a new studio-owned subdomain (placeholder is currently `lilly-direct.goodliving.studio`), a nested path under another OS instance, or a client-owned domain. NOTE: `lilly.goodliving.studio` is taken by an unrelated older project and is NOT available.
 2. Is there anything in the engagement that requires confidentiality handling beyond normal operating practice?
 3. What's the first engagement deliverable Lilly Direct is supposed to support? That deliverable should become the first WATCHFILE item and should shape the Act-stage surface inventory in ARCHITECTURE.md.
 4. Does Lilly Direct need a visual surface (gallery) at all? If not, delete the gallery-related scaffold files? (Current answer: keep them scaffolded; activating or deleting is a future decision.)

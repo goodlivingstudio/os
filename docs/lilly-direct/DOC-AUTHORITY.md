@@ -143,7 +143,7 @@ If a concern spans Lilly Direct and Dispatch (e.g., how Dispatch's content pipel
 
 **Surface inventory is undefined.** `ARCHITECTURE.md` doesn't yet name which shared surfaces Lilly Direct exposes. Decision at kickoff.
 
-**Deployment target is undefined.** The scaffold config uses `lilly.goodliving.studio` as a placeholder domain. The real domain depends on whether the product is publicly hosted, privately hosted, or client-hosted.
+**Deployment target is undefined.** The scaffold config uses `lilly-direct.goodliving.studio` as a placeholder domain (chosen because the more obvious `lilly.goodliving.studio` is taken by an unrelated older project). The real domain depends on whether the product is publicly hosted, privately hosted, or client-hosted. The Vercel project for Lilly Direct production has not yet been created.
 
 ---
 
