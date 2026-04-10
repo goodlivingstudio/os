@@ -266,19 +266,19 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
 
             {/* ─ WEEKLY SHIFT banner ─ */}
             <div style={{
-              background: "var(--bg-primary)", padding: "40px 0",
-              minHeight: 160,
+              background: "var(--bg-primary)", padding: "48px 0",
+              minHeight: 220,
               display: "flex", flexDirection: "column", justifyContent: "center",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
-              <div style={{ ...labelStyle, marginBottom: 8 }}>
+              <div style={{ ...labelStyle, marginBottom: 10 }}>
                 Weekly Shift
               </div>
-              <div style={{ fontSize: 32, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.05 }}>
+              <div style={{ fontSize: 38, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.05 }}>
                 {data.headline || data.briefing.split(/[.!?]\s/)[0]}
               </div>
               {data.headline && data.briefing && (
-                <div style={{ ...TYPE.reading, color: "var(--text-secondary)", lineHeight: 1.4, marginTop: 12 }}>
+                <div style={{ ...TYPE.reading, color: "var(--text-secondary)", lineHeight: 1.4, marginTop: 14 }}>
                   {data.briefing}
                 </div>
               )}
