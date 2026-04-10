@@ -116,7 +116,7 @@ function CopyButton({ text, label }: { text: string; label: string }) {
         border: "1px solid var(--border)",
         background: copied ? "var(--accent-secondary)" : "transparent",
         color: copied ? "var(--bg-primary)" : "var(--text-tertiary)",
-        ...TYPE.sm, cursor: "pointer",
+        ...TYPE.sm, cursor: "pointer", fontWeight: 500,
         transition: "all 0.2s",
       }}
     >
@@ -355,7 +355,7 @@ function CerebroStation() {
             border: "1px solid var(--border)",
             background: exported ? "var(--accent-secondary)" : "transparent",
             color: exported ? "var(--bg-primary)" : messages.length > 0 ? "var(--text-secondary)" : "var(--text-tertiary)",
-            ...TYPE.sm, cursor: messages.length > 0 ? "pointer" : "default",
+            ...TYPE.sm, cursor: messages.length > 0 ? "pointer" : "default", fontWeight: 500,
             transition: "all 0.2s",
             opacity: messages.length === 0 ? 0.5 : 1,
           }}
@@ -373,7 +373,7 @@ function CerebroStation() {
             border: "1px solid var(--border)",
             background: cleared ? "var(--bg-elevated)" : "transparent",
             color: cleared ? "var(--text-secondary)" : messages.length > 0 ? "var(--text-tertiary)" : "var(--text-tertiary)",
-            ...TYPE.sm, cursor: messages.length > 0 ? "pointer" : "default",
+            ...TYPE.sm, cursor: messages.length > 0 ? "pointer" : "default", fontWeight: 500,
             transition: "all 0.2s",
             opacity: messages.length === 0 ? 0.5 : 1,
           }}

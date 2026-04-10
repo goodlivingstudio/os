@@ -251,7 +251,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                 display: "inline-flex", alignItems: "center", gap: 6,
                 padding: "6px 14px", borderRadius: 6,
                 border: "1px solid var(--border)", background: "transparent",
-                ...TYPE.sm, color: "var(--text-tertiary)", cursor: "pointer",
+                ...TYPE.sm, color: "var(--text-tertiary)", cursor: "pointer", fontWeight: 500,
                 transition: "all 0.15s",
               }}
             >

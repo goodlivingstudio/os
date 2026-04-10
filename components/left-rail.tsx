@@ -99,7 +99,7 @@ function SourceFilter({ articles, excludedSources, onToggleSource }: {
           <div style={{ display: "flex", padding: "4px 16px 8px", borderBottom: "1px solid var(--border)" }}>
             <button
               onClick={() => sources.forEach(s => { if (excludedSources.has(s.name)) onToggleSource(s.name) })}
-              style={{ background: "none", border: "none", ...TYPE.sm, color: "var(--accent-secondary)", cursor: "pointer", padding: 0 }}
+              style={{ background: "none", border: "none", ...TYPE.sm, color: "var(--accent-secondary)", cursor: "pointer", padding: 0, fontWeight: 500 }}
             >
               Reset
             </button>

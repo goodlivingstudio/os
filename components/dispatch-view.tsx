@@ -148,7 +148,7 @@ function CopyButton({ text, label }: { text: string; label: string }) {
         border: "1px solid var(--border)",
         background: copied ? "var(--accent-secondary)" : "transparent",
         color: copied ? "var(--bg-primary)" : "var(--text-tertiary)",
-        ...TYPE.sm, cursor: "pointer", transition: "all 0.2s",
+        ...TYPE.sm, cursor: "pointer", fontWeight: 500, transition: "all 0.2s",
       }}
     >
       {copied ? <Check size={12} /> : <Copy size={12} />}
@@ -312,7 +312,7 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
           />
           <button
             onClick={() => { onDeliberate(`I want to develop this content pitch:\n\n"${pitch.title}"\n\nThesis: ${pitch.thesis}\n\nHelp me think through the argument structure, key points, and how to make it distinctive.`); onClose() }}
-            style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "var(--text-secondary)", ...TYPE.sm, cursor: "pointer", transition: "all 0.15s" }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "var(--text-secondary)", ...TYPE.sm, cursor: "pointer", fontWeight: 500, transition: "all 0.15s" }}
             onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
             onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
           >
@@ -324,7 +324,7 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
               onDeliberate(`Act as my co-writer — help me write this piece, not strategize about it.\n\nTitle: "${pitch.title}"\nPlatform: ${pitch.platforms.primary}${pitch.wordCount ? ` (~${pitch.wordCount} words)` : ""}\nThesis: ${pitch.thesis}\nBrief: ${pitch.brief}${pitch.angle ? `\nAngle: ${pitch.angle}` : ""}\nEvidence:\n${pitch.evidence.map(e => `- ${e}`).join("\n")}\n\nStart with an opening hook. Write in first person, conversational but authoritative. Make it publishable.`)
               onClose()
             }}
-            style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 6, border: "1px solid var(--accent-secondary)", background: "rgba(184, 150, 106, 0.08)", color: "var(--accent-secondary)", ...TYPE.sm, cursor: "pointer", transition: "all 0.15s" }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 6, border: "1px solid var(--accent-secondary)", background: "rgba(184, 150, 106, 0.08)", color: "var(--accent-secondary)", ...TYPE.sm, cursor: "pointer", fontWeight: 500, transition: "all 0.15s" }}
             onMouseEnter={e => { e.currentTarget.style.background = "rgba(184, 150, 106, 0.15)" }}
             onMouseLeave={e => { e.currentTarget.style.background = "rgba(184, 150, 106, 0.08)" }}
           >
