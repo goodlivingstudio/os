@@ -480,8 +480,6 @@ export function LeftRail({
                 />
               )
             })}
-              )
-            })}
 
             {/* Triage/Explore moved to Row 2 header area */}
           </div>
