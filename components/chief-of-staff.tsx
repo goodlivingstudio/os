@@ -309,7 +309,7 @@ export function AnalysisPanelMobile({ signals, briefLoading }: { signals: Signal
           )}
           <div
             style={{
-              fontSize: 28, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1, marginBottom: 10,
+              fontSize: 24, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1, marginBottom: 10,
             }}
             className={briefLoading && i === 0 ? "loading-pulse" : ""}
           >

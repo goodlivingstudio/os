@@ -188,7 +188,7 @@ function PerspectiveCard({ perspective, index, onDeliberate }: {
       </div>
       {/* Title */}
       <div style={{
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: 600,
         fontFamily: DISPLAY,
         color: "var(--text-primary)",
@@ -245,7 +245,7 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
           </button>
         </div>
 
-        <div style={{ fontSize: 28, fontWeight: 600, fontFamily: DISPLAY, color: "var(--text-primary)", marginBottom: 10, lineHeight: 1 }}>{pitch.title}</div>
+        <div style={{ fontSize: 24, fontWeight: 600, fontFamily: DISPLAY, color: "var(--text-primary)", marginBottom: 10, lineHeight: 1 }}>{pitch.title}</div>
         <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.4, marginBottom: isConvergence(pitch) ? 12 : 24 }}>{pitch.thesis}</div>
 
         {/* Convergence callout */}
@@ -696,7 +696,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                         </div>
                         {/* Title */}
                         <div style={{
-                          fontSize: 28,
+                          fontSize: 24,
                           fontWeight: 600,
                           fontFamily: DISPLAY,
                           color: "var(--text-primary)",
