@@ -266,9 +266,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
 
             {/* ─ WEEKLY SHIFT banner ─ */}
             <div style={{
-              background: "var(--bg-primary)", padding: "48px 0",
-              minHeight: 220,
-              display: "flex", flexDirection: "column", justifyContent: "center",
+              background: "var(--bg-primary)", padding: "56px 0",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
               <div style={{ ...labelStyle, marginBottom: 10 }}>
