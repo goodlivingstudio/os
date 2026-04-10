@@ -323,11 +323,17 @@ export function LeftRail({
   onUnpinArticle?: (articleId: string) => void
 }) {
   const RAIL_MODE_KEY = storageKey("rail-mode")
+  const isMobileRail = width < 100
   const [railMode, setRailMode] = useState<"compact" | "expanded">("compact")
   useEffect(() => {
+    if (isMobileRail) return // no expanded mode on mobile
     const saved = localStorage.getItem(RAIL_MODE_KEY)
     if (saved === "expanded") setRailMode("expanded")
-  }, [RAIL_MODE_KEY])
+  }, [RAIL_MODE_KEY, isMobileRail])
+  // Force compact on mobile
+  useEffect(() => {
+    if (isMobileRail && railMode === "expanded") setRailMode("compact")
+  }, [isMobileRail, railMode])
   const toggleRailMode = useCallback(() => {
     setRailMode(prev => {
       const next = prev === "compact" ? "expanded" : "compact"
@@ -407,10 +413,10 @@ export function LeftRail({
           <div style={{ flex: 1, padding: "8px 0" }}>
             {([
               { id: "signal" as const,    Icon: Radio,      label: "Signal" },
+              { id: "audio" as const,     Icon: AudioLines, label: "Sound" },
+              { id: "gallery" as const,   Icon: Aperture,   label: "Surface", action: "gallery" },
               { id: "synthesis" as const, Icon: Blend,      label: "Synthesis" },
-              { id: "audio" as const,     Icon: AudioLines, label: "Audio" },
               { id: "dispatch" as const,  Icon: Newspaper,  label: "Dispatch" },
-              { id: "gallery" as const,   Icon: Aperture,   label: "Gallery", action: "gallery" },
             ]).map(item => {
               const isActive = item.action === "gallery" ? false : viewMode === item.id
               return (
@@ -846,8 +852,8 @@ export function LeftRail({
       )}
       </>}
 
-      {/* ═══ MODE TOGGLE — compact mode only (expanded uses header chevron) ═══ */}
-      {railMode === "compact" && <div style={{
+      {/* ═══ MODE TOGGLE — compact mode only, desktop only ═══ */}
+      {railMode === "compact" && !isMobileRail && <div style={{
         flexShrink: 0, padding: "8px 16px 12px", borderTop: "1px solid var(--border)",
         display: "flex", alignItems: "center", justifyContent: "center",
       }}>
