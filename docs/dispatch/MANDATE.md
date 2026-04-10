@@ -85,7 +85,7 @@ The annotation system scores *articles*, not sources. Every article is evaluated
 
 *The behavioral contract, analytical discipline, and knowledge inventory for Cerebro lives in its own document at `CEREBRO-CHARTER.md`. This section names Cerebro's role inside Dispatch's intelligence model and points to the full charter.*
 
-Cerebro is the operational intelligence layer of Dispatch — the function that synthesizes signal, memory, and operator context into counsel. It operates under the **station chief** model: authoritative, direct, briefing the principal; never waiting to be asked. Where Explore's sibling analytical function uses the field correspondent model to serve a team, Cerebro serves a single operator with a specific five-year target.
+Cerebro is the operational intelligence layer of Dispatch — the function that synthesizes signal, memory, and operator context into counsel. It operates under the **station chief** model: authoritative, direct, briefing the principal; never waiting to be asked. Where Explore's sibling analytical function uses the ranger model to serve a team, Cerebro serves a single operator with a specific five-year target.
 
 Cerebro is the gravity well at the end of Dispatch's intelligence pipeline. The pipeline exists to produce counsel. Counsel arrives through Cerebro.
 

@@ -14,7 +14,7 @@ Every piece of system knowledge has exactly one canonical home. Other documents 
 ## AUTHORITY MAP
 
 ### MANDATE.md — *The Why*
-**Owns:** Operator context (the engagement, the team, the NDS institutional relationship). The five-year target. Operating thesis. Three intelligence modes (Signal / Formation / Positioning). Five annotation layer definitions (Platform / Policy / Culture / Industry / Craft). Station chief model and its restatement as Field Desk model. Synthesis purpose. Mission Brief cluster purpose.
+**Owns:** Operator context (the engagement, the team, the NDS institutional relationship). The five-year target. Operating thesis. Three intelligence modes (Signal / Formation / Positioning). Five annotation layer definitions (Platform / Policy / Culture / Industry / Craft). Station chief model and its restatement as Ranger Station model. Synthesis purpose. Mission Brief cluster purpose.
 
 **Rule:** If you need to know *who this system serves and why it exists*, MANDATE is the answer. Everything in PROMPTS.md's ENGAGEMENT and NDS_CONTEXT blocks derives from MANDATE. Change MANDATE first; then propagate to PROMPTS.
 
@@ -41,7 +41,7 @@ Every piece of system knowledge has exactly one canonical home. Other documents 
 ---
 
 ### CEREBRO-CHARTER.md — *The Behavioral Contract*
-**Owns:** The field correspondent model. Behavioral directives (brief the work, hold the tension, July 4 clock, equity lens, challenge positive framing, gap accounting, weakest claim, flag noise). The Civic Design Test. The Burgum-Gebbia Frame Check. The Accessibility Audit Standard. The 90-Day / Stewardship Split. What the analytical function will not do. Push Forward format. Synthesis directives.
+**Owns:** The ranger model. Behavioral directives (brief the work, hold the tension, July 4 clock, equity lens, challenge positive framing, gap accounting, weakest claim, flag noise). The Civic Design Test. The Burgum-Gebbia Frame Check. The Accessibility Audit Standard. The 90-Day / Stewardship Split. What the analytical function will not do. Push Forward format. Synthesis directives.
 
 **Rule:** CEREBRO-CHARTER is the *behavioral specification* for the analytical function. The VOICE block in PROMPTS.md is the copyable implementation of this document. Change CEREBRO-CHARTER first; then propagate to PROMPTS.md VOICE block and relevant surface prompts.
 
@@ -101,7 +101,7 @@ Every piece of system knowledge has exactly one canonical home. Other documents 
 ---
 
 ### VOICE-CALIBRATION.md — *The Feedback* *(not yet built)*
-**Owns:** Current voice directive summary (derived from PROMPTS.md VOICE block). Watch-for checklist adapted for the field correspondent model. Calibration log entries from real usage sessions.
+**Owns:** Current voice directive summary (derived from PROMPTS.md VOICE block). Watch-for checklist adapted for the ranger model. Calibration log entries from real usage sessions.
 
 **Rule:** Observation instrument, not a directive document. Directives live in PROMPTS.md and CEREBRO-CHARTER. This document tracks whether they're working. Build after first 10–15 real Cerebro sessions.
 
@@ -119,7 +119,7 @@ If SYSTEM-BRIEF and ANTI-PATTERNS conflict → ANTI-PATTERNS wins (prohibitions 
 
 If SOURCES and ARCHITECTURE list different feeds → SOURCES wins.
 
-If MANDATE and PROMPTS describe the field desk model differently → PROMPTS wins for prompt text; MANDATE wins for doctrinal intent; resolve the gap by updating the clearer one to match.
+If MANDATE and PROMPTS describe the ranger station model differently → PROMPTS wins for prompt text; MANDATE wins for doctrinal intent; resolve the gap by updating the clearer one to match.
 
 ---
 
@@ -155,7 +155,7 @@ ROADMAP (references all, owns none)                       lib/prompts.ts
 
 ## KNOWN DRIFT (as of 2026-04-09)
 
-**ARCHITECTURE.md, SYSTEM-BRIEF.md, ANTI-PATTERNS.md, and VOICE-CALIBRATION.md all exist as scaffolds.** The 14-file canonical doc set is now structurally complete. Each scaffold needs content iteration as Explore matures: ARCHITECTURE.md as the codebase fills in, SYSTEM-BRIEF.md as visual language decisions are made, ANTI-PATTERNS.md as prohibited patterns reveal themselves in practice, and VOICE-CALIBRATION.md after the first 10–15 real Cerebro sessions produce drift observations against the field correspondent character.
+**ARCHITECTURE.md, SYSTEM-BRIEF.md, ANTI-PATTERNS.md, and VOICE-CALIBRATION.md all exist as scaffolds.** The 14-file canonical doc set is now structurally complete. Each scaffold needs content iteration as Explore matures: ARCHITECTURE.md as the codebase fills in, SYSTEM-BRIEF.md as visual language decisions are made, ANTI-PATTERNS.md as prohibited patterns reveal themselves in practice, and VOICE-CALIBRATION.md after the first 10–15 real Cerebro sessions produce drift observations against the ranger character.
 
 **Operator section in MANDATE.md needs slimming.** Currently restates context that lives at OS level. The Phase 2 operator slim added a clarifying frame at the top of THE OPERATOR section establishing that Explore's operator is the team (not Jeremy individually) and that the team's five-year target and operating thesis are sibling-distinct from the OS-level operator's. The body content of THE OPERATOR section is genuinely Explore-team-specific and stays.
 

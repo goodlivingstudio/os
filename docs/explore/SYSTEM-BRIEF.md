@@ -3,7 +3,7 @@ Established: 2026-04-09 (stub)
 
 *This document is the primary context file for any AI agent generating UI components, pages, or patterns for Explore. When written, it will describe Explore's visual language, token architecture, component patterns, and interaction philosophy — all calibrated to the civic/team intelligence context Explore serves (the National Design Studio's explore.gov engagement).*
 
-*See `MANDATE.md` for what Explore is and who it serves. See `LIVE-ENVIRONMENT.md` for the political and engagement context that shapes visual decisions. See `CEREBRO-CHARTER.md` for the field correspondent voice that the visual language must support. See `../os/DOCTRINE.md` for the shared design convictions and `../os/PASSAGE.md` for the interaction philosophy Explore must implement.*
+*See `MANDATE.md` for what Explore is and who it serves. See `LIVE-ENVIRONMENT.md` for the political and engagement context that shapes visual decisions. See `CEREBRO-CHARTER.md` for the ranger voice that the visual language must support. See `../os/DOCTRINE.md` for the shared design convictions and `../os/PASSAGE.md` for the interaction philosophy Explore must implement.*
 
 ---
 
@@ -20,12 +20,12 @@ Dispatch has a mature SYSTEM-BRIEF at `../dispatch/SYSTEM-BRIEF.md` — use it a
 When written, SYSTEM-BRIEF.md will contain:
 
 - **§ 1 — What Explore Is** (visual boundaries, what it is not)
-- **§ 2 — Design Philosophy** (Explore's equivalent of Dispatch's Signal/Synthesis duality, probably framed around civic legibility and field intelligence)
-- **§ 2.1 — Interaction philosophy: Passage** (translating `../os/PASSAGE.md` into Explore-specific commitments — the gallery that was curated before you opened it, the field desk that was already tracking the terrain)
+- **§ 2 — Design Philosophy** (Explore's equivalent of Dispatch's Signal/Synthesis duality, probably framed around civic legibility and ranger station intelligence)
+- **§ 2.1 — Interaction philosophy: Passage** (translating `../os/PASSAGE.md` into Explore-specific commitments — the gallery that was curated before you opened it, the ranger station that was already tracking the terrain)
 - **§ 3 — Core Design Principles**
 - **§ 4 — Token Architecture** (color, typography, spacing, radius — calibrated to Explore's federal / civic context, probably more restrained and institutional than Dispatch)
 - **§ 5 — Component Patterns**
-- **§ 6 — Explore's Character in the Interface** (the field correspondent made visible in visual terms)
+- **§ 6 — Explore's Character in the Interface** (the ranger made visible in visual terms)
 - **§ 7 — What This System Is Not** (civic context anti-patterns)
 - **§ 8 — Agent Instructions** (for AI generating Explore UI)
 

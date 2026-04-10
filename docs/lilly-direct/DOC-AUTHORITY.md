@@ -15,7 +15,7 @@ Lilly Direct is one of four sibling products living under OS — the ambient int
 - **[VOICE](../os/VOICE.md)** — Canonical for universal analytical voice disciplines (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density). Lilly Direct's `CEREBRO-CHARTER.md` expresses these through a product-specific character.
 - **[PIPELINE](../os/PIPELINE.md)** — Canonical for the six-stage intelligence pipeline (Ingest → Annotate → Score → Brief → Synthesize → Act). Lilly Direct's `ARCHITECTURE.md` describes how this product implements each stage.
 - **[ARCHITECTURE](../os/ARCHITECTURE.md)** (OS-level) — Canonical for the shared codebase, white-label pattern, and the new-product spinup checklist. Lilly Direct's `ARCHITECTURE.md` describes product-specific decisions sitting on top of this foundation.
-- **[GLOSSARY](../os/GLOSSARY.md)** — Canonical for shared vocabulary. Lilly Direct uses the same terms (operator, annotation layer, station chief/field correspondent, Passage, etc.) with the same meanings.
+- **[GLOSSARY](../os/GLOSSARY.md)** — Canonical for shared vocabulary. Lilly Direct uses the same terms (operator, annotation layer, station chief/ranger, Passage, etc.) with the same meanings.
 - **[DOC-AUTHORITY](../os/DOC-AUTHORITY.md)** (OS-level) — Resolves authority conflicts that cross product boundaries or involve OS-level documents.
 
 **Rule:** When Lilly Direct docs conflict with OS-level docs, the OS-level document wins on principle and intent. Lilly Direct docs win on project-specific implementation. See `../os/DOC-AUTHORITY.md` for the full inheritance model.
@@ -50,7 +50,7 @@ When updating derived content, update the canonical source first, then propagate
 
 **Derives from:** `../os/VOICE.md` for the universal analytical disciplines that apply to every product.
 
-**Rule:** If you need to know how Lilly Direct's analytical function reasons and what disciplines it carries, CEREBRO-CHARTER is the answer. Cross-reference with `../dispatch/CEREBRO-CHARTER.md` (Station Chief) and `../explore/CEREBRO-CHARTER.md` (Field Correspondent) for the two existing character templates. The VOICE block in PROMPTS.md is derived from this document.
+**Rule:** If you need to know how Lilly Direct's analytical function reasons and what disciplines it carries, CEREBRO-CHARTER is the answer. Cross-reference with `../dispatch/CEREBRO-CHARTER.md` (Station Chief) and `../explore/CEREBRO-CHARTER.md` (Ranger) for the two existing character templates. The VOICE block in PROMPTS.md is derived from this document.
 
 ### PROMPTS.md — *The Words*
 **Owns:** All copyable prompt text for `lib/config/lilly-direct.ts` mandate blocks. Context blocks (OPERATOR, CLIENT_CONTEXT, LAYERS, SOURCE_MODES, VOICE). Surface prompts (brief, Cerebro, annotation, synthesis, engagement output). Prompt assembly pattern. Maintenance schedule.
@@ -137,7 +137,7 @@ If a concern spans Lilly Direct and Dispatch (e.g., how Dispatch's content pipel
 
 **All 14 canonical files exist as scaffolds, not content.** This is expected — today is kickoff. Drift is defined as "canonical file missing" (not the case here) or "content contradicts another file" (not the case yet because content doesn't exist). As content lands at kickoff, track drift here.
 
-**Voice character is undefined.** `CEREBRO-CHARTER.md` has placeholder content; the actual character (Station Chief, Field Correspondent, or new) gets chosen at kickoff. Until then, Lilly Direct inherits universal disciplines from `../os/VOICE.md` and uses placeholder text in the PROMPTS.md VOICE block.
+**Voice character is undefined.** `CEREBRO-CHARTER.md` has placeholder content; the actual character (Station Chief, Ranger, or new) gets chosen at kickoff. Until then, Lilly Direct inherits universal disciplines from `../os/VOICE.md` and uses placeholder text in the PROMPTS.md VOICE block.
 
 **Layer taxonomy is placeholder.** The current five layers (Therapeutic / Regulatory / Digital / Organizational / Competitive) are my best guess from the Lilly engagement context in `../os/OPERATOR.md`. The real taxonomy gets defined at kickoff from MANDATE.md.
 

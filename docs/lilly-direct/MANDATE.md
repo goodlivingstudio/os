@@ -9,7 +9,7 @@ Established: 2026-04-10 (scaffold — content lands at kickoff)
 
 ## STATUS
 
-**Scaffold.** Content lands during the kickoff session 2026-04-10. Until then, this file is a structural placeholder matching the canonical 14-file product doc set shape defined at `../os/DOC-AUTHORITY.md`. Dispatch's `MANDATE.md` is the closest template — it serves a single operator and uses the Station Chief voice character. Explore's `MANDATE.md` is the alternative template — it serves a team and uses the Field Correspondent voice character. Lilly Direct's mandate will draw from one or both, or develop something new specific to the engagement.
+**Scaffold.** Content lands during the kickoff session 2026-04-10. Until then, this file is a structural placeholder matching the canonical 14-file product doc set shape defined at `../os/DOC-AUTHORITY.md`. Dispatch's `MANDATE.md` is the closest template — it serves a single operator and uses the Station Chief voice character. Explore's `MANDATE.md` is the alternative template — it serves a team and uses the Ranger voice character. Lilly Direct's mandate will draw from one or both, or develop something new specific to the engagement.
 
 ---
 
@@ -17,7 +17,7 @@ Established: 2026-04-10 (scaffold — content lands at kickoff)
 
 When written at kickoff, MANDATE.md will contain:
 
-- **§ THE LILLY DIRECT MODEL** — the one-paragraph statement of what this product is (compare: Dispatch's "station chief for a single operator," Explore's "field desk for a design team"). Whatever Lilly Direct calls its model, this section names it.
+- **§ THE LILLY DIRECT MODEL** — the one-paragraph statement of what this product is (compare: Dispatch's "station chief for a single operator," Explore's "ranger station for a design team"). Whatever Lilly Direct calls its model, this section names it.
 - **§ THE ENGAGEMENT** — what the Lilly innovation team engagement actually is, who the stakeholders are, what the strategic relationship with Laree Ross looks like, what Lilly Direct is being built to do for this engagement specifically.
 - **§ THE OPERATOR'S POSITION** — Dispatch-style framing of what Jeremy brings, how the engagement fits his five-year target, and what Lilly Direct needs to help him deliver.
 - **§ THE INTELLIGENCE MODEL** — how Lilly Direct consumes signal. Likely a modes framework (Dispatch uses Intelligence / Formation / Positioning; Explore uses its own) and a layer taxonomy (Dispatch's Opportunity/Position/Discipline/Landscape/Culture is calibrated to personal intelligence; Explore's is calibrated to civic intelligence; Lilly Direct will define its own — probably something like Therapeutic / Regulatory / Digital / Organizational / Competitive per the current scaffold placeholder).
@@ -39,7 +39,7 @@ MANDATE.md is the single source of truth for what the product is. PROMPTS.md der
 1. **What is Lilly Direct one sentence?** Not the codebase tagline — the mandate-level description. "A _____ for _____ that produces _____." Fill in the blanks before writing anything else.
 2. **Who is the operator's counterpart at Lilly?** Laree Ross is the strategic relationship, but is she the primary user of Lilly Direct's output, or does the output serve a broader Lilly innovation team audience?
 3. **What does Lilly Direct produce that the engagement needs?** Weekly briefs? Meeting prep? Pre-deliverable synthesis? Long-form strategic memos? Some combination? This shapes the Act stage of the pipeline (see `../os/PIPELINE.md` § Stage 6 — Act).
-4. **What is the voice character?** Station Chief (inherited from Dispatch) feels wrong for a client engagement — too direct, too personal. Field Correspondent (inherited from Explore) might be closer — editorially independent, writing for a specific audience that has to act on the intelligence. Or Lilly Direct may need a new character entirely — "Innovation Desk" or "Engagement Analyst" or something else that reflects a client-service context without becoming consulting.
+4. **What is the voice character?** Station Chief (inherited from Dispatch) feels wrong for a client engagement — too direct, too personal. Ranger (inherited from Explore) might be closer — editorially independent, writing for a specific audience that has to act on the intelligence. Or Lilly Direct may need a new character entirely — "Innovation Desk" or "Engagement Analyst" or something else that reflects a client-service context without becoming consulting.
 5. **What is the layer taxonomy?** The scaffold placeholder uses Therapeutic / Regulatory / Digital / Organizational / Competitive. Is that right, or does the engagement need different layers? The layers should be calibrated to the questions the engagement actually asks, not to generic pharma taxonomy.
 6. **What's the competitive landscape Lilly Direct tracks?** Novo Nordisk is the obvious GLP-1 counterpart. Pfizer, Sanofi, BMS, Roche, Merck — which specifically belong in the active signal feed?
 7. **What does "win" look like for this engagement?** The five-year target in `../os/OPERATOR.md` frames Jeremy's macro goal. What does Lilly Direct specifically have to do to contribute to that?

@@ -30,7 +30,7 @@ Established: 2026-04-10
 **Target: complete during the first engagement session.**
 
 ### Priority 1 — Voice character decision
-**What:** Decide whether Lilly Direct uses Station Chief (Dispatch), Field Correspondent (Explore), or a new character. Fill in CEREBRO-CHARTER.md with the chosen model.
+**What:** Decide whether Lilly Direct uses Station Chief (Dispatch), Ranger (Explore), or a new character. Fill in CEREBRO-CHARTER.md with the chosen model.
 **Why first:** Nothing else can be written coherently until the voice is decided. MANDATE.md, PROMPTS.md, SYSTEM-BRIEF.md all depend on knowing what the analytical function sounds like.
 **Acceptance:** CEREBRO-CHARTER.md has real content in § THE CHARACTER, § REGISTER AND DELIVERY, and § BEHAVIORAL DIRECTIVES. Placeholder text gone.
 

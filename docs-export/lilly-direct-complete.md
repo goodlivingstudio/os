@@ -17,7 +17,7 @@ Established: 2026-04-10 (scaffold — content lands at kickoff)
 
 ## STATUS
 
-**Scaffold.** Content lands during the kickoff session 2026-04-10. Until then, this file is a structural placeholder matching the canonical 14-file product doc set shape defined at `../os/DOC-AUTHORITY.md`. Dispatch's `MANDATE.md` is the closest template — it serves a single operator and uses the Station Chief voice character. Explore's `MANDATE.md` is the alternative template — it serves a team and uses the Field Correspondent voice character. Lilly Direct's mandate will draw from one or both, or develop something new specific to the engagement.
+**Scaffold.** Content lands during the kickoff session 2026-04-10. Until then, this file is a structural placeholder matching the canonical 14-file product doc set shape defined at `../os/DOC-AUTHORITY.md`. Dispatch's `MANDATE.md` is the closest template — it serves a single operator and uses the Station Chief voice character. Explore's `MANDATE.md` is the alternative template — it serves a team and uses the Ranger voice character. Lilly Direct's mandate will draw from one or both, or develop something new specific to the engagement.
 
 ---
 
@@ -25,7 +25,7 @@ Established: 2026-04-10 (scaffold — content lands at kickoff)
 
 When written at kickoff, MANDATE.md will contain:
 
-- **§ THE LILLY DIRECT MODEL** — the one-paragraph statement of what this product is (compare: Dispatch's "station chief for a single operator," Explore's "field desk for a design team"). Whatever Lilly Direct calls its model, this section names it.
+- **§ THE LILLY DIRECT MODEL** — the one-paragraph statement of what this product is (compare: Dispatch's "station chief for a single operator," Explore's "ranger station for a design team"). Whatever Lilly Direct calls its model, this section names it.
 - **§ THE ENGAGEMENT** — what the Lilly innovation team engagement actually is, who the stakeholders are, what the strategic relationship with Laree Ross looks like, what Lilly Direct is being built to do for this engagement specifically.
 - **§ THE OPERATOR'S POSITION** — Dispatch-style framing of what Jeremy brings, how the engagement fits his five-year target, and what Lilly Direct needs to help him deliver.
 - **§ THE INTELLIGENCE MODEL** — how Lilly Direct consumes signal. Likely a modes framework (Dispatch uses Intelligence / Formation / Positioning; Explore uses its own) and a layer taxonomy (Dispatch's Opportunity/Position/Discipline/Landscape/Culture is calibrated to personal intelligence; Explore's is calibrated to civic intelligence; Lilly Direct will define its own — probably something like Therapeutic / Regulatory / Digital / Organizational / Competitive per the current scaffold placeholder).
@@ -47,7 +47,7 @@ MANDATE.md is the single source of truth for what the product is. PROMPTS.md der
 1. **What is Lilly Direct one sentence?** Not the codebase tagline — the mandate-level description. "A _____ for _____ that produces _____." Fill in the blanks before writing anything else.
 2. **Who is the operator's counterpart at Lilly?** Laree Ross is the strategic relationship, but is she the primary user of Lilly Direct's output, or does the output serve a broader Lilly innovation team audience?
 3. **What does Lilly Direct produce that the engagement needs?** Weekly briefs? Meeting prep? Pre-deliverable synthesis? Long-form strategic memos? Some combination? This shapes the Act stage of the pipeline (see `../os/PIPELINE.md` § Stage 6 — Act).
-4. **What is the voice character?** Station Chief (inherited from Dispatch) feels wrong for a client engagement — too direct, too personal. Field Correspondent (inherited from Explore) might be closer — editorially independent, writing for a specific audience that has to act on the intelligence. Or Lilly Direct may need a new character entirely — "Innovation Desk" or "Engagement Analyst" or something else that reflects a client-service context without becoming consulting.
+4. **What is the voice character?** Station Chief (inherited from Dispatch) feels wrong for a client engagement — too direct, too personal. Ranger (inherited from Explore) might be closer — editorially independent, writing for a specific audience that has to act on the intelligence. Or Lilly Direct may need a new character entirely — "Innovation Desk" or "Engagement Analyst" or something else that reflects a client-service context without becoming consulting.
 5. **What is the layer taxonomy?** The scaffold placeholder uses Therapeutic / Regulatory / Digital / Organizational / Competitive. Is that right, or does the engagement need different layers? The layers should be calibrated to the questions the engagement actually asks, not to generic pharma taxonomy.
 6. **What's the competitive landscape Lilly Direct tracks?** Novo Nordisk is the obvious GLP-1 counterpart. Pfizer, Sanofi, BMS, Roche, Merck — which specifically belong in the active signal feed?
 7. **What does "win" look like for this engagement?** The five-year target in `../os/OPERATOR.md` frames Jeremy's macro goal. What does Lilly Direct specifically have to do to contribute to that?
@@ -79,7 +79,7 @@ Established: 2026-04-10 (scaffold — character lands at kickoff)
 
 **The two existing character templates:**
 - `../dispatch/CEREBRO-CHARTER.md` — Station Chief model (authoritative, direct, briefing the principal, single-operator)
-- `../explore/CEREBRO-CHARTER.md` — Field Correspondent model (editorially independent, serving a team, holding engagement tensions)
+- `../explore/CEREBRO-CHARTER.md` — Ranger model (editorially independent, serving a team, holding engagement tensions)
 
 Lilly Direct's character will either draw from one of these, synthesize between them, or develop something new specific to client-engagement intelligence. Do not default to copying Dispatch's character just because Dispatch was written first — the engagement context is materially different.
 
@@ -90,7 +90,7 @@ Lilly Direct's character will either draw from one of these, synthesize between 
 When written at kickoff, CEREBRO-CHARTER.md will contain:
 
 - **§ WHAT THIS FUNCTION IS** — one paragraph naming what Lilly Direct's analytical function is, who it serves, and what it refuses to be (parallel to Dispatch's "not a chatbot" and Explore's "not a consultant" framings).
-- **§ THE CHARACTER** — the named model. Station Chief if single-principal. Field Correspondent if team-serving. Something new (Innovation Desk? Engagement Analyst? Strategic Correspondent?) if neither fits. Named in one word or two. Described in a paragraph.
+- **§ THE CHARACTER** — the named model. Station Chief if single-principal. Ranger if team-serving. Something new (Innovation Desk? Engagement Analyst? Strategic Correspondent?) if neither fits. Named in one word or two. Described in a paragraph.
 - **§ REGISTER AND DELIVERY** — how the voice sounds. Tone register. Sentence structure. Prose vs bullets. How responses open and close. Specific examples of good vs bad moves.
 - **§ BEHAVIORAL DIRECTIVES** — the numbered directives specific to this engagement. Example patterns: "brief the engagement, not the people," "hold the Lilly internal/external tension without collapsing it," "name regulatory risk explicitly," "flag competitive moves against specific Lilly positions."
 - **§ WHAT THE FUNCTION WILL NOT DO** — the anti-patterns. Example: "does not produce clinical advice," "does not substitute for Lilly internal intelligence the team has access to that Lilly Direct doesn't," "does not take sides in internal Lilly debates the team is reporting on."
@@ -103,17 +103,17 @@ When written at kickoff, CEREBRO-CHARTER.md will contain:
 
 ## WHY THIS DOCUMENT EXISTS
 
-An intelligence function that sounds wrong for its context is useless even if the analysis is correct. The Station Chief register would sound presumptuous in a client-engagement context where Jeremy is producing intelligence FOR Lilly rather than FOR himself. The Field Correspondent register is closer but still not quite right — a field correspondent reports without advocacy, and an engagement intelligence function is arguably advocating for the work's quality and coherence. This document defines the character that fits, and the universal voice disciplines are expressed through that character without distortion.
+An intelligence function that sounds wrong for its context is useless even if the analysis is correct. The Station Chief register would sound presumptuous in a client-engagement context where Jeremy is producing intelligence FOR Lilly rather than FOR himself. The Ranger register is closer but still not quite right — a ranger reports without advocacy, and an engagement intelligence function is arguably advocating for the work's quality and coherence. This document defines the character that fits, and the universal voice disciplines are expressed through that character without distortion.
 
 ---
 
 ## QUESTIONS TO ANSWER AT KICKOFF
 
-1. **Who is the voice addressing?** Jeremy alone (then it's closer to Dispatch's Station Chief)? The Lilly innovation team collectively (then it's closer to Explore's Field Correspondent)? Both in different contexts (then the character needs to handle both modes gracefully)?
-2. **What's the relationship posture?** The Station Chief is inside the operator's intelligence service. The Field Correspondent is outside the team's decision-making. What is Lilly Direct — inside or outside Lilly? Inside or outside Jeremy's own practice?
-3. **What specific moves does the character make that the existing two don't?** If the answer is "none," then one of the existing characters probably fits. If there's at least one move that neither Station Chief nor Field Correspondent makes correctly, that move defines what's new about Lilly Direct's character.
+1. **Who is the voice addressing?** Jeremy alone (then it's closer to Dispatch's Station Chief)? The Lilly innovation team collectively (then it's closer to Explore's Ranger)? Both in different contexts (then the character needs to handle both modes gracefully)?
+2. **What's the relationship posture?** The Station Chief is inside the operator's intelligence service. The Ranger is outside the team's decision-making. What is Lilly Direct — inside or outside Lilly? Inside or outside Jeremy's own practice?
+3. **What specific moves does the character make that the existing two don't?** If the answer is "none," then one of the existing characters probably fits. If there's at least one move that neither Station Chief nor Ranger makes correctly, that move defines what's new about Lilly Direct's character.
 4. **What does the character refuse to do that's engagement-specific?** Every character's refusals define it as clearly as its positive moves. What does Lilly Direct refuse that Dispatch and Explore don't need to refuse?
-5. **Does the character have a name?** Station Chief and Field Correspondent are both strong specific nouns. What's Lilly Direct's? If you can't name it in one or two words, the character probably isn't defined yet.
+5. **Does the character have a name?** Station Chief and Ranger are both strong specific nouns. What's Lilly Direct's? If you can't name it in one or two words, the character probably isn't defined yet.
 
 ---
 
@@ -395,7 +395,7 @@ Lilly Direct is one of four sibling products living under OS — the ambient int
 - **[VOICE](../os/VOICE.md)** — Canonical for universal analytical voice disciplines (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density). Lilly Direct's `CEREBRO-CHARTER.md` expresses these through a product-specific character.
 - **[PIPELINE](../os/PIPELINE.md)** — Canonical for the six-stage intelligence pipeline (Ingest → Annotate → Score → Brief → Synthesize → Act). Lilly Direct's `ARCHITECTURE.md` describes how this product implements each stage.
 - **[ARCHITECTURE](../os/ARCHITECTURE.md)** (OS-level) — Canonical for the shared codebase, white-label pattern, and the new-product spinup checklist. Lilly Direct's `ARCHITECTURE.md` describes product-specific decisions sitting on top of this foundation.
-- **[GLOSSARY](../os/GLOSSARY.md)** — Canonical for shared vocabulary. Lilly Direct uses the same terms (operator, annotation layer, station chief/field correspondent, Passage, etc.) with the same meanings.
+- **[GLOSSARY](../os/GLOSSARY.md)** — Canonical for shared vocabulary. Lilly Direct uses the same terms (operator, annotation layer, station chief/ranger, Passage, etc.) with the same meanings.
 - **[DOC-AUTHORITY](../os/DOC-AUTHORITY.md)** (OS-level) — Resolves authority conflicts that cross product boundaries or involve OS-level documents.
 
 **Rule:** When Lilly Direct docs conflict with OS-level docs, the OS-level document wins on principle and intent. Lilly Direct docs win on project-specific implementation. See `../os/DOC-AUTHORITY.md` for the full inheritance model.
@@ -430,7 +430,7 @@ When updating derived content, update the canonical source first, then propagate
 
 **Derives from:** `../os/VOICE.md` for the universal analytical disciplines that apply to every product.
 
-**Rule:** If you need to know how Lilly Direct's analytical function reasons and what disciplines it carries, CEREBRO-CHARTER is the answer. Cross-reference with `../dispatch/CEREBRO-CHARTER.md` (Station Chief) and `../explore/CEREBRO-CHARTER.md` (Field Correspondent) for the two existing character templates. The VOICE block in PROMPTS.md is derived from this document.
+**Rule:** If you need to know how Lilly Direct's analytical function reasons and what disciplines it carries, CEREBRO-CHARTER is the answer. Cross-reference with `../dispatch/CEREBRO-CHARTER.md` (Station Chief) and `../explore/CEREBRO-CHARTER.md` (Ranger) for the two existing character templates. The VOICE block in PROMPTS.md is derived from this document.
 
 ### PROMPTS.md — *The Words*
 **Owns:** All copyable prompt text for `lib/config/lilly-direct.ts` mandate blocks. Context blocks (OPERATOR, CLIENT_CONTEXT, LAYERS, SOURCE_MODES, VOICE). Surface prompts (brief, Cerebro, annotation, synthesis, engagement output). Prompt assembly pattern. Maintenance schedule.
@@ -517,7 +517,7 @@ If a concern spans Lilly Direct and Dispatch (e.g., how Dispatch's content pipel
 
 **All 14 canonical files exist as scaffolds, not content.** This is expected — today is kickoff. Drift is defined as "canonical file missing" (not the case here) or "content contradicts another file" (not the case yet because content doesn't exist). As content lands at kickoff, track drift here.
 
-**Voice character is undefined.** `CEREBRO-CHARTER.md` has placeholder content; the actual character (Station Chief, Field Correspondent, or new) gets chosen at kickoff. Until then, Lilly Direct inherits universal disciplines from `../os/VOICE.md` and uses placeholder text in the PROMPTS.md VOICE block.
+**Voice character is undefined.** `CEREBRO-CHARTER.md` has placeholder content; the actual character (Station Chief, Ranger, or new) gets chosen at kickoff. Until then, Lilly Direct inherits universal disciplines from `../os/VOICE.md` and uses placeholder text in the PROMPTS.md VOICE block.
 
 **Layer taxonomy is placeholder.** The current five layers (Therapeutic / Regulatory / Digital / Organizational / Competitive) are my best guess from the Lilly engagement context in `../os/OPERATOR.md`. The real taxonomy gets defined at kickoff from MANDATE.md.
 
@@ -894,7 +894,7 @@ Established: 2026-04-10
 **Target: complete during the first engagement session.**
 
 ### Priority 1 — Voice character decision
-**What:** Decide whether Lilly Direct uses Station Chief (Dispatch), Field Correspondent (Explore), or a new character. Fill in CEREBRO-CHARTER.md with the chosen model.
+**What:** Decide whether Lilly Direct uses Station Chief (Dispatch), Ranger (Explore), or a new character. Fill in CEREBRO-CHARTER.md with the chosen model.
 **Why first:** Nothing else can be written coherently until the voice is decided. MANDATE.md, PROMPTS.md, SYSTEM-BRIEF.md all depend on knowing what the analytical function sounds like.
 **Acceptance:** CEREBRO-CHARTER.md has real content in § THE CHARACTER, § REGISTER AND DELIVERY, and § BEHAVIORAL DIRECTIVES. Placeholder text gone.
 

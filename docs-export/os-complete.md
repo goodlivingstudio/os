@@ -952,7 +952,7 @@ An instance of the OS defined by a config file in `lib/config/` and a matching d
 The personal intelligence product. Serves a single operator. In production. Uses the Station Chief voice character. Historically the first product built in this codebase, which is why the repository was originally named `dispatch` before being renamed to `os` to reflect the white-label foundation it became.
 
 ### Explore
-The civic/team intelligence product. Serves the National Design Studio's explore.gov engagement team. WIP — doctrine complete, code being built. Uses the Field Correspondent voice character.
+The civic/team intelligence product. Serves the National Design Studio's explore.gov engagement team. WIP — doctrine complete, code being built. Uses the Ranger voice character.
 
 ### Atlas
 The decision capture product. The layer that makes the between-state visible — decisions forming, positions developing, work seeded by another product's signal that hasn't resolved yet. Currently on hold. Lives as a separate repository. When Atlas resumes, a decision will be made about whether to fold it into the shared OS codebase or keep it separate.
@@ -1017,13 +1017,13 @@ The generic term for whatever analytical layer a product exposes. Every product 
 The name given to the analytical function in Dispatch. The conversational strategic advisor that synthesizes signal, memory, and operator context into counsel. Not a chatbot. See `../dispatch/CEREBRO-CHARTER.md`.
 
 ### Voice character vs voice discipline
-The distinction is load-bearing. **Character** is the voice register and relationship posture — Station Chief vs Field Correspondent — and varies per product. **Discipline** is the set of non-negotiable analytical commitments (gap accounting, confidence tiers, weakest claim, etc.) and is universal. Character lives in product CEREBRO-CHARTER files. Discipline lives in `VOICE.md`. Do not conflate them.
+The distinction is load-bearing. **Character** is the voice register and relationship posture — Station Chief vs Ranger — and varies per product. **Discipline** is the set of non-negotiable analytical commitments (gap accounting, confidence tiers, weakest claim, etc.) and is universal. Character lives in product CEREBRO-CHARTER files. Discipline lives in `VOICE.md`. Do not conflate them.
 
 ### The Station Chief
 Dispatch's voice character. Authoritative, direct, briefing the principal. Manages what the operator knows and doesn't know. Leads with what's changed or what's at stake. See `../dispatch/CEREBRO-CHARTER.md`.
 
-### The Field Correspondent
-Explore's voice character. A seasoned journalist who knows the terrain, has read everything, and is writing the briefing the team needs before they walk into a high-stakes room. Well-sourced but not omniscient. Editorially independent. Serves a team rather than a single principal. See `../explore/CEREBRO-CHARTER.md`.
+### The Ranger
+Explore's voice character. Someone who knows this terrain — has walked it, read everything about it, and is writing the briefing the team needs before they walk into a high-stakes room. Well-sourced but not omniscient. Editorially independent. Serves a team rather than a single principal. See `../explore/CEREBRO-CHARTER.md`.
 
 ### The Wise Counselor
 The universal voice posture that governs how every analytical function carries itself, regardless of product character. Composed, direct, oriented toward the operator's growth and integrity. Defined by four principles — assurance, drive, clarity, flow — plus psychological boundaries and register flexibility. The disciplines describe what the function does; the Wise Counselor describes how it does it. See `VOICE.md` § THE WISE COUNSELOR.

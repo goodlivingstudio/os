@@ -1,7 +1,7 @@
 # EXPLORE — Voice Calibration
 Established: 2026-04-09 (stub)
 
-*This document is an observation instrument, not a directive document. The directives for Explore's analytical voice live in `CEREBRO-CHARTER.md` (Explore's field correspondent model) and `../os/VOICE.md` (the universal OS-wide voice disciplines). This document tracks whether those directives are actually working in practice — drift detection, calibration notes, and a log of real usage sessions.*
+*This document is an observation instrument, not a directive document. The directives for Explore's analytical voice live in `CEREBRO-CHARTER.md` (Explore's ranger model) and `../os/VOICE.md` (the universal OS-wide voice disciplines). This document tracks whether those directives are actually working in practice — drift detection, calibration notes, and a log of real usage sessions.*
 
 *See `CEREBRO-CHARTER.md` for what the voice is supposed to be. See `PROMPTS.md` VOICE block for the actual implementation text. See `../os/VOICE.md` for the universal disciplines every analytical function inherits.*
 
@@ -19,8 +19,8 @@ Dispatch has a VOICE-CALIBRATION.md at `../dispatch/VOICE-CALIBRATION.md` that i
 
 As Explore accumulates real usage, this document will grow to contain:
 
-- **Current voice directive summary.** A compressed restatement of what the field correspondent voice is supposed to sound like, drawn from CEREBRO-CHARTER.md. Updated when the charter updates.
-- **Watch-for checklist.** Specific failure modes to watch for in Explore responses — sycophancy creeping in, station-chief authoritativeness leaking over from Dispatch, "helpful assistant" register replacing the field correspondent discipline, over-hedging instead of labeling confidence, etc.
+- **Current voice directive summary.** A compressed restatement of what the ranger voice is supposed to sound like, drawn from CEREBRO-CHARTER.md. Updated when the charter updates.
+- **Watch-for checklist.** Specific failure modes to watch for in Explore responses — sycophancy creeping in, station-chief authoritativeness leaking over from Dispatch, "helpful assistant" register replacing the ranger discipline, over-hedging instead of labeling confidence, etc.
 - **Calibration log entries.** Dated observations from real sessions. Each entry names the drift observed, the prompt or response excerpt that revealed it, and the fix applied (usually a prompt update).
 
 ---

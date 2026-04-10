@@ -26,7 +26,7 @@ When written, ANTI-PATTERNS.md will enumerate prohibited patterns organized by c
 - **Visual prohibitions.** Specific color, type, spacing, and layout decisions that are rejected. Examples (Dispatch-tested, likely shared): no pulsing badges, no gradient backgrounds on content cards, no emoji, no drop shadows for depth alone, no celebratory fills.
 - **Behavioral prohibitions.** Component behaviors that are rejected. Examples: no auto-playing media, no infinite-scroll loading, no interruption-style notifications, no "you might also like" recommendations.
 - **Voice and microcopy prohibitions.** Specific words, phrases, or tones Explore's interface must never use. The federal / civic context makes this especially load-bearing — the difference between legibility and bureaucratese is a one-word miss.
-- **Civic-context-specific prohibitions.** Things that might be acceptable in a personal intelligence tool (Dispatch) but are wrong for a federal team tool. Examples to evaluate: assertiveness in the analytical voice (the field correspondent should not sound like a station chief), decoration that reads as "design studio polish" rather than "federal design legibility," any hint of consumer-grade friendliness.
+- **Civic-context-specific prohibitions.** Things that might be acceptable in a personal intelligence tool (Dispatch) but are wrong for a federal team tool. Examples to evaluate: assertiveness in the analytical voice (the ranger should not sound like a station chief), decoration that reads as "design studio polish" rather than "federal design legibility," any hint of consumer-grade friendliness.
 - **Gallery prohibitions.** Rules about what images never appear in Explore's gallery — bad federal iconography, extractive outdoor-industry aesthetics, stock-photography hands on keyboards, cartoonish abstraction of public lands, etc.
 - **Team-context prohibitions.** Explore serves a team. Single-user-assumption patterns (personalization, "your" possessives, individual authentication gating) are suspect by default.
 
@@ -51,7 +51,7 @@ When written, each anti-pattern entry will follow this shape (matching Dispatch'
 1. What specific patterns have already been proposed for Explore that should be rejected?
 2. Which Dispatch anti-patterns apply wholesale to Explore and should be promoted to `../os/DOCTRINE.md` as shared convictions (with their implied prohibitions)?
 3. Are there federal design standards (USWDS, 21st Century IDEA, Plain Language Act) that should be referenced for civic-context prohibitions?
-4. What voice moves are acceptable for the station chief (Dispatch) but prohibited for the field correspondent (Explore)?
+4. What voice moves are acceptable for the station chief (Dispatch) but prohibited for the ranger (Explore)?
 5. What gallery aesthetics should Explore reject that Dispatch might accept, and vice versa?
 
 ---

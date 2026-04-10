@@ -57,7 +57,7 @@ export const PRODUCTS: ProductEntry[] = [
     name: "Explore",
     url: "https://explore.goodliving.studio",
     status: "wip",
-    description: "Civic/team intelligence — field desk for the explore.gov engagement.",
+    description: "Civic/team intelligence — ranger station for the explore.gov engagement.",
     isOsInstance: true,
   },
   {

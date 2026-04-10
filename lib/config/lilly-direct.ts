@@ -16,7 +16,7 @@
 //
 // WHAT TO DO AT KICKOFF:
 //   1. Confirm final product name and update branding.name
-//   2. Decide voice character (Station Chief / Field Correspondent / new)
+//   2. Decide voice character (Station Chief / Ranger / new)
 //      and populate mandate.voice from docs/lilly-direct/CEREBRO-CHARTER.md
 //   3. Define the intelligence layers — these are the most bespoke part of
 //      any product's config. Lilly Direct's layers should reflect the
@@ -60,7 +60,7 @@ const config: InstanceConfig = {
 
     clientContext: `[PLACEHOLDER] Primary intelligence target: Eli Lilly and Company. The engagement-specific intelligence will be defined at kickoff from docs/lilly-direct/LIVE-ENVIRONMENT.md. Lilly is a specific target within the healthcare/pharma strategic domain defined at docs/os/OPERATOR.md. Key context: 51M patients, GLP-1 momentum, Diogo Rau's AI mandate, the donanemab care coordination challenge, LillyDirect (existing platform), the 73% pharma digital transformation failure rate, and the strategic argument that Lilly's science has outpaced the experience of receiving it.`,
 
-    voice: `[PLACEHOLDER] Analytical voice character TBD at kickoff. Until defined in docs/lilly-direct/CEREBRO-CHARTER.md, inherit the universal disciplines from docs/os/VOICE.md (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density over comprehensiveness). The Station Chief and Field Correspondent models are the two existing character templates; Lilly Direct's character may draw from either or develop something new specific to the engagement.`,
+    voice: `[PLACEHOLDER] Analytical voice character TBD at kickoff. Until defined in docs/lilly-direct/CEREBRO-CHARTER.md, inherit the universal disciplines from docs/os/VOICE.md (gap accounting, confidence tiers, amplification check, weakest claim, lead with substance, no sycophancy, flag noise, name absence, editorial independence, tight paragraphs, density over comprehensiveness). The Station Chief and Ranger models are the two existing character templates; Lilly Direct's character may draw from either or develop something new specific to the engagement.`,
 
     sourceModes: `[PLACEHOLDER] Source mode framing TBD at kickoff. Reference Dispatch's Intelligence/Formation/Positioning model or Explore's own framing as templates. Lilly Direct's modes should reflect how the engagement consumes signal (probably some combination of Engagement signal, Therapeutic area intelligence, Competitive landscape, and Internal Lilly signal).`,
   },

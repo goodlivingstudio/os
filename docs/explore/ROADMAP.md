@@ -104,7 +104,7 @@ Established: 2026-04-07
 ### Priority 11 — Voice Calibration
 **What:** Build VOICE-CALIBRATION.md. Run 10–15 real Cerebro sessions. Log results against the watch-for checklist: Does Cerebro lead with substance? Does it challenge? Are confidence tiers appearing? Is the Burgum-Gebbia Frame Check running? Is gap accounting structural or occasional? Are weakest claims named or skipped?
 
-**Notes:** The field correspondent model and the four analytical discipline directives (Civic Design Test, Burgum-Gebbia Frame Check, Equity Lens, 90-Day / Stewardship Split) are new in this system. Calibrate these specifically. Tune PROMPTS.md VOICE block based on observed drift.
+**Notes:** The ranger model and the four analytical discipline directives (Civic Design Test, Burgum-Gebbia Frame Check, Equity Lens, 90-Day / Stewardship Split) are new in this system. Calibrate these specifically. Tune PROMPTS.md VOICE block based on observed drift.
 
 ---
 
@@ -149,10 +149,10 @@ Established: 2026-04-07
 ## ARCHIVE — COMPLETED (April 7, 2026)
 
 ### Doctrine Layer (complete)
-- MANDATE.md — engagement context, three intelligence modes, five annotation layers, field desk model
+- MANDATE.md — engagement context, three intelligence modes, five annotation layers, ranger station model
 - SOURCES.md — consolidated source inventory v2, 75+ sources, three modes, gallery sources
 - LIVE-ENVIRONMENT.md — political context, NDS credibility problem, Burgum-Gebbia tension, equity imperative, July 4 deadline analysis
-- CEREBRO-CHARTER.md — field correspondent model, behavioral directives, analytical protocols, what the function will not do
+- CEREBRO-CHARTER.md — ranger model, behavioral directives, analytical protocols, what the function will not do
 - WATCHFILE.md — six active watch items with severity ratings, log format, escalation protocol
 - PROMPTS.md — full prompt architecture, six context blocks, six surface prompts, TypeScript assembly pattern
 - DOC-AUTHORITY.md — canonical ownership map, conflict resolution rules, known drift

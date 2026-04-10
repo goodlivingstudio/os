@@ -44,7 +44,7 @@ When updating derived content, update the canonical source first, then propagate
 
 **Derives from:** `../os/VOICE.md` for the universal analytical voice disciplines shared across all OS products. The station chief character is Dispatch-specific; the underlying disciplines are OS-wide.
 
-**Rule:** If you need to know *how Cerebro reasons and what disciplines it carries in every response*, CEREBRO-CHARTER is the answer. Cross-reference with `../explore/CEREBRO-CHARTER.md` — the two are structural siblings (Station Chief vs Field Correspondent) under the same OS-level voice discipline. The VOICE block in PROMPTS.md is derived from this document.
+**Rule:** If you need to know *how Cerebro reasons and what disciplines it carries in every response*, CEREBRO-CHARTER is the answer. Cross-reference with `../explore/CEREBRO-CHARTER.md` — the two are structural siblings (Station Chief vs Ranger) under the same OS-level voice discipline. The VOICE block in PROMPTS.md is derived from this document.
 
 ### PROMPTS.md — *The Words*
 **Owns:** All copyable prompt text for `lib/prompts.ts`. Context blocks (OPERATOR, LILLY_CONTEXT, FIVE_LAYERS, SOURCE_MODES, VOICE). Surface prompts (DCOS, Cerebro, Annotation, Synthesis, Dispatch). Prompt assembly pattern. Prompt maintenance schedule.

@@ -23,9 +23,9 @@ When written, ARCHITECTURE.md will contain:
 
 - **Shared foundation.** What Explore inherits from the shared OS codebase (Next.js 16 App Router, Anthropic Claude via `@anthropic-ai/sdk`, Vercel KV, the `lib/config/` white-label pattern, shared API routes for news / annotate / brief / chat).
 - **Explore-specific instance config.** How `lib/config/explore.ts` differs from `lib/config/dispatch.ts` — source mix, skin defaults, gallery biome filters, tagline, branding. This section references the canonical config without duplicating it.
-- **Surface inventory.** The specific surfaces Explore exposes (Signal feed, Gallery, Cerebro chat, Synthesis, any Explore-specific surfaces like the field desk view).
+- **Surface inventory.** The specific surfaces Explore exposes (Signal feed, Gallery, Cerebro chat, Synthesis, any Explore-specific surfaces like the ranger station view).
 - **Data flow.** How RSS ingestion, annotation, scoring, and caching behave for Explore specifically. Where Explore diverges from the shared pipeline (e.g., gallery curation layer, diversity mandate enforcement).
-- **AI surface specifications.** Which Claude model each surface uses, context windowing, output format, and how the field correspondent voice (see CEREBRO-CHARTER.md) is enforced at the prompt level.
+- **AI surface specifications.** Which Claude model each surface uses, context windowing, output format, and how the ranger voice (see CEREBRO-CHARTER.md) is enforced at the prompt level.
 - **Deployment.** Where Explore deploys (explore.goodliving.studio), what Vercel project, what environment variables it needs beyond the shared ones.
 - **Known divergences from Dispatch.** Anywhere Explore has chosen a different architectural pattern from Dispatch's default, with the rationale for the divergence.
 

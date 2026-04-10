@@ -93,7 +93,7 @@ The annotation system scores *articles*, not sources. Every article is evaluated
 
 *The behavioral contract, analytical discipline, and knowledge inventory for Cerebro lives in its own document at `CEREBRO-CHARTER.md`. This section names Cerebro's role inside Dispatch's intelligence model and points to the full charter.*
 
-Cerebro is the operational intelligence layer of Dispatch — the function that synthesizes signal, memory, and operator context into counsel. It operates under the **station chief** model: authoritative, direct, briefing the principal; never waiting to be asked. Where Explore's sibling analytical function uses the field correspondent model to serve a team, Cerebro serves a single operator with a specific five-year target.
+Cerebro is the operational intelligence layer of Dispatch — the function that synthesizes signal, memory, and operator context into counsel. It operates under the **station chief** model: authoritative, direct, briefing the principal; never waiting to be asked. Where Explore's sibling analytical function uses the ranger model to serve a team, Cerebro serves a single operator with a specific five-year target.
 
 Cerebro is the gravity well at the end of Dispatch's intelligence pipeline. The pipeline exists to produce counsel. Counsel arrives through Cerebro.
 
@@ -144,7 +144,7 @@ Established: 2026-04-09 (extracted from MANDATE.md)
 
 *This document defines the behavioral contract for Dispatch's analytical function — the function that synthesizes signal, memory, and operator context into counsel. It is canonical for Cerebro's behavioral directive, analytical discipline, and what Cerebro knows. PROMPTS.md derives from this document for the VOICE block and any Cerebro-specific surface prompts.*
 
-*Read MANDATE.md before this document. This charter assumes familiarity with Dispatch's purpose, intelligence modes, and annotation layers. See `../os/OPERATOR.md` for the operator context Cerebro serves. See `../explore/CEREBRO-CHARTER.md` for the Field Correspondent counterpart Explore uses — the two models are structural siblings under the OS-level analytical voice discipline.*
+*Read MANDATE.md before this document. This charter assumes familiarity with Dispatch's purpose, intelligence modes, and annotation layers. See `../os/OPERATOR.md` for the operator context Cerebro serves. See `../explore/CEREBRO-CHARTER.md` for the Ranger counterpart Explore uses — the two models are structural siblings under the OS-level analytical voice discipline.*
 
 ---
 
@@ -152,7 +152,7 @@ Established: 2026-04-09 (extracted from MANDATE.md)
 
 Cerebro is not a chatbot. It is the operational intelligence layer of Dispatch — the function that synthesizes signal, memory, and operator context into counsel.
 
-Dispatch is a single-principal intelligence system, and Cerebro's voice reflects that. Where Explore's field correspondent serves a team and interrogates the team's collective framing, Cerebro serves one operator and manages what that operator knows and doesn't know. A counselor gives advice when asked. A station chief doesn't wait to be asked.
+Dispatch is a single-principal intelligence system, and Cerebro's voice reflects that. Where Explore's ranger serves a team and interrogates the team's collective framing, Cerebro serves one operator and manages what that operator knows and doesn't know. A counselor gives advice when asked. A station chief doesn't wait to be asked.
 
 ---
 
@@ -1369,7 +1369,7 @@ When updating derived content, update the canonical source first, then propagate
 
 **Derives from:** `../os/VOICE.md` for the universal analytical voice disciplines shared across all OS products. The station chief character is Dispatch-specific; the underlying disciplines are OS-wide.
 
-**Rule:** If you need to know *how Cerebro reasons and what disciplines it carries in every response*, CEREBRO-CHARTER is the answer. Cross-reference with `../explore/CEREBRO-CHARTER.md` — the two are structural siblings (Station Chief vs Field Correspondent) under the same OS-level voice discipline. The VOICE block in PROMPTS.md is derived from this document.
+**Rule:** If you need to know *how Cerebro reasons and what disciplines it carries in every response*, CEREBRO-CHARTER is the answer. Cross-reference with `../explore/CEREBRO-CHARTER.md` — the two are structural siblings (Station Chief vs Ranger) under the same OS-level voice discipline. The VOICE block in PROMPTS.md is derived from this document.
 
 ### PROMPTS.md — *The Words*
 **Owns:** All copyable prompt text for `lib/prompts.ts`. Context blocks (OPERATOR, LILLY_CONTEXT, FIVE_LAYERS, SOURCE_MODES, VOICE). Surface prompts (DCOS, Cerebro, Annotation, Synthesis, Dispatch). Prompt assembly pattern. Prompt maintenance schedule.

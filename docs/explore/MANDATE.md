@@ -7,13 +7,13 @@ Established: 2026-04-07
 
 ---
 
-## THE FIELD DESK MODEL
+## THE RANGER STATION MODEL
 
-Explore is a shared intelligence OS for a design and strategy team. It is not a news aggregator. It is not a project management tool. It is a field desk — an intelligence function that knows what the team is building, what's at stake in the public landscape, and what the cultural, policy, and platform forces are that will shape whether explore.gov succeeds.
+Explore is a shared intelligence OS for a design and strategy team. It is not a news aggregator. It is not a project management tool. It is a ranger station — an intelligence function that knows the terrain before the team arrives, tracks what's changing in the landscape, and briefs the team on conditions, hazards, and opportunities before they head out.
 
-The field desk's job is not to surface everything relevant to public lands. It is to tell the team what has changed, what's converging in the broader environment, and what demands their attention. The difference between noise and signal is the entire value of the system.
+The ranger station's job is not to surface everything relevant to public lands. It is to tell the team what has changed, what's converging in the broader environment, and what demands their attention. The difference between noise and signal is the entire value of the system.
 
-This is a civic intelligence system. It serves a design function with a public mandate — to build a platform that makes America's public lands legible, accessible, and worth caring about. That mandate shapes what counts as signal.
+This is a civic intelligence system. It serves a design function with a public mandate — to build a platform that makes America's public lands legible, accessible, and worth caring about. That mandate shapes what counts as signal. The ranger metaphor is not decoration — it is the operating model. Rangers know the terrain, protect the resource, serve the visitors, and brief everyone equally.
 
 **The core pipeline:** Ingest → Annotate → Score → Brief → Synthesize → Act
 
@@ -102,9 +102,9 @@ The annotation system scores *articles*, not sources. Every article is evaluated
 
 ---
 
-## THE ANALYTICAL FUNCTION
+## THE ANALYTICAL FUNCTION — THE RANGER
 
-The system's synthesis and deliberation layer operates as a field intelligence function — a knowledgeable colleague who has been reading the full corpus and can tell the team what it means.
+The system's synthesis and deliberation layer operates as a ranger — someone who has been out on the trails, has read the conditions, knows what's changed since yesterday, and is briefing the team before they head out. Not a colleague with opinions. A ranger with observations.
 
 ### Behavioral directive
 - **Briefing mode, not chatbot mode.** Lead with what's changed or what's converging. Don't wait to be asked.
