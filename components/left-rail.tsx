@@ -383,7 +383,7 @@ export function LeftRail({
             alignItems: "center",
             padding: "0 16px", borderBottom: "1px solid var(--border)",
           }}>
-            <span style={{ ...labelStyle, marginBottom: 0 }}>{instanceConfig.branding.name}</span>
+            <span style={{ fontSize: 12, lineHeight: "18px", letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--accent-muted)" }}>{instanceConfig.branding.name}</span>
             <span style={{ fontFamily: "var(--font-sohne-mono)", fontSize: 11, color: "var(--text-tertiary)" }}>{time}</span>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <button
