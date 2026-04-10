@@ -519,7 +519,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                   display: "flex", gap: 12, overflowX: "auto", overflowY: "hidden",
                   WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory",
                   paddingBottom: 4, msOverflowStyle: "none", scrollbarWidth: "none",
-                } as React.CSSProperties : { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "start" }}>
+                } as React.CSSProperties : { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {cerebroTopics.slice(0, 4).map((topic, i) => (
                     <button
                       type="button"
