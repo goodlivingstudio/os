@@ -241,7 +241,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
         {/* ── Empty ── */}
         {!loading && !data && (
           <div style={{ padding: "48px 20px", maxWidth: 520 }}>
-            <div style={{ ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.8, marginBottom: 16 }}>
+            <div style={{ ...TYPE.body, color: "var(--text-tertiary)", marginBottom: 16 }}>
               Pattern intelligence will appear when annotated articles are available.
             </div>
             <button
@@ -383,7 +383,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                         {/* Description — aligned with eyebrow and title */}
                         {pattern.description && (
                           <div style={{
-                            ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.6, marginTop: 8,
+                            ...TYPE.body, color: "var(--text-secondary)", marginTop: 8,
                             ...(!isMobile ? { display: "-webkit-box", WebkitLineClamp: isTriage ? 2 : 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {}),
                           }}>
                             {pattern.description}
@@ -539,7 +539,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       </div>
                       {topic.body && (
                         <div style={{
-                          ...TYPE.body, color: "var(--text-tertiary)", lineHeight: 1.6,
+                          ...TYPE.body, color: "var(--text-tertiary)",
                         }}>
                           {topic.body}
                         </div>
