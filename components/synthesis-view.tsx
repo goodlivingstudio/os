@@ -266,13 +266,13 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
 
             {/* ─ WEEKLY SHIFT banner ─ */}
             <div style={{
-              background: "var(--bg-primary)", padding: "44px 0 56px",
+              background: "var(--bg-primary)", padding: "34px 0 60px",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
               <div style={{ ...labelStyle, marginBottom: 10 }}>
                 Weekly Shift
               </div>
-              <div style={{ fontSize: 38, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.05 }}>
+              <div style={{ fontSize: 44, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.05 }}>
                 {data.headline || data.briefing.split(/[.!?]\s/)[0]}
               </div>
               {data.headline && data.briefing && (
@@ -377,7 +377,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                           <span style={{ opacity: 0.5, marginLeft: 6 }}>({pattern.signalCount})</span>
                         </div>
                         {/* Title */}
-                        <div style={{ fontSize: 28, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1 }}>
+                        <div style={{ fontSize: 38, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1 }}>
                           {pattern.title}
                         </div>
                         {/* Description — aligned with eyebrow and title */}
