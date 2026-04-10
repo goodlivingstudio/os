@@ -288,7 +288,6 @@ function ExpandedNavButton({ icon, label, isActive, onClick }: {
   onClick: () => void
 }) {
   const [hovered, setHovered] = useState(false)
-  const showBg = isActive || hovered
   return (
     <button
       onClick={onClick}
@@ -298,7 +297,7 @@ function ExpandedNavButton({ icon, label, isActive, onClick }: {
       style={{
         display: "flex", alignItems: "center", gap: 10, width: "100%",
         padding: "10px 16px",
-        background: showBg ? (isActive ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.04)") : "transparent",
+        background: isActive ? "#1E1E1E" : hovered ? "#1A1A1A" : "transparent",
         border: "none", cursor: "pointer", transition: "background 0.15s, color 0.15s",
         color: isActive ? "var(--text-primary)" : hovered ? "var(--text-secondary)" : "var(--text-tertiary)",
         fontSize: 13, fontWeight: isActive ? 500 : 400,
@@ -306,6 +305,33 @@ function ExpandedNavButton({ icon, label, isActive, onClick }: {
     >
       {icon}
       <span>{label}</span>
+    </button>
+  )
+}
+
+// ─── Triage / Explore Button — tracks hover via React state ──────────────────
+
+function TriageExploreButton({ label, isActive, onClick }: {
+  label: string
+  isActive: boolean
+  onClick: () => void
+}) {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: isActive ? "#1E1E1E" : hovered ? "#1A1A1A" : "transparent",
+        border: "none", cursor: "pointer",
+        fontSize: 11, fontWeight: isActive ? 600 : 400,
+        color: isActive ? "var(--accent-secondary)" : hovered ? "var(--text-primary)" : "var(--text-tertiary)",
+        padding: "4px 6px", borderRadius: 4,
+        transition: "color 0.15s, background 0.15s",
+      }}
+    >
+      {label}
     </button>
   )
 }
@@ -439,21 +465,11 @@ export function LeftRail({
                   return (
                     <span key={mode.id}>
                       {i > 0 && <span style={{ color: "var(--border)", margin: "0 4px" }}>/</span>}
-                      <button
+                      <TriageExploreButton
+                        label={mode.label}
+                        isActive={isActive}
                         onClick={() => onSortChange(mode.id)}
-                        style={{
-                          background: isActive ? "rgba(255,255,255,0.06)" : "transparent",
-                          border: "none", cursor: "pointer",
-                          fontSize: 11, fontWeight: isActive ? 600 : 400,
-                          color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
-                          padding: "4px 6px", borderRadius: 4,
-                          transition: "color 0.15s, background 0.15s",
-                        }}
-                        onMouseEnter={e => { if (!isActive) { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)" } }}
-                        onMouseLeave={e => { if (!isActive) { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" } }}
-                      >
-                        {mode.label}
-                      </button>
+                      />
                     </span>
                   )
                 })}
