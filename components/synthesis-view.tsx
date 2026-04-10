@@ -351,12 +351,11 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     key={i}
                     onClick={scroll.guardedClick(() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`))}
                     style={{
-                      padding: "20px 0",
+                      padding: "20px 20px",
                       margin: "0 -20px",
-                      paddingLeft: 20, paddingRight: 20,
                       borderBottom: "1px solid var(--border)",
                       cursor: "pointer", transition: "background 0.15s",
-                      border: "none", background: "transparent", textAlign: "left", width: "100%", font: "inherit", color: "inherit",
+                      border: "none", background: "transparent", textAlign: "left", width: "calc(100% + 40px)", font: "inherit", color: "inherit",
                     }}
                     onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
