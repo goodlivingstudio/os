@@ -377,7 +377,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                           <span style={{ opacity: 0.5, marginLeft: 6 }}>({pattern.signalCount})</span>
                         </div>
                         {/* Title */}
-                        <div style={{ fontSize: 38, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1 }}>
+                        <div style={{ fontSize: 32, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1 }}>
                           {pattern.title}
                         </div>
                         {/* Description — aligned with eyebrow and title */}
