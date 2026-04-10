@@ -180,13 +180,9 @@ function PerspectiveCard({ perspective, index, onDeliberate }: {
       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
       onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
     >
-      {/* Layer dot + label */}
-      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
-        <span style={{
-          width: 6, height: 6, borderRadius: "50%",
-          background: LAYER_DOT[perspective.layer] || "var(--text-tertiary)",
-        }} />
-        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+      {/* Layer label */}
+      <div style={{ marginBottom: 10 }}>
+        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>
           {LAYER_LABELS[perspective.layer] || perspective.layer}
         </span>
       </div>
@@ -197,7 +193,7 @@ function PerspectiveCard({ perspective, index, onDeliberate }: {
         fontFamily: DISPLAY,
         color: "var(--text-primary)",
         lineHeight: 1.35,
-        letterSpacing: "-0.01em",
+        letterSpacing: "0.01em",
         marginBottom: 8,
       }}>
         {perspective.title}
@@ -250,7 +246,7 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
           </button>
         </div>
 
-        <div style={{ fontSize: 22, fontWeight: 400, fontFamily: DISPLAY, color: "var(--text-primary)", marginBottom: 8, lineHeight: 1.35, letterSpacing: "-0.01em" }}>{pitch.title}</div>
+        <div style={{ fontSize: 22, fontWeight: 400, fontFamily: DISPLAY, color: "var(--text-primary)", marginBottom: 8, lineHeight: 1.35, letterSpacing: "0.01em" }}>{pitch.title}</div>
         <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.7, marginBottom: isConvergence(pitch) ? 12 : 24 }}>{pitch.thesis}</div>
 
         {/* Convergence callout */}
@@ -538,7 +534,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                 fontFamily: DISPLAY,
                 color: "var(--text-primary)",
                 lineHeight: 1.4,
-                letterSpacing: "-0.01em",
+                letterSpacing: "0.01em",
                 maxWidth: 820,
                 margin: "0 auto",
               }}>
@@ -707,7 +703,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                           fontFamily: DISPLAY,
                           color: "var(--text-primary)",
                           lineHeight: 1.35,
-                          letterSpacing: "-0.01em",
+                          letterSpacing: "0.01em",
                           marginBottom: 6,
                         }}>
                           {pitch.title}

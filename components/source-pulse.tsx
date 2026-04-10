@@ -85,7 +85,7 @@ function LayerBar({ layer, health, maxArticles }: { layer: LayerHealth; health: 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "6px 0" }}>
       <div style={{ width: 80, flexShrink: 0 }}>
-        <div style={{ ...TYPE.sm, color: LAYER_COLOR[layer.layer] || "var(--text-secondary)", fontWeight: 500 }}>
+        <div style={{ ...TYPE.sm, color: LAYER_COLOR[layer.layer] || "var(--text-secondary)", fontWeight: 600 }}>
           {LAYER_LABELS[layer.layer] || layer.layer}
         </div>
       </div>

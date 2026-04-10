@@ -87,7 +87,7 @@ const badgeStyle = (color: string): React.CSSProperties => ({
   textTransform: "uppercase", letterSpacing: "0.03em",
   padding: "1px 6px", borderRadius: 4,
   background: "var(--bg-elevated)", whiteSpace: "nowrap",
-  fontWeight: 500,
+  fontWeight: 600,
 })
 const categoryStyle: React.CSSProperties = {
   ...metaStyle,
@@ -404,7 +404,7 @@ function SourceGrid({ sources, type, excludedSources, onToggleSource, sourceCoun
         const getName = (f: { source?: string; show?: string }) => type === "show" ? f.show || "" : f.source || ""
         return (
           <div key={layer} style={{ marginBottom: 16 }}>
-            <div style={{ ...TYPE.sm, fontWeight: 500, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, paddingLeft: 4 }}>
+            <div style={{ ...TYPE.sm, fontWeight: 600, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6, paddingLeft: 4 }}>
               {LAYER_LABELS[layer]}
               <span style={{ color: "var(--text-tertiary)", marginLeft: 6 }}>
                 ({items.filter(f => !excludedSources.has(getName(f))).length})
@@ -612,7 +612,7 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [], sou
                   const categories = [...new Set(instanceConfig.galleryScraper!.targets.map(t => t.category))]
                   return categories.map(cat => (
                     <div key={cat} style={{ marginBottom: 12 }}>
-                      <div style={{ ...TYPE.sm, fontWeight: 500, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6, paddingLeft: 4 }}>
+                      <div style={{ ...TYPE.sm, fontWeight: 600, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6, paddingLeft: 4 }}>
                         {cat}
                         <span style={{ color: "var(--text-tertiary)", marginLeft: 6 }}>
                           ({instanceConfig.galleryScraper!.targets.filter(t => t.category === cat).length})

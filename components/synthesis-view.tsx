@@ -269,7 +269,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
               <div style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 10 }}>
                 Weekly Shift
               </div>
-              <div style={{ ...TYPE.heading, fontFamily: DISPLAY, color: "var(--text-primary)", lineHeight: 1.5 }}>
+              <div style={{ fontSize: 20, fontWeight: 600, fontFamily: DISPLAY, color: "var(--text-primary)", lineHeight: 1.45, letterSpacing: "0.01em" }}>
                 {data.headline || data.briefing.split(/[.!?]\s/)[0]}
               </div>
               {data.headline && data.briefing && (
@@ -371,17 +371,15 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       <div style={{ flex: 1, minWidth: 0 }}>
                         {/* Eyebrow: layers + signal count */}
                         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                          <div style={{ display: "flex", gap: 5 }}>
-                            {pattern.layers.map(l => (
-                              <span key={l} style={{ width: 7, height: 7, borderRadius: "50%", background: LAYER_DOT[l] || "var(--text-tertiary)" }} />
-                            ))}
-                          </div>
+                          <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>
+                            {pattern.layers.map(l => LAYER_LABELS[l] || l).join(" · ")}
+                          </span>
                           <span style={{ ...TYPE.sm, fontFamily: MONO, color: "var(--text-tertiary)", textTransform: "uppercase" }}>
                             {pattern.signalCount} Signals
                           </span>
                         </div>
                         {/* Title */}
-                        <div style={{ ...TYPE.heading, fontFamily: DISPLAY, color: "var(--text-primary)", lineHeight: 1.4, letterSpacing: "-0.01em" }}>
+                        <div style={{ fontSize: 18, fontWeight: 600, fontFamily: DISPLAY, color: "var(--text-primary)", lineHeight: 1.4, letterSpacing: "0.01em" }}>
                           {pattern.title}
                         </div>
                         {/* Description — aligned with eyebrow and title */}
