@@ -442,13 +442,14 @@ export function LeftRail({
                       <button
                         onClick={() => onSortChange(mode.id)}
                         style={{
-                          background: "transparent", border: "none", cursor: "pointer",
+                          background: isActive ? "rgba(255,255,255,0.06)" : "transparent",
+                          border: "none", cursor: "pointer",
                           fontSize: 11, fontWeight: isActive ? 600 : 400,
                           color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
                           padding: "4px 6px", borderRadius: 4,
                           transition: "color 0.15s, background 0.15s",
                         }}
-                        onMouseEnter={e => { if (!isActive) { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-elevated)" } }}
+                        onMouseEnter={e => { if (!isActive) { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)" } }}
                         onMouseLeave={e => { if (!isActive) { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" } }}
                       >
                         {mode.label}
