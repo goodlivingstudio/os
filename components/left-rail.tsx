@@ -519,6 +519,72 @@ export function LeftRail({
               )
             })}
           </div>
+
+          {/* ── Pinned Signals ── */}
+          {pinnedArticles && pinnedArticles.length > 0 && (
+            <div style={{ borderTop: "1px solid var(--border)", padding: "12px 16px", flex: 1, overflowY: "auto" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 8 }}>
+                <span style={{ ...labelStyle }}>Pinned</span>
+                <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>({pinnedArticles.length})</span>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                {pinnedArticles.map(article => {
+                  const isExternal = article.url !== "#"
+                  const isPodcast = article.signalType === "podcast"
+                  const TypeIcon = isPodcast ? AudioLines : Radio
+                  return (
+                    <div
+                      key={article.id}
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 8,
+                        padding: "6px 4px",
+                        borderRadius: 6,
+                        transition: "background 0.15s",
+                        cursor: isExternal ? "pointer" : "default",
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
+                      onClick={() => { if (isExternal) window.open(article.url, "_blank", "noopener,noreferrer") }}
+                    >
+                      <TypeIcon size={16} strokeWidth={1.5} style={{ flexShrink: 0, marginTop: 2, color: "var(--text-tertiary)" }} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{
+                          ...TYPE.body,
+                          color: "var(--text-secondary)",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical" as const,
+                          overflow: "hidden",
+                          lineHeight: 1.4,
+                        }}>
+                          <span style={{ color: "var(--text-tertiary)" }}>{article.source}: </span>
+                          {article.title}
+                        </div>
+                      </div>
+                      <button
+                        onClick={e => { e.stopPropagation(); onUnpinArticle?.(article.id) }}
+                        title="Unpin"
+                        style={{
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          width: 18, height: 18, flexShrink: 0, marginTop: 0,
+                          background: "transparent", border: "none", borderRadius: 4,
+                          color: "var(--text-tertiary)", cursor: "pointer",
+                          transition: "all 0.15s",
+                          padding: 0,
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-surface)" }}
+                        onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
+                      >
+                        <X size={11} strokeWidth={2} />
+                      </button>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
