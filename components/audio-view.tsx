@@ -716,7 +716,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
                           style={{
                             display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
                             padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                            ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
+                            ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: isActive ? 600 : 400,
                           }}
                         >
                           <span>{layer.label}</span>

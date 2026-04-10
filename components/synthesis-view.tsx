@@ -5,7 +5,7 @@ import { useScrollGuard } from "@/lib/use-scroll-guard"
 import instanceConfig, { storageKey } from "@/lib/config"
 import { ArrowUpRight } from "lucide-react"
 import type { Article } from "@/lib/types"
-import { TYPE, MONO, labelStyle } from "@/lib/styles"
+import { TYPE, MONO, DISPLAY, labelStyle } from "@/lib/styles"
 import { renderCitedBody } from "@/components/citation"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -269,7 +269,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
               <div style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 10 }}>
                 Weekly Shift
               </div>
-              <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.5 }}>
+              <div style={{ ...TYPE.heading, fontFamily: DISPLAY, color: "var(--text-primary)", lineHeight: 1.5 }}>
                 {data.headline || data.briefing.split(/[.!?]\s/)[0]}
               </div>
               {data.headline && data.briefing && (

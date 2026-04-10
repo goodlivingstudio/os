@@ -40,6 +40,7 @@ function CitationChip({ num, src }: { num: string; src: CitationSource }) {
           color: "var(--accent-secondary)",
           cursor: "pointer",
           transition: "color 0.15s",
+          marginRight: 3,
         }}
       >
         {num}

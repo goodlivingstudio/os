@@ -25,19 +25,19 @@ export const TYPE = {
   sm:      { fontSize: 11 } as CSSProperties,
   body:    { fontSize: 12, lineHeight: 1.6 } as CSSProperties,
   reading: { fontSize: 13, lineHeight: 1.6 } as CSSProperties,
-  heading: { fontSize: 15, fontWeight: 500, lineHeight: 1.4 } as CSSProperties,
+  heading: { fontSize: 15, fontWeight: 600, lineHeight: 1.4 } as CSSProperties,
 }
 
 // ─── Semantic composites ────────────────────────────────────────────────────
 // Pre-built combinations for the most common patterns.
 
-/** Uppercase label: 11px, accent-secondary, medium weight, tracked */
+/** Uppercase label: 11px, accent-secondary, semibold, tracked */
 export const labelStyle: CSSProperties = {
   ...TYPE.sm,
   color: "var(--accent-secondary)",
   textTransform: "uppercase",
-  fontWeight: 500,
-  letterSpacing: "0.04em",
+  fontWeight: 600,
+  letterSpacing: "0.06em",
 }
 
 /** Body text: 12px, text-secondary */

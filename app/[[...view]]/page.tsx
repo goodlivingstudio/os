@@ -610,7 +610,7 @@ export default function Page() {
                         style={{
                           display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
                           padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                          ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
+                          ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: isActive ? 600 : 400,
                         }}
                       >
                         <span>{cat.label}</span>
@@ -693,7 +693,7 @@ export default function Page() {
                   onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-elevated)" }}
                   onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? "var(--accent-primary)" : "transparent" }}
                 >
-                  <span style={{ ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)", fontWeight: 400 }}>
+                  <span style={{ ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)", fontWeight: isActive ? 600 : 400 }}>
                     {cat.label}
                   </span>
                   <span style={{ ...TYPE.xs, fontVariantNumeric: "tabular-nums", color: isActive ? "var(--accent-muted)" : "var(--text-tertiary)", opacity: 0.5 }}>

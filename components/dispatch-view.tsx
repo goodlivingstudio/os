@@ -259,11 +259,6 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
             display: "flex", alignItems: "center", gap: 8, marginBottom: 24,
             padding: "10px 14px", borderRadius: 8, background: "var(--bg-elevated)",
           }}>
-            <div style={{ display: "flex", gap: 3 }}>
-              {pitch.layers.map(l => (
-                <span key={l} style={{ width: 6, height: 6, borderRadius: "50%", background: LAYER_DOT[l] || "var(--text-tertiary)" }} />
-              ))}
-            </div>
             <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
               Convergence — {pitch.layers.map(l => LAYER_LABELS[l] || l).join(", ")}
             </span>
@@ -679,10 +674,8 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                           {isConvergence(pitch) && (
                             <>
                               <span style={{ color: "var(--text-tertiary)" }}>·</span>
-                              <span style={{ display: "inline-flex", alignItems: "center", gap: 2 }}>
-                                {pitch.layers.slice(0, 4).map(l => (
-                                  <span key={l} style={{ width: 5, height: 5, borderRadius: "50%", background: LAYER_DOT[l] || "var(--text-tertiary)", display: "inline-block" }} />
-                                ))}
+                              <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
+                                {pitch.layers.map(l => LAYER_LABELS[l] || l).join(" + ")}
                               </span>
                             </>
                           )}
