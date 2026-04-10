@@ -465,7 +465,7 @@ export function LeftRail({
             )}
           </div>
 
-          {/* Utility bar */}
+          {/* Utility bar — same sizing as top nav for uniform vertical list */}
           <div style={{ borderTop: "1px solid var(--border)", padding: "8px 0" }}>
             {([
               { id: "config" as const,    Icon: Settings,  label: "Config",       isView: true },
@@ -485,15 +485,15 @@ export function LeftRail({
                   title={item.label}
                   style={{
                     display: "flex", alignItems: "center", gap: 10, width: "100%",
-                    padding: "8px 16px", background: "transparent",
+                    padding: "10px 16px", background: "transparent",
                     border: "none", cursor: "pointer", transition: "background 0.15s",
-                    fontSize: 12, color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
+                    fontSize: 13, color: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
                     fontWeight: isActive ? 500 : 400,
                   }}
                   onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                   onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                 >
-                  <item.Icon size={14} strokeWidth={1.5} />
+                  <item.Icon size={16} strokeWidth={1.5} />
                   <span>{item.label}</span>
                 </button>
               )
