@@ -279,6 +279,37 @@ function SourcePulse({ articles, feedHealth }: {
   )
 }
 
+// ─── Expanded Nav Button — tracks hover via React state ──────────────────────
+
+function ExpandedNavButton({ icon, label, isActive, onClick }: {
+  icon: React.ReactNode
+  label: string
+  isActive: boolean
+  onClick: () => void
+}) {
+  const [hovered, setHovered] = useState(false)
+  const showBg = isActive || hovered
+  return (
+    <button
+      onClick={onClick}
+      title={label}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: "flex", alignItems: "center", gap: 10, width: "100%",
+        padding: "10px 16px",
+        background: showBg ? (isActive ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.04)") : "transparent",
+        border: "none", cursor: "pointer", transition: "background 0.15s, color 0.15s",
+        color: isActive ? "var(--text-primary)" : hovered ? "var(--text-secondary)" : "var(--text-tertiary)",
+        fontSize: 13, fontWeight: isActive ? 500 : 400,
+      }}
+    >
+      {icon}
+      <span>{label}</span>
+    </button>
+  )
+}
+
 // ─── Left Rail ───────────────────────────────────────────────────────────────
 
 export function LeftRail({
@@ -440,23 +471,15 @@ export function LeftRail({
             ]).map(item => {
               const isActive = item.action === "gallery" ? false : viewMode === item.id
               return (
-                <button
+                <ExpandedNavButton
                   key={item.id}
+                  icon={<item.Icon size={16} strokeWidth={1.5} />}
+                  label={item.label}
+                  isActive={isActive}
                   onClick={() => item.action === "gallery" && onGalleryOpen ? onGalleryOpen() : onViewChange(item.id as ViewMode)}
-                  title={item.label}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 10, width: "100%",
-                    padding: "10px 16px",
-                    background: isActive ? "rgba(255,255,255,0.06)" : "transparent",
-                    border: "none", cursor: "pointer", transition: "background 0.15s, color 0.15s",
-                    color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
-                  }}
-                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "rgba(255,255,255,0.04)" }}
-                  onMouseLeave={e => { e.currentTarget.style.background = isActive ? "rgba(255,255,255,0.06)" : "transparent" }}
-                >
-                  <item.Icon size={16} strokeWidth={1.5} />
-                  <span style={{ fontSize: 13, fontWeight: isActive ? 500 : 400 }}>{item.label}</span>
-                </button>
+                />
+              )
+            })}
               )
             })}
 
@@ -473,29 +496,17 @@ export function LeftRail({
             ]).map(item => {
               const isActive = item.isView && viewMode === item.id
               return (
-                <button
+                <ExpandedNavButton
                   key={item.id}
+                  icon={<item.Icon size={16} strokeWidth={1.5} />}
+                  label={item.label}
+                  isActive={isActive}
                   onClick={() => {
                     if (item.id === "shortcuts" && onHotkeysOpen) onHotkeysOpen()
                     else if (item.id === "export" && onExportOpen) onExportOpen()
                     else if (item.isView) onViewChange(item.id as ViewMode)
                   }}
-                  title={item.label}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 10, width: "100%",
-                    padding: "10px 16px",
-                    background: isActive ? "rgba(255,255,255,0.06)" : "transparent",
-                    border: "none", cursor: "pointer", transition: "background 0.15s, color 0.15s",
-                    fontSize: 13,
-                    color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
-                    fontWeight: isActive ? 500 : 400,
-                  }}
-                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "rgba(255,255,255,0.04)" }}
-                  onMouseLeave={e => { e.currentTarget.style.background = isActive ? "rgba(255,255,255,0.06)" : "transparent" }}
-                >
-                  <item.Icon size={16} strokeWidth={1.5} />
-                  <span>{item.label}</span>
-                </button>
+                />
               )
             })}
           </div>
