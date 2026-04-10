@@ -825,7 +825,7 @@ The operator is a Senior Design Director with 15 years of agency experience, fou
 
 Professional evolution thesis: the role is no longer design leader alone — it is design leader, product leader, and strategy leader simultaneously. Actively closing the gap between design authority and technical/product fluency. Builds AI-augmented systems (Dispatch, Atlas) and directs AI agents for execution. Operates primarily in the defensible layers of design leadership: strategic framing, expressive judgment, system architecture, and AI direction.
 
-Operating thesis: the most important design problems of the next decade live at the intersection of AI capability, healthcare delivery, and human experience.
+Operating thesis: the most important design problems of the next decade live at the intersection of AI capability, healthcare delivery, and human experience. The operator is building toward the authority level required to lead at that intersection.
 ```
 
 *This block is the canonical OPERATOR prompt. It mirrors `lib/config/dispatch.ts` mandate.operator exactly. When this block changes, propagate to the runtime config in the same commit. The runtime config is what ships to Claude on every call; PROMPTS.md is the documentation that should never drift from it.*
