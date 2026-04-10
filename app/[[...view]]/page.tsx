@@ -296,7 +296,7 @@ export default function Page() {
   // Global keyboard shortcuts
   useEffect(() => {
     // All 9 left-rail buttons in visual order (top row → bottom row)
-    const allTabs = ["signal", "audio", "synthesis", "gallery", "config", "pulse", "shortcuts", "export", "dispatch"] as const
+    const allTabs = ["signal", "audio", "gallery", "synthesis", "dispatch", "config", "pulse", "shortcuts", "export"] as const
     const handler = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName
       const isTyping = tag === "INPUT" || tag === "TEXTAREA"
@@ -333,13 +333,13 @@ export default function Page() {
       // Number keys — direct access to all 9 tabs
       else if (e.key === "1") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("signal") }
       else if (e.key === "2") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("audio") }
-      else if (e.key === "3") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("synthesis") }
-      else if (e.key === "4") { if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setGalleryOpenWithUrl(true) }
-      else if (e.key === "5") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("config") }
-      else if (e.key === "6") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("pulse") }
-      else if (e.key === "7") { if (galleryOpen) setGalleryOpenWithUrl(false); if (exportOpen) setExportOpen(false); setHotkeysOpen(true) }
-      else if (e.key === "8") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); setExportOpen(true) }
-      else if (e.key === "9") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("dispatch") }
+      else if (e.key === "3") { if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setGalleryOpenWithUrl(true) }
+      else if (e.key === "4") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("synthesis") }
+      else if (e.key === "5") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("dispatch") }
+      else if (e.key === "6") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("config") }
+      else if (e.key === "7") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); if (exportOpen) setExportOpen(false); setViewMode("pulse") }
+      else if (e.key === "8") { if (galleryOpen) setGalleryOpenWithUrl(false); if (exportOpen) setExportOpen(false); setHotkeysOpen(true) }
+      else if (e.key === "9") { if (galleryOpen) setGalleryOpenWithUrl(false); if (hotkeysOpen) setHotkeysOpen(false); setExportOpen(true) }
 
       // F — focus mode
       else if (e.key === "f" || e.key === "F") setFocusModeWithUrl(!focusMode)
