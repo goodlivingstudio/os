@@ -227,7 +227,7 @@ async function annotateBatch(
       max_tokens: 6000,
       system: ANNOTATE_PROMPT,
       messages: [{ role: "user", content: items + "\n\nReturn JSON array." }],
-    })
+    }, { timeout: 30_000 })
     trackUsage({ endpoint: "news-annotate", provider: "anthropic", model: "claude-haiku-4-5-20251001", inputTokens: response.usage?.input_tokens, outputTokens: response.usage?.output_tokens }).catch(() => {})
     const text = response.content[0]?.type === "text" ? response.content[0].text : ""
     const match = text.match(/\[[\s\S]*\]/)

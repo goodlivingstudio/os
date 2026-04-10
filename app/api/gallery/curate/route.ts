@@ -60,6 +60,7 @@ export async function POST(req: Request) {
           const res = await fetch(`${ARENA_API}/channels/${slug}/blocks/${arenaBlockId}`, {
             method: "DELETE",
             headers: { "Authorization": `Bearer ${process.env.ARENA_ACCESS_TOKEN}` },
+            signal: AbortSignal.timeout(10_000),
           })
           if (res.ok) results.push(`Removed from Are.na (${slug})`)
         } catch { /* channel might not contain this block */ }
