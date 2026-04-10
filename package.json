@@ -16,7 +16,11 @@
     "scrape:dispatch": "npx tsx scripts/gallery-scraper.ts --instance=dispatch",
     "scrape:explore": "npx tsx scripts/gallery-scraper.ts --instance=explore",
     "scrape:explore:taste": "npx tsx scripts/gallery-scraper.ts --instance=explore --taste",
-    "collect:explore": "npx tsx scripts/gallery-collector.ts --instance=explore"
+    "collect:explore": "npx tsx scripts/gallery-collector.ts --instance=explore",
+    "docs:check": "node scripts/check-doc-links.mjs",
+    "docs:export": "bash scripts/regenerate-docs-exports.sh",
+    "docs:terms": "bash scripts/check-stale-terms.sh",
+    "docs:verify": "npm run docs:export && npm run docs:check && npm run docs:terms"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",
