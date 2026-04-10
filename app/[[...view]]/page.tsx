@@ -839,6 +839,7 @@ export default function Page() {
             <div style={{ position: "relative" }}>
               <button
                 onClick={() => { setMobileMenuOpen(v => !v); setMobileFilterOpen(false) }}
+                aria-label="Toggle navigation menu"
                 style={{ width: 36, height: 36, borderRadius: 8, border: "none", background: mobileMenuOpen ? "var(--bg-elevated)" : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, color: "var(--text-tertiary)", transition: "all 0.15s" }}
               >
                 <Menu size={18} strokeWidth={1.5} />

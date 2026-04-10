@@ -56,6 +56,7 @@ function Lightbox({ image, onClose, onPrev, onNext }: {
     >
       <button
         onClick={e => { e.stopPropagation(); onClose() }}
+        aria-label="Close gallery"
         style={{
           position: "absolute", top: 20, right: 20, zIndex: 2,
           background: "transparent", border: "none",
@@ -70,6 +71,7 @@ function Lightbox({ image, onClose, onPrev, onNext }: {
 
       <button
         onClick={e => { e.stopPropagation(); onPrev() }}
+        aria-label="Previous image"
         style={{
           position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)",
           background: "transparent", border: "none",
@@ -84,6 +86,7 @@ function Lightbox({ image, onClose, onPrev, onNext }: {
 
       <button
         onClick={e => { e.stopPropagation(); onNext() }}
+        aria-label="Next image"
         style={{
           position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)",
           background: "transparent", border: "none",
