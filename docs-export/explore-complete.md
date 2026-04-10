@@ -48,6 +48,8 @@ This is not a sprint. The system must serve the team through launch and beyond. 
 
 ## THE OPERATOR
 
+*Explore's operator is a team, not an individual. The OS-level operator profile at `../os/OPERATOR.md` describes Jeremy Grant — the operator behind every Good Living Studio product, including Explore. Jeremy is a design lead inside this team but Explore briefs the whole team, not him alone. The team's five-year target and operating thesis below are distinct from the OS-level operator's personal ones; they describe what Explore is building toward as a civic design function. When the OS operator profile updates, this section does not need to follow — it is structurally a sibling, not a derivative.*
+
 **The National Design Studio's Explore team.** A multidisciplinary design and strategy function working at the intersection of civic identity, digital product, and public service. The team spans creative direction, strategy, UX, content, and systems thinking. All members share the same intelligence feed — there is no single principal. The system briefs the team, not an individual.
 
 ### Operating context

@@ -37,7 +37,7 @@ Dispatch serves a single operator — Jeremy Grant. See `../os/OPERATOR.md` for 
 
 Dispatch is Jeremy's personal intelligence system. It operates from the full operator context but with a specific focus: the intersection of healthcare/pharma opportunity (primarily Lilly), design leadership positioning (CDO/Head of Design trajectory), and the AI capability landscape. The five annotation layers (Opportunity, Position, Discipline, Landscape, Culture) are calibrated to this operator's strategic context.
 
-The Lilly engagement context in `../os/OPERATOR.md` is the primary intelligence target. Dispatch surfaces, scores, and synthesizes signal against that target daily.
+Eli Lilly is the primary intelligence target — see `../os/OPERATOR.md` § PRIORITY INTELLIGENCE TARGETS § Eli Lilly for the canonical context (51M patients, GLP-1 momentum, Diogo Rau's AI mandate, donanemab care coordination, the 73% pharma digital transformation failure rate, and the strategic argument that Lilly's science has outpaced the experience of receiving it). Dispatch surfaces, scores, and synthesizes signal against that target daily. The Lilly conversation Jeremy is in (with Laree Ross at Lilly's innovation team) is the active engagement opportunity inside that intelligence frame; see PROMPTS.md LILLY_CONTEXT block for the engagement-specific framing that goes into the runtime AI prompts.
 
 ---
 

@@ -15,7 +15,7 @@ Your task: generate exactly 3 signal cards from today's annotated feed. These ar
 
 SELECTION CRITERIA:
 Sort the feed by urgency score first. From the highest-urgency signals, select 3 that:
-- Are directly relevant to the team's immediate context and active engagement
+- Are directly relevant to the operator's immediate context and active intelligence priorities
 - Represent distinct territory — do not pick three signals from the same layer
 - Prefer multi-layer signals (scoring high on 2+ layers simultaneously)
 - Have a clear "so what" for this operator specifically — not just interesting in the abstract
