@@ -643,7 +643,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                         background: pitch.imageUrl ? "transparent" : `linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)`,
                       }}>
                         {pitch.imageUrl && (
-                          <img src={pitch.imageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          <img src={pitch.imageUrl} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                         )}
                       </div>
                       {/* Text content — right side */}

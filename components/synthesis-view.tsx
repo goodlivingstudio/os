@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useScrollGuard } from "@/lib/use-scroll-guard"
-import instanceConfig, { storageKey } from "@/lib/config"
+import instanceConfig, { storageKey, MOBILE_BREAKPOINT } from "@/lib/config"
 import { ArrowUpRight } from "lucide-react"
 import type { Article } from "@/lib/types"
 import { TYPE, MONO, DISPLAY, labelStyle } from "@/lib/styles"
@@ -95,7 +95,7 @@ const LAYER_DOT: Record<string, string> = Object.fromEntries(
 
 export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: SynthesisViewProps) {
   const isTriage = sortBy === "urgency"
-  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= MOBILE_BREAKPOINT
   const scroll = useScrollGuard()
   const [data, setData] = useState<SynthesisData | null>(null)
   const [loading, setLoading] = useState(false)
@@ -369,7 +369,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                         background: pattern.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
                       }}>
                         {pattern.imageUrl && (
-                          <img src={pattern.imageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          <img src={pattern.imageUrl} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                         )}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>

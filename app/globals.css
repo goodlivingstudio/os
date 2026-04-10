@@ -35,6 +35,7 @@ html, body {
 }
 
 /* ─── Mobile containment ──────────────────────────────────────── */
+/* MOBILE_BREAKPOINT: 768px — keep in sync with lib/config/index.ts */
 @media (max-width: 768px) {
   html, body {
     overflow: hidden;

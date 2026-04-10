@@ -26,6 +26,11 @@ export default config
 // Re-export types for convenience
 export type { InstanceConfig, LayerDef, TickerHeadline, CategoryStyle, SkinDef, BrandingConfig, MandateConfig } from "./types"
 
+// ─── Layout constants ───────────────────────────────────────────────────────
+
+/** Responsive breakpoint (px). Keep in sync with @media queries in globals.css. */
+export const MOBILE_BREAKPOINT = 768
+
 // ─── Storage key helper ─────────────────────────────────────────────────────
 // Prefixes all localStorage/KV keys with the instance ID to prevent collisions.
 

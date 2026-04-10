@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { ExternalLink, ArrowUpRight, ChevronUp, ChevronDown, Bookmark } from "lucide-react"
 import { TYPE, MONO, metaStyle } from "@/lib/styles"
 import type { Article } from "@/lib/types"
-import instanceConfig, { storageKey } from "@/lib/config"
+import instanceConfig, { storageKey, MOBILE_BREAKPOINT } from "@/lib/config"
 
 // ─── Audio DCOS Band ────────────────────────────────────────────────────────
 
@@ -576,7 +576,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
   const [signal, setSignal] = useState<{ episode: Episode; x: number; y: number } | null>(null)
   const [artworkMode, setArtworkMode] = useState<"off" | "source">("off")
-  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= MOBILE_BREAKPOINT
   const annotated = useRef(false)
   const [annotating, setAnnotating] = useState(false)
 

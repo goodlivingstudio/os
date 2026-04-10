@@ -20,7 +20,7 @@ import { Divider } from "@/components/divider"
 import type { Article, Signal, FeedHealth, Skin, ViewMode } from "@/lib/types"
 import { LAYER_CONFIG } from "@/lib/types"
 import { TYPE, MONO } from "@/lib/styles"
-import instanceConfig, { storageKey } from "@/lib/config"
+import instanceConfig, { storageKey, MOBILE_BREAKPOINT } from "@/lib/config"
 import { PRODUCTS } from "@/lib/config/products"
 
 // ─── Skin + mode system ───────────────────────────────────────────────────────
@@ -186,7 +186,7 @@ function clamp(val: number, min: number, max: number) {
 function useMobile() {
   const [isMobile, setIsMobile] = useState(false)
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth <= 768)
+    const check = () => setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT)
     check()
     window.addEventListener("resize", check)
     return () => window.removeEventListener("resize", check)

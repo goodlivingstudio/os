@@ -148,6 +148,7 @@ export const FeedCard = memo(function FeedCard({ article, index, onSignalEnter, 
         <img
           src={article.imageUrl}
           alt=""
+          loading="lazy"
           onError={(e) => { e.currentTarget.style.display = "none" }}
           style={{
             width: 96, height: 64, borderRadius: 8,
