@@ -435,32 +435,26 @@ export function LeftRail({
 
             {/* Triage / Explore toggle — visible for Signal, Audio, Synthesis */}
             {(viewMode === "signal" || viewMode === "audio" || viewMode === "synthesis") && (
-              <div style={{ padding: "12px 16px 4px" }}>
-                <div style={{ height: 1, background: "var(--border)", marginBottom: 12 }} />
-                <div style={{ display: "flex", gap: 0, background: "var(--bg-elevated)", borderRadius: 8, padding: 2 }}>
-                  {([
-                    { id: "urgency" as const, label: "Triage" },
-                    { id: "layer" as const,   label: "Explore" },
-                  ]).map(mode => {
-                    const isActive = sortBy === mode.id
-                    return (
-                      <button
-                        key={mode.id}
-                        onClick={() => onSortChange(mode.id)}
-                        style={{
-                          flex: 1, padding: "8px 0",
-                          background: isActive ? "var(--bg-surface)" : "transparent",
-                          border: "none", borderRadius: 6, cursor: "pointer",
-                          fontSize: 12, fontWeight: isActive ? 500 : 400,
-                          color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
-                          transition: "all 0.2s",
-                        }}
-                      >
-                        {mode.label}
-                      </button>
-                    )
-                  })}
-                </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "10px 16px", borderTop: "1px solid var(--border)" }}>
+                {([
+                  { id: "urgency" as const, label: "Triage" },
+                  { id: "layer" as const,   label: "Explore" },
+                ]).map((mode, i) => (
+                  <span key={mode.id}>
+                    {i > 0 && <span style={{ color: "var(--border)", margin: "0 4px" }}>/</span>}
+                    <button
+                      onClick={() => onSortChange(mode.id)}
+                      style={{
+                        background: "transparent", border: "none", cursor: "pointer",
+                        fontSize: 12, fontWeight: sortBy === mode.id ? 500 : 400,
+                        color: sortBy === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
+                        padding: 0, transition: "color 0.15s",
+                      }}
+                    >
+                      {mode.label}
+                    </button>
+                  </span>
+                ))}
               </div>
             )}
           </div>
