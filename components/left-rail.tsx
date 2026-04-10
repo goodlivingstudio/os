@@ -376,14 +376,14 @@ export function LeftRail({
       {/* ═══ EXPANDED MODE ═══ */}
       {railMode === "expanded" && (
         <div style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
-          {/* Header */}
-          <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--border)" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span style={{ ...labelStyle, marginBottom: 0 }}>{instanceConfig.branding.name}</span>
-            </div>
-            <div style={{ textAlign: "center", marginTop: 8 }}>
-              <span style={{ fontFamily: "var(--font-sohne-mono)", fontSize: 11, color: "var(--text-tertiary)" }}>{time}</span>
-            </div>
+          {/* Header — matches 40px height of Cerebro + Synthesis headers */}
+          <div style={{
+            height: 40, flexShrink: 0,
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            padding: "0 16px", borderBottom: "1px solid var(--border)",
+          }}>
+            <span style={{ ...labelStyle, marginBottom: 0 }}>{instanceConfig.branding.name}</span>
+            <span style={{ fontFamily: "var(--font-sohne-mono)", fontSize: 11, color: "var(--text-tertiary)" }}>{time}</span>
           </div>
 
           {/* View navigation */}
