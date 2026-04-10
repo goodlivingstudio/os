@@ -366,10 +366,19 @@ export async function GET() {
     return true
   })
 
+  // ── Drop stale articles — nothing older than 31 days ────────────────────
+  const MAX_AGE_MS = 31 * 24 * 60 * 60 * 1000
+  const cutoff = Date.now() - MAX_AGE_MS
+  const fresh = deduped.filter(a => {
+    if (a.url === "#") return true // keep stubs
+    const published = new Date(a.publishedAt).getTime()
+    return published >= cutoff
+  })
+
   const LAYER_ORDER = ALL_LAYERS
 
   const sorted = interleave(
-    deduped.sort((a, b) =>
+    fresh.sort((a, b) =>
       LAYER_ORDER.indexOf(a.tag) - LAYER_ORDER.indexOf(b.tag)
     )
   )
