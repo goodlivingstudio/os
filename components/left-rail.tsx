@@ -478,7 +478,6 @@ export function LeftRail({
               { id: "audio" as const,     Icon: AudioLines, label: "Sound" },
               { id: "gallery" as const,   Icon: Aperture,   label: "Surface", action: "gallery" },
               { id: "synthesis" as const, Icon: Blend,      label: "Synthesis" },
-              { id: "dispatch" as const,  Icon: Newspaper,  label: "Dispatch" },
             ]).map(item => {
               const isActive = item.action === "gallery" ? false : viewMode === item.id
               return (
@@ -502,6 +501,7 @@ export function LeftRail({
               { id: "pulse" as const,     Icon: Activity,  label: "Source Pulse",  isView: true },
               { id: "shortcuts" as const, Icon: Keyboard,  label: "Shortcuts",    isView: false },
               { id: "export" as const,    Icon: FileDown,  label: "Export",        isView: false },
+              { id: "dispatch" as const,  Icon: Newspaper,  label: "Dispatch",    isView: true },
             ]).map(item => {
               const isActive = item.isView && viewMode === item.id
               return (
