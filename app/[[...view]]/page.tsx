@@ -441,6 +441,27 @@ export default function Page() {
   const [cerebroPrompt,  setCerebroPrompt]  = useState<{ text: string; id: number } | null>(null)
   const { signals, briefLoading, briefError } = useChiefOfStaff(articles)
 
+  // Audio brief signals — read from localStorage cache (written by AudioBriefBand)
+  const [audioSignals, setAudioSignals] = useState<Signal[]>([])
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(storageKey("dcos-audio-brief-v2"))
+      if (raw) {
+        const { signals: cached } = JSON.parse(raw)
+        if (Array.isArray(cached) && cached.length > 0) {
+          setAudioSignals(cached.map((s: { headline?: string; body?: string; layer?: string }) => ({
+            headline: s.headline || "",
+            label: s.headline || "",
+            body: s.body || "",
+            layer: s.layer || "",
+            urgency: 0,
+            sources: [],
+          })))
+        }
+      }
+    } catch { /* */ }
+  }, [mobileTab])
+
   const handleDeliberate = useCallback((signal: Signal) => {
     const text = `I want to deliberate on this signal from the brief:\n\n"${signal.headline}"\n\n${signal.body}\n\nWalk me through the strategic implications. What should I be thinking about, and what questions should I be exploring?`
     setCerebroPrompt({ text, id: Date.now() })
@@ -947,9 +968,11 @@ export default function Page() {
           </div>
         </div>
 
-        {/* ── DCOS swipeable carousel — Signal tab only, toggled via hamburger menu ── */}
-        {mobileTab === "signal" && showDcos && signals.filter(s => s.body).length > 0 && (() => {
-          const dcosSignals = signals.filter(s => s.body)
+        {/* ── DCOS swipeable carousel — Signal + Sound tabs, toggled via hamburger menu ── */}
+        {(mobileTab === "signal" || mobileTab === "audio") && showDcos && (() => {
+          const activeDcosSignals = mobileTab === "audio" ? audioSignals : signals
+          const dcosSignals = activeDcosSignals.filter(s => s.body)
+          if (dcosSignals.length === 0) return null
           return (
             <div style={{ flexShrink: 0, borderBottom: "1px solid var(--border)" }}>
               <div
