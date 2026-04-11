@@ -57,7 +57,6 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
   const [memory,    setMemory]    = useState(false)
   const [sessionId, setSessionId] = useState("")
   const [followUps, setFollowUps] = useState<{ question: string; alternatives: string[] } | null>(null)
-  const [lastSources, setLastSources] = useState<Array<{ title: string; url: string }>>([])
   const [sourcesByMsg, setSourcesByMsg] = useState<Record<number, CitationSource[]>>({})
   const [attachments, setAttachments] = useState<{ data: string; media_type: string; name: string; preview: string }[]>([])
   const [isRecording, setIsRecording] = useState(false)
@@ -148,7 +147,6 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
     setFollowUps(null)
     setTokens(0)
     setSourcesByMsg({})
-    setLastSources([])
   }, [])
 
   const send = useCallback(
@@ -195,7 +193,6 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
           setMessages(prev => {
             const newMsgs = [...prev, ...searchLines, { role: "assistant" as const, content: data.text || "// empty response" }]
             if (data.sources?.length > 0) {
-              setLastSources(data.sources)
               const assistantIdx = newMsgs.length - 1
               setSourcesByMsg(prev => ({ ...prev, [assistantIdx]: data.sources }))
             }
@@ -246,9 +243,6 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
       setTimeout(() => setEscalateCopied(false), 2500)
     })
   }, [messages])
-
-  // Suppress unused var warning — lastSources reserved for future citation UI
-  void lastSources
 
   const [threadCopied, setThreadCopied] = useState(false)
   const [copiedMsgIdx, setCopiedMsgIdx] = useState<number | null>(null)

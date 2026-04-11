@@ -52,6 +52,9 @@ export const metaStyle: CSSProperties = {
   color: "var(--text-tertiary)",
 }
 
+/** Layer colors — canonical palette, indexed by layer order */
+export const LAYER_COLORS = ["#D4A05A", "#5A9EB0", "#7BAF6A", "#9A85B8", "#C87A6A"] as const
+
 /** Cerebro message: 13px mono, text-secondary (machine voice) */
 export const cerebroTextStyle: CSSProperties = {
   ...TYPE.reading,

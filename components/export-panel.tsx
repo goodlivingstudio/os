@@ -345,8 +345,7 @@ async function generatePDF(content: ExportContent): Promise<void> {
 async function generateDOCX(content: ExportContent): Promise<void> {
   const { Document, Packer, Paragraph, TextRun, HeadingLevel, BorderStyle, AlignmentType } = await import("docx")
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const children: any[] = []
+  const children: (import("docx").Paragraph)[] = []
 
   // Title
   children.push(new Paragraph({
@@ -590,7 +589,7 @@ export function ExportPanel({ onClose, signals, articles }: {
         saveAs(blob, `${instanceConfig.id}-${new Date().toISOString().slice(0, 10)}.${ext}`)
       }
     } catch (err) {
-      console.error("Export failed:", err)
+      if (process.env.NODE_ENV !== "production") console.error("Export failed:", err)
     }
     setDownloading(false)
   }
