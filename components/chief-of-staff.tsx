@@ -232,7 +232,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
             overflow: "hidden",
             transition: "max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
           }}>
-            <div style={{ display: "grid", gridTemplateColumns: `repeat(${signals.filter(s => s.body).length || 1}, 1fr)`, gap: 8, padding: "8px 20px 16px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(${signals.filter(s => s.body).length || 1}, 1fr)`, gap: 12, padding: "12px 20px 20px" }}>
               {signals.filter(s => s.body).map((signal, i) => {
                   const copyText = `[Dispatch Intelligence Signal — ${signal.layer || "General"}]\n\n${signal.headline}\n\n${signal.body}\n\n---\nSource: dispatch.goodliving.studio/synthesis`
                   return (
@@ -246,7 +246,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
                     onMouseLeave={() => setHoveredIdx(null)}
                     style={{
                       position: "relative",
-                      padding: "16px 18px",
+                      padding: "20px",
                       borderRadius: 12,
                       animation: `signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${i * 120}ms both`,
                       display: "flex",
@@ -271,7 +271,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
                       fontWeight: 600,
                       color: "var(--text-primary)",
                       lineHeight: 1,
-                      marginBottom: signal.body ? 10 : 0,
+                      marginBottom: signal.body ? 14 : 0,
                     }}>
                       {signal.headline}
                     </div>

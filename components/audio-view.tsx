@@ -180,7 +180,7 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true, onDeliberat
                 onMouseEnter={() => setHoveredIdx(i)}
                 onMouseLeave={() => setHoveredIdx(null)}
                 style={{
-                  padding: "16px 18px",
+                  padding: "20px",
                   borderRadius: 12,
                   animation: `signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${i * 120}ms both`,
                   display: "flex",
@@ -193,7 +193,7 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true, onDeliberat
                 {signal.layer && (
                   <div style={{
                     ...labelStyle,
-                    marginBottom: 4,
+                    marginBottom: 8,
                   }}>
                     {signal.layer}
                   </div>
@@ -204,7 +204,7 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true, onDeliberat
                   fontWeight: 600,
                   color: "var(--text-primary)",
                   lineHeight: 1,
-                  marginBottom: signal.body ? 10 : 0,
+                  marginBottom: signal.body ? 14 : 0,
                 }}>
                   {signal.headline}
                 </div>
@@ -325,7 +325,7 @@ function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onS
       style={{
         display: "flex",
         gap: 16,
-        padding: "14px 16px",
+        padding: "18px 20px",
         background: hovered ? "var(--bg-elevated)" : "var(--bg-surface)",
         borderRadius: 12,
         cursor: "pointer",
@@ -385,7 +385,7 @@ function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onS
         <div
           style={{
             ...metaStyle,
-            marginBottom: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+            marginBottom: 8, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
           }}
         >
           {episode.showName}
@@ -698,7 +698,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
       <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", paddingTop: 0, paddingBottom: 8 }}>
       {/* Loading state — matches Signal feed skeleton pattern */}
       {loading ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "12px 0" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "16px 0" }}>
           {[...Array(8)].map((_, i) => (
             <div
               key={i}
@@ -715,7 +715,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
           ))}
         </div>
       ) : triageWaiting ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "12px 0" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "16px 0" }}>
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
@@ -736,7 +736,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
           No episodes loaded. Check podcast feed configuration.
         </div>
       ) : (
-        <div className="episode-grid" style={{ gap: 12, padding: "12px 0" }}>
+        <div className="episode-grid" style={{ gap: 16, padding: "16px 0" }}>
           {filtered.map((ep, i) => (
             <EpisodeCard
               key={ep.id}
