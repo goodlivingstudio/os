@@ -168,7 +168,7 @@ export async function GET(request: Request) {
       })
     }
 
-    const articles = await loadArticleHistory(7)
+    const articles = await loadArticleHistory(14)
 
     if (articles.length === 0) {
       return Response.json({
@@ -263,10 +263,10 @@ export async function GET(request: Request) {
       result.weekSummary || "", ctxForCitations
     )
 
-    // Compute sparkline data — average layer scores per day (7 days)
+    // Compute sparkline data — average layer scores per day, this week + last week
     const layerIds = instanceConfig.layers.map(l => l.id)
-    const sparklines: Record<string, number[]> = {}
-    for (const lid of layerIds) sparklines[lid] = []
+    const sparklines: Record<string, { thisWeek: number[]; lastWeek: number[] }> = {}
+    for (const lid of layerIds) sparklines[lid] = { thisWeek: [], lastWeek: [] }
 
     // Group articles by day, compute average score per layer
     const dayBuckets: Record<string, typeof articles> = {}
@@ -276,14 +276,34 @@ export async function GET(request: Request) {
       dayBuckets[day].push(a)
     }
     const sortedDays = Object.keys(dayBuckets).sort()
+
+    // This week = last 7 days
     for (const day of sortedDays.slice(-7)) {
       const dayArticles = dayBuckets[day]
       for (const lid of layerIds) {
         const scores = dayArticles
           .map(a => a.signalScores?.[lid])
           .filter((s): s is number => typeof s === "number" && s > 0)
-        sparklines[lid].push(scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0)
+        sparklines[lid].thisWeek.push(scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0)
       }
+    }
+
+    // Last week = days 8-14 (if available)
+    const lastWeekDays = sortedDays.slice(-14, -7)
+    if (lastWeekDays.length > 0) {
+      for (const day of lastWeekDays) {
+        const dayArticles = dayBuckets[day]
+        for (const lid of layerIds) {
+          const scores = dayArticles
+            .map(a => a.signalScores?.[lid])
+            .filter((s): s is number => typeof s === "number" && s > 0)
+          sparklines[lid].lastWeek.push(scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0)
+        }
+      }
+    }
+    // Pad lastWeek to 7 if shorter
+    for (const lid of layerIds) {
+      while (sparklines[lid].lastWeek.length < 7) sparklines[lid].lastWeek.unshift(0)
     }
 
     const responseData = {

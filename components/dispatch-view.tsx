@@ -45,7 +45,7 @@ interface DispatchData {
   perspectives?: Perspective[]
   headerImageUrl?: string
   pitches: Pitch[]
-  sparklines?: Record<string, number[]>
+  sparklines?: Record<string, { thisWeek: number[]; lastWeek: number[] } | number[]>
   articleCount?: number
   generatedAt?: string
   message?: string
@@ -629,8 +629,9 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
 
                   // Pie chart data — total signal weight per layer
                   const pieData = instanceConfig.layers.map((l, i) => {
-                    const pts = data.sparklines![l.id] || []
-                    const total = pts.reduce((a, b) => a + b, 0)
+                    const raw = data.sparklines![l.id]
+                    const pts = Array.isArray(raw) ? raw : (raw?.thisWeek || [])
+                    const total = pts.reduce((a: number, b: number) => a + b, 0)
                     return { layer: l.id, label: l.label, value: Math.round(total * 10) / 10, fill: layerColors[i] }
                   })
                   const pieConfig: ChartConfig = Object.fromEntries(
@@ -641,12 +642,22 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, padding: "0 20px" }}>
                       {/* 5 area charts */}
                       {instanceConfig.layers.map((layer, layerIdx) => {
-                        const points = data.sparklines![layer.id] || []
-                        if (points.length < 2) return null
-                        const chartData = points.map((v, i) => ({ day: days[i] || `D${i}`, value: v }))
+                        const raw = data.sparklines![layer.id]
+                        // Support both old format (number[]) and new format ({ thisWeek, lastWeek })
+                        const thisWeek = Array.isArray(raw) ? raw : (raw?.thisWeek || [])
+                        const lastWeek = Array.isArray(raw) ? [] : (raw?.lastWeek || [])
+                        if (thisWeek.length < 2) return null
+                        const chartData = thisWeek.map((v, i) => ({
+                          day: days[i] || `D${i}`,
+                          thisWeek: v,
+                          lastWeek: lastWeek[i] || 0,
+                        }))
                         const color = layerColors[layerIdx]
                         const gradId = `spark-fill-${layer.id}`
-                        const areaConfig: ChartConfig = { value: { label: layer.label, color } }
+                        const areaConfig: ChartConfig = {
+                          thisWeek: { label: "This week", color },
+                          lastWeek: { label: "Last week", color: "var(--text-tertiary)" },
+                        }
                         return (
                           <div key={layer.id} style={{
                             background: "var(--bg-surface)", borderRadius: 12, padding: "16px 16px 8px",
@@ -655,25 +666,41 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                             <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500, marginBottom: 8 }}>
                               {layer.label}
                             </span>
-                            <ChartContainer config={areaConfig} className="h-24 w-full">
+                            <ChartContainer config={areaConfig} className="h-32 w-full">
                               <AreaChart data={chartData} margin={{ top: 4, right: 8, bottom: 0, left: 8 }}>
                                 <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--border)" strokeOpacity={0.3} />
                                 <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
                                 <defs>
                                   <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor={color} stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor={color} stopOpacity={0.1} />
+                                    <stop offset="5%" stopColor={color} stopOpacity={0.35} />
+                                    <stop offset="95%" stopColor={color} stopOpacity={0.05} />
+                                  </linearGradient>
+                                  <linearGradient id={`${gradId}-last`} x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="var(--text-tertiary)" stopOpacity={0.3} />
+                                    <stop offset="95%" stopColor="var(--text-tertiary)" stopOpacity={0.05} />
                                   </linearGradient>
                                 </defs>
                                 <Area
                                   type="natural"
-                                  dataKey="value"
+                                  dataKey="lastWeek"
+                                  stroke="var(--text-tertiary)"
+                                  strokeWidth={1}
+                                  fill={`url(#${gradId}-last)`}
+                                  fillOpacity={0.3}
+                                  dot={false}
+                                  activeDot={{ r: 3, fill: "var(--text-tertiary)", stroke: "var(--bg-surface)", strokeWidth: 2 }}
+                                  stackId="a"
+                                />
+                                <Area
+                                  type="natural"
+                                  dataKey="thisWeek"
                                   stroke={color}
                                   strokeWidth={1.5}
                                   fill={`url(#${gradId})`}
                                   fillOpacity={0.4}
                                   dot={false}
                                   activeDot={{ r: 4, fill: color, stroke: "var(--bg-surface)", strokeWidth: 2 }}
+                                  stackId="b"
                                 />
                               </AreaChart>
                             </ChartContainer>
@@ -689,7 +716,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                         <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500, marginBottom: 8, alignSelf: "flex-start" }}>
                           Distribution
                         </span>
-                        <ChartContainer config={pieConfig} className="h-24 w-full">
+                        <ChartContainer config={pieConfig} className="h-32 w-full">
                           <PieChart>
                             <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
                             <Pie data={pieData} dataKey="value" nameKey="label" innerRadius={20} strokeWidth={2} stroke="var(--bg-surface)" />
