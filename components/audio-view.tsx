@@ -558,7 +558,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
                 {mobileFilterOpen && (
                   <div style={{
                     position: "absolute", top: 38, left: 0, zIndex: 100, minWidth: 180,
-                    background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 10,
+                    background: "var(--bg-elevated)", border: "1px solid var(--border)", borderRadius: 10,
                     padding: "4px 0", animation: "status-fade 0.15s ease both",
                   }}>
                     {LAYER_FILTERS.map(layer => {
