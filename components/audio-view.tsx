@@ -522,8 +522,8 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
   return (
     <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}>
 
-      {/* Audio DCOS Band — desktop only */}
-      {!isMobile && <AudioBriefBand episodes={episodes} visible={!loading} defaultExpanded={sortBy === "urgency"} onDeliberate={onDeliberate} />}
+      {/* Audio DCOS Band */}
+      <AudioBriefBand episodes={episodes} visible={!loading} defaultExpanded={sortBy === "urgency"} onDeliberate={onDeliberate} />
 
       {/* Layer filters + artwork toggle — dropdown on mobile, pills on desktop */}
       {!loading && (() => {
@@ -534,7 +534,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
         const activeCount = activeLayer === "all" ? pool.length : pool.filter(ep => ep.layer === activeLayer).length
 
         return (
-          <div style={{ flexShrink: 0, padding: "12px 20px 0" }}>
+          <div className="view-padding" style={{ flexShrink: 0, paddingTop: 12, paddingBottom: 0 }}>
             {isMobile ? (
               /* ── Mobile: dropdown + triage/explore toggle — matches Signal ── */
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
@@ -547,7 +547,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
                     background: "transparent", cursor: "pointer", transition: "all 0.15s",
                   }}
                 >
-                  <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 500 }}>
+                  <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 400 }}>
                     {activeLabel}
                   </span>
                   <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.6, fontVariantNumeric: "tabular-nums" }}>

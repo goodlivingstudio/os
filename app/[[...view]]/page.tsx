@@ -947,8 +947,8 @@ export default function Page() {
           </div>
         </div>
 
-        {/* ── DCOS swipeable carousel — Signal + Sound tabs, toggled via hamburger menu ── */}
-        {(mobileTab === "signal" || mobileTab === "audio") && showDcos && signals.filter(s => s.body).length > 0 && (() => {
+        {/* ── DCOS swipeable carousel — Signal tab only, toggled via hamburger menu ── */}
+        {mobileTab === "signal" && showDcos && signals.filter(s => s.body).length > 0 && (() => {
           const dcosSignals = signals.filter(s => s.body)
           return (
             <div style={{ flexShrink: 0, borderBottom: "1px solid var(--border)" }}>
