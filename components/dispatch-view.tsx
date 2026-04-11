@@ -622,10 +622,10 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 120ms both",
               }}>
                 <div style={{ ...labelStyle, marginBottom: 16 }}>
-                  Signal Intensity · 7 Days
+                  Signal
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 20 }}>
-                  {instanceConfig.layers.map(layer => {
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 20 }}>
+                  {instanceConfig.layers.map((layer, layerIdx) => {
                     const points = data.sparklines![layer.id] || []
                     if (points.length < 2) return null
                     const max = Math.max(...points, 1)
@@ -644,15 +644,10 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                     // Day labels
                     const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
                     return (
-                      <div key={layer.id} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                          <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500 }}>
-                            {layer.label}
-                          </span>
-                          <span style={{ fontFamily: MONO, fontSize: 8, color, opacity: 0.6, letterSpacing: "0.02em" }}>
-                            {trendLabel}
-                          </span>
-                        </div>
+                      <div key={layer.id} style={{ display: "flex", flexDirection: "column", gap: 6, gridColumn: layerIdx >= 3 ? "span 3" : "span 2" }}>
+                        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500 }}>
+                          {layer.label}
+                        </span>
                         <svg viewBox={`0 0 ${w} ${h}`} style={{ width: "100%", height: h }}>
                           <defs>
                             <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
