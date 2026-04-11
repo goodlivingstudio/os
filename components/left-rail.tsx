@@ -522,12 +522,12 @@ export function LeftRail({
 
           {/* ── Pinned Signals ── */}
           {pinnedArticles && pinnedArticles.length > 0 && (
-            <div style={{ borderTop: "1px solid var(--border)", padding: "12px 16px", flex: 1, overflowY: "auto" }}>
+            <div style={{ borderTop: "1px solid var(--border)", padding: "12px 20px", flex: 1, overflowY: "auto" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 8 }}>
                 <span style={{ ...labelStyle }}>Pinned</span>
                 <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>({pinnedArticles.length})</span>
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {pinnedArticles.map(article => {
                   const isExternal = article.url !== "#"
                   const isPodcast = article.signalType === "podcast"
@@ -822,13 +822,13 @@ export function LeftRail({
 
         {/* ── Pinned Signals ── */}
         {pinnedArticles && pinnedArticles.length > 0 && (
-          <div style={{ padding: "0 16px" }}>
+          <div style={{ padding: "0 20px" }}>
             <div style={{ height: 1, background: "var(--border)", margin: "16px 0" }} />
             <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 8 }}>
               <span style={{ ...labelStyle }}>Pinned</span>
               <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>({pinnedArticles.length})</span>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {pinnedArticles.map(article => {
                 const isExternal = article.url !== "#"
                 const isPodcast = article.signalType === "podcast"

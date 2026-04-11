@@ -63,7 +63,7 @@ function MetricCard({ label, value, sub, color, width }: {
       background: "var(--bg-surface)", borderRadius: 12, padding: "20px",
       flex: width || "1", minWidth: 0,
     }}>
-      <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
+      <div style={{ ...labelStyle, color: "var(--text-tertiary)", marginBottom: 6 }}>
         {label}
       </div>
       <div style={{ fontSize: 22, fontWeight: 600, color: color || "var(--text-primary)", lineHeight: 1 }}>
@@ -450,7 +450,7 @@ function UsagePanel() {
         {sparkValues.length > 1 && (
           <>
             <div style={{ height: 1, background: "var(--border)", margin: "10px 0" }} />
-            <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+            <div style={{ ...labelStyle, color: "var(--text-tertiary)", marginBottom: 6 }}>
               Daily Cost
             </div>
             <Sparkline values={sparkValues} width={280} height={36} />
@@ -468,7 +468,7 @@ function UsagePanel() {
                 background: "none", border: "none", cursor: "pointer", padding: "2px 0", marginBottom: recentExpanded ? 6 : 0,
               }}
             >
-              <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+              <span style={{ ...labelStyle, color: "var(--text-tertiary)" }}>
                 Recent
                 <span style={{ marginLeft: 6, opacity: 0.5 }}>{data.recentEvents.length}</span>
               </span>
@@ -626,7 +626,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
         padding: "0 20px", borderBottom: "1px solid var(--border)",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+          <span style={{ ...labelStyle, color: "var(--accent-muted)" }}>
             Source Pulse
           </span>
           <span style={{
