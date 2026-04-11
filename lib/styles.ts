@@ -21,11 +21,11 @@ export const DISPLAY = "var(--font-sohne-schmal), system-ui, sans-serif"
 // ─── Type scale tokens ──────────────────────────────────────────────────────
 
 export const TYPE = {
-  xs:      { fontSize: 11, lineHeight: "140%" } as CSSProperties,
-  sm:      { fontSize: 12, lineHeight: "140%" } as CSSProperties,
-  body:    { fontSize: 13, lineHeight: "140%" } as CSSProperties,
-  reading: { fontSize: 14, lineHeight: "140%" } as CSSProperties,
-  heading: { fontSize: 16, fontWeight: 600, lineHeight: "140%" } as CSSProperties,
+  xs:      { fontSize: "var(--type-xs)", lineHeight: "140%" } as CSSProperties,
+  sm:      { fontSize: "var(--type-sm)", lineHeight: "140%" } as CSSProperties,
+  body:    { fontSize: "var(--type-body)", lineHeight: "140%" } as CSSProperties,
+  reading: { fontSize: "var(--type-reading)", lineHeight: "140%" } as CSSProperties,
+  heading: { fontSize: "var(--type-heading)", fontWeight: 600, lineHeight: "140%" } as CSSProperties,
 }
 
 // ─── Semantic composites ────────────────────────────────────────────────────

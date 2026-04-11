@@ -273,7 +273,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
               <div style={{ ...labelStyle, marginBottom: 10 }}>
                 Weekly Shift
               </div>
-              <div style={{ fontSize: 44, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.05 }}>
+              <div style={{ fontSize: isMobile ? 28 : 44, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.05 }}>
                 {data.headline || data.briefing.split(/[.!?]\s/)[0]}
               </div>
               {data.headline && data.briefing && (
@@ -391,7 +391,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                           <span style={{ opacity: 0.5, marginLeft: 6 }}>({pattern.signalCount})</span>
                         </div>
                         {/* Title */}
-                        <div style={{ fontSize: 32, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1 }}>
+                        <div style={{ fontSize: isMobile ? 22 : 32, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1 }}>
                           {pattern.title}
                         </div>
                         {/* Description — aligned with eyebrow and title */}
@@ -515,7 +515,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       <div style={{ ...labelStyle, marginBottom: 4 }}>
                         {typeLabel}
                       </div>
-                      <div style={{ fontSize: 28, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1, marginBottom: 10 }}>
+                      <div style={{ fontSize: isMobile ? 20 : 28, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1, marginBottom: 10 }}>
                         {spot.title}
                       </div>
                       <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.4, flex: 1 }}>
