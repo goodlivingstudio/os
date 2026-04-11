@@ -545,16 +545,16 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                     {data.articleCount} articles · {new Date(data.generatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                   </div>
                   {/* Week carousel dots with arrows — loops infinitely */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8, marginBottom: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 20, marginBottom: 0 }}>
                     <button
                       onClick={() => setWeekOffset(o => o <= -6 ? 0 : o - 1)}
-                      style={{ width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", borderRadius: 8, transition: "all 0.15s", padding: 0 }}
+                      style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", borderRadius: 6, transition: "all 0.15s", padding: 0 }}
                       onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
                     >
-                      <ChevronLeft size={18} />
+                      <ChevronLeft size={14} />
                     </button>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                       {Array.from({ length: 7 }, (_, i) => {
                         const offset = -(6 - i)
                         const isActive = weekOffset === offset
@@ -564,15 +564,15 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                             onClick={() => setWeekOffset(offset)}
                             title={offset === 0 ? "This week" : formatWeekRangeForOffset(offset)}
                             style={{
-                              width: isActive ? 28 : 10,
-                              height: 10,
-                              borderRadius: 5,
+                              width: isActive ? 22 : 8,
+                              height: 8,
+                              borderRadius: 4,
                               border: "none",
                               background: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
                               cursor: "pointer",
                               padding: 0,
                               transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-                              opacity: isActive ? 1 : 0.35,
+                              opacity: isActive ? 1 : 0.3,
                             }}
                           />
                         )
@@ -580,11 +580,11 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                     </div>
                     <button
                       onClick={() => setWeekOffset(o => o >= 0 ? -6 : o + 1)}
-                      style={{ width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", borderRadius: 8, transition: "all 0.15s", padding: 0 }}
+                      style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", borderRadius: 6, transition: "all 0.15s", padding: 0 }}
                       onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
                     >
-                      <ChevronRight size={18} />
+                      <ChevronRight size={14} />
                     </button>
                   </div>
                 </div>
