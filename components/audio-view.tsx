@@ -699,7 +699,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
       <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", paddingTop: 0, paddingBottom: 8 }}>
       {/* Loading state — matches Signal feed skeleton pattern */}
       {loading ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "8px 0" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "16px 0" }}>
           {[...Array(8)].map((_, i) => (
             <div
               key={i}
@@ -716,7 +716,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
           ))}
         </div>
       ) : triageWaiting ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "8px 0" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "16px 0" }}>
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
@@ -737,7 +737,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
           No episodes loaded. Check podcast feed configuration.
         </div>
       ) : (
-        <div className="episode-grid" style={{ gap: 16, padding: "8px 0" }}>
+        <div className="episode-grid" style={{ gap: 16, padding: "16px 0" }}>
           {filtered.map((ep, i) => (
             <EpisodeCard
               key={ep.id}
