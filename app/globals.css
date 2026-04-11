@@ -194,8 +194,8 @@ html, body {
   /* Ticker — CSS fallback for hiding */
   .ticker-bar { display: none !important; }
 
-  /* Mobile breathing room — feed-like spacing */
-  .view-padding { padding: 24px !important; }
+  /* Mobile content padding — matches header's 16px side margins */
+  .view-padding { padding: 16px !important; }
 
   /* Mobile type scale — bump sizes for touch readability */
   :root {
