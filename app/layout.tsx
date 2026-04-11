@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import localFont from "next/font/local"
 import config from "@/lib/config"
+import { TooltipProvider } from "@/components/ui/tooltip"
 import "./globals.css"
 
 export const viewport: Viewport = {
@@ -49,8 +50,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`h-full ${sohne.variable} ${sohneMono.variable} ${sohneSchmal.variable}`}>
       <body className="h-full antialiased">
+        <TooltipProvider>
         <a href="#main-feed" className="skip-link">Skip to feed</a>
         {children}
+        </TooltipProvider>
         {process.env.NODE_ENV === "development" && (
           <div style={{
             position: "fixed", bottom: 8, left: 8, zIndex: 9999, pointerEvents: "none",

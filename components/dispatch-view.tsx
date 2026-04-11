@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { ArrowUpRight, X, ChevronLeft, ChevronRight, Pen, Copy, Check, TrendingUp, TrendingDown } from "lucide-react"
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
@@ -222,21 +223,12 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
   pitch: Pitch; onClose: () => void; onDeliberate: (text: string) => void
   status?: PitchStatus; onSetStatus: (s: PitchStatus | null) => void
 }) {
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose() }
-    window.addEventListener("keydown", handler)
-    return () => window.removeEventListener("keydown", handler)
-  }, [onClose])
-
   return (
-    <div
-      onClick={onClose}
-      style={{ position: "fixed", inset: 0, zIndex: 6000, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", animation: "status-fade 0.15s ease both" }}
-    >
-      <div
-        onClick={e => e.stopPropagation()}
-        className="pitch-overlay-inner"
-        style={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "32px 36px", width: 600, maxHeight: "85vh", overflowY: "auto" }}
+    <Dialog open={!!pitch} onOpenChange={(open) => { if (!open) onClose() }}>
+      <DialogContent
+        showCloseButton={false}
+        className="pitch-overlay-inner max-w-none rounded-none bg-transparent p-0 ring-0 gap-0"
+        style={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "32px 36px", width: 600, maxWidth: 600, maxHeight: "85vh", overflowY: "auto" }}
       >
         {/* Header */}
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
@@ -315,8 +307,8 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
             Copy to clipboard
           </button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 
