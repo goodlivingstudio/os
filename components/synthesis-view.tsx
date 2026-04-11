@@ -267,13 +267,13 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
 
             {/* ─ WEEKLY SHIFT banner ─ */}
             <div style={{
-              background: "var(--bg-primary)", padding: "34px 0 60px",
+              background: "var(--bg-primary)", padding: "40px 0 48px",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
               <div style={{ ...labelStyle, marginBottom: 10 }}>
                 Weekly Shift
               </div>
-              <div style={{ fontSize: isMobile ? 36 : 44, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.05 }}>
+              <div style={{ fontSize: isMobile ? 42 : 44, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.05 }}>
                 {data.headline || data.briefing.split(/[.!?]\s/)[0]}
               </div>
               {data.headline && data.briefing && (
@@ -296,10 +296,10 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ SIGNAL VELOCITY ─ */}
             {data.velocity && (data.velocity.accelerating.length > 0 || data.velocity.decelerating.length > 0) && (
               <div style={{
-                padding: "40px 0 0",
+                padding: "48px 0 16px",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 12, fontSize: 12 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 16, fontSize: 12 }}>
                   Signal Velocity
                 </div>
                 <div className="synthesis-velocity" style={{ display: "flex", gap: 12 }}>
@@ -340,10 +340,10 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ CONVERGENCES ─ */}
             {data.patterns.length > 0 && (
               <div style={{
-                paddingTop: 40,
+                paddingTop: 48,
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 200ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 8, fontSize: 12 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 12 }}>
                   Convergences
                 </div>
                 {data.patterns.map((pattern, i) => {
@@ -360,7 +360,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
                     style={{
                       position: "relative",
-                      padding: "20px 20px",
+                      padding: "24px 20px",
                       margin: "0 -20px",
                       borderBottom: "1px solid var(--border)",
                       cursor: "pointer", transition: "background 0.15s",
@@ -391,7 +391,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                           <span style={{ opacity: 0.5, marginLeft: 6 }}>({pattern.signalCount})</span>
                         </div>
                         {/* Title */}
-                        <div style={{ fontSize: isMobile ? 28 : 32, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1 }}>
+                        <div style={{ fontSize: isMobile ? 32 : 32, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1 }}>
                           {pattern.title}
                         </div>
                         {/* Description — aligned with eyebrow and title */}
@@ -414,10 +414,10 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ URGENCY HEATMAP ─ */}
             {!isTriage && data.heatmap && data.heatmap.layers.length > 0 && (
               <div style={{
-                padding: "40px 0 0",
+                padding: "48px 0 16px",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 300ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 12, fontSize: 12 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 16, fontSize: 12 }}>
                   Urgency Heatmap
                 </div>
                 <div className="synthesis-heatmap" style={{
@@ -476,10 +476,10 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ BLIND SPOTS — 3 cards ─ */}
             {data.blindSpots && data.blindSpots.length > 0 && (
               <div style={{
-                padding: isMobile ? "40px 0 0 16px" : "40px 0 0",
+                padding: isMobile ? "48px 0 0 16px" : "48px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 400ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 8, fontSize: 12, paddingLeft: isMobile ? 4 : 0 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 12, paddingLeft: isMobile ? 4 : 0 }}>
                   Blind Spots
                 </div>
                 <div className="synthesis-blindspots" onScroll={scroll.onScroll} style={isMobile ? {
@@ -515,7 +515,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       <div style={{ ...labelStyle, marginBottom: 4 }}>
                         {typeLabel}
                       </div>
-                      <div style={{ fontSize: isMobile ? 24 : 28, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1, marginBottom: 10 }}>
+                      <div style={{ fontSize: isMobile ? 28 : 28, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1, marginBottom: 10 }}>
                         {spot.title}
                       </div>
                       <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.4, flex: 1 }}>
@@ -531,10 +531,10 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ ASK CEREBRO — 4 cards ─ */}
             {cerebroTopics.length > 0 && (
               <div style={{
-                padding: "40px 0 0",
+                padding: "48px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 500ms both",
               }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 16 }}>
                   <ArrowUpRight size={12} style={{ color: "var(--accent-secondary)" }} />
                   <span style={{ ...labelStyle, letterSpacing: "0.04em", fontSize: 12, color: "var(--accent-secondary)" }}>
                     Ask Cerebro

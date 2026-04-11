@@ -132,7 +132,7 @@ export const FeedCard = memo(function FeedCard({ article, index, onSignalEnter, 
       onMouseLeave={handleMouseLeave}
       style={{
         display: "flex",
-        padding: "16px 20px",
+        padding: "20px",
         borderRadius: 12,
         background: hovered ? "var(--bg-elevated)" : "var(--bg-surface)",
         cursor: isExternal ? "pointer" : "default",
@@ -160,7 +160,7 @@ export const FeedCard = memo(function FeedCard({ article, index, onSignalEnter, 
         <div
           style={{
             ...metaStyle,
-            marginBottom: 6,
+            marginBottom: 8,
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -182,7 +182,7 @@ export const FeedCard = memo(function FeedCard({ article, index, onSignalEnter, 
           style={{
             ...TYPE.heading,
             color: hovered ? "var(--text-primary)" : "var(--text-secondary)",
-            marginBottom: article.summary ? 6 : 0,
+            marginBottom: article.summary ? 8 : 0,
           }}
         >
           {article.title}

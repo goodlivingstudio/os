@@ -763,7 +763,7 @@ export default function Page() {
           </div>
         )}
       </div>
-      <div id="main-feed" role="feed" aria-label="Intelligence feed" tabIndex={-1} className="view-padding" style={{ flex: 1, overflowY: "auto", paddingTop: 12, paddingBottom: 12, display: "flex", flexDirection: "column", gap: 12 }}>
+      <div id="main-feed" role="feed" aria-label="Intelligence feed" tabIndex={-1} className="view-padding" style={{ flex: 1, overflowY: "auto", paddingTop: 12, paddingBottom: 12, display: "flex", flexDirection: "column", gap: 16 }}>
         {feedLoading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {[...Array(8)].map((_, i) => (
@@ -1010,7 +1010,7 @@ export default function Page() {
                         {sig.layer}
                       </div>
                     )}
-                    <div style={{ fontSize: 24, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.1, marginBottom: 8 }}>
+                    <div style={{ fontSize: 28, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.1, marginBottom: 8 }}>
                       {sig.headline || sig.label}
                     </div>
                     <div style={{ ...TYPE.body, color: "var(--text-secondary)" }}>
