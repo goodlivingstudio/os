@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { ArrowUpRight, X, ChevronLeft, ChevronRight, Pen, Copy, Check } from "lucide-react"
-import { Area, AreaChart, Pie, PieChart, CartesianGrid } from "recharts"
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { CopyCardButton } from "@/components/copy-card-button"
 import { TYPE, MONO, DISPLAY, labelStyle, metaStyle } from "@/lib/styles"
@@ -627,17 +627,6 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                     [LAYER_DOT[l.id] || "#888"]
                   ).map(c => c[0])
 
-                  // Pie chart data — total signal weight per layer
-                  const pieData = instanceConfig.layers.map((l, i) => {
-                    const raw = data.sparklines![l.id]
-                    const pts = Array.isArray(raw) ? raw : (raw?.thisWeek || [])
-                    const total = pts.reduce((a: number, b: number) => a + b, 0)
-                    return { layer: l.id, label: l.label, value: Math.round(total * 10) / 10, fill: layerColors[i] }
-                  })
-                  const pieConfig: ChartConfig = Object.fromEntries(
-                    instanceConfig.layers.map((l, i) => [l.id, { label: l.label, color: layerColors[i] }])
-                  )
-
                   return (
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, padding: "0 20px" }}>
                       {/* 5 area charts */}
@@ -666,7 +655,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                             <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500, marginBottom: 8 }}>
                               {layer.label}
                             </span>
-                            <ChartContainer config={areaConfig} className="h-32 w-full">
+                            <ChartContainer config={areaConfig} className="h-40 w-full">
                               <AreaChart data={chartData} margin={{ top: 4, right: 8, bottom: 0, left: 8 }}>
                                 <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--border)" strokeOpacity={0.3} />
                                 <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
@@ -685,8 +674,10 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                                   dataKey="lastWeek"
                                   stroke="var(--text-tertiary)"
                                   strokeWidth={1}
+                                  strokeDasharray="4 4"
+                                  strokeOpacity={0.4}
                                   fill={`url(#${gradId}-last)`}
-                                  fillOpacity={0.3}
+                                  fillOpacity={0.15}
                                   dot={false}
                                   activeDot={{ r: 3, fill: "var(--text-tertiary)", stroke: "var(--bg-surface)", strokeWidth: 2 }}
                                   stackId="a"
@@ -708,20 +699,42 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                         )
                       })}
 
-                      {/* Pie chart — layer distribution */}
+                      {/* Bar chart — layer distribution this week vs last */}
                       <div style={{
-                        background: "var(--bg-surface)", borderRadius: 12, padding: "16px",
-                        display: "flex", flexDirection: "column", alignItems: "center",
+                        background: "var(--bg-surface)", borderRadius: 12, padding: "16px 16px 8px",
+                        display: "flex", flexDirection: "column",
                       }}>
-                        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500, marginBottom: 8, alignSelf: "flex-start" }}>
+                        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500, marginBottom: 8 }}>
                           Distribution
                         </span>
-                        <ChartContainer config={pieConfig} className="h-32 w-full">
-                          <PieChart>
-                            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-                            <Pie data={pieData} dataKey="value" nameKey="label" innerRadius={20} strokeWidth={2} stroke="var(--bg-surface)" />
-                          </PieChart>
-                        </ChartContainer>
+                        {(() => {
+                          const barData = instanceConfig.layers.map((l, i) => {
+                            const raw = data.sparklines![l.id]
+                            const tw = Array.isArray(raw) ? raw : (raw?.thisWeek || [])
+                            const lw = Array.isArray(raw) ? [] : (raw?.lastWeek || [])
+                            return {
+                              layer: l.label.slice(0, 4),
+                              thisWeek: Math.round(tw.reduce((a: number, b: number) => a + b, 0) * 10) / 10,
+                              lastWeek: Math.round(lw.reduce((a: number, b: number) => a + b, 0) * 10) / 10,
+                              fill: layerColors[i],
+                            }
+                          })
+                          const barConfig: ChartConfig = {
+                            thisWeek: { label: "This week", color: "var(--accent-secondary)" },
+                            lastWeek: { label: "Last week", color: "var(--text-tertiary)" },
+                          }
+                          return (
+                            <ChartContainer config={barConfig} className="h-40 w-full">
+                              <BarChart data={barData} margin={{ top: 4, right: 4, bottom: 0, left: 4 }}>
+                                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--border)" strokeOpacity={0.3} />
+                                <XAxis dataKey="layer" tickLine={false} tickMargin={8} axisLine={false} tick={{ fontSize: 10, fill: "var(--text-tertiary)" }} />
+                                <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
+                                <Bar dataKey="thisWeek" fill="var(--accent-secondary)" radius={3} />
+                                <Bar dataKey="lastWeek" fill="var(--text-tertiary)" fillOpacity={0.3} radius={3} />
+                              </BarChart>
+                            </ChartContainer>
+                          )
+                        })()}
                       </div>
                     </div>
                   )
