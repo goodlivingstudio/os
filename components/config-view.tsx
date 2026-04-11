@@ -508,8 +508,23 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [], sou
       <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
 
-          {/* ── Cerebro Station ── */}
-          <CerebroStation />
+          {/* ── Intelligence Layers ── */}
+          <div>
+            <div style={sectionLabel}>Intelligence Layers</div>
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "20px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {instanceConfig.layers.map((layer, i) => (
+                  <div key={layer.id} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: LAYER_COLORS[i], flexShrink: 0, marginTop: 5 }} />
+                    <div>
+                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", marginBottom: 2 }}>{layer.label}</div>
+                      <div style={{ ...TYPE.body, color: "var(--text-tertiary)" }}>{layer.description}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
 
           {/* ── News Sources ── */}
           <div>
@@ -691,6 +706,9 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [], sou
               </div>
             </div>
           )}
+
+          {/* ── Cerebro Station ── */}
+          <CerebroStation />
 
           <div style={{ height: 8 }} />
         </div>
