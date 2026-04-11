@@ -437,7 +437,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
 
         {/* ── Content ── */}
         {!loading && data && (
-          <div style={{ padding: "0 0 48px" }}>
+          <div style={{ padding: "0 0 64px" }}>
 
             {/* ─ Header image — 21:9 cinematic hero ─ */}
             <div style={{
@@ -454,7 +454,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
 
             {/* ─ EDITORIAL HEADER — centered broadsheet ─ */}
             <div className="dispatch-header-content" style={{
-              padding: "34px 0 24px",
+              padding: "48px 0 32px",
               textAlign: "center",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
@@ -462,7 +462,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
               <div style={{
                 ...TYPE.xs, color: "var(--text-tertiary)",
                 textTransform: "uppercase", letterSpacing: "0.08em",
-                marginBottom: 16,
+                marginBottom: 20,
               }}>
                 New ideas and opportunities
               </div>
@@ -536,7 +536,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             {/* ─ PERSPECTIVES — intelligence layer cards ─ */}
             {data.perspectives && data.perspectives.length > 0 && (
               <div style={{
-                padding: "40px 0 0",
+                padding: "48px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
                 <div className="perspectives-grid" style={{
@@ -559,7 +559,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             {/* ─ SIGNAL INTENSITY — sparklines per layer ─ */}
             {data.sparklines && Object.keys(data.sparklines).length > 0 && (
               <div style={{
-                padding: "48px 0 0",
+                padding: "56px 0 0",
                 margin: "0 -20px",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 120ms both",
               }}>
@@ -731,7 +731,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             {/* ─ PITCHES — editorial grid ─ */}
             {data.pitches && data.pitches.length > 0 && (
               <div style={{
-                paddingTop: 40,
+                paddingTop: 48,
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 150ms both",
               }}>
                 {data.pitches.map((pitch, i) => {
@@ -745,7 +745,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                     }}
                     style={{
                       position: "relative",
-                      padding: "20px 20px",
+                      padding: "28px 20px",
                       margin: "0 -20px",
                       width: "calc(100% + 40px)",
                       cursor: "pointer",
