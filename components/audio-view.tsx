@@ -522,8 +522,8 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
   return (
     <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}>
 
-      {/* Audio DCOS Band */}
-      <AudioBriefBand episodes={episodes} visible={!loading} defaultExpanded={sortBy === "urgency"} onDeliberate={onDeliberate} />
+      {/* Audio DCOS Band — desktop only (mobile uses shared carousel in page.tsx) */}
+      {!isMobile && <AudioBriefBand episodes={episodes} visible={!loading} defaultExpanded={sortBy === "urgency"} onDeliberate={onDeliberate} />}
 
       {/* Layer filters + artwork toggle — dropdown on mobile, pills on desktop */}
       {!loading && (() => {
