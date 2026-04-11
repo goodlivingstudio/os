@@ -544,17 +544,17 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                   <div style={metaStyle}>
                     {data.articleCount} articles · {new Date(data.generatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                   </div>
-                  {/* Week carousel dots with arrows */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 4, marginBottom: -4 }}>
+                  {/* Week carousel dots with arrows — loops infinitely */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8, marginBottom: 0 }}>
                     <button
-                      onClick={() => setWeekOffset(o => Math.max(o - 1, -6))}
-                      style={{ width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: weekOffset <= -6 ? "var(--border)" : "var(--text-tertiary)", cursor: weekOffset <= -6 ? "default" : "pointer", borderRadius: 6, transition: "all 0.15s", padding: 0 }}
-                      onMouseEnter={e => { if (weekOffset > -6) { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-elevated)" } }}
-                      onMouseLeave={e => { e.currentTarget.style.color = weekOffset <= -6 ? "var(--border)" : "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
+                      onClick={() => setWeekOffset(o => o <= -6 ? 0 : o - 1)}
+                      style={{ width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", borderRadius: 8, transition: "all 0.15s", padding: 0 }}
+                      onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-elevated)" }}
+                      onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
                     >
-                      <ChevronLeft size={14} />
+                      <ChevronLeft size={18} />
                     </button>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       {Array.from({ length: 7 }, (_, i) => {
                         const offset = -(6 - i)
                         const isActive = weekOffset === offset
@@ -564,27 +564,27 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                             onClick={() => setWeekOffset(offset)}
                             title={offset === 0 ? "This week" : formatWeekRangeForOffset(offset)}
                             style={{
-                              width: isActive ? 20 : 6,
-                              height: 6,
-                              borderRadius: 3,
+                              width: isActive ? 28 : 10,
+                              height: 10,
+                              borderRadius: 5,
                               border: "none",
-                              background: isActive ? "var(--accent-secondary)" : "var(--border)",
+                              background: isActive ? "var(--accent-secondary)" : "var(--text-tertiary)",
                               cursor: "pointer",
                               padding: 0,
                               transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-                              opacity: isActive ? 1 : 0.5,
+                              opacity: isActive ? 1 : 0.35,
                             }}
                           />
                         )
                       })}
                     </div>
                     <button
-                      onClick={() => setWeekOffset(o => Math.min(o + 1, 0))}
-                      style={{ width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: weekOffset >= 0 ? "var(--border)" : "var(--text-tertiary)", cursor: weekOffset >= 0 ? "default" : "pointer", borderRadius: 6, transition: "all 0.15s", padding: 0 }}
-                      onMouseEnter={e => { if (weekOffset < 0) { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-elevated)" } }}
-                      onMouseLeave={e => { e.currentTarget.style.color = weekOffset >= 0 ? "var(--border)" : "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
+                      onClick={() => setWeekOffset(o => o >= 0 ? -6 : o + 1)}
+                      style={{ width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", borderRadius: 8, transition: "all 0.15s", padding: 0 }}
+                      onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-elevated)" }}
+                      onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
                     >
-                      <ChevronRight size={14} />
+                      <ChevronRight size={18} />
                     </button>
                   </div>
                 </div>
@@ -594,7 +594,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             {/* ─ PERSPECTIVES — intelligence layer cards ─ */}
             {data.perspectives && data.perspectives.length > 0 && (
               <div style={{
-                padding: "40px 0 0",
+                padding: "48px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
                 <div className="perspectives-grid" style={{
@@ -617,6 +617,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             {/* ─ PITCHES — editorial grid ─ */}
             {data.pitches && data.pitches.length > 0 && (
               <div style={{
+                paddingTop: 48,
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 150ms both",
               }}>
                 {data.pitches.map((pitch, i) => (
