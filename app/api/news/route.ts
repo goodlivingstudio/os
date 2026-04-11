@@ -3,7 +3,7 @@ export const revalidate = 43200 // 12 hours — matches annotation TTL, reduces 
 
 import Anthropic from "@anthropic-ai/sdk"
 import { FEEDS, type FeedDef } from "@/lib/feeds"
-import { storeArticles, recordSourceHealth, loadSourceFailures } from "@/lib/article-store"
+import { storeArticles, recordSourceHealth, loadSourceFailures, loadArticlesForDay } from "@/lib/article-store"
 import { OPERATOR, FIVE_LAYERS } from "@/lib/prompts"
 import instanceConfig, { layerLabelsSlash, scoreJsonRange } from "@/lib/config"
 import { trackUsage } from "@/lib/usage-tracker"
@@ -383,7 +383,31 @@ export async function GET() {
     )
   )
 
-  // Annotate top articles server-side (runs within ISR cache window)
+  // Pre-populate annotations from KV cache — avoids re-annotating articles
+  // that were already processed in a previous ISR cycle (critical for cost
+  // control: each deploy triggers ISR, and without this check every deploy
+  // re-annotates all ~500 articles via Haiku)
+  try {
+    const cached = await loadArticlesForDay(new Date())
+    if (cached.length > 0) {
+      const annotationMap = new Map<string, typeof cached[0]>()
+      for (const a of cached) {
+        if (a.synopsis || a.relevance) annotationMap.set(a.title, a)
+      }
+      for (const article of sorted) {
+        const hit = annotationMap.get(article.title)
+        if (hit && !article.synopsis) {
+          article.synopsis = hit.synopsis
+          article.relevance = hit.relevance
+          article.signalType = hit.signalType
+          article.signalLens = hit.signalLens
+          article.signalScores = hit.signalScores
+        }
+      }
+    }
+  } catch { /* KV unavailable — proceed to annotation */ }
+
+  // Annotate remaining unannotated articles server-side
   const annotated = await annotateArticles(sorted)
 
   // Persist to KV for 7-day historical analysis (Synthesis, Dispatch tab)
