@@ -851,24 +851,9 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                         <div style={{
                           ...TYPE.body,
                           color: "var(--text-secondary)",
-                          marginBottom: pitch.evidence?.length > 0 ? 8 : 0,
                         }}>
                           {pitch.thesis}
                         </div>
-                        {/* Evidence sources — with interactive citations */}
-                        {pitch.evidence && pitch.evidence.length > 0 && (
-                          <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
-                            {pitch.evidence.slice(0, 2).map((e, ei) => (
-                              <span key={ei}>
-                                {ei > 0 && <span style={{ opacity: 0.4 }}> · </span>}
-                                {renderCitedBody(
-                                  e.length > 80 ? e.slice(0, 77) + "..." : e,
-                                  pitch.evidenceSources?.[ei]
-                                )}
-                              </span>
-                            ))}
-                          </div>
-                        )}
                       </div>
                     </div>
                   </div>
