@@ -2,10 +2,6 @@ import type { Metadata, Viewport } from "next"
 import localFont from "next/font/local"
 import config from "@/lib/config"
 import "./globals.css"
-import { Geist } from "next/font/google";
-import { cn } from "@/lib/utils";
-
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -51,14 +47,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={cn("h-full", sohne.variable, sohneMono.variable, sohneSchmal.variable, "font-sans", geist.variable)}>
+    <html lang="en" className={`h-full ${sohne.variable} ${sohneMono.variable} ${sohneSchmal.variable}`}>
       <body className="h-full antialiased">
         <a href="#main-feed" className="skip-link">Skip to feed</a>
         {children}
         {process.env.NODE_ENV === "development" && (
           <div style={{
             position: "fixed", bottom: 8, left: 8, zIndex: 9999, pointerEvents: "none",
-            background: "#1a6cf0", color: "#fff", fontSize: 10, fontFamily: "monospace",
+            background: "#1a6cf0", color: "#fff", fontSize: 10, fontFamily: "var(--font-sohne-mono), monospace",
             padding: "3px 8px", borderRadius: 4, opacity: 0.85,
           }}>
             {config.branding.name.toUpperCase()} · :{config.branding.port}
