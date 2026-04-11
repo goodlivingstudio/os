@@ -624,3 +624,9 @@ body::after {
     animation: none !important;
   }
 }
+
+/* ─ Copy card button — show on parent hover ─ */
+.copy-card-btn { opacity: 0; transition: opacity 0.15s, background 0.15s, color 0.15s; }
+.copy-card-btn[data-copied="1"] { opacity: 1; }
+*:hover > .copy-card-btn { opacity: 0.6; }
+*:hover > .copy-card-btn[data-copied="1"] { opacity: 1; }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { ChevronUp } from "lucide-react"
+import { CopyCardButton } from "@/components/copy-card-button"
 import type { Article, Signal } from "@/lib/types"
 import { MONO, DISPLAY, TYPE, labelStyle, bodyStyle, metaStyle } from "@/lib/styles"
 import { renderCitedBody } from "@/components/citation"
@@ -232,13 +233,19 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
             transition: "max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
           }}>
             <div style={{ display: "grid", gridTemplateColumns: `repeat(${signals.filter(s => s.body).length || 1}, 1fr)`, gap: 8, padding: "8px 20px 16px" }}>
-              {signals.filter(s => s.body).map((signal, i) => (
+              {signals.filter(s => s.body).map((signal, i) => {
+                  const copyText = `[Dispatch Intelligence Signal — ${signal.layer || "General"}]\n\n${signal.headline}\n\n${signal.body}\n\n---\nSource: dispatch.goodliving.studio/synthesis`
+                  return (
                   <div
                     key={i}
-                    onClick={() => onDeliberate && signal.body && onDeliberate(signal)}
+                    onClick={() => {
+                      if (window.getSelection()?.toString()) return
+                      onDeliberate && signal.body && onDeliberate(signal)
+                    }}
                     onMouseEnter={() => setHoveredIdx(i)}
                     onMouseLeave={() => setHoveredIdx(null)}
                     style={{
+                      position: "relative",
                       padding: "16px 18px",
                       borderRadius: 12,
                       animation: `signal-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${i * 120}ms both`,
@@ -249,6 +256,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
                       transition: "background 0.15s",
                     }}
                   >
+                    <CopyCardButton text={copyText} visible={hoveredIdx === i} />
                     {signal.layer && (
                       <div style={{
                         ...labelStyle,
@@ -279,7 +287,8 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
                       </div>
                     )}
                   </div>
-              ))}
+                  )
+              })}
             </div>
           </div>
         </>

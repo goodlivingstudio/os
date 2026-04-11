@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { Copy, Check, ArrowUpRight, X, RefreshCw, ChevronLeft, ChevronRight, Pen } from "lucide-react"
+import { ArrowUpRight, X, RefreshCw, ChevronLeft, ChevronRight, Pen, Copy, Check } from "lucide-react"
+import { CopyCardButton } from "@/components/copy-card-button"
 import { TYPE, MONO, DISPLAY, labelStyle, metaStyle } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
 import { renderCitedBody } from "@/components/citation"
@@ -165,12 +166,21 @@ function PerspectiveCard({ perspective, index, onDeliberate }: {
   index: number
   onDeliberate: (text: string) => void
 }) {
+  const [hovered, setHovered] = useState(false)
+  const layerLabel = LAYER_LABELS[perspective.layer] || perspective.layer
+  const copyText = `[Dispatch Perspective — ${layerLabel}]\n\n${perspective.title}\n\n${perspective.body}\n\n---\nSource: dispatch.goodliving.studio/dispatch`
   return (
     <div
-      onClick={() => onDeliberate(
-        `I want to explore this perspective from the weekly dispatch:\n\n"${perspective.title}"\n\n${perspective.body}\n\nDevelop this into a strategic argument. What are the implications and what should I do about it?`
-      )}
+      onClick={() => {
+        if (window.getSelection()?.toString()) return
+        onDeliberate(
+          `I want to explore this perspective from the weekly dispatch:\n\n"${perspective.title}"\n\n${perspective.body}\n\nDevelop this into a strategic argument. What are the implications and what should I do about it?`
+        )
+      }}
+      onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)"; setHovered(true) }}
+      onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)"; setHovered(false) }}
       style={{
+        position: "relative",
         background: "var(--bg-surface)",
         borderRadius: 12,
         padding: "16px 18px",
@@ -179,12 +189,11 @@ function PerspectiveCard({ perspective, index, onDeliberate }: {
         display: "flex", flexDirection: "column",
         animation: `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${150 + index * 80}ms both`,
       }}
-      onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
-      onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
     >
+      <CopyCardButton text={copyText} visible={hovered} />
       {/* Layer label */}
       <div style={{ ...labelStyle, marginBottom: 4 }}>
-        {LAYER_LABELS[perspective.layer] || perspective.layer}
+        {layerLabel}
       </div>
       {/* Title */}
       <div style={{
@@ -680,11 +689,17 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                 paddingTop: 48,
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 150ms both",
               }}>
-                {data.pitches.map((pitch, i) => (
+                {data.pitches.map((pitch, i) => {
+                  const pitchCopyText = `[Dispatch Content Pitch — ${pitch.mode === "thought_leadership" ? "Thought Leadership" : "Creative"}]\n\n${pitch.title}\n\nThesis: ${pitch.thesis}\n\nBrief: ${pitch.brief}\n\nEvidence:\n${pitch.evidence.join("\n")}\n\n---\nSource: dispatch.goodliving.studio/dispatch`
+                  return (
                   <div
                     key={i}
-                    onClick={() => setActivePitch(pitch)}
+                    onClick={() => {
+                      if (window.getSelection()?.toString()) return
+                      setActivePitch(pitch)
+                    }}
                     style={{
+                      position: "relative",
                       padding: "20px 20px",
                       margin: "0 -20px",
                       width: "calc(100% + 40px)",
@@ -695,6 +710,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                     onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
+                    <CopyCardButton text={pitchCopyText} />
                     <div style={{ display: "flex", gap: 20 }}>
                       {/* Image thumbnail — left side (hidden on mobile) */}
                       <div className="pitch-thumb" style={{
@@ -756,7 +772,8 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                       </div>
                     </div>
                   </div>
-                ))}
+                  )
+                })}
 
                 {/* Copy all */}
                 <div style={{ padding: "20px 20px" }}>
