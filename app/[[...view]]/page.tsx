@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { createPortal } from "react-dom"
-import { Radio, AudioLines, Blend, Send, Brain, Settings, ChevronRight, ChevronLeft, Minimize2, Aperture, SunMedium, MoonStar, Menu, ChevronDown, Activity } from "lucide-react"
+import { Radio, AudioLines, Blend, Send, Brain, Settings, ChevronRight, ChevronLeft, Minimize2, Aperture, SunMedium, MoonStar, Menu, X, ChevronDown, Activity } from "lucide-react"
 import { Ticker } from "@/components/ticker"
 import { LeftRail } from "@/components/left-rail"
 import { useChiefOfStaff, ChiefOfStaffBand } from "@/components/chief-of-staff"
@@ -864,7 +864,7 @@ export default function Page() {
                 aria-label="Toggle navigation menu"
                 style={{ width: 36, height: 36, borderRadius: 8, border: "none", background: mobileMenuOpen ? "var(--bg-elevated)" : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, color: "var(--text-tertiary)", transition: "all 0.15s" }}
               >
-                <Menu size={18} strokeWidth={1.5} />
+                {mobileMenuOpen ? <X size={18} strokeWidth={1.5} /> : <Menu size={18} strokeWidth={1.5} />}
               </button>
               {mobileMenuOpen && (
                 <>
@@ -887,7 +887,7 @@ export default function Page() {
                       ]).map(mode => (
                         <button
                           key={mode.id}
-                          onClick={() => { setFeedImageMode(mode.id); setMobileMenuOpen(false) }}
+                          onClick={() => { setFeedImageMode(mode.id) }}
                           style={{
                             flex: 1, padding: "8px 0", borderRadius: 5, border: "none",
                             background: feedImageMode === mode.id ? "var(--bg-surface)" : "transparent",
@@ -912,7 +912,7 @@ export default function Page() {
                       ] as const).map(mode => (
                         <button
                           key={String(mode.id)}
-                          onClick={() => { setShowDcos(mode.id); setMobileMenuOpen(false) }}
+                          onClick={() => { setShowDcos(mode.id) }}
                           style={{
                             flex: 1, padding: "8px 0", borderRadius: 5, border: "none",
                             background: showDcos === mode.id ? "var(--bg-surface)" : "transparent",
