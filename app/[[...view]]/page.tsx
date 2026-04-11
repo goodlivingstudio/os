@@ -1034,7 +1034,7 @@ export default function Page() {
                         {sig.layer}
                       </div>
                     )}
-                    <div style={{ fontSize: 28, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.1, marginBottom: 8 }}>
+                    <div style={{ fontSize: 32, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.1, marginBottom: 8 }}>
                       {sig.headline || sig.label}
                     </div>
                     <div style={{ ...TYPE.body, color: "var(--text-secondary)" }}>
