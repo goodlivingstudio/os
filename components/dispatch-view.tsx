@@ -42,6 +42,7 @@ interface DispatchData {
   perspectives?: Perspective[]
   headerImageUrl?: string
   pitches: Pitch[]
+  sparklines?: Record<string, number[]>
   articleCount?: number
   generatedAt?: string
   message?: string
@@ -610,6 +611,52 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                       onDeliberate={onDeliberate}
                     />
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* ─ SIGNAL INTENSITY — sparklines per layer ─ */}
+            {data.sparklines && Object.keys(data.sparklines).length > 0 && (
+              <div style={{
+                padding: "48px 0 0",
+                animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 120ms both",
+              }}>
+                <div style={{ ...labelStyle, marginBottom: 16 }}>
+                  Signal Intensity · 7 Days
+                </div>
+                <div style={{ display: "flex", gap: 20 }}>
+                  {instanceConfig.layers.map(layer => {
+                    const points = data.sparklines![layer.id] || []
+                    if (points.length < 2) return null
+                    const max = Math.max(...points, 1)
+                    const h = 48
+                    const w = 140
+                    const step = w / (points.length - 1)
+                    const scaled = points.map(v => h - (v / max) * (h - 4) - 2)
+                    const polyline = scaled.map((y, i) => `${i * step},${y}`).join(" ")
+                    const areaPath = scaled.map((y, i) => `${i * step},${y}`).join(" L") + ` L${(points.length - 1) * step},${h} L0,${h} Z`
+                    const trending = points[points.length - 1] >= points[0]
+                    const color = trending ? "#61BF6B" : "#BF6161"
+                    const gradId = `spark-${layer.id}`
+                    return (
+                      <div key={layer.id} style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+                        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500 }}>
+                          {layer.label}
+                        </span>
+                        <svg viewBox={`0 0 ${w} ${h}`} style={{ width: "100%", height: h }}>
+                          <defs>
+                            <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor={color} stopOpacity={0.2} />
+                              <stop offset="100%" stopColor={color} stopOpacity={0} />
+                            </linearGradient>
+                          </defs>
+                          <path d={`M${areaPath}`} fill={`url(#${gradId})`} />
+                          <polyline points={polyline} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <circle cx={(points.length - 1) * step} cy={scaled[scaled.length - 1]} r="3" fill={color} />
+                        </svg>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             )}
