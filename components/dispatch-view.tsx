@@ -172,23 +172,22 @@ function PerspectiveCard({ perspective, index, onDeliberate }: {
       style={{
         background: "var(--bg-surface)",
         borderRadius: 12,
-        padding: "20px 24px",
+        padding: "16px 18px",
         cursor: "pointer",
         transition: "background 0.15s",
+        display: "flex", flexDirection: "column",
         animation: `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${150 + index * 80}ms both`,
       }}
       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
       onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
     >
       {/* Layer label */}
-      <div style={{ marginBottom: 10 }}>
-        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>
-          {LAYER_LABELS[perspective.layer] || perspective.layer}
-        </span>
+      <div style={{ ...labelStyle, marginBottom: 4 }}>
+        {LAYER_LABELS[perspective.layer] || perspective.layer}
       </div>
       {/* Title */}
       <div style={{
-        fontSize: 24,
+        fontSize: 28,
         fontWeight: 600,
         fontFamily: DISPLAY,
         color: "var(--text-primary)",
@@ -198,7 +197,7 @@ function PerspectiveCard({ perspective, index, onDeliberate }: {
         {perspective.title}
       </div>
       {/* Body with citations */}
-      <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.4 }}>
+      <div style={{ ...TYPE.body, color: "var(--text-secondary)", flex: 1 }}>
         {renderCitedBody(perspective.body, perspective.sources)}
       </div>
     </div>
@@ -514,7 +513,6 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             {/* ─ EDITORIAL HEADER — centered broadsheet ─ */}
             <div className="dispatch-header-content" style={{
               padding: "34px 0 60px",
-              borderBottom: "1px solid var(--border)",
               textAlign: "center",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
@@ -597,7 +595,6 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             {data.perspectives && data.perspectives.length > 0 && (
               <div style={{
                 padding: "40px 0 0",
-                borderBottom: "1px solid var(--border)",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
                 <div className="perspectives-grid" style={{
@@ -627,8 +624,9 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                     key={i}
                     onClick={() => setActivePitch(pitch)}
                     style={{
-                      padding: "28px 20px",
-                      borderBottom: "1px solid var(--border)",
+                      padding: "20px 20px",
+                      margin: "0 -20px",
+                      width: "calc(100% + 40px)",
                       cursor: "pointer",
                       transition: "background 0.15s",
                       animation: `signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${200 + i * 80}ms both`,
@@ -648,34 +646,23 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                       </div>
                       {/* Text content — right side */}
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        {/* Mode + platform + indicators */}
-                        <div style={{
-                          ...TYPE.xs, textTransform: "uppercase", letterSpacing: "0.06em",
-                          fontWeight: 600, marginBottom: 8,
-                          display: "flex", alignItems: "center", flexWrap: "wrap", gap: 4,
-                        }}>
-                          <span style={{ color: pitch.mode === "thought_leadership" ? "#5A9EB0" : "#C87A6A" }}>
-                            {pitch.mode === "thought_leadership" ? "Thought Leadership" : "Creative"}
-                          </span>
-                          <span style={{ color: "var(--text-tertiary)" }}>·</span>
-                          <span style={{ color: "var(--text-primary)" }}>{pitch.platforms.primary}</span>
+                        {/* Eyebrow — matches Convergences pattern */}
+                        <div style={{ ...labelStyle, marginBottom: 4 }}>
+                          {pitch.mode === "thought_leadership" ? "Thought Leadership" : "Creative"}
+                          <span style={{ opacity: 0.5 }}> · </span>
+                          {pitch.platforms.primary}
                           {countUniqueSources(pitch) > 0 && (
-                            <>
-                              <span style={{ color: "var(--text-tertiary)" }}>·</span>
-                              <span style={{ color: "var(--text-tertiary)", fontWeight: 400 }}>{countUniqueSources(pitch)} sources</span>
-                            </>
+                            <span style={{ opacity: 0.5 }}> ({countUniqueSources(pitch)})</span>
                           )}
                           {isConvergence(pitch) && (
                             <>
-                              <span style={{ color: "var(--text-tertiary)" }}>·</span>
-                              <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
-                                {pitch.layers.map(l => LAYER_LABELS[l] || l).join(" + ")}
-                              </span>
+                              <span style={{ opacity: 0.5 }}> · </span>
+                              {pitch.layers.map(l => LAYER_LABELS[l] || l).join(" · ")}
                             </>
                           )}
                           {pitch.wildcard && (
                             <span style={{
-                              padding: "1px 6px", borderRadius: 8, fontSize: 11,
+                              padding: "1px 6px", borderRadius: 8, fontSize: 11, marginLeft: 4,
                               background: "rgba(184, 150, 106, 0.12)",
                               color: "var(--accent-secondary)",
                               fontWeight: 600, letterSpacing: "0.03em",
