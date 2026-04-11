@@ -873,13 +873,13 @@ export default function Page() {
                   style={{ position: "fixed", inset: 0, zIndex: 99, background: "rgba(0,0,0,0.3)" }}
                 />
                 <div style={{
-                  position: "absolute", top: 42, right: 0, width: 200, zIndex: 100,
+                  position: "absolute", top: 42, right: 0, width: 220, zIndex: 100,
                   background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 12,
-                  padding: "8px 0", animation: "status-fade 0.15s ease both",
+                  padding: "12px 0", animation: "status-fade 0.15s ease both",
                 }}>
                   {/* Off / Source image toggle */}
-                  <div style={{ padding: "8px 12px" }}>
-                    <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Images</div>
+                  <div style={{ padding: "10px 16px" }}>
+                    <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 10 }}>Images</div>
                     <div style={{ display: "flex", background: "var(--bg-elevated)", borderRadius: 6, padding: 2 }}>
                       {([
                         { id: "source" as const, label: "Source" },
@@ -889,7 +889,7 @@ export default function Page() {
                           key={mode.id}
                           onClick={() => { setFeedImageMode(mode.id); setMobileMenuOpen(false) }}
                           style={{
-                            flex: 1, padding: "6px 0", borderRadius: 5, border: "none",
+                            flex: 1, padding: "8px 0", borderRadius: 5, border: "none",
                             background: feedImageMode === mode.id ? "var(--bg-surface)" : "transparent",
                             ...TYPE.xs, fontWeight: 400,
                             color: feedImageMode === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
@@ -903,8 +903,8 @@ export default function Page() {
                     </div>
                   </div>
                   {/* Briefing on/off */}
-                  <div style={{ padding: "8px 12px" }}>
-                    <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Briefing</div>
+                  <div style={{ padding: "10px 16px" }}>
+                    <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 10 }}>Briefing</div>
                     <div style={{ display: "flex", background: "var(--bg-elevated)", borderRadius: 6, padding: 2 }}>
                       {([
                         { id: true, label: "On" },
@@ -914,7 +914,7 @@ export default function Page() {
                           key={String(mode.id)}
                           onClick={() => { setShowDcos(mode.id); setMobileMenuOpen(false) }}
                           style={{
-                            flex: 1, padding: "6px 0", borderRadius: 5, border: "none",
+                            flex: 1, padding: "8px 0", borderRadius: 5, border: "none",
                             background: showDcos === mode.id ? "var(--bg-surface)" : "transparent",
                             ...TYPE.xs, fontWeight: 400,
                             color: showDcos === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
@@ -927,10 +927,10 @@ export default function Page() {
                       ))}
                     </div>
                   </div>
-                  <div style={{ height: 1, background: "var(--border)", margin: "4px 0" }} />
+                  <div style={{ height: 1, background: "var(--border)", margin: "8px 0" }} />
                   {/* Project switcher — reads from lib/config/products.ts */}
-                  <div style={{ padding: "8px 12px" }}>
-                    <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Projects</div>
+                  <div style={{ padding: "10px 16px" }}>
+                    <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 10 }}>Projects</div>
                     {PRODUCTS.map(product => {
                       const isCurrent = instanceConfig.id === product.id
                       const isNavigable = product.url !== null && !isCurrent
@@ -942,7 +942,7 @@ export default function Page() {
                           onClick={!isNavigable ? (e: React.MouseEvent) => { e.preventDefault(); setMobileMenuOpen(false) } : undefined}
                           style={{
                             display: "flex", alignItems: "center", gap: 8,
-                            width: "100%", padding: "8px 10px",
+                            width: "100%", padding: "10px 10px",
                             borderRadius: 6,
                             textDecoration: "none",
                             ...TYPE.sm,
