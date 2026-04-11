@@ -369,11 +369,11 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
-                    <CopyCardButton text={copyText} />
-                    <div style={{ display: "flex", gap: 20 }}>
+                    {!isMobile && <CopyCardButton text={copyText} />}
+                    <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", gap: isMobile ? 12 : 20 }}>
                       {/* Image thumbnail */}
                       <div style={{
-                        width: 150, height: 100, borderRadius: 8, overflow: "hidden", flexShrink: 0,
+                        width: isMobile ? "100%" : 150, height: isMobile ? 160 : 100, borderRadius: 8, overflow: "hidden", flexShrink: 0,
                         background: pattern.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
                       }}>
                         {pattern.imageUrl && (
@@ -507,7 +507,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     >
-                      <CopyCardButton text={copyText} />
+                      {!isMobile && <CopyCardButton text={copyText} />}
                       <div style={{ ...labelStyle, marginBottom: 4 }}>
                         {typeLabel}
                       </div>
