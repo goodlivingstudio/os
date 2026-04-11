@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { ArrowUpRight, X, ChevronLeft, ChevronRight, Pen, Copy, Check } from "lucide-react"
-import { Area, AreaChart, ResponsiveContainer } from "recharts"
+import { Area, AreaChart, Pie, PieChart, CartesianGrid } from "recharts"
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { CopyCardButton } from "@/components/copy-card-button"
 import { TYPE, MONO, DISPLAY, labelStyle, metaStyle } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
@@ -620,43 +621,84 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                 <div style={{ ...labelStyle, marginBottom: 24, paddingLeft: 20 }}>
                   Signal
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 16, padding: "0 20px" }}>
-                  {instanceConfig.layers.map((layer, layerIdx) => {
-                    const points = data.sparklines![layer.id] || []
-                    if (points.length < 2) return null
-                    const chartData = points.map((v, i) => ({ day: i, value: v }))
-                    const trending = points[points.length - 1] >= points[0]
-                    const color = trending ? "#61BF6B" : "#BF6161"
-                    const gradId = `spark-fill-${layer.id}`
-                    return (
-                      <div key={layer.id} style={{ gridColumn: layerIdx >= 3 ? "span 3" : "span 2" }}>
-                        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500, display: "block", marginBottom: 6 }}>
-                          {layer.label}
+                {(() => {
+                  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+                  const layerColors = instanceConfig.layers.map((l, i) =>
+                    [LAYER_DOT[l.id] || "#888"]
+                  ).map(c => c[0])
+
+                  // Pie chart data — total signal weight per layer
+                  const pieData = instanceConfig.layers.map((l, i) => {
+                    const pts = data.sparklines![l.id] || []
+                    const total = pts.reduce((a, b) => a + b, 0)
+                    return { layer: l.id, label: l.label, value: Math.round(total * 10) / 10, fill: layerColors[i] }
+                  })
+                  const pieConfig: ChartConfig = Object.fromEntries(
+                    instanceConfig.layers.map((l, i) => [l.id, { label: l.label, color: layerColors[i] }])
+                  )
+
+                  return (
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, padding: "0 20px" }}>
+                      {/* 5 area charts */}
+                      {instanceConfig.layers.map((layer, layerIdx) => {
+                        const points = data.sparklines![layer.id] || []
+                        if (points.length < 2) return null
+                        const chartData = points.map((v, i) => ({ day: days[i] || `D${i}`, value: v }))
+                        const color = layerColors[layerIdx]
+                        const gradId = `spark-fill-${layer.id}`
+                        const areaConfig: ChartConfig = { value: { label: layer.label, color } }
+                        return (
+                          <div key={layer.id} style={{
+                            background: "var(--bg-surface)", borderRadius: 12, padding: "16px 16px 8px",
+                            display: "flex", flexDirection: "column",
+                          }}>
+                            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500, marginBottom: 8 }}>
+                              {layer.label}
+                            </span>
+                            <ChartContainer config={areaConfig} className="h-24 w-full">
+                              <AreaChart data={chartData} margin={{ top: 4, right: 8, bottom: 0, left: 8 }}>
+                                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--border)" strokeOpacity={0.3} />
+                                <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                                <defs>
+                                  <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor={color} stopOpacity={0.8} />
+                                    <stop offset="95%" stopColor={color} stopOpacity={0.1} />
+                                  </linearGradient>
+                                </defs>
+                                <Area
+                                  type="natural"
+                                  dataKey="value"
+                                  stroke={color}
+                                  strokeWidth={1.5}
+                                  fill={`url(#${gradId})`}
+                                  fillOpacity={0.4}
+                                  dot={false}
+                                  activeDot={{ r: 4, fill: color, stroke: "var(--bg-surface)", strokeWidth: 2 }}
+                                />
+                              </AreaChart>
+                            </ChartContainer>
+                          </div>
+                        )
+                      })}
+
+                      {/* Pie chart — layer distribution */}
+                      <div style={{
+                        background: "var(--bg-surface)", borderRadius: 12, padding: "16px",
+                        display: "flex", flexDirection: "column", alignItems: "center",
+                      }}>
+                        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500, marginBottom: 8, alignSelf: "flex-start" }}>
+                          Distribution
                         </span>
-                        <ResponsiveContainer width="100%" height={64}>
-                          <AreaChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 4 }}>
-                            <defs>
-                              <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor={color} stopOpacity={0.25} />
-                                <stop offset="95%" stopColor={color} stopOpacity={0} />
-                              </linearGradient>
-                            </defs>
-                            <Area
-                              type="natural"
-                              dataKey="value"
-                              stroke={color}
-                              strokeWidth={1.5}
-                              fill={`url(#${gradId})`}
-                              fillOpacity={1}
-                              dot={false}
-                              activeDot={{ r: 3, fill: color, stroke: "none" }}
-                            />
-                          </AreaChart>
-                        </ResponsiveContainer>
+                        <ChartContainer config={pieConfig} className="h-24 w-full">
+                          <PieChart>
+                            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                            <Pie data={pieData} dataKey="value" nameKey="label" innerRadius={20} strokeWidth={2} stroke="var(--bg-surface)" />
+                          </PieChart>
+                        </ChartContainer>
                       </div>
-                    )
-                  })}
-                </div>
+                    </div>
+                  )
+                })()}
               </div>
             )}
 
