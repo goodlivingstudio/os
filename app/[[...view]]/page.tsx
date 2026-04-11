@@ -574,10 +574,10 @@ export default function Page() {
     >
       {!isMobile && <ChiefOfStaffBand signals={signals} briefLoading={briefLoading} briefError={briefError} onDeliberate={handleDeliberate} defaultExpanded={sortBy === "urgency"} />}
       {/* Layer filters — pills on desktop, dropdown on mobile */}
-      <div className="view-padding" style={{ flexShrink: 0, paddingTop: 12, paddingBottom: 0 }}>
+      <div className="view-padding" style={{ flexShrink: 0, paddingTop: 8, paddingBottom: 0 }}>
         {isMobile ? (
           /* ── Mobile: dropdown select + Off/Source toggle ── */
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
             <div style={{ position: "relative" }}>
               <button
                 onClick={() => { setMobileFilterOpen(v => !v); setMobileMenuOpen(false) }}
@@ -763,7 +763,7 @@ export default function Page() {
           </div>
         )}
       </div>
-      <div id="main-feed" role="feed" aria-label="Intelligence feed" tabIndex={-1} className="view-padding" style={{ flex: 1, overflowY: "auto", paddingTop: 12, paddingBottom: 12, display: "flex", flexDirection: "column", gap: 16 }}>
+      <div id="main-feed" role="feed" aria-label="Intelligence feed" tabIndex={-1} className="view-padding" style={{ flex: 1, overflowY: "auto", paddingTop: 4, paddingBottom: 12, display: "flex", flexDirection: "column", gap: 16 }}>
         {feedLoading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {[...Array(8)].map((_, i) => (

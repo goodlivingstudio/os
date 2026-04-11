@@ -267,7 +267,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
 
             {/* ─ WEEKLY SHIFT banner ─ */}
             <div style={{
-              background: "var(--bg-primary)", padding: "36px 0 40px",
+              background: "var(--bg-primary)", padding: "24px 0 40px",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
               <div style={{ ...labelStyle, marginBottom: 10 }}>
@@ -360,7 +360,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
                     style={{
                       position: "relative",
-                      padding: "24px 20px",
+                      padding: "32px 20px",
                       margin: "0 -20px",
                       borderBottom: "1px solid var(--border)",
                       cursor: "pointer", transition: "background 0.15s",

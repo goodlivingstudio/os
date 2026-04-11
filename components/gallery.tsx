@@ -372,7 +372,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
       <div style={{ flexShrink: 0, borderBottom: isMobile ? "none" : "1px solid var(--border)" }}>
         {isMobile ? (
           /* ── Mobile: filter dropdown flush left, matching Signal/Sound pattern ── */
-          <div className="view-padding" style={{ display: "flex", alignItems: "center", paddingTop: 12, paddingBottom: 0, gap: 8, marginBottom: 8 }}>
+          <div className="view-padding" style={{ display: "flex", alignItems: "center", paddingTop: 8, paddingBottom: 0, gap: 8, marginBottom: 4 }}>
             <div style={{ position: "relative" }}>
               <button
                 onClick={() => setMobileFilterOpen(v => !v)}
@@ -621,7 +621,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
       {/* Masonry grid */}
       <div style={{
         flex: 1, overflowY: "auto", overflowX: "hidden",
-        padding: "24px 16px",
+        padding: "16px 16px",
       }}>
         {loading ? (
           <div style={{ ...TYPE.body, color: "var(--text-tertiary)", padding: 32 }}>
@@ -640,7 +640,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
           const gridGap = galleryCols === 2 ? 10 : 14
 
           return (
-            <div key={`${shuffleKey}-${activeMood ?? "all"}`} style={{ display: "flex", gap: gridGap, alignItems: "flex-start" }}>
+            <div key={`${shuffleKey}-${activeMood ?? "all"}-${galleryCols}`} style={{ display: "flex", gap: gridGap, alignItems: "flex-start" }}>
               {cols.map((col, colIdx) => (
                 <div key={colIdx} style={{ flex: 1, display: "flex", flexDirection: "column", gap: gridGap, minWidth: 0 }}>
                   {col.map((img, rowIdx) => {
