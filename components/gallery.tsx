@@ -371,7 +371,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
       <div style={{ flexShrink: 0, borderBottom: "1px solid var(--border)" }}>
         {isMobile ? (
           /* ── Mobile: filter dropdown flush left, matching Signal/Sound pattern ── */
-          <div style={{ display: "flex", alignItems: "center", padding: "12px 16px 0", gap: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", gap: 8 }}>
             <div style={{ position: "relative" }}>
               <button
                 onClick={() => setMobileFilterOpen(v => !v)}
@@ -382,7 +382,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                 }}
               >
                 {activeMood && <span style={{ width: 6, height: 6, borderRadius: "50%", background: MOOD_COLORS[activeMood], flexShrink: 0 }} />}
-                <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 500 }}>
+                <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 400 }}>
                   {activeMood ? MOOD_LABELS[activeMood] : "All"}
                 </span>
                 <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.6, fontVariantNumeric: "tabular-nums" }}>
@@ -436,9 +436,9 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
               onClick={() => setShuffleKey(k => k + 1)}
               aria-label="Shuffle images"
               style={{
-                width: 28, height: 28, marginLeft: "auto",
+                width: 32, height: 32, marginLeft: "auto",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                background: "transparent", border: "none", borderRadius: 6,
+                background: "transparent", border: "1px solid var(--border)", borderRadius: 8,
                 color: "var(--text-tertiary)", cursor: "pointer", padding: 0,
               }}
             >
