@@ -372,7 +372,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
       <div style={{ flexShrink: 0, borderBottom: isMobile ? "none" : "1px solid var(--border)" }}>
         {isMobile ? (
           /* ── Mobile: filter dropdown flush left, matching Signal/Sound pattern ── */
-          <div className="view-padding" style={{ display: "flex", alignItems: "center", paddingTop: 8, paddingBottom: 0, gap: 8, marginBottom: 4 }}>
+          <div style={{ display: "flex", alignItems: "center", padding: "8px 16px 0", gap: 4, marginBottom: 4 }}>
             <div style={{ position: "relative" }}>
               <button
                 onClick={() => setMobileFilterOpen(v => !v)}
@@ -437,26 +437,26 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
               onClick={() => setShuffleKey(k => k + 1)}
               aria-label="Shuffle images"
               style={{
-                width: 32, height: 32, marginLeft: "auto",
+                width: 36, height: 36, marginLeft: "auto",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 background: "transparent", border: "none", borderRadius: 8,
                 color: "var(--text-tertiary)", cursor: "pointer", padding: 0,
               }}
             >
-              <Shuffle size={14} strokeWidth={1.5} />
+              <Shuffle size={18} strokeWidth={1.5} />
             </button>
             {isMobile && (
               <button
                 onClick={() => setMobileGalleryCols(c => c === 2 ? 1 : 2)}
                 aria-label={mobileGalleryCols === 2 ? "Single column" : "Two columns"}
                 style={{
-                  width: 32, height: 32,
+                  width: 36, height: 36,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   background: "transparent", border: "none", borderRadius: 8,
                   color: "var(--text-tertiary)", cursor: "pointer", padding: 0,
                 }}
               >
-                {mobileGalleryCols === 2 ? <Square size={14} strokeWidth={1.5} /> : <LayoutGrid size={14} strokeWidth={1.5} />}
+                {mobileGalleryCols === 2 ? <Square size={18} strokeWidth={1.5} /> : <LayoutGrid size={18} strokeWidth={1.5} />}
               </button>
             )}
           </div>
