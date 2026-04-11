@@ -574,10 +574,10 @@ export default function Page() {
     >
       {!isMobile && <ChiefOfStaffBand signals={signals} briefLoading={briefLoading} briefError={briefError} onDeliberate={handleDeliberate} defaultExpanded={sortBy === "urgency"} />}
       {/* Layer filters — pills on desktop, dropdown on mobile */}
-      <div style={{ flexShrink: 0, padding: isMobile ? "8px 16px 0" : "12px 20px 0" }}>
+      <div style={{ flexShrink: 0, padding: isMobile ? "8px 16px 8px" : "12px 20px 0" }}>
         {isMobile ? (
           /* ── Mobile: dropdown select + Off/Source toggle ── */
-          <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <div style={{ position: "relative" }}>
               <button
                 onClick={() => { setMobileFilterOpen(v => !v); setMobileMenuOpen(false) }}
