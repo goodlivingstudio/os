@@ -661,12 +661,12 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                                 <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel formatter={(value) => `${(value as number).toFixed(1)} avg`} />} />
                                 <defs>
                                   <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor={color} stopOpacity={0.35} />
-                                    <stop offset="95%" stopColor={color} stopOpacity={0.05} />
+                                    <stop offset="0%" stopColor={color} stopOpacity={0.4} />
+                                    <stop offset="100%" stopColor={color} stopOpacity={0} />
                                   </linearGradient>
                                   <linearGradient id={`${gradId}-last`} x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="var(--text-tertiary)" stopOpacity={0.3} />
-                                    <stop offset="95%" stopColor="var(--text-tertiary)" stopOpacity={0.05} />
+                                    <stop offset="0%" stopColor="var(--text-tertiary)" stopOpacity={0.2} />
+                                    <stop offset="100%" stopColor="var(--text-tertiary)" stopOpacity={0} />
                                   </linearGradient>
                                 </defs>
                                 <Area
