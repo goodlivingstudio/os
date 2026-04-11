@@ -277,7 +277,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                 {data.headline || data.briefing.split(/[.!?]\s/)[0]}
               </div>
               {data.headline && data.briefing && (
-                <div style={{ ...TYPE.reading, color: "var(--text-secondary)", lineHeight: 1.4, marginTop: 14 }}>
+                <div style={{ ...TYPE.body, color: "var(--text-secondary)", marginTop: 14 }}>
                   {data.briefing}
                 </div>
               )}
@@ -563,7 +563,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     >
-                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.4, marginBottom: topic.body ? 6 : 0, fontSize: 14 }}>
+                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", marginBottom: topic.body ? 6 : 0, fontSize: 15 }}>
                         {topic.title}
                       </div>
                       {topic.body && (
