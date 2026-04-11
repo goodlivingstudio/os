@@ -598,7 +598,7 @@ export default function Page() {
               {mobileFilterOpen && (
                 <div style={{
                   position: "absolute", top: 38, left: 0, zIndex: 100, minWidth: 180,
-                  background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 10,
+                  background: "var(--bg-primary)", border: "1px solid var(--border)", borderRadius: 10,
                   padding: "4px 0", animation: "status-fade 0.15s ease both",
                 }}>
                   <button
@@ -642,12 +642,21 @@ export default function Page() {
                 </div>
               )}
             </div>
-            {/* Triage / Explore toggle — mobile */}
+            {/* Triage / Explore toggle — mobile, with sliding indicator */}
             <div role="group" aria-label="Sort mode" style={{
               marginLeft: "auto",
-              display: "flex", gap: 2,
+              display: "flex", position: "relative",
               background: "var(--bg-elevated)", borderRadius: 8, padding: 2,
+              overflow: "hidden",
             }}>
+              <div style={{
+                position: "absolute", top: 2,
+                left: sortBy === "urgency" ? 2 : "calc(50% + 1px)",
+                width: "calc(50% - 3px)", height: "calc(100% - 4px)",
+                background: "var(--bg-surface)", borderRadius: 6,
+                transition: "left 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+                zIndex: 0,
+              }} />
               {(["urgency", "layer"] as const).map(mode => {
                 const isActive = sortBy === mode
                 return (
@@ -658,11 +667,12 @@ export default function Page() {
                     onClick={() => setSortBy(mode)}
                     style={{
                       padding: "5px 14px", border: "none", borderRadius: 6, cursor: "pointer",
-                      background: isActive ? "var(--bg-surface)" : "transparent",
+                      background: "transparent",
                       ...TYPE.xs, fontWeight: 400,
                       color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
                       letterSpacing: "0.01em",
-                      transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                      transition: "color 0.3s ease",
+                      position: "relative", zIndex: 1,
                     }}
                   >
                     {mode === "urgency" ? "Triage" : "Explore"}
@@ -880,7 +890,14 @@ export default function Page() {
                   {/* Off / Source image toggle */}
                   <div style={{ padding: "10px 16px" }}>
                     <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 10 }}>Images</div>
-                    <div style={{ display: "flex", background: "var(--bg-elevated)", borderRadius: 6, padding: 2 }}>
+                    <div style={{ display: "flex", position: "relative", background: "var(--bg-elevated)", borderRadius: 6, padding: 2, overflow: "hidden" }}>
+                      <div style={{
+                        position: "absolute", top: 2,
+                        left: feedImageMode === "source" ? 2 : "calc(50% + 1px)",
+                        width: "calc(50% - 3px)", height: "calc(100% - 4px)",
+                        background: "var(--bg-surface)", borderRadius: 4,
+                        transition: "left 0.35s cubic-bezier(0.16, 1, 0.3, 1)", zIndex: 0,
+                      }} />
                       {([
                         { id: "source" as const, label: "Source" },
                         { id: "off" as const, label: "Off" },
@@ -890,11 +907,11 @@ export default function Page() {
                           onClick={() => { setFeedImageMode(mode.id) }}
                           style={{
                             flex: 1, padding: "8px 0", borderRadius: 5, border: "none",
-                            background: feedImageMode === mode.id ? "var(--bg-surface)" : "transparent",
+                            background: "transparent", position: "relative", zIndex: 1,
                             ...TYPE.xs, fontWeight: 400,
                             color: feedImageMode === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
                             textTransform: "uppercase", letterSpacing: "0.04em",
-                            cursor: "pointer", transition: "all 0.15s",
+                            cursor: "pointer", transition: "color 0.3s ease",
                           }}
                         >
                           {mode.label}
@@ -905,7 +922,14 @@ export default function Page() {
                   {/* Briefing on/off */}
                   <div style={{ padding: "10px 16px" }}>
                     <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 10 }}>Briefing</div>
-                    <div style={{ display: "flex", background: "var(--bg-elevated)", borderRadius: 6, padding: 2 }}>
+                    <div style={{ display: "flex", position: "relative", background: "var(--bg-elevated)", borderRadius: 6, padding: 2, overflow: "hidden" }}>
+                      <div style={{
+                        position: "absolute", top: 2,
+                        left: showDcos ? 2 : "calc(50% + 1px)",
+                        width: "calc(50% - 3px)", height: "calc(100% - 4px)",
+                        background: "var(--bg-surface)", borderRadius: 4,
+                        transition: "left 0.35s cubic-bezier(0.16, 1, 0.3, 1)", zIndex: 0,
+                      }} />
                       {([
                         { id: true, label: "On" },
                         { id: false, label: "Off" },
@@ -915,11 +939,11 @@ export default function Page() {
                           onClick={() => { setShowDcos(mode.id) }}
                           style={{
                             flex: 1, padding: "8px 0", borderRadius: 5, border: "none",
-                            background: showDcos === mode.id ? "var(--bg-surface)" : "transparent",
+                            background: "transparent", position: "relative", zIndex: 1,
                             ...TYPE.xs, fontWeight: 400,
                             color: showDcos === mode.id ? "var(--text-primary)" : "var(--text-tertiary)",
                             textTransform: "uppercase", letterSpacing: "0.04em",
-                            cursor: "pointer", transition: "all 0.15s",
+                            cursor: "pointer", transition: "color 0.3s ease",
                           }}
                         >
                           {mode.label}
@@ -1087,7 +1111,7 @@ export default function Page() {
                   height: "calc(100% - 8px)",
                   background: "var(--bg-elevated)",
                   borderRadius: 14,
-                  transition: "left 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+                  transition: "left 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
                   zIndex: 0,
                 }}
               />

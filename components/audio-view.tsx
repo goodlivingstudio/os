@@ -559,7 +559,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
                 {mobileFilterOpen && (
                   <div style={{
                     position: "absolute", top: 38, left: 0, zIndex: 100, minWidth: 180,
-                    background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 10,
+                    background: "var(--bg-primary)", border: "1px solid var(--border)", borderRadius: 10,
                     padding: "4px 0", animation: "status-fade 0.15s ease both",
                   }}>
                     {LAYER_FILTERS.map(layer => {
@@ -584,12 +584,21 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
                   </div>
                 )}
               </div>
-              {/* Triage / Explore toggle — matches Signal */}
+              {/* Triage / Explore toggle — with sliding indicator */}
               <div role="group" aria-label="Sort mode" style={{
                 marginLeft: "auto",
-                display: "flex", gap: 2,
+                display: "flex", position: "relative",
                 background: "var(--bg-elevated)", borderRadius: 8, padding: 2,
+                overflow: "hidden",
               }}>
+                <div style={{
+                  position: "absolute", top: 2,
+                  left: sortBy === "urgency" ? 2 : "calc(50% + 1px)",
+                  width: "calc(50% - 3px)", height: "calc(100% - 4px)",
+                  background: "var(--bg-surface)", borderRadius: 6,
+                  transition: "left 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+                  zIndex: 0,
+                }} />
                 {(["urgency", "layer"] as const).map(mode => {
                   const isActive = sortBy === mode
                   return (
@@ -600,11 +609,12 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
                       onClick={() => onSortChange?.(mode)}
                       style={{
                         padding: "5px 14px", border: "none", borderRadius: 6, cursor: "pointer",
-                        background: isActive ? "var(--bg-surface)" : "transparent",
+                        background: "transparent",
                         ...TYPE.xs, fontWeight: 400,
                         color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
                         letterSpacing: "0.01em",
-                        transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                        transition: "color 0.3s ease",
+                        position: "relative", zIndex: 1,
                       }}
                     >
                       {mode === "urgency" ? "Triage" : "Explore"}
