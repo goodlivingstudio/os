@@ -619,12 +619,13 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             {data.sparklines && Object.keys(data.sparklines).length > 0 && (
               <div style={{
                 padding: "48px 0 0",
+                margin: "0 -20px",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 120ms both",
               }}>
-                <div style={{ ...labelStyle, marginBottom: 24 }}>
+                <div style={{ ...labelStyle, marginBottom: 24, paddingLeft: 20 }}>
                   Signal
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 24 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 0 }}>
                   {instanceConfig.layers.map((layer, layerIdx) => {
                     const points = data.sparklines![layer.id] || []
                     if (points.length < 2) return null
@@ -643,7 +644,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                     // Day labels
                     const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
                     return (
-                      <div key={layer.id} style={{ display: "flex", flexDirection: "column", gap: 6, gridColumn: layerIdx >= 3 ? "span 3" : "span 2" }}>
+                      <div key={layer.id} style={{ display: "flex", flexDirection: "column", gap: 6, gridColumn: layerIdx >= 3 ? "span 3" : "span 2", padding: "12px 16px", borderRight: (layerIdx !== 2 && layerIdx !== 4) ? "1px solid var(--border)" : "none", borderBottom: layerIdx < 3 ? "1px solid var(--border)" : "none" }}>
                         <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500 }}>
                           {layer.label}
                         </span>
