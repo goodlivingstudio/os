@@ -33,6 +33,13 @@
   --chart-4:       #9A85B8;  /* Landscape */
   --chart-5:       #C87A6A;  /* Culture */
   --radius:        0.625rem;
+
+  /* Type scale — responsive */
+  --type-xs: 11px;
+  --type-sm: 12px;
+  --type-body: 13px;
+  --type-reading: 14px;
+  --type-heading: 16px;
 }
 
 /* ─── Base ─────────────────────────────────────────────────────── */
@@ -186,6 +193,15 @@ html, body {
 
   /* Ticker — CSS fallback for hiding */
   .ticker-bar { display: none !important; }
+
+  /* Mobile type scale — bump sizes for touch readability */
+  :root {
+    --type-xs: 12px;
+    --type-sm: 13px;
+    --type-body: 15px;
+    --type-reading: 16px;
+    --type-heading: 18px;
+  }
 }
 
 /* ─── Live beacon ───────────────────────────────────────────────── */
