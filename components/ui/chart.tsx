@@ -191,13 +191,13 @@ function ChartTooltipContent({
   return (
     <div
       className={cn(
-        "grid min-w-40 items-start gap-2 text-sm",
+        "grid min-w-40 items-start gap-1 text-xs",
         className
       )}
       style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)", color: "var(--text-primary)", borderRadius: 10, padding: "14px 18px", boxShadow: "var(--shadow-tooltip)" }}
     >
       {!nestLabel ? tooltipLabel : null}
-      <div className="grid gap-2.5">
+      <div className="grid gap-1">
         {payload
           .filter((item) => item.type !== "none")
           .map((item, index) => {
