@@ -544,13 +544,13 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             {/* ─ PERSPECTIVES — intelligence layer cards ─ */}
             {data.perspectives && data.perspectives.length > 0 && (
               <div style={{
-                padding: "24px 0 0",
+                padding: "32px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
                 <div className="perspectives-grid" style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
-                  gap: 12,
+                  gap: 16,
                 }}>
                   {data.perspectives.map((p, i) => (
                     <PerspectiveCard
@@ -739,7 +739,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             {/* ─ PITCHES — editorial grid ─ */}
             {data.pitches && data.pitches.length > 0 && (
               <div style={{
-                paddingTop: 48,
+                paddingTop: 40,
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 150ms both",
               }}>
                 {data.pitches.map((pitch, i) => {

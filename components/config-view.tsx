@@ -6,7 +6,7 @@ import { Copy, Check, Trash2, Download } from "lucide-react"
 import { FEEDS } from "@/lib/feeds"
 import { PODCAST_FEEDS } from "@/lib/podcasts"
 import { GALLERY_SOURCES } from "@/lib/gallery"
-import { MONO, TYPE, labelStyle, metaStyle } from "@/lib/styles"
+import { MONO, TYPE, labelStyle, metaStyle, LAYER_COLORS } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
 import { RefreshCw } from "lucide-react"
 
@@ -24,7 +24,7 @@ const LAYER_LABELS: Record<string, string> = Object.fromEntries(
   instanceConfig.layers.map(l => [l.id, l.label])
 )
 const LAYER_DOT: Record<string, string> = Object.fromEntries(
-  instanceConfig.layers.map((l, i) => [l.id, ["#D4A05A", "#5A9EB0", "#7BAF6A", "#9A85B8", "#C87A6A"][i] || "#888"])
+  instanceConfig.layers.map((l, i) => [l.id, LAYER_COLORS[i] || "#888"])
 )
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -255,7 +255,7 @@ function CerebroStation() {
 
       {/* Session status */}
       <div style={{
-        background: "var(--bg-surface)", borderRadius: 8, padding: "16px 18px",
+        background: "var(--bg-surface)", borderRadius: 8, padding: "20px",
         marginBottom: 16,
       }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
@@ -519,7 +519,7 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [], sou
                 {activeNewsCount}/{newsFeedsOnly.length} active
               </span>
             </div>
-            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "20px" }}>
               <SourceGrid sources={newsGroups} type="source" excludedSources={excludedSources} onToggleSource={onToggleSource} sourceCounts={sourceCounts} sourceFailures={sourceFailures} />
             </div>
           </div>
@@ -532,7 +532,7 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [], sou
                 {activeSocialCount}/{socialFeeds.length} active
               </span>
             </div>
-            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "20px" }}>
               <SourceGrid sources={socialGroups} type="source" excludedSources={excludedSources} onToggleSource={onToggleSource} sourceCounts={sourceCounts} sourceFailures={sourceFailures} />
             </div>
           </div>
@@ -545,7 +545,7 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [], sou
                 {activePodCount}/{PODCAST_FEEDS.length} active
               </span>
             </div>
-            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "20px" }}>
               <SourceGrid sources={podGroups} type="show" excludedSources={excludedSources} onToggleSource={onToggleSource} sourceCounts={sourceCounts} sourceFailures={sourceFailures} />
             </div>
           </div>
@@ -558,7 +558,7 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [], sou
                 {activeGalleryCount}/{GALLERY_SOURCES.length} active
               </span>
             </div>
-            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
+            <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "20px" }}>
               <div className="source-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
                 {GALLERY_SOURCES.map(src => {
                   const active = !excludedSources.has(src.name)
@@ -607,7 +607,7 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [], sou
                   {instanceConfig.galleryScraper.targets.length} sites
                 </span>
               </div>
-              <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
+              <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "20px" }}>
                 {(() => {
                   const categories = [...new Set(instanceConfig.galleryScraper!.targets.map(t => t.category))]
                   return categories.map(cat => (
@@ -664,7 +664,7 @@ export function ConfigView({ excludedSources, onToggleSource, articles = [], sou
                   {instanceConfig.ugcScraper.targets.length} sites
                 </span>
               </div>
-              <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>
+              <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "20px" }}>
                 <div className="source-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
                   {instanceConfig.ugcScraper.targets.map(target => (
                     <a

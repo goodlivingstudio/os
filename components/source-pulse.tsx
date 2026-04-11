@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react"
 import { RefreshCw, ChevronUp } from "lucide-react"
-import { TYPE, MONO, metaStyle, labelStyle } from "@/lib/styles"
+import { TYPE, MONO, metaStyle, labelStyle, LAYER_COLORS } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
 import type { Article, FeedHealth } from "@/lib/types"
 
@@ -46,7 +46,7 @@ const LAYER_LABELS: Record<string, string> = Object.fromEntries(
 )
 
 const LAYER_COLOR: Record<string, string> = Object.fromEntries(
-  instanceConfig.layers.map((l, i) => [l.id, ["#D4A05A", "#5A9EB0", "#7BAF6A", "#9A85B8", "#C87A6A"][i] || "#888"])
+  instanceConfig.layers.map((l, i) => [l.id, LAYER_COLORS[i] || "#888"])
 )
 
 // ─── Metric Card ────────────────────────────────────────────────────────────
@@ -60,7 +60,7 @@ function MetricCard({ label, value, sub, color, width }: {
 }) {
   return (
     <div style={{
-      background: "var(--bg-surface)", borderRadius: 12, padding: "14px 16px",
+      background: "var(--bg-surface)", borderRadius: 12, padding: "20px",
       flex: width || "1", minWidth: 0,
     }}>
       <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>
