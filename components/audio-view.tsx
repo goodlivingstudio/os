@@ -535,10 +535,10 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
         const activeCount = activeLayer === "all" ? pool.length : pool.filter(ep => ep.layer === activeLayer).length
 
         return (
-          <div style={{ flexShrink: 0, padding: isMobile ? "8px 16px 0" : "12px 20px 0" }}>
+          <div style={{ flexShrink: 0, padding: isMobile ? "8px 16px 8px" : "12px 20px 0" }}>
             {isMobile ? (
               /* ── Mobile: dropdown + triage/explore toggle — matches Signal ── */
-              <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
               <div style={{ position: "relative" }}>
                 <button
                   onClick={() => setMobileFilterOpen(v => !v)}
