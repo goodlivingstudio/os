@@ -232,7 +232,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
             overflow: "hidden",
             transition: "max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
           }}>
-            <div style={{ display: "grid", gridTemplateColumns: `repeat(${signals.filter(s => s.body).length || 1}, 1fr)`, gap: 12, padding: "12px 20px 20px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(${signals.filter(s => s.body).length || 1}, 1fr)`, gap: 16, padding: "12px 20px 20px" }}>
               {signals.filter(s => s.body).map((signal, i) => {
                   const copyText = `[Dispatch Intelligence Signal — ${signal.layer || "General"}]\n\n${signal.headline}\n\n${signal.body}\n\n---\nSource: dispatch.goodliving.studio/synthesis`
                   return (

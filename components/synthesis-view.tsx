@@ -6,7 +6,7 @@ import instanceConfig, { storageKey, MOBILE_BREAKPOINT } from "@/lib/config"
 import { ArrowUpRight } from "lucide-react"
 import { CopyCardButton } from "@/components/copy-card-button"
 import type { Article } from "@/lib/types"
-import { TYPE, MONO, DISPLAY, labelStyle } from "@/lib/styles"
+import { TYPE, MONO, DISPLAY, labelStyle, LAYER_COLORS } from "@/lib/styles"
 import { renderCitedBody } from "@/components/citation"
 
 const LAYER_LABELS: Record<string, string> = Object.fromEntries(
@@ -89,7 +89,7 @@ const BLIND_SPOT_LABELS: Record<string, string> = {
 }
 
 const LAYER_DOT: Record<string, string> = Object.fromEntries(
-  instanceConfig.layers.map((l, i) => [l.id, ["#D4A05A", "#5A9EB0", "#7BAF6A", "#9A85B8", "#C87A6A"][i] || "#888"])
+  instanceConfig.layers.map((l, i) => [l.id, LAYER_COLORS[i] || "#888"])
 )
 
 // ─── Synthesis View ────────────────────────────────────────────────────────
@@ -296,7 +296,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ SIGNAL VELOCITY ─ */}
             {data.velocity && (data.velocity.accelerating.length > 0 || data.velocity.decelerating.length > 0) && (
               <div style={{
-                padding: "36px 0 16px",
+                padding: "40px 0 16px",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
                 <div style={{ ...labelStyle, marginBottom: 16 }}>
@@ -340,10 +340,10 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ CONVERGENCES ─ */}
             {data.patterns.length > 0 && (
               <div style={{
-                paddingTop: 36,
+                paddingTop: 40,
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 200ms both",
               }}>
-                <div style={{ ...labelStyle, marginBottom: 8 }}>
+                <div style={{ ...labelStyle, marginBottom: isMobile ? 8 : 12 }}>
                   Convergences
                 </div>
                 {data.patterns.map((pattern, i) => {
@@ -360,7 +360,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
                     style={{
                       position: "relative",
-                      padding: "32px 20px",
+                      padding: isMobile ? "32px 20px" : "24px 20px",
                       margin: "0 -20px",
                       borderBottom: "1px solid var(--border)",
                       cursor: "pointer", transition: "background 0.15s",
@@ -414,7 +414,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ URGENCY HEATMAP ─ */}
             {!isTriage && data.heatmap && data.heatmap.layers.length > 0 && (
               <div style={{
-                padding: "36px 0 16px",
+                padding: "40px 0 16px",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 300ms both",
               }}>
                 <div style={{ ...labelStyle, marginBottom: 16 }}>
@@ -476,7 +476,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ BLIND SPOTS — 3 cards ─ */}
             {data.blindSpots && data.blindSpots.length > 0 && (
               <div style={{
-                padding: "36px 0 0",
+                padding: "40px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 400ms both",
               }}>
                 <div style={{ ...labelStyle, marginBottom: 14 }}>
@@ -531,7 +531,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ ASK CEREBRO — 4 cards ─ */}
             {cerebroTopics.length > 0 && (
               <div style={{
-                padding: "36px 0 0",
+                padding: "40px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 500ms both",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 16 }}>

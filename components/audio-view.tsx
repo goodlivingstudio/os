@@ -325,7 +325,7 @@ function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onS
       style={{
         display: "flex",
         gap: 16,
-        padding: "18px 20px",
+        padding: "20px",
         background: hovered ? "var(--bg-elevated)" : "var(--bg-surface)",
         borderRadius: 12,
         cursor: "pointer",
