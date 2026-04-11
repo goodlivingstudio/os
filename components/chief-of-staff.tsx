@@ -196,10 +196,7 @@ export function ChiefOfStaffBand({ signals, briefLoading, briefError, onDelibera
               borderBottom: "1px solid var(--border)",
             }}
           >
-            <span style={{
-              ...TYPE.sm,
-              color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.04em",
-            }}>
+            <span style={{ ...labelStyle }}>
               Signal
             </span>
             <button

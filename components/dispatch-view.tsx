@@ -186,7 +186,7 @@ function PerspectiveCard({ perspective, index, onDeliberate }: {
         position: "relative",
         background: "var(--bg-surface)",
         borderRadius: 12,
-        padding: "16px 18px",
+        padding: "20px",
         cursor: "pointer",
         transition: "background 0.15s",
         display: "flex", flexDirection: "column",
@@ -536,7 +536,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             {/* ─ PERSPECTIVES — intelligence layer cards ─ */}
             {data.perspectives && data.perspectives.length > 0 && (
               <div style={{
-                padding: "32px 0 0",
+                padding: "40px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
                 <div className="perspectives-grid" style={{
@@ -594,10 +594,10 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                         }
                         return (
                           <div key={layer.id} style={{
-                            background: "var(--bg-surface)", borderRadius: 12, padding: "16px 16px 8px",
+                            background: "var(--bg-surface)", borderRadius: 12, padding: "20px 20px 12px",
                             display: "flex", flexDirection: "column",
                           }}>
-                            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500, marginBottom: 8 }}>
+                            <span style={{ ...labelStyle, marginBottom: 8 }}>
                               {layer.label}
                             </span>
                             <ChartContainer config={areaConfig} className="h-40 w-full">
@@ -669,10 +669,10 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
 
                       {/* Bar chart — layer distribution this week vs last */}
                       <div style={{
-                        background: "var(--bg-surface)", borderRadius: 12, padding: "16px 16px 8px",
+                        background: "var(--bg-surface)", borderRadius: 12, padding: "20px 20px 12px",
                         display: "flex", flexDirection: "column",
                       }}>
-                        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500, marginBottom: 8 }}>
+                        <span style={{ ...labelStyle, marginBottom: 8 }}>
                           Distribution
                         </span>
                         {(() => {

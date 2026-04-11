@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle, ThumbsUp, ThumbsDown, Frown, Globe, LayoutGrid, Square } from "lucide-react"
-import { TYPE, MONO } from "@/lib/styles"
+import { TYPE, MONO, labelStyle } from "@/lib/styles"
 import instanceConfig, { storageKey, MOBILE_BREAKPOINT } from "@/lib/config"
 import { GALLERY_SOURCES, type GalleryImage, type ColorMood, type Biome } from "@/lib/gallery"
 import type { Skin, Article } from "@/lib/types"
@@ -463,11 +463,11 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
         ) : (
           /* ── Desktop: title + pills + source chips + close ── */
           <div style={{
-            height: 52, display: "flex", alignItems: "center",
+            height: 40, display: "flex", alignItems: "center",
             justifyContent: "space-between", padding: "0 20px",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-              <span style={{ ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+              <span style={{ ...labelStyle, color: "var(--accent-muted)" }}>
                 Surface
               </span>
               <button
@@ -621,7 +621,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
       {/* Masonry grid */}
       <div style={{
         flex: 1, overflowY: "auto", overflowX: "hidden",
-        padding: "16px 16px",
+        padding: "20px",
       }}>
         {loading ? (
           <div style={{ ...TYPE.body, color: "var(--text-tertiary)", padding: 32 }}>
@@ -637,7 +637,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
           images.forEach((img, i) => idxMap.set(img.id, i))
           const cols: typeof images[] = Array.from({ length: galleryCols }, () => [])
           images.forEach((img, i) => cols[i % galleryCols].push(img))
-          const gridGap = galleryCols === 2 ? 10 : 14
+          const gridGap = galleryCols === 2 ? 8 : 16
 
           return (
             <div key={`${shuffleKey}-${activeMood ?? "all"}`} style={{ display: "flex", gap: gridGap, alignItems: "flex-start", transition: "gap 0.3s ease" }}>

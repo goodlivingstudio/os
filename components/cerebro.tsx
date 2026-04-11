@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import { Paperclip, Mic, MicOff, ExternalLink, ArrowUpRight, Copy, Check, Flag, BookMarked, Maximize2, Square, RotateCcw } from "lucide-react"
 import type { Article, Message } from "@/lib/types"
 import { storageKey } from "@/lib/config"
-import { MONO } from "@/lib/styles"
+import { MONO, TYPE } from "@/lib/styles"
 import { renderCitedBody, CitationSource } from "@/components/citation"
 
 // ─── Speech Recognition helpers ─────────────────────────────────────────────
@@ -302,7 +302,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span
             style={{
-              fontSize: 12,
+              ...TYPE.sm,
               fontFamily: MONO,
               textTransform: "uppercase",
               letterSpacing: "0.06em",
@@ -312,7 +312,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
             Cerebro
           </span>
           {tokens > 0 && (
-            <span style={{ fontSize: 12, fontFamily: MONO, fontVariantNumeric: "tabular-nums", color: "var(--text-primary)" }}>
+            <span style={{ ...TYPE.sm, fontFamily: MONO, fontVariantNumeric: "tabular-nums", color: "var(--text-primary)" }}>
               {tokens.toLocaleString()}
             </span>
           )}
@@ -356,7 +356,7 @@ export function Cerebro({ articles, pendingPrompt, onFocusMode, maxWidth, hideHe
           <div style={{ padding: "32px 16px" }}>
             <div
               style={{
-                fontSize: 13,
+                ...TYPE.body,
                 fontFamily: MONO,
                 color: "var(--text-tertiary)",
               }}
