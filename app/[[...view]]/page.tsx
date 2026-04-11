@@ -19,7 +19,7 @@ import { ExportPanel } from "@/components/export-panel"
 import { Divider } from "@/components/divider"
 import type { Article, Signal, FeedHealth, Skin, ViewMode } from "@/lib/types"
 import { LAYER_CONFIG } from "@/lib/types"
-import { TYPE, MONO } from "@/lib/styles"
+import { TYPE, MONO, DISPLAY, labelStyle } from "@/lib/styles"
 import instanceConfig, { storageKey, MOBILE_BREAKPOINT } from "@/lib/config"
 import { PRODUCTS } from "@/lib/config/products"
 
@@ -1005,10 +1005,15 @@ export default function Page() {
                       cursor: "pointer", textAlign: "left", padding: "14px 20px",
                     }}
                   >
-                    <div style={{ ...TYPE.xs, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.04em", marginBottom: 6 }}>
-                      {sig.label}
+                    {sig.layer && (
+                      <div style={{ ...labelStyle, marginBottom: 4 }}>
+                        {sig.layer}
+                      </div>
+                    )}
+                    <div style={{ fontSize: 20, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.1, marginBottom: 8 }}>
+                      {sig.headline || sig.label}
                     </div>
-                    <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.65 }}>
+                    <div style={{ ...TYPE.body, color: "var(--text-secondary)" }}>
                       {sig.body.replace(/\[\d+\]/g, "")}
                     </div>
                   </button>
