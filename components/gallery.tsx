@@ -667,7 +667,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                             untouched at rest (restraint discipline: no UI on the image unless
                             you hover). Approved state is communicated inside this menu, not
                             on top of the image itself. */}
-                        {!curatedIds.has(img.id) && (
+                        {!curatedIds.has(img.id) && !isMobile && (
                           <div className="gallery-curate" style={{
                             position: "absolute", bottom: 8, right: 8, zIndex: 2,
                             display: "flex", gap: 3,
