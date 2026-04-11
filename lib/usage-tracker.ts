@@ -226,7 +226,12 @@ export async function getDailyRollups(days: number): Promise<DailyRollup[]> {
 async function readEventsList(key: string): Promise<UsageEvent[]> {
   const raw = await kv.lrange<string>(key, 0, -1)
   if (!raw || raw.length === 0) return []
-  return raw.map(item => typeof item === "string" ? JSON.parse(item) : item as unknown as UsageEvent)
+  return raw.map(item => {
+    if (typeof item === "string") {
+      try { return JSON.parse(item) as UsageEvent } catch { return null }
+    }
+    return item as UsageEvent
+  }).filter((e): e is UsageEvent => e !== null && typeof e?.ts === "string")
 }
 
 function today(): string {

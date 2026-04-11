@@ -273,7 +273,7 @@ function PaletteDisplay({ palette, index }: { palette: GeneratedPalette; index: 
         setTimeout(() => setPushed(false), 3000)
       } else {
         const err = await res.json()
-        console.error("Figma push failed:", err.error)
+        if (process.env.NODE_ENV !== "production") console.error("Figma push failed:", err.error)
         // Fallback: copy as JSON
         const figmaJson = JSON.stringify({ palette: palette.name, colors }, null, 2)
         await navigator.clipboard.writeText(figmaJson)

@@ -5,7 +5,7 @@ import { ArrowUpRight, X, ChevronLeft, ChevronRight, Pen, Copy, Check, TrendingU
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { CopyCardButton } from "@/components/copy-card-button"
-import { TYPE, MONO, DISPLAY, labelStyle, metaStyle } from "@/lib/styles"
+import { TYPE, MONO, DISPLAY, labelStyle, metaStyle, LAYER_COLORS } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
 import { renderCitedBody } from "@/components/citation"
 import type { CitationSource } from "@/lib/types"
@@ -52,7 +52,7 @@ interface DispatchData {
 }
 
 const LAYER_DOT: Record<string, string> = Object.fromEntries(
-  instanceConfig.layers.map((l, i) => [l.id, ["#D4A05A", "#5A9EB0", "#7BAF6A", "#9A85B8", "#C87A6A"][i] || "#888"])
+  instanceConfig.layers.map((l, i) => [l.id, LAYER_COLORS[i] || "#888"])
 )
 const LAYER_LABELS: Record<string, string> = Object.fromEntries(
   instanceConfig.layers.map(l => [l.id, l.label])

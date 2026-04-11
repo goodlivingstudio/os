@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       try {
         const cached = await kv.get<{ signals: unknown[] }>(cacheKey)
         if (cached?.signals?.length) return Response.json(cached)
-      } catch { /* fall through */ }
+      } catch (e) { console.error("audio-brief KV cache read failed:", e) }
     }
 
     if (!episodes?.length) {
@@ -86,7 +86,7 @@ export async function POST(req: Request) {
     } catch {
       const match = text.match(/\[[\s\S]*\]/)
       if (match) {
-        try { parsed = JSON.parse(match[0]) } catch { /* */ }
+        try { parsed = JSON.parse(match[0]) } catch (e) { console.error("audio-brief JSON fallback parse failed:", e) }
       }
     }
 
