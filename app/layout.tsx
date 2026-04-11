@@ -2,6 +2,10 @@ import type { Metadata, Viewport } from "next"
 import localFont from "next/font/local"
 import config from "@/lib/config"
 import "./globals.css"
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -47,7 +51,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sohne.variable} ${sohneMono.variable} ${sohneSchmal.variable} h-full`}>
+    <html lang="en" className={cn("h-full", sohne.variable, sohneMono.variable, sohneSchmal.variable, "font-sans", geist.variable)}>
       <body className="h-full antialiased">
         <a href="#main-feed" className="skip-link">Skip to feed</a>
         {children}
