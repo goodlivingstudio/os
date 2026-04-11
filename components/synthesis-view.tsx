@@ -371,13 +371,17 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                   >
                     {!isMobile && <CopyCardButton text={copyText} />}
                     <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", gap: isMobile ? 12 : 20 }}>
-                      {/* Image thumbnail */}
+                      {/* Image thumbnail — 3:2 aspect ratio on both mobile and desktop */}
                       <div style={{
-                        width: isMobile ? "100%" : 150, height: isMobile ? 160 : 100, borderRadius: 8, overflow: "hidden", flexShrink: 0,
+                        width: isMobile ? "100%" : 150,
+                        height: isMobile ? undefined : 100,
+                        paddingTop: isMobile ? `${(2 / 3) * 100}%` : undefined,
+                        position: isMobile ? "relative" : undefined,
+                        borderRadius: 8, overflow: "hidden", flexShrink: 0,
                         background: pattern.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
                       }}>
                         {pattern.imageUrl && (
-                          <img src={pattern.imageUrl} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          <img src={pattern.imageUrl} alt="" loading="lazy" style={{ position: isMobile ? "absolute" : undefined, inset: isMobile ? 0 : undefined, width: "100%", height: "100%", objectFit: "cover" }} />
                         )}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
