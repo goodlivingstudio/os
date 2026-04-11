@@ -222,8 +222,6 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
   pitch: Pitch; onClose: () => void; onDeliberate: (text: string) => void
   status?: PitchStatus; onSetStatus: (s: PitchStatus | null) => void
 }) {
-  const pitchMarkdown = `# ${pitch.title}\n\n**Thesis:** ${pitch.thesis}\n\n**Brief:** ${pitch.brief}\n\n**Platform:** ${pitch.platforms.primary}\n**Adaptations:**\n${pitch.platforms.adaptations.map(a => `- ${a}`).join("\n")}\n\n**Evidence:**\n${pitch.evidence.map(e => `- ${e}`).join("\n")}\n\n**Urgency:** ${pitch.urgency}`
-
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose() }
     window.addEventListener("keydown", handler)
@@ -240,68 +238,37 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
         className="pitch-overlay-inner"
         style={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "32px 36px", width: 600, maxHeight: "85vh", overflowY: "auto" }}
       >
+        {/* Header */}
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ ...TYPE.xs, textTransform: "uppercase", color: pitch.mode === "thought_leadership" ? "#5A9EB0" : "#C87A6A", fontWeight: 600, letterSpacing: "0.06em" }}>
-              {pitch.mode === "thought_leadership" ? "Thought Leadership" : "Creative"}
-            </span>
-            {pitch.wildcard && (
-              <span style={{ ...TYPE.xs, padding: "2px 8px", borderRadius: 8, background: "rgba(184, 150, 106, 0.12)", color: "var(--accent-secondary)", fontWeight: 600, letterSpacing: "0.03em" }}>
-                WILDCARD
-              </span>
-            )}
+          <div style={{ ...labelStyle }}>
+            {pitch.mode === "thought_leadership" ? "Thought Leadership" : "Creative"}
           </div>
-          <button onClick={onClose} style={{ background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", padding: 0 }}>
+          <button onClick={onClose} aria-label="Close" style={{ background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", padding: 0 }}>
             <X size={18} strokeWidth={1.5} />
           </button>
         </div>
 
+        {/* Title + Thesis */}
         <div style={{ fontSize: 32, fontWeight: 600, fontFamily: DISPLAY, color: "var(--text-primary)", marginBottom: 10, lineHeight: 1 }}>{pitch.title}</div>
-        <div style={{ ...TYPE.body, color: "var(--text-secondary)", marginBottom: isConvergence(pitch) ? 12 : 24 }}>{pitch.thesis}</div>
+        <div style={{ ...TYPE.body, color: "var(--text-secondary)", marginBottom: 28 }}>{pitch.thesis}</div>
 
-        {/* Convergence callout */}
-        {isConvergence(pitch) && (
-          <div style={{
-            display: "flex", alignItems: "center", gap: 8, marginBottom: 24,
-            padding: "10px 14px", borderRadius: 8, background: "var(--bg-elevated)",
-          }}>
-            <span style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
-              Convergence — {pitch.layers.map(l => LAYER_LABELS[l] || l).join(", ")}
-            </span>
-          </div>
-        )}
-
-        {/* Signal strength */}
-        {countUniqueSources(pitch) > 0 && (
-          <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginBottom: 16 }}>
-            {countUniqueSources(pitch)} unique sources
-          </div>
-        )}
-
-        <div style={{ height: 1, background: "var(--border)", marginBottom: 24 }} />
-
+        {/* Brief */}
         <div style={{ marginBottom: 24 }}>
-          <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Brief</div>
+          <div style={{ ...labelStyle, marginBottom: 8 }}>Brief</div>
           <div style={{ ...TYPE.body, color: "var(--text-secondary)" }}>{pitch.brief}</div>
         </div>
 
+        {/* Angle */}
         {pitch.angle && (
           <div style={{ marginBottom: 24 }}>
-            <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Angle</div>
+            <div style={{ ...labelStyle, marginBottom: 8 }}>Angle</div>
             <div style={{ ...TYPE.body, color: "var(--text-secondary)" }}>{pitch.angle}</div>
           </div>
         )}
 
+        {/* Evidence */}
         <div style={{ marginBottom: 24 }}>
-          <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Platform</div>
-          <div style={{ ...TYPE.body, color: "var(--text-primary)", fontWeight: 500, marginBottom: 6 }}>{pitch.platforms.primary}</div>
-          {pitch.platforms.adaptations.map((a, i) => (
-            <div key={i} style={{ ...TYPE.body, color: "var(--text-tertiary)", marginBottom: 4 }}>{a}</div>
-          ))}
-        </div>
-
-        <div style={{ marginBottom: 24 }}>
-          <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Evidence</div>
+          <div style={{ ...labelStyle, marginBottom: 8 }}>Evidence</div>
           {pitch.evidence.map((e, i) => (
             <div key={i} style={{ ...TYPE.body, color: "var(--text-secondary)", marginBottom: 6 }}>
               {renderCitedBody(e, pitch.evidenceSources?.[i])}
@@ -309,20 +276,17 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
           ))}
         </div>
 
+        {/* Why Now */}
         <div style={{ marginBottom: 28 }}>
-          <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Why Now</div>
-          <div style={{ ...TYPE.body, color: "var(--accent-muted)" }}>{pitch.urgency}</div>
+          <div style={{ ...labelStyle, marginBottom: 8 }}>Why Now</div>
+          <div style={{ ...TYPE.body, color: "var(--text-secondary)" }}>{pitch.urgency}</div>
         </div>
 
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
-          <CopyButton text={pitchMarkdown} label="Copy brief" />
-          <CopyButton
-            text={`---\ntype: dispatch-pitch\ndate: ${new Date().toISOString().slice(0, 10)}\nmode: ${pitch.mode}\nlayers: [${pitch.layers.join(", ")}]\nplatform: ${pitch.platforms.primary}\n---\n\n# ${pitch.title}\n\n**Thesis:** ${pitch.thesis}\n\n**Brief:** ${pitch.brief}\n\n${pitch.angle ? `**Angle:** ${pitch.angle}\n\n` : ""}**Evidence:**\n${pitch.evidence.map(e => `- ${e}`).join("\n")}\n\n**Urgency:** ${pitch.urgency}\n\n**Adaptations:**\n${pitch.platforms.adaptations.map(a => `- ${a}`).join("\n")}\n\n${pitch.wordCount ? `**Target:** ~${pitch.wordCount} words` : ""}`}
-            label="Copy for Atlas"
-          />
+        {/* Actions */}
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
           <button
             onClick={() => { onDeliberate(`I want to develop this content pitch:\n\n"${pitch.title}"\n\nThesis: ${pitch.thesis}\n\nHelp me think through the argument structure, key points, and how to make it distinctive.`); onClose() }}
-            style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "var(--text-secondary)", ...TYPE.sm, cursor: "pointer", fontWeight: 500, transition: "all 0.15s" }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 8, border: "1px solid var(--border)", background: "transparent", color: "var(--text-secondary)", ...TYPE.sm, cursor: "pointer", fontWeight: 500, transition: "all 0.15s" }}
             onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
             onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
           >
@@ -334,33 +298,13 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
               onDeliberate(`Act as my co-writer — help me write this piece, not strategize about it.\n\nTitle: "${pitch.title}"\nPlatform: ${pitch.platforms.primary}${pitch.wordCount ? ` (~${pitch.wordCount} words)` : ""}\nThesis: ${pitch.thesis}\nBrief: ${pitch.brief}${pitch.angle ? `\nAngle: ${pitch.angle}` : ""}\nEvidence:\n${pitch.evidence.map(e => `- ${e}`).join("\n")}\n\nStart with an opening hook. Write in first person, conversational but authoritative. Make it publishable.`)
               onClose()
             }}
-            style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 6, border: "1px solid var(--accent-secondary)", background: "rgba(184, 150, 106, 0.08)", color: "var(--accent-secondary)", ...TYPE.sm, cursor: "pointer", fontWeight: 500, transition: "all 0.15s" }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 8, border: "1px solid var(--accent-secondary)", background: "rgba(184, 150, 106, 0.08)", color: "var(--accent-secondary)", ...TYPE.sm, cursor: "pointer", fontWeight: 500, transition: "all 0.15s" }}
             onMouseEnter={e => { e.currentTarget.style.background = "rgba(184, 150, 106, 0.15)" }}
             onMouseLeave={e => { e.currentTarget.style.background = "rgba(184, 150, 106, 0.08)" }}
           >
             <Pen size={11} />
             Start drafting
           </button>
-        </div>
-
-        {/* Status toggles */}
-        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-          <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", marginRight: 4 }}>Status</span>
-          {(["drafted", "published", "killed"] as PitchStatus[]).map(s => (
-            <button
-              key={s}
-              onClick={() => onSetStatus(status === s ? null : s)}
-              style={{
-                ...TYPE.xs, padding: "3px 10px", borderRadius: 8,
-                border: `1px solid ${status === s ? STATUS_COLORS[s] : "var(--border)"}`,
-                background: status === s ? `${STATUS_COLORS[s]}18` : "transparent",
-                color: status === s ? STATUS_COLORS[s] : "var(--text-tertiary)",
-                cursor: "pointer", transition: "all 0.15s", textTransform: "capitalize",
-              }}
-            >
-              {s}
-            </button>
-          ))}
         </div>
       </div>
     </div>
