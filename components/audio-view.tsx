@@ -401,7 +401,7 @@ function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onS
           style={{
             ...TYPE.heading,
             fontSize: "var(--type-reading)",
-            lineHeight: 1.3, fontWeight: 700, transition: "color 0.15s",
+            transition: "color 0.15s",
             color: hovered ? "var(--text-primary)" : "var(--text-secondary)",
             display: "-webkit-box", WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical" as const, overflow: "hidden",
