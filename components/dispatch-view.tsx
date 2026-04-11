@@ -447,31 +447,16 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
       {/* Header */}
       <div style={{
         flexShrink: 0, height: 40, display: "flex", alignItems: "center",
+        justifyContent: "space-between",
         padding: "0 20px", borderBottom: "1px solid var(--border)",
       }}>
         <span style={{ ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
           Dispatch
         </span>
-
-        {/* Regenerate — current week only */}
-        {data && !loading && weekOffset === 0 && (
-          <button
-            onClick={handleRegenerate}
-            disabled={regenerating}
-            title="Regenerate weekly brief"
-            style={{
-              display: "inline-flex", alignItems: "center", gap: 4,
-              padding: "4px 10px", borderRadius: 6, marginLeft: "auto",
-              border: "1px solid var(--border)", background: "transparent",
-              ...TYPE.xs, color: "var(--text-tertiary)",
-              cursor: regenerating ? "default" : "pointer", transition: "all 0.15s",
-            }}
-            onMouseEnter={e => { if (!regenerating) e.currentTarget.style.background = "var(--bg-elevated)" }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
-          >
-            <RefreshCw size={11} style={{ animation: regenerating ? "spin 1s linear infinite" : "none" }} />
-            {regenerating ? "Generating..." : "Regenerate"}
-          </button>
+        {data?.generatedAt && (
+          <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)" }}>
+            {formatWeekRange(data.generatedAt)}
+          </span>
         )}
       </div>
 
@@ -532,7 +517,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                 textTransform: "uppercase", letterSpacing: "0.08em",
                 marginBottom: 16,
               }}>
-                New ideas and opportunities &bull; {formatWeekRange(data.generatedAt)}
+                New ideas and opportunities
               </div>
               {/* Headline — Söhne Schmal display, centered */}
               <div className="dispatch-headline" style={{
@@ -655,7 +640,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                         <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500 }}>
                           {layer.label}
                         </span>
-                        <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" style={{ width: "100%", height: h }}>
+                        <svg viewBox={`0 0 ${w} ${h}`} style={{ width: "100%", height: h, overflow: "visible" }}>
                           <defs>
                             <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
                               <stop offset="0%" stopColor={color} stopOpacity={0.2} />
@@ -767,13 +752,6 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                   )
                 })}
 
-                {/* Copy all */}
-                <div style={{ padding: "20px 20px" }}>
-                  <CopyButton
-                    text={`# Weekly Dispatch\n${data.weekSummary || ""}\n\n${data.pitches.map((p, i) => `## ${i + 1}. ${p.title}\n**Thesis:** ${p.thesis}\n**Mode:** ${p.mode}\n**Brief:** ${p.brief}\n**Platform:** ${p.platforms.primary}\n**Urgency:** ${p.urgency}\n`).join("\n")}`}
-                    label="Copy all pitches"
-                  />
-                </div>
               </div>
             )}
           </div>
