@@ -1066,15 +1066,25 @@ export default function Page() {
           )
         })()}
 
-        {/* Mobile: show active tab panel with transition */}
+        {/* Mobile: tabs stay mounted, hidden with display:none to preserve state */}
         <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column", background: mobileTab === "cerebro" ? "var(--bg-surface)" : undefined }}>
-          <div key={mobileTab} className="mobile-tab-content" style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
-            {mobileTab === "signal" && feedContent}
-            {mobileTab === "synthesis" && <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} sortBy={sortBy} />}
-            {mobileTab === "audio"     && <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} onSortChange={setSortBy} pinnedArticleIds={new Set(pinnedArticles.map(a => a.id))} onPinArticle={handlePinArticle} />}
-            {mobileTab === "gallery"   && <GalleryOverlay onClose={() => setMobileTab("signal")} excludedSources={excludedSources} articles={articles} onDeliberate={handleSynthesisDeliberate} />}
-            {mobileTab === "cerebro"   && <div style={{ flex: 1, overflow: "hidden" }}><Cerebro articles={articles} pendingPrompt={cerebroPrompt} hideHeader /></div>}
-            {mobileTab === "config"    && <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} articles={articles} sourceFailures={feedHealth?.sourceFailures} />}
+          <div style={{ flex: 1, overflow: "hidden", display: mobileTab === "signal" ? "flex" : "none", flexDirection: "column" }}>
+            {feedContent}
+          </div>
+          <div style={{ flex: 1, overflow: "hidden", display: mobileTab === "synthesis" ? "flex" : "none", flexDirection: "column" }}>
+            <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} sortBy={sortBy} />
+          </div>
+          <div style={{ flex: 1, overflow: "hidden", display: mobileTab === "audio" ? "flex" : "none", flexDirection: "column" }}>
+            <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} onSortChange={setSortBy} pinnedArticleIds={new Set(pinnedArticles.map(a => a.id))} onPinArticle={handlePinArticle} />
+          </div>
+          <div style={{ flex: 1, overflow: "hidden", display: mobileTab === "gallery" ? "flex" : "none", flexDirection: "column" }}>
+            <GalleryOverlay onClose={() => setMobileTab("signal")} excludedSources={excludedSources} articles={articles} onDeliberate={handleSynthesisDeliberate} />
+          </div>
+          <div style={{ flex: 1, overflow: "hidden", display: mobileTab === "cerebro" ? "flex" : "none", flexDirection: "column" }}>
+            <Cerebro articles={articles} pendingPrompt={cerebroPrompt} hideHeader />
+          </div>
+          <div style={{ flex: 1, overflow: "hidden", display: mobileTab === "config" ? "flex" : "none", flexDirection: "column" }}>
+            <ConfigView excludedSources={excludedSources} onToggleSource={handleToggleSource} articles={articles} sourceFailures={feedHealth?.sourceFailures} />
           </div>
         </div>
 
