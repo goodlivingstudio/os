@@ -640,7 +640,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
           const gridGap = galleryCols === 2 ? 10 : 14
 
           return (
-            <div key={`${shuffleKey}-${activeMood ?? "all"}-${galleryCols}`} style={{ display: "flex", gap: gridGap, alignItems: "flex-start" }}>
+            <div key={`${shuffleKey}-${activeMood ?? "all"}`} style={{ display: "flex", gap: gridGap, alignItems: "flex-start", transition: "gap 0.3s ease" }}>
               {cols.map((col, colIdx) => (
                 <div key={colIdx} style={{ flex: 1, display: "flex", flexDirection: "column", gap: gridGap, minWidth: 0 }}>
                   {col.map((img, rowIdx) => {
