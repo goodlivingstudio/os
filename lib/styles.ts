@@ -25,7 +25,7 @@ export const TYPE = {
   sm:      { fontSize: "var(--type-sm)", lineHeight: "140%" } as CSSProperties,
   body:    { fontSize: "var(--type-body)", lineHeight: "140%" } as CSSProperties,
   reading: { fontSize: "var(--type-reading)", lineHeight: "140%" } as CSSProperties,
-  heading: { fontSize: "var(--type-heading)", fontWeight: 600, lineHeight: "140%" } as CSSProperties,
+  heading: { fontSize: "var(--type-heading)", fontWeight: 700, lineHeight: "140%" } as CSSProperties,
 }
 
 // ─── Semantic composites ────────────────────────────────────────────────────
