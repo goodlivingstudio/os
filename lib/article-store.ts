@@ -13,7 +13,7 @@ const KV_AVAILABLE = !!(
 )
 
 // TTL: 8 days — gives 1 day buffer beyond the 7-day read window
-const TTL_SECONDS = 8 * 24 * 60 * 60
+const TTL_SECONDS = 15 * 24 * 60 * 60 // 15 days — supports week-over-week sparklines
 
 interface StoredArticle {
   id: string
