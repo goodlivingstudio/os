@@ -1,93 +1,68 @@
 "use client"
 
-import { useState, useRef } from "react"
-import { createPortal } from "react-dom"
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { TYPE, labelStyle } from "@/lib/styles"
 import type { CitationSource } from "@/lib/types"
 export type { CitationSource }
 
-// ─── Citation chip — fixed popover with source details ──────────────────────
+// ─── Citation chip — shadcn tooltip with source details ──────────────────────
 
 function CitationChip({ num, src }: { num: string; src: CitationSource }) {
-  const [show, setShow] = useState(false)
-  const [pos, setPos] = useState({ x: 0, y: 0 })
-  const chipRef = useRef<HTMLSpanElement>(null)
-
-  const handleEnter = () => {
-    if (chipRef.current) {
-      const rect = chipRef.current.getBoundingClientRect()
-      setPos({ x: rect.left + rect.width / 2, y: rect.top })
-    }
-    setShow(true)
-  }
-
   // Derive display name: use source if available, otherwise extract hostname
   const displayName = src.source || (() => {
     try { return new URL(src.url).hostname.replace("www.", "") } catch { return "Source" }
   })()
 
   return (
-    <>
-      <span
-        ref={chipRef}
-        onMouseEnter={handleEnter}
-        onMouseLeave={() => setShow(false)}
-        onClick={e => {
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <span
+            style={{
+              color: "var(--accent-secondary)",
+              cursor: "pointer",
+              transition: "color 0.15s",
+            }}
+          />
+        }
+        onClick={(e: React.MouseEvent) => {
           e.stopPropagation()
           window.open(src.url, "_blank", "noopener,noreferrer")
         }}
-        style={{
-          color: "var(--accent-secondary)",
-          cursor: "pointer",
-          transition: "color 0.15s",
-        }}
       >
         {num}
-      </span>
-      {show && createPortal(
-        <div
-          onMouseEnter={() => setShow(true)}
-          onMouseLeave={() => setShow(false)}
+      </TooltipTrigger>
+      <TooltipContent
+        className="max-w-none w-auto rounded-none bg-transparent p-0 text-inherit ring-0 shadow-none"
+        style={{
+          width: 220,
+          background: "var(--bg-elevated)",
+          border: "1px solid var(--border)",
+          borderRadius: 8,
+          padding: "10px 12px",
+          boxShadow: "var(--shadow-tooltip)",
+        }}
+      >
+        <div style={{ ...labelStyle, marginBottom: 4 }}>
+          {displayName}
+        </div>
+        <a
+          href={src.url}
+          target="_blank"
+          rel="noopener noreferrer"
           onClick={e => e.stopPropagation()}
           style={{
-            position: "fixed",
-            left: Math.min(pos.x, (typeof window !== "undefined" ? window.innerWidth : 1200) - 240),
-            top: Math.max(8, pos.y - 8),
-            transform: "translateY(-100%)",
-            width: 220,
-            background: "var(--bg-elevated)",
-            border: "1px solid var(--border)",
-            borderRadius: 8,
-            padding: "10px 12px",
-            zIndex: 1000,
-            boxShadow: "var(--shadow-tooltip)",
-            animation: "status-fade 0.15s ease both",
+            ...TYPE.sm, color: "var(--text-primary)",
+            textDecoration: "none", display: "block",
+            transition: "color 0.15s",
           }}
+          onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)" }}
+          onMouseLeave={e => { e.currentTarget.style.color = "var(--text-primary)" }}
         >
-          <div style={{
-            ...labelStyle, marginBottom: 4,
-          }}>
-            {displayName}
-          </div>
-          <a
-            href={src.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={e => e.stopPropagation()}
-            style={{
-              ...TYPE.sm, color: "var(--text-primary)",
-              textDecoration: "none", display: "block",
-              transition: "color 0.15s",
-            }}
-            onMouseEnter={e => { e.currentTarget.style.color = "var(--accent-secondary)" }}
-            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-primary)" }}
-          >
-            {src.title}
-          </a>
-        </div>,
-        document.body
-      )}
-    </>
+          {src.title}
+        </a>
+      </TooltipContent>
+    </Tooltip>
   )
 }
 
