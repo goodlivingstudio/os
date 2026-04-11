@@ -273,7 +273,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
               <div style={{ ...labelStyle, marginBottom: 10 }}>
                 Weekly Shift
               </div>
-              <div style={{ fontSize: isMobile ? 42 : 44, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.05 }}>
+              <div style={{ fontSize: isMobile ? 42 : 44, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: isMobile ? 0.95 : 1.05 }}>
                 {data.headline || data.briefing.split(/[.!?]\s/)[0]}
               </div>
               {data.headline && data.briefing && (

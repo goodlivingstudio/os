@@ -443,7 +443,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                 color: "var(--text-tertiary)", cursor: "pointer", padding: 0,
               }}
             >
-              <Shuffle size={18} strokeWidth={1.5} />
+              <Shuffle size={16} strokeWidth={1.5} />
             </button>
             {isMobile && (
               <button
@@ -456,7 +456,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                   color: "var(--text-tertiary)", cursor: "pointer", padding: 0,
                 }}
               >
-                {mobileGalleryCols === 2 ? <Square size={18} strokeWidth={1.5} /> : <LayoutGrid size={18} strokeWidth={1.5} />}
+                {mobileGalleryCols === 2 ? <Square size={16} strokeWidth={1.5} /> : <LayoutGrid size={16} strokeWidth={1.5} />}
               </button>
             )}
           </div>
