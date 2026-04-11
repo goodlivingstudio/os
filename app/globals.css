@@ -172,7 +172,7 @@ html, body {
 
   /* Dispatch */
   .pitch-thumb { display: none !important; }
-  .dispatch-headline { font-size: 24px !important; }
+  .dispatch-headline { font-size: 32px !important; }
   .dispatch-header-content { padding: 24px 16px 20px !important; }
   .pitch-overlay-inner { width: 92vw !important; max-width: none !important; padding: 24px 20px !important; }
 
@@ -194,13 +194,16 @@ html, body {
   /* Ticker — CSS fallback for hiding */
   .ticker-bar { display: none !important; }
 
+  /* Mobile breathing room — feed-like spacing */
+  .view-padding { padding: 20px !important; }
+
   /* Mobile type scale — bump sizes for touch readability */
   :root {
     --type-xs: 12px;
-    --type-sm: 13px;
+    --type-sm: 14px;
     --type-body: 15px;
-    --type-reading: 16px;
-    --type-heading: 18px;
+    --type-reading: 17px;
+    --type-heading: 19px;
   }
 }
 
