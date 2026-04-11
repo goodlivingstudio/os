@@ -267,7 +267,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
 
             {/* ─ WEEKLY SHIFT banner ─ */}
             <div style={{
-              background: "var(--bg-primary)", padding: "40px 0 48px",
+              background: "var(--bg-primary)", padding: "36px 0 40px",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
               <div style={{ ...labelStyle, marginBottom: 10 }}>
@@ -296,7 +296,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ SIGNAL VELOCITY ─ */}
             {data.velocity && (data.velocity.accelerating.length > 0 || data.velocity.decelerating.length > 0) && (
               <div style={{
-                padding: "48px 0 16px",
+                padding: "36px 0 16px",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 16, fontSize: 12 }}>
@@ -340,7 +340,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ CONVERGENCES ─ */}
             {data.patterns.length > 0 && (
               <div style={{
-                paddingTop: 48,
+                paddingTop: 36,
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 200ms both",
               }}>
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 12 }}>
@@ -370,7 +370,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
                     {!isMobile && <CopyCardButton text={copyText} />}
-                    <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", gap: isMobile ? 12 : 20 }}>
+                    <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", gap: isMobile ? 20 : 20 }}>
                       {/* Image thumbnail — 3:2 aspect ratio on both mobile and desktop */}
                       <div style={{
                         width: isMobile ? "100%" : 150,
@@ -414,7 +414,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ URGENCY HEATMAP ─ */}
             {!isTriage && data.heatmap && data.heatmap.layers.length > 0 && (
               <div style={{
-                padding: "48px 0 16px",
+                padding: "36px 0 16px",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 300ms both",
               }}>
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 16, fontSize: 12 }}>
@@ -476,16 +476,16 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ BLIND SPOTS — 3 cards ─ */}
             {data.blindSpots && data.blindSpots.length > 0 && (
               <div style={{
-                padding: isMobile ? "48px 0 0 16px" : "48px 0 0",
+                padding: "36px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 400ms both",
               }}>
-                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 12, paddingLeft: isMobile ? 4 : 0 }}>
+                <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 14, fontSize: 12 }}>
                   Blind Spots
                 </div>
                 <div className="synthesis-blindspots" onScroll={scroll.onScroll} style={isMobile ? {
-                  display: "flex", gap: 8, overflowX: "auto", overflowY: "hidden",
+                  display: "flex", gap: 12, overflowX: "auto", overflowY: "hidden",
                   WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory",
-                  paddingRight: 16, paddingBottom: 4,
+                  paddingBottom: 4,
                   msOverflowStyle: "none", scrollbarWidth: "none",
                 } as React.CSSProperties : { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
                   {data.blindSpots.map((spot, i) => {
@@ -531,7 +531,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             {/* ─ ASK CEREBRO — 4 cards ─ */}
             {cerebroTopics.length > 0 && (
               <div style={{
-                padding: "48px 0 0",
+                padding: "36px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 500ms both",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 16 }}>

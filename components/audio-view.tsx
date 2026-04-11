@@ -400,8 +400,9 @@ function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onS
         <div
           style={{
             ...TYPE.heading,
+            fontSize: "var(--type-reading)",
+            lineHeight: 1.3, transition: "color 0.15s",
             color: hovered ? "var(--text-primary)" : "var(--text-secondary)",
-            lineHeight: 1.4, transition: "color 0.15s",
             display: "-webkit-box", WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical" as const, overflow: "hidden",
           }}
