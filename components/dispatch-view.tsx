@@ -658,7 +658,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                             <ChartContainer config={areaConfig} className="h-40 w-full">
                               <AreaChart data={chartData} margin={{ top: 4, right: 8, bottom: 0, left: 8 }}>
                                 <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--border)" strokeOpacity={0.3} />
-                                <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                                <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel formatter={(value) => `${(value as number).toFixed(1)} avg`} />} />
                                 <defs>
                                   <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="5%" stopColor={color} stopOpacity={0.35} />
@@ -757,7 +757,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                                 <BarChart data={barData} margin={{ top: 4, right: 4, bottom: 0, left: 4 }}>
                                   <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--border)" strokeOpacity={0.3} />
                                   <XAxis dataKey="layer" tickLine={false} tickMargin={8} axisLine={false} tick={{ fontSize: 10, fill: "var(--text-tertiary)" }} />
-                                  <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
+                                  <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" hideLabel formatter={(value) => `${(value as number).toFixed(1)}`} />} />
                                   <Bar dataKey="thisWeek" fill="var(--accent-secondary)" radius={3} />
                                   <Bar dataKey="lastWeek" fill="var(--text-tertiary)" fillOpacity={0.3} radius={3} />
                                 </BarChart>
