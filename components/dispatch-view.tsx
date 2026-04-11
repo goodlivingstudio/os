@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { ArrowUpRight, X, RefreshCw, ChevronLeft, ChevronRight, Pen, Copy, Check } from "lucide-react"
+import { ArrowUpRight, X, ChevronLeft, ChevronRight, Pen, Copy, Check } from "lucide-react"
+import { Area, AreaChart, ResponsiveContainer } from "recharts"
 import { CopyCardButton } from "@/components/copy-card-button"
 import { TYPE, MONO, DISPLAY, labelStyle, metaStyle } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
@@ -619,38 +620,39 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                 <div style={{ ...labelStyle, marginBottom: 24, paddingLeft: 20 }}>
                   Signal
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 0 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 16, padding: "0 20px" }}>
                   {instanceConfig.layers.map((layer, layerIdx) => {
                     const points = data.sparklines![layer.id] || []
                     if (points.length < 2) return null
-                    const max = Math.max(...points, 1)
-                    const pad = 4 // padding so end dot isn't clipped
-                    const h = 60
-                    const w = 200
-                    const chartW = w - pad * 2
-                    const step = chartW / (points.length - 1)
-                    const scaled = points.map(v => h - (v / max) * (h - 6) - 3)
-                    const polyline = scaled.map((y, i) => `${pad + i * step},${y}`).join(" ")
-                    const areaPath = scaled.map((y, i) => `${pad + i * step},${y}`).join(" L") + ` L${pad + (points.length - 1) * step},${h} L${pad},${h} Z`
+                    const chartData = points.map((v, i) => ({ day: i, value: v }))
                     const trending = points[points.length - 1] >= points[0]
                     const color = trending ? "#61BF6B" : "#BF6161"
-                    const gradId = `spark-${layer.id}`
+                    const gradId = `spark-fill-${layer.id}`
                     return (
-                      <div key={layer.id} style={{ display: "flex", flexDirection: "column", gap: 6, gridColumn: layerIdx >= 3 ? "span 3" : "span 2", padding: "12px 16px" }}>
-                        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500 }}>
+                      <div key={layer.id} style={{ gridColumn: layerIdx >= 3 ? "span 3" : "span 2" }}>
+                        <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500, display: "block", marginBottom: 6 }}>
                           {layer.label}
                         </span>
-                        <svg viewBox={`0 0 ${w} ${h}`} style={{ width: "100%", height: h, overflow: "visible" }}>
-                          <defs>
-                            <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor={color} stopOpacity={0.2} />
-                              <stop offset="100%" stopColor={color} stopOpacity={0} />
-                            </linearGradient>
-                          </defs>
-                          <path d={`M${areaPath}`} fill={`url(#${gradId})`} />
-                          <polyline points={polyline} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                          <circle cx={pad + (points.length - 1) * step} cy={scaled[scaled.length - 1]} r="3" fill={color} />
-                        </svg>
+                        <ResponsiveContainer width="100%" height={64}>
+                          <AreaChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 4 }}>
+                            <defs>
+                              <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor={color} stopOpacity={0.25} />
+                                <stop offset="95%" stopColor={color} stopOpacity={0} />
+                              </linearGradient>
+                            </defs>
+                            <Area
+                              type="natural"
+                              dataKey="value"
+                              stroke={color}
+                              strokeWidth={1.5}
+                              fill={`url(#${gradId})`}
+                              fillOpacity={1}
+                              dot={false}
+                              activeDot={{ r: 3, fill: color, stroke: "none" }}
+                            />
+                          </AreaChart>
+                        </ResponsiveContainer>
                       </div>
                     )
                   })}
