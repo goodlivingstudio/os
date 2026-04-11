@@ -97,7 +97,6 @@ export function renderCitedBody(body: string, sources?: CitationSource[]) {
   if (!sources || sources.length === 0) return body
   // Clean up spacing: remove spaces between consecutive citations and before punctuation after citations
   const cleaned = body
-    .replace(/\]\s+\[/g, "][")           // [1] [2] → [1][2]
     .replace(/\]\s+([.,;:!?])/g, "]$1")  // [2] . → [2].
   const parts = cleaned.split(/(\[\d+\])/)
   return parts.map((part, i) => {
