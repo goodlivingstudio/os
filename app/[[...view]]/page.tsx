@@ -599,7 +599,7 @@ export default function Page() {
                 <div style={{
                   position: "absolute", top: 38, left: 0, zIndex: 100, minWidth: 180,
                   background: "var(--bg-primary)", border: "1px solid var(--border)", borderRadius: 10,
-                  padding: "4px 0", animation: "status-fade 0.15s ease both",
+                  padding: "4px 0", animation: "dropdown-enter 0.25s cubic-bezier(0.16, 1, 0.3, 1) both",
                 }}>
                   <button
                     onClick={() => { setActiveLayers(new Set()); setMobileFilterOpen(false) }}
@@ -885,7 +885,7 @@ export default function Page() {
                 <div style={{
                   position: "absolute", top: 42, right: 0, width: 220, zIndex: 100,
                   background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 12,
-                  padding: "12px 0", animation: "status-fade 0.15s ease both",
+                  padding: "12px 0", animation: "dropdown-enter 0.25s cubic-bezier(0.16, 1, 0.3, 1) both",
                 }}>
                   {/* Off / Source image toggle */}
                   <div style={{ padding: "10px 16px" }}>

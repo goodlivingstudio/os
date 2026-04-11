@@ -560,7 +560,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
                   <div style={{
                     position: "absolute", top: 38, left: 0, zIndex: 100, minWidth: 180,
                     background: "var(--bg-primary)", border: "1px solid var(--border)", borderRadius: 10,
-                    padding: "4px 0", animation: "status-fade 0.15s ease both",
+                    padding: "4px 0", animation: "dropdown-enter 0.25s cubic-bezier(0.16, 1, 0.3, 1) both",
                   }}>
                     {LAYER_FILTERS.map(layer => {
                       const count = layer.id === "all" ? pool.length : pool.filter(ep => ep.layer === layer.id).length

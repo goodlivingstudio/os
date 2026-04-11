@@ -395,7 +395,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                 <div style={{
                   position: "absolute", top: 38, left: 0, zIndex: 100, minWidth: 180,
                   background: "var(--bg-primary)", border: "1px solid var(--border)", borderRadius: 10,
-                  padding: "4px 0", animation: "status-fade 0.15s ease both",
+                  padding: "4px 0", animation: "dropdown-enter 0.25s cubic-bezier(0.16, 1, 0.3, 1) both",
                 }}>
                   <button
                     onClick={() => { setActiveMood(null); setMobileFilterOpen(false) }}
@@ -657,7 +657,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                           overflow: "hidden",
                           cursor: "zoom-in",
                           transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
-                          animation: `gallery-reveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) ${Math.min(delay, 1400)}ms both`,
+                          animation: `gallery-reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) ${Math.min(delay, 1400)}ms both`,
                           position: "relative",
                         }}
                         onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.015)" }}
