@@ -587,7 +587,7 @@ export default function Page() {
                   background: "transparent", cursor: "pointer", transition: "all 0.15s",
                 }}
               >
-                <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 400 }}>
+                <span style={{ ...TYPE.xs, color: "var(--accent-secondary)", fontWeight: 400 }}>
                   {activeLayers.size === 0 ? "All" : [...activeLayers].map(l => LAYER_CONFIG.find(c => c.id === l)?.label || l).join(", ")}
                 </span>
                 <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.6, fontVariantNumeric: "tabular-nums" }}>
@@ -606,7 +606,7 @@ export default function Page() {
                     style={{
                       display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
                       padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                      ...TYPE.sm, color: activeLayers.size === 0 ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
+                      ...TYPE.xs, color: activeLayers.size === 0 ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
                     }}
                   >
                     <span>All</span>
@@ -631,7 +631,7 @@ export default function Page() {
                         style={{
                           display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
                           padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                          ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
+                          ...TYPE.xs, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
                         }}
                       >
                         <span>{cat.label}</span>
@@ -659,7 +659,7 @@ export default function Page() {
                     style={{
                       padding: "5px 14px", border: "none", borderRadius: 6, cursor: "pointer",
                       background: isActive ? "var(--bg-surface)" : "transparent",
-                      ...TYPE.sm, fontWeight: 400,
+                      ...TYPE.xs, fontWeight: 400,
                       color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
                       letterSpacing: "0.01em",
                       transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",

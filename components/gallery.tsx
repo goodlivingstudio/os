@@ -383,7 +383,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                 }}
               >
                 {activeMood && <span style={{ width: 6, height: 6, borderRadius: "50%", background: MOOD_COLORS[activeMood], flexShrink: 0 }} />}
-                <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", fontWeight: 400 }}>
+                <span style={{ ...TYPE.xs, color: "var(--accent-secondary)", fontWeight: 400 }}>
                   {activeMood ? MOOD_LABELS[activeMood] : "All"}
                 </span>
                 <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", opacity: 0.6, fontVariantNumeric: "tabular-nums" }}>
@@ -402,7 +402,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                     style={{
                       display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
                       padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                      ...TYPE.sm, color: !activeMood ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
+                      ...TYPE.xs, color: !activeMood ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
                     }}
                   >
                     <span>All</span>
@@ -419,7 +419,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
                         style={{
                           display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
                           padding: "10px 16px", background: "transparent", border: "none", cursor: "pointer",
-                          ...TYPE.sm, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
+                          ...TYPE.xs, color: isActive ? "var(--accent-secondary)" : "var(--text-secondary)", fontWeight: 400,
                         }}
                       >
                         <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
