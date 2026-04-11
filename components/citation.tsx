@@ -40,7 +40,6 @@ function CitationChip({ num, src }: { num: string; src: CitationSource }) {
           color: "var(--accent-secondary)",
           cursor: "pointer",
           transition: "color 0.15s",
-          marginRight: 3,
         }}
       >
         {num}
@@ -96,7 +95,11 @@ function CitationChip({ num, src }: { num: string; src: CitationSource }) {
 
 export function renderCitedBody(body: string, sources?: CitationSource[]) {
   if (!sources || sources.length === 0) return body
-  const parts = body.split(/(\[\d+\])/)
+  // Clean up spacing: remove spaces between consecutive citations and before punctuation after citations
+  const cleaned = body
+    .replace(/\]\s+\[/g, "][")           // [1] [2] → [1][2]
+    .replace(/\]\s+([.,;:!?])/g, "]$1")  // [2] . → [2].
+  const parts = cleaned.split(/(\[\d+\])/)
   return parts.map((part, i) => {
     const match = part.match(/^\[(\d+)\]$/)
     if (!match) return part
