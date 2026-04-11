@@ -656,7 +656,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                               {layer.label}
                             </span>
                             <ChartContainer config={areaConfig} className="h-40 w-full">
-                              <AreaChart data={chartData} margin={{ top: 4, right: 8, bottom: 0, left: 8 }}>
+                              <AreaChart data={chartData} margin={{ top: 10, right: 8, bottom: 4, left: 8 }}>
                                 <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--border)" strokeOpacity={0.3} />
                                 <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel formatter={(value) => `${(value as number).toFixed(1)} avg`} />} />
                                 <defs>
@@ -702,17 +702,17 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                               const pct = lwSum > 0 ? Math.round(((twSum - lwSum) / lwSum) * 100) : 0
                               const up = pct >= 0
                               if (lwSum === 0) return (
-                                <div style={{ padding: "8px 0 4px", ...TYPE.xs, color: "var(--text-tertiary)" }}>
+                                <div style={{ padding: "12px 0 4px", ...TYPE.body, color: "var(--text-tertiary)" }}>
                                   First week of data
                                 </div>
                               )
                               return (
-                                <div style={{ padding: "8px 0 4px", display: "flex", flexDirection: "column", gap: 2 }}>
-                                  <div style={{ display: "flex", alignItems: "center", gap: 4, ...TYPE.xs, fontWeight: 600, color: "var(--text-secondary)" }}>
+                                <div style={{ padding: "12px 0 4px", display: "flex", flexDirection: "column", gap: 3 }}>
+                                  <div style={{ display: "flex", alignItems: "center", gap: 5, ...TYPE.body, fontWeight: 600, color: "var(--text-secondary)" }}>
                                     {up ? "Up" : "Down"} {Math.abs(pct)}% from last week
-                                    {up ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                                    {up ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
                                   </div>
-                                  <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
+                                  <div style={{ ...TYPE.sm, color: "var(--text-tertiary)" }}>
                                     {Math.round(twSum)} avg this week vs {Math.round(lwSum)} last
                                   </div>
                                 </div>
@@ -762,12 +762,12 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                                   <Bar dataKey="lastWeek" fill="var(--text-tertiary)" fillOpacity={0.3} radius={3} />
                                 </BarChart>
                               </ChartContainer>
-                              <div style={{ padding: "8px 0 4px", display: "flex", flexDirection: "column", gap: 2 }}>
-                                <div style={{ display: "flex", alignItems: "center", gap: 4, ...TYPE.xs, fontWeight: 600, color: "var(--text-secondary)" }}>
+                              <div style={{ padding: "12px 0 4px", display: "flex", flexDirection: "column", gap: 3 }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: 5, ...TYPE.body, fontWeight: 600, color: "var(--text-secondary)" }}>
                                   {strongest.layer} leading this week
-                                  {up ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                                  {up ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
                                 </div>
-                                <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
+                                <div style={{ ...TYPE.sm, color: "var(--text-tertiary)" }}>
                                   Overall signal {up ? "up" : "down"} {Math.abs(overallPct)}% week-over-week
                                 </div>
                               </div>
