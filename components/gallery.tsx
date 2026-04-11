@@ -364,11 +364,11 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
       display: "flex", flexDirection: "column",
       overflow: "hidden",
     }}>
-      {/* Ticker — matches main layout */}
-      {onToggleMode && <Ticker isDay={isDay} onToggle={onToggleMode} skin={skin} onSkinChange={onSkinChange} />}
+      {/* Ticker — desktop only (mobile has shared app header) */}
+      {onToggleMode && !isMobile && <Ticker isDay={isDay} onToggle={onToggleMode} skin={skin} onSkinChange={onSkinChange} />}
 
       {/* Header — desktop: single row (title + pills + close). Mobile: filter row only (title in app header) */}
-      <div style={{ flexShrink: 0, borderBottom: "1px solid var(--border)" }}>
+      <div style={{ flexShrink: 0, borderBottom: isMobile ? "none" : "1px solid var(--border)" }}>
         {isMobile ? (
           /* ── Mobile: filter dropdown flush left, matching Signal/Sound pattern ── */
           <div className="view-padding" style={{ display: "flex", alignItems: "center", paddingTop: 12, paddingBottom: 0, gap: 8, marginBottom: 8 }}>
