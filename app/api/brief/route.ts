@@ -1,7 +1,11 @@
 import Anthropic from "@anthropic-ai/sdk"
 import { INSTANCE_PREAMBLE } from "@/lib/prompts"
 import { trackUsage } from "@/lib/usage-tracker"
-import { layerLabelsSlash } from "@/lib/config"
+import { layerLabelsSlash, kvKey } from "@/lib/config"
+import { kv } from "@vercel/kv"
+
+const KV_AVAILABLE = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN)
+const BRIEF_CACHE_TTL = 4 * 60 * 60 // 4 hours
 
 function getClient() {
   const key = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
@@ -46,6 +50,15 @@ interface ArticleInput {
 export async function POST(req: Request) {
   try {
     const { articles }: { articles: ArticleInput[] } = await req.json()
+
+    // KV cache — prevents redundant Haiku calls across browsers/tabs
+    const cacheKey = kvKey(`brief:${new Date().toISOString().slice(0, 10)}`)
+    if (KV_AVAILABLE) {
+      try {
+        const cached = await kv.get<{ signals: unknown[] }>(cacheKey)
+        if (cached?.signals?.length) return Response.json(cached)
+      } catch { /* fall through */ }
+    }
 
     if (!articles?.length) {
       return Response.json({
@@ -141,7 +154,14 @@ export async function POST(req: Request) {
       signals.push({ headline: "—", label: "—", body: "", layer: "", urgency: 0, sources: [] })
     }
 
-    return Response.json({ signals })
+    const result = { signals }
+
+    // Cache to KV for cross-browser consistency
+    if (KV_AVAILABLE && signals.some(s => s.body)) {
+      kv.set(cacheKey, result, { ex: BRIEF_CACHE_TTL }).catch(() => {})
+    }
+
+    return Response.json(result)
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     console.error("Brief error:", message)
