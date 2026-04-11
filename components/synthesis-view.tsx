@@ -563,7 +563,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     >
-                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", marginBottom: topic.body ? 6 : 0, fontSize: 15 }}>
+                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", lineHeight: 1.3, marginBottom: topic.body ? 6 : 0, fontSize: 15 }}>
                         {topic.title}
                       </div>
                       {topic.body && (
