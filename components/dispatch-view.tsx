@@ -621,15 +621,15 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                 padding: "48px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 120ms both",
               }}>
-                <div style={{ ...labelStyle, marginBottom: 16 }}>
+                <div style={{ ...labelStyle, marginBottom: 24 }}>
                   Signal
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 20 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 24 }}>
                   {instanceConfig.layers.map((layer, layerIdx) => {
                     const points = data.sparklines![layer.id] || []
                     if (points.length < 2) return null
                     const max = Math.max(...points, 1)
-                    const h = 64
+                    const h = 80
                     const w = 200
                     const padBottom = 14
                     const chartH = h - padBottom
@@ -639,7 +639,6 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                     const areaPath = scaled.map((y, i) => `${i * step},${y}`).join(" L") + ` L${(points.length - 1) * step},${chartH} L0,${chartH} Z`
                     const trending = points[points.length - 1] >= points[0]
                     const color = trending ? "#61BF6B" : "#BF6161"
-                    const trendLabel = trending ? "Rising" : "Declining"
                     const gradId = `spark-${layer.id}`
                     // Day labels
                     const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -648,7 +647,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                         <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500 }}>
                           {layer.label}
                         </span>
-                        <svg viewBox={`0 0 ${w} ${h}`} style={{ width: "100%", height: h }}>
+                        <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" style={{ width: "100%", height: h }}>
                           <defs>
                             <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
                               <stop offset="0%" stopColor={color} stopOpacity={0.2} />
