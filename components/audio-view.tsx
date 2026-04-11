@@ -588,7 +588,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
               <div role="group" aria-label="Sort mode" style={{
                 marginLeft: "auto",
                 display: "flex", gap: 2,
-                background: "var(--bg-elevated)", borderRadius: 8, padding: 3,
+                background: "var(--bg-elevated)", borderRadius: 8, padding: 2,
               }}>
                 {(["urgency", "layer"] as const).map(mode => {
                   const isActive = sortBy === mode
@@ -599,9 +599,9 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
                       aria-pressed={isActive}
                       onClick={() => onSortChange?.(mode)}
                       style={{
-                        padding: "4px 12px", border: "none", borderRadius: 6, cursor: "pointer",
+                        padding: "5px 14px", border: "none", borderRadius: 6, cursor: "pointer",
                         background: isActive ? "var(--bg-surface)" : "transparent",
-                        ...TYPE.xs, fontWeight: 400,
+                        ...TYPE.sm, fontWeight: 400,
                         color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
                         letterSpacing: "0.01em",
                         transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
