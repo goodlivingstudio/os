@@ -371,7 +371,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
       <div style={{ flexShrink: 0, borderBottom: "1px solid var(--border)" }}>
         {isMobile ? (
           /* ── Mobile: filter dropdown flush left, matching Signal/Sound pattern ── */
-          <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", gap: 8 }}>
+          <div className="view-padding" style={{ display: "flex", alignItems: "center", paddingTop: 12, paddingBottom: 0, gap: 8, marginBottom: 8 }}>
             <div style={{ position: "relative" }}>
               <button
                 onClick={() => setMobileFilterOpen(v => !v)}
@@ -438,7 +438,7 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
               style={{
                 width: 32, height: 32, marginLeft: "auto",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                background: "transparent", border: "1px solid var(--border)", borderRadius: 8,
+                background: "transparent", border: "none", borderRadius: 8,
                 color: "var(--text-tertiary)", cursor: "pointer", padding: 0,
               }}
             >
