@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { ArrowUpRight, X, ChevronLeft, ChevronRight, Pen, Copy, Check } from "lucide-react"
+import { ArrowUpRight, X, ChevronLeft, ChevronRight, Pen, Copy, Check, TrendingUp, TrendingDown } from "lucide-react"
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { CopyCardButton } from "@/components/copy-card-button"
@@ -695,6 +695,29 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                                 />
                               </AreaChart>
                             </ChartContainer>
+                            {/* Trend footer */}
+                            {(() => {
+                              const twSum = thisWeek.reduce((a, b) => a + b, 0)
+                              const lwSum = lastWeek.reduce((a, b) => a + b, 0)
+                              const pct = lwSum > 0 ? Math.round(((twSum - lwSum) / lwSum) * 100) : 0
+                              const up = pct >= 0
+                              if (lwSum === 0) return (
+                                <div style={{ padding: "8px 0 4px", ...TYPE.xs, color: "var(--text-tertiary)" }}>
+                                  First week of data
+                                </div>
+                              )
+                              return (
+                                <div style={{ padding: "8px 0 4px", display: "flex", flexDirection: "column", gap: 2 }}>
+                                  <div style={{ display: "flex", alignItems: "center", gap: 4, ...TYPE.xs, fontWeight: 600, color: "var(--text-secondary)" }}>
+                                    {up ? "Up" : "Down"} {Math.abs(pct)}% from last week
+                                    {up ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                                  </div>
+                                  <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
+                                    {Math.round(twSum)} avg this week vs {Math.round(lwSum)} last
+                                  </div>
+                                </div>
+                              )
+                            })()}
                           </div>
                         )
                       })}
@@ -723,16 +746,32 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                             thisWeek: { label: "This week", color: "var(--accent-secondary)" },
                             lastWeek: { label: "Last week", color: "var(--text-tertiary)" },
                           }
+                          const strongest = barData.reduce((best, d) => d.thisWeek > best.thisWeek ? d : best, barData[0])
+                          const totalTw = barData.reduce((s, d) => s + d.thisWeek, 0)
+                          const totalLw = barData.reduce((s, d) => s + d.lastWeek, 0)
+                          const overallPct = totalLw > 0 ? Math.round(((totalTw - totalLw) / totalLw) * 100) : 0
+                          const up = overallPct >= 0
                           return (
-                            <ChartContainer config={barConfig} className="h-40 w-full">
-                              <BarChart data={barData} margin={{ top: 4, right: 4, bottom: 0, left: 4 }}>
-                                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--border)" strokeOpacity={0.3} />
-                                <XAxis dataKey="layer" tickLine={false} tickMargin={8} axisLine={false} tick={{ fontSize: 10, fill: "var(--text-tertiary)" }} />
-                                <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
-                                <Bar dataKey="thisWeek" fill="var(--accent-secondary)" radius={3} />
-                                <Bar dataKey="lastWeek" fill="var(--text-tertiary)" fillOpacity={0.3} radius={3} />
-                              </BarChart>
-                            </ChartContainer>
+                            <>
+                              <ChartContainer config={barConfig} className="h-40 w-full">
+                                <BarChart data={barData} margin={{ top: 4, right: 4, bottom: 0, left: 4 }}>
+                                  <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--border)" strokeOpacity={0.3} />
+                                  <XAxis dataKey="layer" tickLine={false} tickMargin={8} axisLine={false} tick={{ fontSize: 10, fill: "var(--text-tertiary)" }} />
+                                  <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
+                                  <Bar dataKey="thisWeek" fill="var(--accent-secondary)" radius={3} />
+                                  <Bar dataKey="lastWeek" fill="var(--text-tertiary)" fillOpacity={0.3} radius={3} />
+                                </BarChart>
+                              </ChartContainer>
+                              <div style={{ padding: "8px 0 4px", display: "flex", flexDirection: "column", gap: 2 }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: 4, ...TYPE.xs, fontWeight: 600, color: "var(--text-secondary)" }}>
+                                  {strongest.layer} leading this week
+                                  {up ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                                </div>
+                                <div style={{ ...TYPE.xs, color: "var(--text-tertiary)" }}>
+                                  Overall signal {up ? "up" : "down"} {Math.abs(overallPct)}% week-over-week
+                                </div>
+                              </div>
+                            </>
                           )
                         })()}
                       </div>
