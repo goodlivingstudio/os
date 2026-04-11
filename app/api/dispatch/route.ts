@@ -263,12 +263,36 @@ export async function GET(request: Request) {
       result.weekSummary || "", ctxForCitations
     )
 
+    // Compute sparkline data — average layer scores per day (7 days)
+    const layerIds = instanceConfig.layers.map(l => l.id)
+    const sparklines: Record<string, number[]> = {}
+    for (const lid of layerIds) sparklines[lid] = []
+
+    // Group articles by day, compute average score per layer
+    const dayBuckets: Record<string, typeof articles> = {}
+    for (const a of articles) {
+      const day = a.publishedAt?.slice(0, 10) || "unknown"
+      if (!dayBuckets[day]) dayBuckets[day] = []
+      dayBuckets[day].push(a)
+    }
+    const sortedDays = Object.keys(dayBuckets).sort()
+    for (const day of sortedDays.slice(-7)) {
+      const dayArticles = dayBuckets[day]
+      for (const lid of layerIds) {
+        const scores = dayArticles
+          .map(a => a.signalScores?.[lid])
+          .filter((s): s is number => typeof s === "number" && s > 0)
+        sparklines[lid].push(scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0)
+      }
+    }
+
     const responseData = {
       weekSummary: resolvedSummary || null,
       weekSummarySources: weekSummarySources.length > 0 ? weekSummarySources : undefined,
       perspectives: perspectives.length > 0 ? perspectives : undefined,
       pitches,
       headerImageUrl,
+      sparklines,
       articleCount: articles.length,
       generatedAt: new Date().toISOString(),
     }
