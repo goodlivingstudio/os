@@ -73,7 +73,7 @@ CONTEXT: The operator's strategic positioning and career trajectory are defined 
 PRODUCE:
 1. A one-line editorial headline for the week (weekSummary)
 2. 3-4 perspectives — each analyzing the week through a different intelligence layer lens, with [N] source citations
-3. 7 content pitches with evidence citations
+3. 5 content pitches with evidence citations (4 positioned + 1 wildcard)
 
 TWO MODES for pitches — distribute across both:
 
@@ -114,9 +114,9 @@ Return a JSON object:
 
 PERSPECTIVES: Generate 3-4 perspectives. Each must analyze the week through a DIFFERENT intelligence layer. Cover at least the first two layers (${instanceConfig.layers.slice(0, 2).map(l => l.id).join(", ")}) and one of the remaining (${instanceConfig.layers.slice(2).map(l => l.id).join("/")}). Use [N] citations referencing the numbered articles.
 
-PITCHES: Generate exactly 7 pitches. Be specific. Name companies, cite data points, reference real trends from the articles. Every pitch must trace to multiple signals.
+PITCHES: Generate exactly 5 pitches. Quality over quantity — each pitch must be a highly potent, specific position. Name companies, cite data points, reference real trends from the articles. Every pitch must trace to multiple signals.
 
-WILDCARD (required): Exactly ONE of the 7 pitches must be a wildcard. This pitch should be bold, unexpected, and break from the operator's usual positioning. It might challenge the mandate, argue a contrarian position, draw from a signal the operator would normally ignore, or connect dots nobody's connecting. Mark it with "wildcard": true in the JSON. The wildcard is not devil's advocacy for sport — it's the strongest, most surprising argument the week's signals actually support that falls outside the operator's default lens. Make it genuinely compelling.
+WILDCARD (required): Exactly ONE of the 5 pitches must be a wildcard. This pitch should be bold, unexpected, and break from the operator's usual positioning. It might challenge the mandate, argue a contrarian position, draw from a signal the operator would normally ignore, or connect dots nobody's connecting. Mark it with "wildcard": true in the JSON. The wildcard is not devil's advocacy for sport — it's the strongest, most surprising argument the week's signals actually support that falls outside the operator's default lens. Make it genuinely compelling.
 
 Return only valid JSON. No prose outside the JSON.`
 
