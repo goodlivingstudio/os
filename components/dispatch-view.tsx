@@ -647,11 +647,9 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                       </div>
                       {/* Text content — right side */}
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        {/* Eyebrow — matches Convergences pattern */}
+                        {/* Eyebrow */}
                         <div style={{ ...labelStyle, marginBottom: 4 }}>
                           {pitch.mode === "thought_leadership" ? "Thought Leadership" : "Creative"}
-                          <span style={{ opacity: 0.5 }}> · </span>
-                          {pitch.platforms.primary}
                           {countUniqueSources(pitch) > 0 && (
                             <span style={{ opacity: 0.5 }}> ({countUniqueSources(pitch)})</span>
                           )}
@@ -660,26 +658,6 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                               <span style={{ opacity: 0.5 }}> · </span>
                               {pitch.layers.map(l => LAYER_LABELS[l] || l).join(" · ")}
                             </>
-                          )}
-                          {pitch.wildcard && (
-                            <span style={{
-                              padding: "1px 6px", borderRadius: 8, fontSize: 11, marginLeft: 4,
-                              background: "rgba(184, 150, 106, 0.12)",
-                              color: "var(--accent-secondary)",
-                              fontWeight: 600, letterSpacing: "0.03em",
-                            }}>
-                              WILDCARD
-                            </span>
-                          )}
-                          {pitchStatuses[pitchKey(pitch.title)] && (
-                            <span style={{
-                              padding: "1px 6px", borderRadius: 8, fontSize: 11,
-                              background: `${STATUS_COLORS[pitchStatuses[pitchKey(pitch.title)]]}18`,
-                              color: STATUS_COLORS[pitchStatuses[pitchKey(pitch.title)]],
-                              textTransform: "capitalize", fontWeight: 500,
-                            }}>
-                              {pitchStatuses[pitchKey(pitch.title)]}
-                            </span>
                           )}
                         </div>
                         {/* Title */}
