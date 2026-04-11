@@ -248,9 +248,8 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
           </button>
         </div>
 
-        {/* Title + Thesis */}
-        <div style={{ fontSize: 32, fontWeight: 600, fontFamily: DISPLAY, color: "var(--text-primary)", marginBottom: 10, lineHeight: 1 }}>{pitch.title}</div>
-        <div style={{ ...TYPE.body, color: "var(--text-secondary)", marginBottom: 28 }}>{pitch.thesis}</div>
+        {/* Title */}
+        <div style={{ fontSize: 32, fontWeight: 600, fontFamily: DISPLAY, color: "var(--text-primary)", marginBottom: 28, lineHeight: 1 }}>{pitch.title}</div>
 
         {/* Brief */}
         <div style={{ marginBottom: 24 }}>
@@ -276,6 +275,16 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
           ))}
         </div>
 
+        {/* Convergences */}
+        {isConvergence(pitch) && (
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ ...labelStyle, marginBottom: 8 }}>Convergences</div>
+            <div style={{ ...TYPE.body, color: "var(--text-secondary)" }}>
+              {pitch.layers.map(l => LAYER_LABELS[l] || l).join(" · ")}
+            </div>
+          </div>
+        )}
+
         {/* Why Now */}
         <div style={{ marginBottom: 28 }}>
           <div style={{ ...labelStyle, marginBottom: 8 }}>Why Now</div>
@@ -295,15 +304,15 @@ function PitchOverlay({ pitch, onClose, onDeliberate, status, onSetStatus }: {
           </button>
           <button
             onClick={() => {
-              onDeliberate(`Act as my co-writer — help me write this piece, not strategize about it.\n\nTitle: "${pitch.title}"\nPlatform: ${pitch.platforms.primary}${pitch.wordCount ? ` (~${pitch.wordCount} words)` : ""}\nThesis: ${pitch.thesis}\nBrief: ${pitch.brief}${pitch.angle ? `\nAngle: ${pitch.angle}` : ""}\nEvidence:\n${pitch.evidence.map(e => `- ${e}`).join("\n")}\n\nStart with an opening hook. Write in first person, conversational but authoritative. Make it publishable.`)
-              onClose()
+              const copyText = `[Dispatch Content Pitch — ${pitch.mode === "thought_leadership" ? "Thought Leadership" : "Creative"}]\n\n${pitch.title}\n\nThesis: ${pitch.thesis}\n\nBrief: ${pitch.brief}${pitch.angle ? `\n\nAngle: ${pitch.angle}` : ""}\n\nEvidence:\n${pitch.evidence.map(e => `- ${e}`).join("\n")}${isConvergence(pitch) ? `\n\nConvergences: ${pitch.layers.map(l => LAYER_LABELS[l] || l).join(", ")}` : ""}\n\nWhy now: ${pitch.urgency}\n\n---\nSource: dispatch.goodliving.studio/dispatch`
+              navigator.clipboard.writeText(copyText)
             }}
-            style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 8, border: "1px solid var(--accent-secondary)", background: "rgba(184, 150, 106, 0.08)", color: "var(--accent-secondary)", ...TYPE.sm, cursor: "pointer", fontWeight: 500, transition: "all 0.15s" }}
-            onMouseEnter={e => { e.currentTarget.style.background = "rgba(184, 150, 106, 0.15)" }}
-            onMouseLeave={e => { e.currentTarget.style.background = "rgba(184, 150, 106, 0.08)" }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 8, border: "1px solid var(--border)", background: "transparent", color: "var(--text-secondary)", ...TYPE.sm, cursor: "pointer", fontWeight: 500, transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
           >
-            <Pen size={11} />
-            Start drafting
+            <Copy size={12} />
+            Copy to clipboard
           </button>
         </div>
       </div>
@@ -772,12 +781,6 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                           {pitch.mode === "thought_leadership" ? "Thought Leadership" : "Creative"}
                           {countUniqueSources(pitch) > 0 && (
                             <span style={{ opacity: 0.5 }}> ({countUniqueSources(pitch)})</span>
-                          )}
-                          {isConvergence(pitch) && (
-                            <>
-                              <span style={{ opacity: 0.5 }}> · </span>
-                              {pitch.layers.map(l => LAYER_LABELS[l] || l).join(" · ")}
-                            </>
                           )}
                         </div>
                         {/* Title */}
