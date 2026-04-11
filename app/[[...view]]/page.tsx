@@ -598,7 +598,7 @@ export default function Page() {
               {mobileFilterOpen && (
                 <div style={{
                   position: "absolute", top: 38, left: 0, zIndex: 100, minWidth: 180,
-                  background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 10,
+                  background: "var(--bg-elevated)", border: "1px solid var(--border)", borderRadius: 10,
                   padding: "4px 0", animation: "status-fade 0.15s ease both",
                 }}>
                   <button
@@ -874,7 +874,7 @@ export default function Page() {
                 />
                 <div style={{
                   position: "absolute", top: 42, right: 0, width: 200, zIndex: 100,
-                  background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 12,
+                  background: "var(--bg-elevated)", border: "1px solid var(--border)", borderRadius: 12,
                   padding: "8px 0", animation: "status-fade 0.15s ease both",
                 }}>
                   {/* Off / Source image toggle */}
