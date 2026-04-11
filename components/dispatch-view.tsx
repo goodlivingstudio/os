@@ -736,7 +736,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                             const tw = Array.isArray(raw) ? raw : (raw?.thisWeek || [])
                             const lw = Array.isArray(raw) ? [] : (raw?.lastWeek || [])
                             return {
-                              layer: l.label.slice(0, 4),
+                              layer: l.label,
                               thisWeek: Math.round(tw.reduce((a: number, b: number) => a + b, 0) * 10) / 10,
                               lastWeek: Math.round(lw.reduce((a: number, b: number) => a + b, 0) * 10) / 10,
                               fill: layerColors[i],
@@ -756,7 +756,6 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                               <ChartContainer config={barConfig} className="h-40 w-full">
                                 <BarChart data={barData} margin={{ top: 4, right: 4, bottom: 0, left: 4 }}>
                                   <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--border)" strokeOpacity={0.3} />
-                                  <XAxis dataKey="layer" tickLine={false} tickMargin={8} axisLine={false} tick={{ fontSize: 10, fill: "var(--text-tertiary)" }} />
                                   <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" hideLabel formatter={(value, name) => `${(value as number).toFixed(1)} ${name === "thisWeek" ? "this week" : "last week"}`} />} />
                                   <Bar dataKey="thisWeek" fill="var(--accent-secondary)" radius={3} />
                                   <Bar dataKey="lastWeek" fill="var(--text-tertiary)" fillOpacity={0.3} radius={3} />
