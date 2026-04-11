@@ -320,14 +320,14 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                   </div>
                   {/* Decelerating */}
                   <div style={{ flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "16px 20px" }}>
-                    <div style={{ ...labelStyle, color: "#BF6161", marginBottom: 12 }}>
+                    <div style={{ ...labelStyle, color: "#D46A6A", marginBottom: 12 }}>
                       Decelerating
                     </div>
                     {data.velocity.decelerating.length > 0 ? data.velocity.decelerating.map((item, i) => (
                       <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "5px 0" }}>
-                        <span style={{ ...TYPE.body, color: "#BF6161" }}>↓</span>
+                        <span style={{ ...TYPE.body, color: "#D46A6A" }}>↓</span>
                         <span style={{ flex: 1, ...TYPE.body, color: "var(--text-primary)" }}>{item.topic}</span>
-                        <span style={{ ...TYPE.sm, fontFamily: MONO, color: "#BF6161", fontWeight: 600 }}>{item.delta}</span>
+                        <span style={{ ...TYPE.sm, fontFamily: MONO, color: "#D46A6A", fontWeight: 600 }}>{item.delta}</span>
                       </div>
                     )) : (
                       <div style={{ ...TYPE.body, color: "var(--text-tertiary)" }}>No decelerating signals</div>
@@ -563,7 +563,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     >
-                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", marginBottom: topic.body ? 6 : 0, fontSize: 15 }}>
+                      <div style={{ ...TYPE.heading, color: "var(--text-primary)", marginBottom: topic.body ? 6 : 0, fontSize: "var(--type-reading)" }}>
                         {topic.title}
                       </div>
                       {topic.body && (
