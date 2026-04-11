@@ -195,7 +195,7 @@ function CacheManagement() {
 
   return (
     <div>
-      <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
+      <div style={{ ...labelStyle, marginBottom: 10 }}>
         Cache Management
       </div>
       <div className="cache-row" style={{ display: "flex", gap: 8 }}>
@@ -367,7 +367,7 @@ function UsagePanel() {
 
   return (
     <div>
-      <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
+      <div style={{ ...labelStyle, marginBottom: 10 }}>
         API Usage
       </div>
 
@@ -664,7 +664,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
 
           {/* ── API Status ── */}
           <div>
-            <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
+            <div style={{ ...labelStyle, marginBottom: 10 }}>
               API Connections
             </div>
             <div className="api-row" style={{ display: "flex", gap: 8 }}>
@@ -706,7 +706,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
 
           {/* ── Layer Coverage ── */}
           <div>
-            <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
+            <div style={{ ...labelStyle, marginBottom: 10 }}>
               Layer Coverage
             </div>
             <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "10px 14px" }}>
@@ -734,7 +734,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
 
           {/* ── Intelligence Layers (reference) ── */}
           <div>
-            <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
+            <div style={{ ...labelStyle, marginBottom: 10 }}>
               Intelligence Layers
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -767,7 +767,7 @@ export function SourcePulseView({ articles, feedHealth, fetchedAt }: {
 
           {/* ── Annotation Pipeline ── */}
           <div>
-            <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 10 }}>
+            <div style={{ ...labelStyle, marginBottom: 10 }}>
               Annotation Pipeline
             </div>
             <div style={{ background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px" }}>

@@ -31,13 +31,13 @@ export const TYPE = {
 // ─── Semantic composites ────────────────────────────────────────────────────
 // Pre-built combinations for the most common patterns.
 
-/** Uppercase label: 11px, accent-secondary, semibold, tracked */
+/** Uppercase label: xs size, accent-secondary, semibold, tracked */
 export const labelStyle: CSSProperties = {
-  ...TYPE.sm,
+  ...TYPE.xs,
   color: "var(--accent-secondary)",
   textTransform: "uppercase",
   fontWeight: 600,
-  letterSpacing: "0.06em",
+  letterSpacing: "0.04em",
 }
 
 /** Body text: 12px, text-secondary */

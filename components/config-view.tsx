@@ -74,7 +74,7 @@ function generateInventoryMarkdown(excludedSources: Set<string>): string {
 // ─── Shared styles ──────────────────────────────────────────────────────────
 
 const sectionLabel: React.CSSProperties = {
-  ...labelStyle, letterSpacing: "0.04em", marginBottom: 10,
+  ...labelStyle, marginBottom: 10,
   color: "var(--text-secondary)",
 }
 const rowStyle: React.CSSProperties = {
