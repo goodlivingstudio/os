@@ -639,21 +639,19 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                     const points = data.sparklines![layer.id] || []
                     if (points.length < 2) return null
                     const max = Math.max(...points, 1)
-                    const h = 80
+                    const pad = 4 // padding so end dot isn't clipped
+                    const h = 60
                     const w = 200
-                    const padBottom = 14
-                    const chartH = h - padBottom
-                    const step = w / (points.length - 1)
-                    const scaled = points.map(v => chartH - (v / max) * (chartH - 4) - 2)
-                    const polyline = scaled.map((y, i) => `${i * step},${y}`).join(" ")
-                    const areaPath = scaled.map((y, i) => `${i * step},${y}`).join(" L") + ` L${(points.length - 1) * step},${chartH} L0,${chartH} Z`
+                    const chartW = w - pad * 2
+                    const step = chartW / (points.length - 1)
+                    const scaled = points.map(v => h - (v / max) * (h - 6) - 3)
+                    const polyline = scaled.map((y, i) => `${pad + i * step},${y}`).join(" ")
+                    const areaPath = scaled.map((y, i) => `${pad + i * step},${y}`).join(" L") + ` L${pad + (points.length - 1) * step},${h} L${pad},${h} Z`
                     const trending = points[points.length - 1] >= points[0]
                     const color = trending ? "#61BF6B" : "#BF6161"
                     const gradId = `spark-${layer.id}`
-                    // Day labels
-                    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
                     return (
-                      <div key={layer.id} style={{ display: "flex", flexDirection: "column", gap: 6, gridColumn: layerIdx >= 3 ? "span 3" : "span 2", padding: "12px 16px", borderRight: (layerIdx !== 2 && layerIdx !== 4) ? "1px solid var(--border)" : "none", borderBottom: layerIdx < 3 ? "1px solid var(--border)" : "none" }}>
+                      <div key={layer.id} style={{ display: "flex", flexDirection: "column", gap: 6, gridColumn: layerIdx >= 3 ? "span 3" : "span 2", padding: "12px 16px" }}>
                         <span style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500 }}>
                           {layer.label}
                         </span>
@@ -666,13 +664,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                           </defs>
                           <path d={`M${areaPath}`} fill={`url(#${gradId})`} />
                           <polyline points={polyline} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                          <circle cx={(points.length - 1) * step} cy={scaled[scaled.length - 1]} r="3" fill={color} />
-                          {/* Day labels along bottom */}
-                          {points.map((_, i) => (
-                            <text key={i} x={i * step} y={h - 2} textAnchor="middle" fill="var(--text-tertiary)" fontFamily={MONO} fontSize={7} opacity={i === 0 || i === points.length - 1 ? 0.4 : 0.2}>
-                              {days[i] || ""}
-                            </text>
-                          ))}
+                          <circle cx={pad + (points.length - 1) * step} cy={scaled[scaled.length - 1]} r="3" fill={color} />
                         </svg>
                       </div>
                     )
