@@ -296,7 +296,7 @@ export default function Page() {
   // Global keyboard shortcuts
   useEffect(() => {
     // All 9 left-rail buttons in visual order (top row → bottom row)
-    const allTabs = ["signal", "audio", "gallery", "synthesis", "dispatch", "config", "pulse", "shortcuts", "export"] as const
+    const allTabs = ["signal", "audio", "gallery", "synthesis", "config", "pulse", "shortcuts", "export", "dispatch"] as const
     const handler = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName
       const isTyping = tag === "INPUT" || tag === "TEXTAREA"
