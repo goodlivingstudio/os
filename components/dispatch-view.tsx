@@ -522,7 +522,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                 textTransform: "uppercase", letterSpacing: "0.08em",
                 marginBottom: 16,
               }}>
-                New ideas and opportunities for week of {formatWeekRange(data.generatedAt)}
+                New ideas and opportunities &bull; {formatWeekRange(data.generatedAt)}
               </div>
               {/* Headline — Söhne Schmal display, centered */}
               <div className="dispatch-headline" style={{
@@ -542,7 +542,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
               {data.articleCount && data.generatedAt && (
                 <div style={{ marginTop: 20, display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
                   <div style={metaStyle}>
-                    {data.articleCount} articles · {new Date(data.generatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    Parsing {data.articleCount} articles
                   </div>
                   {/* Week carousel dots with arrows — loops infinitely */}
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 20, marginBottom: 0 }}>
@@ -594,7 +594,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             {/* ─ PERSPECTIVES — intelligence layer cards ─ */}
             {data.perspectives && data.perspectives.length > 0 && (
               <div style={{
-                padding: "48px 0 0",
+                padding: "24px 0 0",
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 100ms both",
               }}>
                 <div className="perspectives-grid" style={{
