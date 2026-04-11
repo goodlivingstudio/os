@@ -343,7 +343,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                 paddingTop: 36,
                 animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 200ms both",
               }}>
-                <div style={{ ...labelStyle, marginBottom: 14 }}>
+                <div style={{ ...labelStyle, marginBottom: 8 }}>
                   Convergences
                 </div>
                 {data.patterns.map((pattern, i) => {
