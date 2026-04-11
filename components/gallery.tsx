@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from "react"
-import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle, ThumbsUp, ThumbsDown, Frown, Globe } from "lucide-react"
+import { X, ChevronLeft, ChevronRight, ChevronDown, Shuffle, ThumbsUp, ThumbsDown, Frown, Globe, LayoutGrid, Square } from "lucide-react"
 import { TYPE, MONO } from "@/lib/styles"
 import instanceConfig, { storageKey, MOBILE_BREAKPOINT } from "@/lib/config"
 import { GALLERY_SOURCES, type GalleryImage, type ColorMood, type Biome } from "@/lib/gallery"
@@ -248,7 +248,8 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
       }
     } catch { /* silent fail — image stays visible */ }
   }, [])
-  const galleryCols = isMobile ? 2 : 3
+  const [mobileGalleryCols, setMobileGalleryCols] = useState(2)
+  const galleryCols = isMobile ? mobileGalleryCols : 3
 
   useEffect(() => {
     // Stale-while-revalidate
@@ -444,6 +445,20 @@ export function GalleryOverlay({ onClose, excludedSources, onToggleSource, isDay
             >
               <Shuffle size={14} strokeWidth={1.5} />
             </button>
+            {isMobile && (
+              <button
+                onClick={() => setMobileGalleryCols(c => c === 2 ? 1 : 2)}
+                aria-label={mobileGalleryCols === 2 ? "Single column" : "Two columns"}
+                style={{
+                  width: 32, height: 32,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  background: "transparent", border: "none", borderRadius: 8,
+                  color: "var(--text-tertiary)", cursor: "pointer", padding: 0,
+                }}
+              >
+                {mobileGalleryCols === 2 ? <Square size={14} strokeWidth={1.5} /> : <LayoutGrid size={14} strokeWidth={1.5} />}
+              </button>
+            )}
           </div>
         ) : (
           /* ── Desktop: title + pills + source chips + close ── */

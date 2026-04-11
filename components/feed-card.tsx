@@ -181,6 +181,8 @@ export const FeedCard = memo(function FeedCard({ article, index, onSignalEnter, 
         <div
           style={{
             ...TYPE.heading,
+            fontSize: "var(--type-reading)",
+            lineHeight: 1.3,
             color: hovered ? "var(--text-primary)" : "var(--text-secondary)",
             marginBottom: article.summary ? 8 : 0,
           }}
