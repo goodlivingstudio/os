@@ -816,6 +816,7 @@ export default function Page() {
         <div style={{
           flexShrink: 0, height: 48, display: "flex", alignItems: "center",
           justifyContent: "space-between", padding: "0 16px",
+          background: mobileTab === "cerebro" ? "var(--bg-surface)" : undefined,
           borderBottom: "1px solid var(--border)",
         }}>
           <div style={{ display: "flex", alignItems: "center" }}>
