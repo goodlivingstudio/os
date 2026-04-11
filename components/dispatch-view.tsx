@@ -512,7 +512,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
 
             {/* ─ EDITORIAL HEADER — centered broadsheet ─ */}
             <div className="dispatch-header-content" style={{
-              padding: "34px 0 60px",
+              padding: "34px 0 24px",
               textAlign: "center",
               animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
             }}>
