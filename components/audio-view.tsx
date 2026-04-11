@@ -401,7 +401,7 @@ function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onS
           style={{
             ...TYPE.heading,
             fontSize: "var(--type-reading)",
-            lineHeight: 1.3, transition: "color 0.15s",
+            lineHeight: 1.3, fontWeight: 700, transition: "color 0.15s",
             color: hovered ? "var(--text-primary)" : "var(--text-secondary)",
             display: "-webkit-box", WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical" as const, overflow: "hidden",
@@ -535,10 +535,10 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
         const activeCount = activeLayer === "all" ? pool.length : pool.filter(ep => ep.layer === activeLayer).length
 
         return (
-          <div className="view-padding" style={{ flexShrink: 0, paddingTop: 12, paddingBottom: 0 }}>
+          <div className="view-padding" style={{ flexShrink: 0, paddingTop: 8, paddingBottom: 0 }}>
             {isMobile ? (
               /* ── Mobile: dropdown + triage/explore toggle — matches Signal ── */
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
               <div style={{ position: "relative" }}>
                 <button
                   onClick={() => setMobileFilterOpen(v => !v)}
@@ -699,7 +699,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
       <div className="view-padding" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", paddingTop: 0, paddingBottom: 8 }}>
       {/* Loading state — matches Signal feed skeleton pattern */}
       {loading ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "16px 0" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "8px 0" }}>
           {[...Array(8)].map((_, i) => (
             <div
               key={i}
@@ -716,7 +716,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
           ))}
         </div>
       ) : triageWaiting ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "16px 0" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "8px 0" }}>
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
@@ -737,7 +737,7 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
           No episodes loaded. Check podcast feed configuration.
         </div>
       ) : (
-        <div className="episode-grid" style={{ gap: 16, padding: "16px 0" }}>
+        <div className="episode-grid" style={{ gap: 16, padding: "8px 0" }}>
           {filtered.map((ep, i) => (
             <EpisodeCard
               key={ep.id}
