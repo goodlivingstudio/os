@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { X } from "lucide-react"
-import { TYPE, MONO } from "@/lib/styles"
+import { TYPE, MONO, labelStyle } from "@/lib/styles"
 
 const SHORTCUTS = [
   { section: "Navigation", items: [
@@ -58,14 +58,14 @@ export function HotkeysOverlay({ onClose }: { onClose: () => void }) {
       >
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-          <span style={{ ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+          <span style={{ ...labelStyle }}>
             Keyboard Shortcuts
           </span>
           <button
             onClick={onClose}
-            style={{ background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", transition: "color 0.15s" }}
-            onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)" }}
-            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)" }}
+            style={{ background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", transition: "all 0.15s", borderRadius: 6, padding: 4, display: "flex", alignItems: "center", justifyContent: "center" }}
+            onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-elevated)" }}
+            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
           >
             <X size={16} strokeWidth={1.5} />
           </button>
@@ -90,7 +90,11 @@ export function HotkeysOverlay({ onClose }: { onClose: () => void }) {
                       border: "1px solid var(--border)",
                       fontFamily: MONO, ...TYPE.xs,
                       color: "var(--text-primary)",
-                    }}>
+                      transition: "all 0.15s", cursor: "default",
+                    }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "var(--border)"; e.currentTarget.style.borderColor = "var(--text-tertiary)" }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-elevated)"; e.currentTarget.style.borderColor = "var(--border)" }}
+                    >
                       {k}
                     </kbd>
                   ))}

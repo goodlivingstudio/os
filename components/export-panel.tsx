@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { X, Copy, Check, Download, FileText, FileType } from "lucide-react"
-import { TYPE, MONO, metaStyle } from "@/lib/styles"
+import { TYPE, MONO, metaStyle, labelStyle } from "@/lib/styles"
 import instanceConfig, { storageKey } from "@/lib/config"
 import type { Article, Signal } from "@/lib/types"
 
@@ -56,7 +56,7 @@ function ChipGroup<T extends string>({ label, options, value, onChange }: {
 }) {
   return (
     <div style={{ marginBottom: 20 }}>
-      <div style={{ ...metaStyle, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>{label}</div>
+      <div style={{ ...labelStyle, marginBottom: 8 }}>{label}</div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
         {options.map(opt => {
           const isActive = value === opt.id
@@ -610,18 +610,18 @@ export function ExportPanel({ onClose, signals, articles }: {
         onClick={e => e.stopPropagation()}
         style={{
           background: "var(--bg-surface)", border: "1px solid var(--border)",
-          borderRadius: 16, padding: "28px 32px",
+          borderRadius: 16, padding: "32px 36px",
           width: 540, maxHeight: "85vh", overflowY: "auto",
         }}
       >
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-          <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+          <span style={{ ...labelStyle }}>
             Quick Export
           </span>
-          <button onClick={onClose} style={{ background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", padding: 0, transition: "color 0.15s" }}
-            onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)" }}
-            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)" }}
+          <button onClick={onClose} style={{ background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", padding: 4, borderRadius: 6, transition: "all 0.15s", display: "flex", alignItems: "center", justifyContent: "center" }}
+            onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-elevated)" }}
+            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.background = "transparent" }}
           >
             <X size={18} strokeWidth={1.5} />
           </button>
@@ -744,19 +744,19 @@ export function ExportPanel({ onClose, signals, articles }: {
           <button
             onClick={handleCopy}
             style={{
-              flex: isFileFormat ? 0 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              padding: isFileFormat ? "10px 16px" : "10px 0", borderRadius: 8,
-              border: isFileFormat ? "1px solid var(--border)" : "none",
-              background: !isFileFormat ? (copied ? "var(--accent-secondary)" : "var(--accent-primary)") : "transparent",
-              color: !isFileFormat ? (copied ? "var(--bg-primary)" : "var(--accent-secondary)") : (copied ? "var(--accent-secondary)" : "var(--text-tertiary)"),
-              ...TYPE.body, fontWeight: 600,
-              cursor: "pointer", transition: "all 0.2s",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+              padding: "10px 16px", borderRadius: 8,
+              border: "1px solid var(--border)",
+              background: copied ? "var(--accent-secondary)" : "transparent",
+              color: copied ? "var(--bg-primary)" : "var(--text-tertiary)",
+              ...TYPE.body, fontWeight: 500,
+              cursor: "pointer", transition: "all 0.15s",
             }}
-            onMouseEnter={e => { if (isFileFormat && !copied) e.currentTarget.style.background = "var(--bg-elevated)" }}
-            onMouseLeave={e => { if (isFileFormat) e.currentTarget.style.background = "transparent" }}
+            onMouseEnter={e => { if (!copied) e.currentTarget.style.background = "var(--bg-elevated)" }}
+            onMouseLeave={e => { if (!copied) e.currentTarget.style.background = "transparent" }}
           >
             {copied ? <Check size={14} /> : <Copy size={14} />}
-            {!isFileFormat && (copied ? "Copied" : "Copy to clipboard")}
+            {copied ? "Copied" : "Copy to clipboard"}
           </button>
 
           {/* Download — primary action for file formats */}
