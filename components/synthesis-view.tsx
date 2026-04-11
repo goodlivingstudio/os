@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { useScrollGuard } from "@/lib/use-scroll-guard"
 import instanceConfig, { storageKey, MOBILE_BREAKPOINT } from "@/lib/config"
 import { ArrowUpRight } from "lucide-react"
+import { CopyCardButton } from "@/components/copy-card-button"
 import type { Article } from "@/lib/types"
 import { TYPE, MONO, DISPLAY, labelStyle } from "@/lib/styles"
 import { renderCitedBody } from "@/components/citation"
@@ -345,21 +346,30 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                 <div style={{ ...labelStyle, letterSpacing: "0.04em", marginBottom: 8, fontSize: 12 }}>
                   Convergences
                 </div>
-                {data.patterns.map((pattern, i) => (
-                  <button
-                    type="button"
+                {data.patterns.map((pattern, i) => {
+                  const copyText = `[Dispatch Convergence Pattern — ${pattern.layers.map(l => LAYER_LABELS[l] || l).join(" \u00d7 ")}]\n\n${pattern.title}\n\n${pattern.description}\n\nSignals: ${pattern.signalCount}\n---\nSource: dispatch.goodliving.studio/synthesis`
+                  return (
+                  <div
+                    role="button"
+                    tabIndex={0}
                     key={i}
-                    onClick={scroll.guardedClick(() => onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`))}
+                    onClick={scroll.guardedClick(() => {
+                      if (window.getSelection()?.toString()) return
+                      onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`)
+                    })}
+                    onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`I want to explore this convergence pattern:\n\n"${pattern.title}"\n\n${pattern.description}\n\nWhat does this mean strategically?`) } }}
                     style={{
+                      position: "relative",
                       padding: "20px 20px",
                       margin: "0 -20px",
                       borderBottom: "1px solid var(--border)",
                       cursor: "pointer", transition: "background 0.15s",
-                      border: "none", background: "transparent", textAlign: "left", width: "calc(100% + 40px)", font: "inherit", color: "inherit",
+                      border: "none", background: "transparent", textAlign: "left", width: "calc(100% + 40px)",
                     }}
                     onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "transparent" }}
                   >
+                    <CopyCardButton text={copyText} />
                     <div style={{ display: "flex", gap: 20 }}>
                       {/* Image thumbnail */}
                       <div style={{
@@ -391,8 +401,9 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                         )}
                       </div>
                     </div>
-                  </button>
-                ))}
+                  </div>
+                  )
+                })}
               </div>
             )}
 
@@ -473,23 +484,32 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                   paddingRight: 16, paddingBottom: 4,
                   msOverflowStyle: "none", scrollbarWidth: "none",
                 } as React.CSSProperties : { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-                  {data.blindSpots.map((spot, i) => (
-                    <button
-                      type="button"
+                  {data.blindSpots.map((spot, i) => {
+                    const typeLabel = BLIND_SPOT_LABELS[spot.type] || "Blind Spot"
+                    const copyText = `[Dispatch Blind Spot — ${typeLabel}]\n\n${spot.title}\n\n${spot.body}\n\n---\nSource: dispatch.goodliving.studio/synthesis`
+                    return (
+                    <div
+                      role="button"
+                      tabIndex={0}
                       key={i}
-                      onClick={scroll.guardedClick(() => onDeliberate(`Explore this blind spot:\n\n**${BLIND_SPOT_LABELS[spot.type] || "Blind Spot"}: ${spot.title}**\n\n${spot.body}\n\nWhat am I missing and what should I do about it?`))}
+                      onClick={scroll.guardedClick(() => {
+                        if (window.getSelection()?.toString()) return
+                        onDeliberate(`Explore this blind spot:\n\n**${typeLabel}: ${spot.title}**\n\n${spot.body}\n\nWhat am I missing and what should I do about it?`)
+                      })}
+                      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(`Explore this blind spot:\n\n**${typeLabel}: ${spot.title}**\n\n${spot.body}\n\nWhat am I missing and what should I do about it?`) } }}
                       style={{
+                        position: "relative",
                         background: "var(--bg-surface)", borderRadius: 12, padding: "16px 18px",
                         cursor: "pointer", transition: "background 0.15s",
-                        border: "none", textAlign: "left", font: "inherit", color: "inherit",
                         display: "flex", flexDirection: "column",
                         ...(isMobile ? { flex: "0 0 80%", scrollSnapAlign: "start" } : {}),
                       }}
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
                       onMouseLeave={e => { e.currentTarget.style.background = "var(--bg-surface)" }}
                     >
+                      <CopyCardButton text={copyText} />
                       <div style={{ ...labelStyle, marginBottom: 4 }}>
-                        {BLIND_SPOT_LABELS[spot.type] || "Blind Spot"}
+                        {typeLabel}
                       </div>
                       <div style={{ fontSize: 28, fontFamily: DISPLAY, fontWeight: 600, color: "var(--text-primary)", lineHeight: 1, marginBottom: 10 }}>
                         {spot.title}
@@ -497,8 +517,9 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                       <div style={{ ...TYPE.body, color: "var(--text-secondary)", lineHeight: 1.4, flex: 1 }}>
                         {spot.body}
                       </div>
-                    </button>
-                  ))}
+                    </div>
+                    )
+                  })}
                 </div>
               </div>
             )}
@@ -521,14 +542,18 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                   paddingBottom: 4, msOverflowStyle: "none", scrollbarWidth: "none",
                 } as React.CSSProperties : { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {cerebroTopics.slice(0, 4).map((topic, i) => (
-                    <button
-                      type="button"
+                    <div
+                      role="button"
+                      tabIndex={0}
                       key={i}
-                      onClick={scroll.guardedClick(() => onDeliberate(topic.prompt))}
+                      onClick={scroll.guardedClick(() => {
+                        if (window.getSelection()?.toString()) return
+                        onDeliberate(topic.prompt)
+                      })}
+                      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDeliberate(topic.prompt) } }}
                       style={{
                         background: "var(--bg-surface)", borderRadius: 10, padding: "18px 20px",
                         cursor: "pointer", transition: "background 0.15s",
-                        border: "none", textAlign: "left", font: "inherit", color: "inherit",
                         ...(isMobile ? { flex: "0 0 80%", scrollSnapAlign: "start" } : {}),
                       }}
                       onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-elevated)" }}
@@ -544,7 +569,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                           {topic.body}
                         </div>
                       )}
-                    </button>
+                    </div>
                   ))}
                 </div>
               </div>
