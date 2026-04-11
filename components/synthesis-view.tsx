@@ -305,7 +305,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                 <div className="synthesis-velocity" style={{ display: "flex", gap: 12 }}>
                   {/* Accelerating */}
                   <div style={{ flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "16px 20px" }}>
-                    <div style={{ ...TYPE.sm, color: "#61BF6B", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 12 }}>
+                    <div style={{ ...labelStyle, color: "#61BF6B", marginBottom: 12 }}>
                       Accelerating
                     </div>
                     {data.velocity.accelerating.length > 0 ? data.velocity.accelerating.map((item, i) => (
@@ -320,7 +320,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
                   </div>
                   {/* Decelerating */}
                   <div style={{ flex: 1, background: "var(--bg-surface)", borderRadius: 8, padding: "16px 20px" }}>
-                    <div style={{ ...TYPE.sm, color: "#BF6161", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 12 }}>
+                    <div style={{ ...labelStyle, color: "#BF6161", marginBottom: 12 }}>
                       Decelerating
                     </div>
                     {data.velocity.decelerating.length > 0 ? data.velocity.decelerating.map((item, i) => (
