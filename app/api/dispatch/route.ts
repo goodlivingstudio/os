@@ -209,21 +209,23 @@ export async function GET(request: Request) {
     }
 
     // Generate images: header + each pitch
+    // Use instance default theme for biome-specific imagery
+    const skinId = instanceConfig.defaultTheme
     let pitches = result.pitches || []
     let headerImageUrl: string | undefined
     if (process.env.REPLICATE_API_TOKEN) {
       try {
-        // Hero image at 21:9 cinematic ratio
+        // Hero image at 21:9 cinematic ratio — anthemic, biome sets the scene
         const heroCard = [{ title: result.weekSummary?.split(/[.!?]/)[0] || "Weekly dispatch", layers: ["landscape"] }]
-        const heroUrls = await generateCardImages(heroCard, "dispatch", "21:9")
+        const heroUrls = await generateCardImages(heroCard, "dispatch", "21:9", skinId)
         headerImageUrl = heroUrls[0] || undefined
 
-        // Pitch thumbnails at 3:2
+        // Pitch thumbnails at 3:2 — scene extrapolation makes them editorial
         const pitchCards = pitches.map((p: { title: string; layers?: string[] }) => ({
           title: p.title,
           layers: p.layers,
         }))
-        const pitchImageUrls = pitchCards.length > 0 ? await generateCardImages(pitchCards, "dispatch", "3:2") : []
+        const pitchImageUrls = pitchCards.length > 0 ? await generateCardImages(pitchCards, "dispatch", "3:2", skinId) : []
         pitches = pitches.map((p: Record<string, unknown>, i: number) => ({
           ...p,
           imageUrl: pitchImageUrls[i] || undefined,
