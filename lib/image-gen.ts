@@ -5,6 +5,7 @@
 
 import { downloadAsDataUri } from "@/lib/image-utils"
 import { trackUsage } from "@/lib/usage-tracker"
+import instanceConfig from "@/lib/config"
 
 export const REPLICATE_API = "https://api.replicate.com/v1"
 export const REPLICATE_MODEL = "black-forest-labs/flux-schnell"
@@ -54,10 +55,17 @@ function buildPrompt(
   layers?: string[],
   aspect?: AspectRatio,
 ): string {
-  const surfaceStyle = SURFACE_STYLES[surface] || SURFACE_STYLES.synthesis
-  const layerHint = layers?.[0] ? LAYER_PALETTES[layers[0]] || "" : ""
+  const dir = instanceConfig.imageDirection
   const formatHint = aspect === "21:9" ? "Ultra-wide cinematic panoramic composition." : "Horizontal 3:2 landscape composition."
 
+  if (dir) {
+    // Instance-specific art direction — use it directly
+    return `${dir.style} ${formatHint} ${dir.palette} ${dir.mood} Subject: "${concept}". Do not include: ${dir.avoid}`.trim()
+  }
+
+  // Fallback to global style for instances without imageDirection
+  const surfaceStyle = SURFACE_STYLES[surface] || SURFACE_STYLES.synthesis
+  const layerHint = layers?.[0] ? LAYER_PALETTES[layers[0]] || "" : ""
   return `${GLOBAL_STYLE} ${formatHint} ${surfaceStyle} Evoking: "${concept}". ${layerHint}`.trim()
 }
 
