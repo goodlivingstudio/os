@@ -154,8 +154,11 @@ export interface InstanceConfig {
   imageDirection?: {
     style: string      // base medium + period + treatment
     avoid: string      // negative prompt
-    palette: string    // color direction
     mood: string       // emotional register
+    skins?: Record<string, {
+      geography: string  // regional landscape description
+      palette: string    // color direction specific to this skin
+    }>
   }
 
   // Feature flags — per-instance opt-ins for shared-layer behaviors

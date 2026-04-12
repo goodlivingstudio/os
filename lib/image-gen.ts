@@ -8,7 +8,7 @@ import { trackUsage } from "@/lib/usage-tracker"
 import instanceConfig from "@/lib/config"
 
 export const REPLICATE_API = "https://api.replicate.com/v1"
-export const REPLICATE_MODEL = "black-forest-labs/flux-schnell"
+export const REPLICATE_MODEL = "recraft-ai/recraft-v3"
 
 // ─── Global Art Direction ───────────────────────────────────────────────────
 // The unified visual language across all Dispatch surfaces.
@@ -54,13 +54,17 @@ function buildPrompt(
   concept: string,
   layers?: string[],
   aspect?: AspectRatio,
+  skinId?: string,
 ): string {
   const dir = instanceConfig.imageDirection
   const formatHint = aspect === "21:9" ? "Ultra-wide cinematic panoramic composition." : "Horizontal 3:2 landscape composition."
 
   if (dir) {
-    // Instance-specific art direction — use it directly
-    return `${dir.style} ${formatHint} ${dir.palette} ${dir.mood} Subject: "${concept}". Do not include: ${dir.avoid}`.trim()
+    // Instance-specific art direction with optional skin-driven geography
+    const skin = skinId ? dir.skins?.[skinId] : undefined
+    const geography = skin?.geography ?? ""
+    const palette = skin?.palette ?? ""
+    return `${dir.style} ${formatHint} ${geography} ${palette} ${dir.mood} Subject: "${concept}". Do not include: ${dir.avoid}`.trim()
   }
 
   // Fallback to global style for instances without imageDirection
@@ -76,11 +80,12 @@ export async function generateCardImage(
   layers?: string[],
   surface: Surface = "synthesis",
   aspect: AspectRatio = "3:2",
+  skinId?: string,
 ): Promise<string | undefined> {
   const token = process.env.REPLICATE_API_TOKEN
   if (!token) return undefined
 
-  const prompt = buildPrompt(surface, title, layers, aspect)
+  const prompt = buildPrompt(surface, title, layers, aspect, skinId)
 
   try {
     // Submit prediction with retry on rate limit
@@ -95,10 +100,7 @@ export async function generateCardImage(
         body: JSON.stringify({
           input: {
             prompt,
-            num_outputs: 1,
-            aspect_ratio: aspect,
-            output_format: "webp",
-            output_quality: 85,
+            size: aspect === "21:9" ? "1820x780" : "1365x1024",
           },
         }),
       })
@@ -147,11 +149,12 @@ export async function generateCardImages(
   cards: { title: string; layers?: string[] }[],
   surface: Surface = "synthesis",
   aspect: AspectRatio = "3:2",
+  skinId?: string,
 ): Promise<(string | undefined)[]> {
   const results: (string | undefined)[] = []
 
   for (let i = 0; i < cards.length; i++) {
-    const url = await generateCardImage(cards[i].title, cards[i].layers, surface, aspect)
+    const url = await generateCardImage(cards[i].title, cards[i].layers, surface, aspect, skinId)
     results.push(url)
     if (i < cards.length - 1) {
       await new Promise(r => setTimeout(r, 3000))
