@@ -328,10 +328,13 @@ export async function GET(request: Request) {
       }),
       headerImageUrl: undefined,
     }
+    // MUST await — serverless freezes after response, killing unawaited promises
     if (KV_AVAILABLE && pitches.length > 0) {
-      kv.set(cacheKey, cacheData, { ex: WEEK_TTL }).catch(err => {
+      try {
+        await kv.set(cacheKey, cacheData, { ex: WEEK_TTL })
+      } catch (err) {
         console.error("[dispatch] KV cache write failed:", err instanceof Error ? err.message : err)
-      })
+      }
     }
 
     return Response.json({
