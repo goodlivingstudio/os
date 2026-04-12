@@ -144,6 +144,19 @@ export async function GET(request: Request) {
       try {
         const cached = await kv.get<Record<string, unknown>>(cacheKey)
         if (cached && (cached.pitches as unknown[])?.length > 0) {
+          // Re-attach images from content-addressable cache (instant hits)
+          if (process.env.REPLICATE_API_TOKEN) {
+            try {
+              const cachedPitches = cached.pitches as { title: string; layers?: string[] }[]
+              const heroTitle = ((cached.weekSummary as string) || "").split(/[.!?]/)[0] || "Weekly dispatch"
+              const [heroUrls, pitchUrls] = await Promise.all([
+                generateCardImages([{ title: heroTitle, layers: ["landscape"] }], "dispatch", "21:9", skinParam),
+                generateCardImages(cachedPitches.map(p => ({ title: p.title, layers: p.layers })), "dispatch", "3:2", skinParam),
+              ])
+              cached.headerImageUrl = heroUrls[0] || undefined
+              cached.pitches = cachedPitches.map((p, i) => ({ ...p, imageUrl: pitchUrls[i] || undefined }))
+            } catch { /* images optional */ }
+          }
           return Response.json({
             available: true,
             ...cached,
@@ -316,19 +329,25 @@ export async function GET(request: Request) {
       generatedAt: new Date().toISOString(),
     }
 
-    // Cache if we have content — MUST await to ensure write completes before function exits
+    // Cache the analysis text WITHOUT images — images use content-addressable cache separately
+    // Strip imageUrl from pitches before caching to keep value under KV size limits
+    const cacheData = {
+      ...responseData,
+      pitches: pitches.map((p: Record<string, unknown>) => {
+        const { imageUrl, ...rest } = p
+        return rest
+      }),
+      headerImageUrl: undefined,
+    }
     if (KV_AVAILABLE && pitches.length > 0) {
-      try {
-        await kv.set(cacheKey, responseData, { ex: WEEK_TTL })
-      } catch (err) {
+      kv.set(cacheKey, cacheData, { ex: WEEK_TTL }).catch(err => {
         console.error("[dispatch] KV cache write failed:", err instanceof Error ? err.message : err)
-      }
+      })
     }
 
     return Response.json({
       available: true,
       ...responseData,
-      cached: false,
     })
   } catch (err) {
     return Response.json(
