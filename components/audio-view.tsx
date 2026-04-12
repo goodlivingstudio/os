@@ -115,7 +115,7 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true, onDeliberat
           borderBottom: "1px solid var(--border)",
         }}
       >
-        <span style={labelStyle}>
+        <span style={{ ...TYPE.xs, color: "var(--text-primary)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.04em" }}>
           Sound
         </span>
         <button

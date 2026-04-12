@@ -110,6 +110,20 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
   const synthCacheKey = skin ? `${SYNTHESIS_CACHE_KEY}:${skin}` : SYNTHESIS_CACHE_KEY
   const prevSkin = useRef(skin)
 
+  // Load from localStorage on mount — independent of articles
+  useEffect(() => {
+    if (data) return // already have data
+    try {
+      const raw = localStorage.getItem(synthCacheKey)
+      if (raw) {
+        const { ts, data: cached } = JSON.parse(raw)
+        if (cached?.briefing) {
+          setData(cached)
+        }
+      }
+    } catch { /* */ }
+  }, [synthCacheKey]) // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     // Allow refetch when skin changes
     if (prevSkin.current !== skin) {
@@ -121,14 +135,13 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
     if (annotated.length < 3) return
     fetched.current = true
 
-    // Stale-while-revalidate: show cached synthesis immediately
+    // Check if localStorage cache is still fresh — skip fetch if so
     let hasStale = false
     try {
       const raw = localStorage.getItem(synthCacheKey)
       if (raw) {
         const { ts, data: cached } = JSON.parse(raw)
         if (cached?.briefing) {
-          setData(cached)
           hasStale = true
           if (Date.now() - ts < SYNTHESIS_TTL) return // fresh — skip fetch
         }
@@ -206,7 +219,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
         justifyContent: isMobile ? "center" : "space-between",
         padding: "0 20px", borderBottom: "1px solid var(--border)",
       }}>
-        {!isMobile && <span style={labelStyle}>
+        {!isMobile && <span style={{ ...TYPE.xs, color: "var(--text-primary)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.04em" }}>
           Synthesis
         </span>}
         <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)" }}>
