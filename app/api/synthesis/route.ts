@@ -182,21 +182,23 @@ export async function POST(req: Request) {
 
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let body: { articles?: any[] }
+    let body: { articles?: any[]; skin?: string }
     try {
       body = await req.json()
     } catch {
       return Response.json({ briefing: null, patterns: [], blindSpotNote: null, message: "Request body required" })
     }
     const { articles } = body
+    const skinId = body.skin || instanceConfig.defaultTheme
     if (!articles?.length) {
       return Response.json({ briefing: null, patterns: [], blindSpotNote: null })
     }
 
-    // Check KV cache first — avoid re-generating images on every visit
+    // Check KV cache first — skin-aware so each biome gets its own image set
+    const synthCacheKey = `${KV_KEY}:${skinId}`
     if (process.env.KV_REST_API_URL) {
       try {
-        const cached = await kv.get<Record<string, unknown>>(KV_KEY)
+        const cached = await kv.get<Record<string, unknown>>(synthCacheKey)
         if (cached && cached.briefing) return Response.json(cached)
       } catch { /* KV unavailable — proceed with fresh generation */ }
     }
@@ -287,8 +289,7 @@ export async function POST(req: Request) {
     result.heatmap = heatmap
 
     // Generate images: hero (21:9) + convergence thumbs (3:2)
-    // Use instance default theme for biome-specific imagery
-    const skinId = instanceConfig.defaultTheme
+    // skinId from client request for biome-specific imagery
     if (process.env.REPLICATE_API_TOKEN) {
       try {
         // Hero image at 21:9 cinematic ratio — anthemic, biome sets the scene
@@ -315,7 +316,7 @@ export async function POST(req: Request) {
 
     // Cache to KV — avoid re-generating on every visit
     if (process.env.KV_REST_API_URL) {
-      try { await kv.set(KV_KEY, result, { ex: CACHE_TTL }) } catch { /* KV write failure */ }
+      try { await kv.set(synthCacheKey, result, { ex: CACHE_TTL }) } catch { /* KV write failure */ }
     }
 
     return Response.json(result)

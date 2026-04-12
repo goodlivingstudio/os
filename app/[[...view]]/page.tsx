@@ -1072,7 +1072,7 @@ export default function Page() {
             {feedContent}
           </div>
           <div style={{ flex: 1, overflow: "hidden", display: mobileTab === "synthesis" ? "flex" : "none", flexDirection: "column" }}>
-            <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} sortBy={sortBy} />
+            <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} sortBy={sortBy} skin={skin} />
           </div>
           <div style={{ flex: 1, overflow: "hidden", display: mobileTab === "audio" ? "flex" : "none", flexDirection: "column" }}>
             <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} onSortChange={setSortBy} pinnedArticleIds={new Set(pinnedArticles.map(a => a.id))} onPinArticle={handlePinArticle} />
@@ -1337,9 +1337,9 @@ export default function Page() {
           : viewMode === "pulse"
           ? <SourcePulseView articles={articles} feedHealth={feedHealth} fetchedAt={fetchedAt} />
           : viewMode === "dispatch"
-          ? <DispatchView onDeliberate={handleSynthesisDeliberate} />
+          ? <DispatchView onDeliberate={handleSynthesisDeliberate} skin={skin} />
           : viewMode === "synthesis"
-          ? <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} sortBy={sortBy} />
+          ? <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} sortBy={sortBy} skin={skin} />
           : viewMode === "audio"
           ? <AudioView onDeliberate={handleSynthesisDeliberate} excludedSources={excludedSources} sortBy={sortBy} onSortChange={setSortBy} pinnedArticleIds={new Set(pinnedArticles.map(a => a.id))} onPinArticle={handlePinArticle} />
           : feedContent}
