@@ -14,8 +14,8 @@ export async function downloadAsDataUri(url: string): Promise<string | undefined
     try {
       const sharp = (await import("sharp")).default
       const compressed = await sharp(Buffer.from(buffer))
-        .resize(800, null, { withoutEnlargement: true })
-        .jpeg({ quality: 60 })
+        .resize(600, null, { withoutEnlargement: true })
+        .jpeg({ quality: 50 })
         .toBuffer()
       return `data:image/jpeg;base64,${compressed.toString("base64")}`
     } catch {
