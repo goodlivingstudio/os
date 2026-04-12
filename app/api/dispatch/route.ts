@@ -316,14 +316,19 @@ export async function GET(request: Request) {
       generatedAt: new Date().toISOString(),
     }
 
-    // Cache if we have content — don't gate on images (Sonnet call is expensive)
+    // Cache if we have content — MUST await to ensure write completes before function exits
     if (KV_AVAILABLE && pitches.length > 0) {
-      kv.set(cacheKey, responseData, { ex: WEEK_TTL }).catch(() => {})
+      try {
+        await kv.set(cacheKey, responseData, { ex: WEEK_TTL })
+      } catch (err) {
+        console.error("[dispatch] KV cache write failed:", err instanceof Error ? err.message : err)
+      }
     }
 
     return Response.json({
       available: true,
       ...responseData,
+      cached: false,
     })
   } catch (err) {
     return Response.json(
