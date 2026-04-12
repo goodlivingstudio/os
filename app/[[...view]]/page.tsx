@@ -830,7 +830,7 @@ export default function Page() {
           borderBottom: "1px solid var(--border)",
         }}>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <span style={{ ...TYPE.xs, color: "var(--text-primary)", textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.04em" }}>
+            <span style={{ ...labelStyle, color: "var(--text-primary)" }}>
               {instanceConfig.branding.name}
             </span>
           </div>
