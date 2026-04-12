@@ -284,7 +284,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
             </div>
 
             {/* ─ IMAGE BAND — 21:9 cinematic hero ─ */}
-            <div style={{
+            <div className="skin-tinted" style={{
               position: "relative", width: "100%", paddingTop: `${(9 / 21) * 100}%`, overflow: "hidden",
               background: data.headerImageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
             }}>
