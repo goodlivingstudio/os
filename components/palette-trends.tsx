@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Copy, Check, Sun, Moon, Upload, ChevronDown } from "lucide-react"
-import { TYPE, MONO, metaStyle } from "@/lib/styles"
+import { TYPE, MONO, metaStyle, labelStyle } from "@/lib/styles"
 import { storageKey } from "@/lib/config"
 import type { ColorMood, ColorSwatch } from "@/lib/gallery"
 
@@ -535,7 +535,7 @@ export function PaletteTrends({ snapshot, paletteIntel, totalImages, images }: P
       {/* ── Generated Palettes — the main event ── */}
       {palettes.length > 0 && (
         <div>
-          <div style={{ ...TYPE.xs, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>
+          <div style={{ ...labelStyle, marginBottom: 12 }}>
             Palettes from the Zeitgeist
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>

@@ -115,7 +115,7 @@ function AudioBriefBand({ episodes, visible, defaultExpanded = true, onDeliberat
           borderBottom: "1px solid var(--border)",
         }}
       >
-        <span style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+        <span style={labelStyle}>
           Sound
         </span>
         <button
@@ -795,13 +795,13 @@ export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", o
         }}>
           {signal.episode.synopsis && (
             <div style={{ padding: "12px 14px", borderBottom: signal.episode.relevance ? "1px solid var(--border)" : "none" }}>
-              <div style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.04em", marginBottom: 6 }}>Synopsis</div>
+              <div style={{ ...labelStyle, marginBottom: 6 }}>Synopsis</div>
               <div style={{ ...TYPE.body, color: "var(--text-secondary)" }}>{signal.episode.synopsis}</div>
             </div>
           )}
           {signal.episode.relevance && (
             <div style={{ padding: "12px 14px" }}>
-              <div style={{ ...TYPE.sm, color: "var(--accent-secondary)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.04em", marginBottom: 6 }}>Relevance</div>
+              <div style={{ ...labelStyle, marginBottom: 6 }}>Relevance</div>
               <div style={{ ...TYPE.body, color: "var(--text-primary)" }}>{signal.episode.relevance}</div>
             </div>
           )}

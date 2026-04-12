@@ -206,7 +206,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
         justifyContent: isMobile ? "center" : "space-between",
         padding: "0 20px", borderBottom: "1px solid var(--border)",
       }}>
-        {!isMobile && <span style={{ ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+        {!isMobile && <span style={labelStyle}>
           Synthesis
         </span>}
         <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)" }}>

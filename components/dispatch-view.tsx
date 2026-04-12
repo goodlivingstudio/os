@@ -400,7 +400,7 @@ export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: stri
         justifyContent: "space-between",
         padding: "0 20px", borderBottom: "1px solid var(--border)",
       }}>
-        <span style={{ ...TYPE.sm, color: "var(--accent-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+        <span style={labelStyle}>
           Dispatch
         </span>
         {data?.generatedAt && (
@@ -463,8 +463,7 @@ export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: stri
             }}>
               {/* Eyebrow */}
               <div style={{
-                ...TYPE.xs, color: "var(--text-tertiary)",
-                textTransform: "uppercase", letterSpacing: "0.08em",
+                ...labelStyle,
                 marginBottom: 20,
               }}>
                 New ideas and opportunities
