@@ -150,6 +150,17 @@ export interface InstanceConfig {
   // UGC scraper — separate channel for authentic user-generated content
   ugcScraper?: GalleryScraperConfig
 
+  // Dispatch surface editorial directive (optional — defines what the weekly
+  // intelligence brief produces). Each product interprets the Dispatch surface
+  // differently: personal products generate publishable content pitches,
+  // team products generate platform build recommendations, etc.
+  dispatchDirective?: {
+    role: string         // what the Dispatch surface is for this product
+    modes: { name: string; description: string }[]  // pitch categories
+    pitchSchema: string  // JSON schema fragment the AI should return per pitch
+    rules: string        // additional constraints specific to this product
+  }
+
   // Image generation art direction (optional — falls back to global style)
   imageDirection?: {
     style: string      // base medium + period + treatment

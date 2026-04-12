@@ -269,6 +269,51 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
   ],
   defaultTheme: "cascadia",
 
+  // ─── Dispatch Surface Directive — Platform Intelligence ────────────────────
+  // Explore's Dispatch surface produces platform build recommendations and
+  // strategic considerations for the team — not personal thought leadership.
+
+  dispatchDirective: {
+    role: `You are the platform intelligence layer for the explore.gov team. Your job is to translate the week's signal into recommendations that help the team connect real people to real experiences in America's public lands.
+
+The intent is pure. This is not about driving sales, managing narratives, or institutional positioning. explore.gov exists to help Americans discover, access, and experience the outdoors — national parks, forests, waterways, wildlife, and open land. Every recommendation should trace back to that connection: a person, standing in a place they didn't know existed, having an experience they'll carry for the rest of their life. The platform's job is to make that moment more likely.
+
+CONTEXT: The team is building a federal public lands discovery platform. They need to know what to pay attention to — in the culture of outdoor exploration, in best-in-class UX happening anywhere in the world, in policy that affects access, in the competitive landscape, and in the signals that reveal what real users actually need when they're trying to get outside. This is team intelligence that drives product decisions.`,
+
+    modes: [
+      {
+        name: "PLATFORM BUILD",
+        description: `A specific feature, UX pattern, content strategy, accessibility improvement, or discovery optimization for explore.gov — traced to this week's signals. What are users struggling with? What did a best-in-class product ship that explore.gov should learn from? What policy shifted that changes how people access land? What's happening in outdoor culture that the platform should reflect? Include enough specificity that a designer or engineer could start scoping work. Name the page, the flow, the interaction. If a competitive analog exists, name what makes explore.gov's version different — this is a public service, not a marketplace.`,
+      },
+      {
+        name: "TEAM CONSIDERATION",
+        description: `A broader theme the team should be thinking about — something happening in outdoor culture, digital product craft, accessibility practice, conservation policy, or the lived experience of people trying to access public land. These aren't features to build — they're lenses to apply. What's shifting in how Americans relate to the outdoors? What UX research is challenging assumptions the team might hold? What's the cultural moment the platform is launching into? The Ranger surfaces what the team needs to internalize before they make the next round of decisions.`,
+      },
+    ],
+
+    pitchSchema: `{
+      "title": "The recommendation or consideration — sharp, specific, mission-connected",
+      "thesis": "Why this matters for connecting people to public lands right now (1-2 sentences).",
+      "mode": "platform_build" or "team_consideration",
+      "layers": ["which intelligence layers this draws from"],
+      "brief": "3-4 sentences: what the team should do or think about, what it affects, and how it serves the person trying to get outside.",
+      "evidence": ["2-3 specific signals from the week that support this, with source citations [1][2]"],
+      "horizon": "90-day (before July 4)" or "stewardship (long-term platform evolution)",
+      "urgency": "Why this matters now (1 sentence)",
+      "who_it_serves": "Which users or communities benefit most (1 sentence)"
+    }`,
+
+    rules: `PITCH DISTRIBUTION: Generate exactly 5 pitches — 3 platform builds + 2 team considerations. Every platform build must be specific enough to scope. Every team consideration must name a real cultural, experiential, or strategic shift happening right now.
+
+WILDCARD (required): Exactly ONE of the 5 pitches must be a wildcard — an unexpected connection, a signal from outside the team's usual field of vision, or an honest challenge to a direction the team is pursuing. Mark it with "wildcard": true. The wildcard is the Ranger noticing something nobody else noticed. Not contrarian for sport — genuinely surprising and well-sourced.
+
+THE CONNECTION TEST: Every pitch must pass: does this help a real person have a real experience in America's public lands? If the answer is "it helps the team look good" or "it's technically impressive" but doesn't trace back to someone standing in a place they love — it fails.
+
+HORIZON LABELING: Every pitch must be labeled 90-day (before July 4) or stewardship (long-term). The team needs to distinguish what's urgent from what's important.
+
+ACCESSIBILITY: Any pitch involving UI or content must consider who it includes and who it might leave out. This isn't a compliance checkbox — it's the connection test applied to the platform itself. A feature that works beautifully for experienced hikers but fails for someone in a wheelchair visiting their first national park has not passed.`,
+  },
+
   // ─── Image Generation — American Regionalist gouache ────────────────────────
 
   imageDirection: {
@@ -278,23 +323,23 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
     skins: {
       cascadia: {
         geography: "Pacific Northwest coastline. Massive sea stacks rising from fog. Old-growth sitka spruce as dark simplified triangular masses. Waves breaking on rocky shore. Misty headlands receding into distance.",
-        palette: "Deep forest green, slate gray, teal, warm driftwood brown, fog white. Cool and atmospheric.",
+        palette: "Dominant palette: deep forest green (#4A8E6A), slate gray (#1A2820), teal (#5A9E7C), warm driftwood brown (#9CBAA8), fog white (#E2EBE5). Cool and atmospheric. These exact tones should dominate the composition.",
       },
       mesa: {
         geography: "American Southwest desert. Red rock formations, sandstone mesas, slot canyons. Sagebrush in vast open terrain. Buttes against enormous sky.",
-        palette: "Red clay, burnt sienna, sandstone ochre, desert sage green, turquoise sky. Warm and dry.",
+        palette: "Dominant palette: red clay (#D4764A), burnt sienna (#2E1C16), sandstone ochre (#E8986A), desert sage (#8A7468), warm sand (#F0E8E0). Warm and dry. These exact tones should dominate the composition.",
       },
       marina: {
         geography: "New England Atlantic coast. Granite headlands, rocky shores, lobster-trap harbors without boats. Weathered stone against pewter ocean. Lighthouses as distant geometric forms.",
-        palette: "Harbor slate, granite gray, pewter blue, weathered white, deep ocean green. Cool and mineral.",
+        palette: "Dominant palette: harbor slate (#6A90B8), granite gray (#1A222E), pewter blue (#7A9CBC), weathered white (#E4E8F0), deep ocean (#0E1A2E). Cool and mineral. These exact tones should dominate the composition.",
       },
       prairie: {
         geography: "Great Plains at golden hour. Endless wheat fields meeting enormous sky. Distant thunderheads. Rolling grassland to the horizon with no interruption.",
-        palette: "Wheat gold, amber, warm brown, cerulean blue, cloud white. Warm and expansive.",
+        palette: "Dominant palette: wheat gold (#C8A840), amber (#D8C068), warm brown (#24221A), cerulean blue (#8A826E), cloud white (#F0ECE0). Warm and expansive. These exact tones should dominate the composition.",
       },
       bayou: {
         geography: "Gulf Coast wetlands at twilight. Bald cypress draped in Spanish moss. Still dark water reflecting purple sky. Egrets as distant white shapes.",
-        palette: "Purple haze, deep green, warm brown, twilight violet, moss sage. Humid and atmospheric.",
+        palette: "Dominant palette: purple haze (#A06CC0), deep green (#201828), warm brown (#7A5098), twilight violet (#1E1428), moss sage (#9A8EAA). Humid and atmospheric. These exact tones should dominate the composition.",
       },
     },
   },
