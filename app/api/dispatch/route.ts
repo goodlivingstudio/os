@@ -62,26 +62,29 @@ function resolveCitations(body: string, contextArticles: ContextArticle[]): { bo
   return { body: resolved, sources }
 }
 
-// ─── System prompt ──────────────────────────────────────────────────────────
+// ─── System prompt — assembled from instance config ─────────────────────────
 
-const SYSTEM_PROMPT = `${INSTANCE_PREAMBLE}
+function buildDispatchPrompt(): string {
+  const dir = instanceConfig.dispatchDirective
 
-You are the action intelligence layer of Dispatch. Your job is to translate the week's signal into publishable content — thought leadership that advances the positioning, demonstrates expertise, and builds toward the five-year target.
+  // Instance-specific directive (preferred)
+  if (dir) {
+    const modesBlock = dir.modes
+      .map((m, i) => `${m.name}:\n${m.description}`)
+      .join("\n\n")
 
-CONTEXT: The operator's strategic positioning and career trajectory are defined by the mandate above. Content should establish the operator as someone who thinks at the level where the mandate's primary domains converge — not as a craftsperson or tool commentator.
+    return `${INSTANCE_PREAMBLE}
+
+${dir.role}
 
 PRODUCE:
 1. A one-line editorial headline for the week (weekSummary)
 2. 3-4 perspectives — each analyzing the week through a different intelligence layer lens, with [N] source citations
-3. 5 content pitches with evidence citations (4 positioned + 1 wildcard)
+3. 5 pitches with evidence citations
 
-TWO MODES for pitches — distribute across both:
+${dir.modes.length} MODES for pitches — distribute across them:
 
-STRATEGIC POSITIONING (LinkedIn / Medium / Substack):
-Long-form argument or perspective. 600–1200 words when developed. The voice of someone with hard-won expertise and a clear point of view. Not listicles. Not "here's what I learned." Thesis-driven essays, analysis, or provocations.
-
-CREATIVE EXPRESSION (Instagram / Lummi):
-Visual/editorial. A concept, an image direction, a short statement. The aesthetic intelligence layer of the public presence.
+${modesBlock}
 
 Return a JSON object:
 {
@@ -93,32 +96,23 @@ Return a JSON object:
       "layer": "${layerIdsPipe()}"
     }
   ],
-  "pitches": [
-    {
-      "title": "The content title or opening line",
-      "thesis": "The central argument or claim (1-2 sentences). Must be specific and arguable.",
-      "mode": "thought_leadership" or "creative",
-      "layers": ["which intelligence layers this draws from"],
-      "brief": "3-4 sentences: what the piece covers, the structure, the hook, and the payoff.",
-      "platforms": {
-        "primary": "Best platform for this piece",
-        "adaptations": ["How to adapt for other platforms — 1 sentence each"]
-      },
-      "evidence": ["2-3 specific signals from the week that support this thesis, with source citations [1][2]"],
-      "angle": "What makes this piece worth reading from this author specifically",
-      "urgency": "Why publish now vs. later (1 sentence)",
-      "wordCount": 800
-    }
-  ]
+  "pitches": [${dir.pitchSchema}]
 }
 
 PERSPECTIVES: Generate 3-4 perspectives. Each must analyze the week through a DIFFERENT intelligence layer. Cover at least the first two layers (${instanceConfig.layers.slice(0, 2).map(l => l.id).join(", ")}) and one of the remaining (${instanceConfig.layers.slice(2).map(l => l.id).join("/")}). Use [N] citations referencing the numbered articles.
 
-PITCHES: Generate exactly 5 pitches. Quality over quantity — each pitch must be a highly potent, specific position. Name companies, cite data points, reference real trends from the articles. Every pitch must trace to multiple signals.
-
-WILDCARD (required): Exactly ONE of the 5 pitches must be a wildcard. This pitch should be bold, unexpected, and break from the operator's usual positioning. It might challenge the mandate, argue a contrarian position, draw from a signal the operator would normally ignore, or connect dots nobody's connecting. Mark it with "wildcard": true in the JSON. The wildcard is not devil's advocacy for sport — it's the strongest, most surprising argument the week's signals actually support that falls outside the operator's default lens. Make it genuinely compelling.
+${dir.rules}
 
 Return only valid JSON. No prose outside the JSON.`
+  }
+
+  // Fallback for instances without a dispatchDirective (should not happen in practice)
+  return `${INSTANCE_PREAMBLE}
+
+You are the action intelligence layer. Translate the week's signal into 5 actionable pitches with a weekSummary headline and 3-4 perspectives. Return only valid JSON.`
+}
+
+const SYSTEM_PROMPT = buildDispatchPrompt()
 
 export async function GET(request: Request) {
   const apiKey = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
