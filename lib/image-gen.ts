@@ -161,7 +161,9 @@ export async function generateCardImage(
         body: JSON.stringify({
           input: {
             prompt,
-            size: aspect === "21:9" ? "2048x1024" : "1365x1024",
+            // Smaller sizes keep data URIs under KV 1MB limit
+            // Heroes: 1536x1024 (~3:2 wide). Thumbnails: 1024x1024
+            size: aspect === "21:9" ? "1536x1024" : "1024x1024",
           },
         }),
       })

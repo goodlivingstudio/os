@@ -400,7 +400,7 @@ export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: stri
         justifyContent: "space-between",
         padding: "0 20px", borderBottom: "1px solid var(--border)",
       }}>
-        <span style={{ ...labelStyle, color: "var(--text-primary)" }}>
+        <span style={{ ...TYPE.xs, color: "var(--text-primary)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.04em" }}>
           Dispatch
         </span>
         {data?.generatedAt && (
