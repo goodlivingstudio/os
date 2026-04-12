@@ -161,10 +161,12 @@ export async function generateCardImage(
       if (!pollRes.ok) continue
 
       const result = await pollRes.json()
-      if (result.status === "succeeded" && result.output?.[0]) {
+      // Recraft V3 returns output as a single URL string; Flux models return an array
+      const outputUrl = Array.isArray(result.output) ? result.output[0] : result.output
+      if (result.status === "succeeded" && outputUrl) {
         trackUsage({ endpoint: "image-gen", provider: "replicate", model: "recraft-v3", imageCount: 1 }).catch(() => {})
         // Download image and convert to permanent data URI
-        const dataUri = await downloadAsDataUri(result.output[0])
+        const dataUri = await downloadAsDataUri(outputUrl)
         if (dataUri) setCachedImage(cacheKey, dataUri).catch(() => {})
         return dataUri
       }
