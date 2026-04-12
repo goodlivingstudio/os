@@ -736,11 +736,10 @@ export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: stri
                   position: "relative", width: "100%", paddingTop: `${(9 / 21) * 100}%`, overflow: "hidden",
                   marginTop: 56,
                   background: breakImage ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
-                  borderRadius: 12,
                   animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 140ms both",
                 }}>
                   {breakImage && (
-                    <img src={breakImage} alt="" loading="lazy" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", borderRadius: 12 }} />
+                    <img src={breakImage} alt="" loading="lazy" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
                   )}
                 </div>
               )
