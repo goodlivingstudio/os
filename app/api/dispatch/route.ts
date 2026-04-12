@@ -142,7 +142,8 @@ export async function GET(request: Request) {
     // Check KV cache first — avoid 10-20s Sonnet call on repeat visits
     if (KV_AVAILABLE) {
       try {
-        const cached = await kv.get<Record<string, unknown>>(cacheKey)
+        const raw = await kv.get<string>(cacheKey)
+        const cached = typeof raw === "string" ? JSON.parse(raw) : raw
         if (cached && (cached.pitches as unknown[])?.length > 0) {
           // Images are optional on cache hit — serve text immediately
           // The client already has images from its own localStorage cache
@@ -328,10 +329,10 @@ export async function GET(request: Request) {
       }),
       headerImageUrl: undefined,
     }
-    // MUST await — serverless freezes after response, killing unawaited promises
+    // Await KV write — 13KB text-only payload, completes in <100ms
     if (KV_AVAILABLE && pitches.length > 0) {
       try {
-        await kv.set(cacheKey, cacheData, { ex: WEEK_TTL })
+        await kv.set(cacheKey, JSON.stringify(cacheData), { ex: WEEK_TTL })
       } catch (err) {
         console.error("[dispatch] KV cache write failed:", err instanceof Error ? err.message : err)
       }
