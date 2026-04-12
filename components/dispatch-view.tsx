@@ -324,9 +324,28 @@ const DISPATCH_STATUSES = [
 
 let _cachedDispatch: DispatchData | null = null
 
+const DISPATCH_CACHE_KEY = storageKey("dispatch")
+const DISPATCH_TTL = 24 * 60 * 60 * 1000 // 24 hours
+
 export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) => void }) {
-  const [data, setData] = useState<DispatchData | null>(_cachedDispatch)
-  const [loading, setLoading] = useState(!_cachedDispatch)
+  // Try localStorage first, then module cache
+  const initial = (() => {
+    if (_cachedDispatch) return _cachedDispatch
+    try {
+      const raw = localStorage.getItem(DISPATCH_CACHE_KEY)
+      if (raw) {
+        const { ts, data } = JSON.parse(raw)
+        if (data?.pitches?.length > 0 && Date.now() - ts < DISPATCH_TTL) {
+          _cachedDispatch = data
+          return data
+        }
+      }
+    } catch { /* */ }
+    return null
+  })()
+
+  const [data, setData] = useState<DispatchData | null>(initial)
+  const [loading, setLoading] = useState(!initial)
   const [statusIdx, setStatusIdx] = useState(0)
   const [elapsed, setElapsed] = useState(0)
   const [activePitch, setActivePitch] = useState<Pitch | null>(null)
@@ -360,6 +379,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
       const d = await res.json()
       setData(d)
       _cachedDispatch = d
+      try { localStorage.setItem(DISPATCH_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: d })) } catch { /* */ }
       setLoading(false)
       clearInterval(t)
     } catch {
@@ -382,7 +402,10 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
       .then(r => r.json())
       .then(d => {
         setData(d)
-        if (weekOffset === 0) _cachedDispatch = d
+        if (weekOffset === 0) {
+          _cachedDispatch = d
+          try { localStorage.setItem(DISPATCH_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: d })) } catch { /* */ }
+        }
         setLoading(false); clearInterval(t); clearInterval(timer)
       })
       .catch(() => { setLoading(false); clearInterval(t); clearInterval(timer) })
