@@ -106,9 +106,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
   const [retryCount, setRetryCount] = useState(0)
   const fetched = useRef(false)
 
-  // Skin-aware cache key — each biome gets its own cached response
-  const synthCacheKey = skin ? `${SYNTHESIS_CACHE_KEY}:${skin}` : SYNTHESIS_CACHE_KEY
-  const prevSkin = useRef(skin)
+  const synthCacheKey = SYNTHESIS_CACHE_KEY
 
   // Load from localStorage on mount — independent of articles
   useEffect(() => {
@@ -124,14 +122,24 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
     } catch { /* */ }
   }, [synthCacheKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Self-sufficient article fetching — don't depend on Signal tab
+  const [selfFetchedArticles, setSelfFetchedArticles] = useState<Article[]>([])
   useEffect(() => {
-    // Allow refetch when skin changes
-    if (prevSkin.current !== skin) {
-      prevSkin.current = skin
-      fetched.current = false
-    }
-    if (articles.length === 0 || fetched.current) return
-    const annotated = articles.filter(a => a.synopsis || a.relevance)
+    if (articles.length > 0 || selfFetchedArticles.length > 0) return
+    // No articles from parent — fetch our own
+    fetch("/api/news")
+      .then(r => r.json())
+      .then(d => {
+        if (d.articles?.length > 0) setSelfFetchedArticles(d.articles)
+      })
+      .catch(() => {})
+  }, [articles.length, selfFetchedArticles.length])
+
+  const effectiveArticles = articles.length > 0 ? articles : selfFetchedArticles
+
+  useEffect(() => {
+    if (effectiveArticles.length === 0 || fetched.current) return
+    const annotated = effectiveArticles.filter(a => a.synopsis || a.relevance)
     if (annotated.length < 3) return
     fetched.current = true
 
@@ -162,7 +170,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
     fetch("/api/synthesis", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ articles: annotated.slice(0, 25), skin }),
+      body: JSON.stringify({ articles: annotated.slice(0, 25) }),
       signal: abort.signal,
     })
       .then(r => { clearTimeout(timeout); return r.json() })
@@ -189,7 +197,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
       })
 
     return () => { abort.abort(); clearTimeout(timeout); if (t) clearInterval(t); if (timer) clearInterval(timer) }
-  }, [articles, retryCount, skin, synthCacheKey]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [effectiveArticles, retryCount, synthCacheKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Week range for header
   const weekRange = (() => {
