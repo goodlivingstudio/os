@@ -269,6 +269,15 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
   ],
   defaultTheme: "cascadia",
 
+  // ─── Image Generation — American Regionalist gouache ────────────────────────
+
+  imageDirection: {
+    style: "Gouache painting on heavy paper. Opaque matte finish, no transparency or washes. Simplified geometric forms — figures are volumes defined by color planes meeting, not outlines. Flattened perspective where landscape recedes through overlapping color fields rather than linear vanishing points. Mid-century American illustrative tradition adjacent to WPA-era poster art. The compositional naivety of Grandma Moses with the color sophistication of Charley Harper. Every surface is a deliberate color decision. Shadows are warm color, not darkness.",
+    avoid: "photographic, 3D render, digital art, anime, text, watermark, photorealistic, hyperdetail, outlines, line art, sketch, pencil, charcoal, oil paint impasto, glossy, metallic, neon, gradient, lens flare",
+    palette: "Warm autumnal earth tones — cadmium orange, chromium oxide green, raw sienna, cerulean blue, burnt umber, yellow ochre. Saturated but not electric. The warmth of afternoon light on sandstone. Sky is always present and always a considered blue, never generic.",
+    mood: "Civic dignity without nationalism. The American landscape as protagonist — rolling hills, public lands, open sky, small structures in vast geography. Figures when present are part of the landscape, gathered in purpose, never isolated. The feeling of stewardship — people tending to something larger than themselves.",
+  },
+
   // ─── Feature Flags — Explore-specific opt-ins ──────────────────────────────
 
   features: {

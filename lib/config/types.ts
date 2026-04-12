@@ -150,6 +150,14 @@ export interface InstanceConfig {
   // UGC scraper — separate channel for authentic user-generated content
   ugcScraper?: GalleryScraperConfig
 
+  // Image generation art direction (optional — falls back to global style)
+  imageDirection?: {
+    style: string      // base medium + period + treatment
+    avoid: string      // negative prompt
+    palette: string    // color direction
+    mood: string       // emotional register
+  }
+
   // Feature flags — per-instance opt-ins for shared-layer behaviors
   features?: FeatureFlags
 }
