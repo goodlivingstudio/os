@@ -1,7 +1,8 @@
-// ─── Image Generation via Replicate (Flux Schnell) ──────────────────────────
-// Generates painterly abstract images for all Dispatch surfaces.
-// Global style + surface-specific substyles.
-// Cost: ~$0.003 per image.
+// ─── Image Generation via Replicate (Recraft V3) ────────────────────────────
+// Generates painterly gouache images for all surfaces.
+// Instance-specific art direction via imageDirection config.
+// Scene extrapolation via Haiku turns headlines into vivid landscape scenes.
+// Cost: ~$0.04 per image (Recraft) + ~$0.001 per scene extrapolation (Haiku).
 
 import { downloadAsDataUri } from "@/lib/image-utils"
 import { trackUsage } from "@/lib/usage-tracker"
@@ -13,30 +14,14 @@ export const REPLICATE_API = "https://api.replicate.com/v1"
 export const REPLICATE_MODEL = "recraft-ai/recraft-v3"
 
 // ─── Global Art Direction ───────────────────────────────────────────────────
-// The unified visual language across all Dispatch surfaces.
-// Every generated image inherits this foundation.
+// Fallback visual language for instances without imageDirection config.
 
 export const GLOBAL_STYLE = `Painterly abstract. Wet-on-wet watercolor technique with visible paper texture. Pigment bleeding organically across damp surface. Translucent layered washes. Precise edges where color meets untouched paper. No text, no people, no logos, no icons, no UI elements, no objects, no literal depictions. Purely abstract — evocative, not illustrative.`
 
-// ─── Surface Substyles ──────────────────────────────────────────────────────
-// Each surface has a distinct character within the global language.
-
 export const SURFACE_STYLES: Record<string, string> = {
-  // SYNTHESIS — analytical, layered, convergent. The feeling of patterns
-  // emerging from data. Cooler palette. Multiple wash layers visible.
-  // Structure implied through overlapping translucent planes.
   synthesis: `Analytical and layered. Cool grays, soft teals, and muted slate blue. Multiple translucent wash layers visible simultaneously — the feeling of patterns converging. Architectural undertone — structure emerging from fluid washes. More white paper breathing through. Measured, not expressive.`,
-
-  // DISPATCH — directional, decisive, warm confidence. The feeling of
-  // intelligence becoming action. Warm but controlled palette.
-  // Deliberate marks. Forward momentum in the composition.
   dispatch: `Directional and decisive. Warm amber meeting cool steel. Deliberate brushwork — confident single strokes over atmospheric washes. The feeling of intelligence crystallizing into action. Slight asymmetric tension in the composition. Authority without aggression.`,
-
 }
-
-// ─── Layer Palette Hints ────────────────────────────────────────────────────
-// Subtle color shifts based on which intelligence layer dominates.
-// Applied as a secondary modifier after the surface style.
 
 export const LAYER_PALETTES: Record<string, string> = {
   opportunity: "Lean cooler — soft clinical blues and teals suggesting analytical clarity.",
@@ -44,6 +29,36 @@ export const LAYER_PALETTES: Record<string, string> = {
   discipline: "Lean greener — muted sage and deep indigo suggesting structural evolution.",
   landscape: "Stay neutral — silver grays with atmospheric depth.",
   culture: "Lean earthier — raw umber, oxide, burnt sienna suggesting material honesty.",
+}
+
+// ─── Scene Extrapolation ────────────────────────────────────────────────────
+// Turns analytical headlines into vivid landscape scene descriptions.
+// A fast Haiku call (~$0.001) that makes every image editorial, not decorative.
+// Only used for thumbnails — hero/breather images stay anthemic.
+
+async function extrapolateScene(title: string, skinId?: string): Promise<string> {
+  const apiKey = process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY
+  if (!apiKey) return title
+
+  const dir = instanceConfig.imageDirection
+  const skin = skinId && dir?.skins ? dir.skins[skinId] : undefined
+  const biomeHint = skin?.geography ? `The scene should be set in: ${skin.geography}` : "Set in American wilderness."
+
+  try {
+    const { default: Anthropic } = await import("@anthropic-ai/sdk")
+    const client = new Anthropic({ apiKey })
+    const response = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 150,
+      system: `You translate analytical headlines into vivid landscape scene descriptions for gouache paintings. Output ONLY the scene description — no preamble, no quotes, no explanation. The scene must be a specific dramatic moment in nature that metaphorically evokes the headline's meaning. No people, no text, no buildings, no technology. Only landscape, weather, light, water, wildlife, and vegetation. ${biomeHint}`,
+      messages: [{ role: "user", content: title }],
+    })
+    trackUsage({ endpoint: "scene-extrapolation", provider: "anthropic", model: "claude-haiku-4-5-20251001", inputTokens: response.usage?.input_tokens, outputTokens: response.usage?.output_tokens }).catch(() => {})
+    const text = response.content[0]?.type === "text" ? response.content[0].text.trim() : ""
+    return text || title
+  } catch {
+    return title // Fallback to raw title if Haiku fails
+  }
 }
 
 // ─── Prompt Assembly ────────────────────────────────────────────────────────
@@ -66,7 +81,7 @@ function buildPrompt(
     const skin = skinId ? dir.skins?.[skinId] : undefined
     const geography = skin?.geography ?? ""
     const palette = skin?.palette ?? ""
-    return `${dir.style} ${formatHint} ${geography} ${palette} ${dir.mood} Subject: "${concept}". Do not include: ${dir.avoid}`.trim()
+    return `${dir.style} ${formatHint} ${geography} ${palette} ${dir.mood} Scene: ${concept}. Do not include: ${dir.avoid}`.trim()
   }
 
   // Fallback to global style for instances without imageDirection
@@ -119,7 +134,13 @@ export async function generateCardImage(
   const cached = await getCachedImage(cacheKey)
   if (cached) return cached
 
-  const prompt = buildPrompt(surface, title, layers, aspect, skinId)
+  // Scene extrapolation: thumbnails (3:2) get Haiku scene descriptions.
+  // Heroes/breathers (21:9) stay anthemic — the biome geography speaks.
+  const concept = aspect === "3:2"
+    ? await extrapolateScene(title, skinId)
+    : title
+
+  const prompt = buildPrompt(surface, concept, layers, aspect, skinId)
 
   try {
     // Submit prediction with retry on rate limit
