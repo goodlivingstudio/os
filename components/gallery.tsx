@@ -112,7 +112,6 @@ function Lightbox({ image, onClose, onPrev, onNext }: {
           style={{
             maxWidth: "90vw", maxHeight: "80vh",
             objectFit: "contain", cursor: "default",
-            borderRadius: 4,
           }}
         />
       ) : (
@@ -125,7 +124,6 @@ function Lightbox({ image, onClose, onPrev, onNext }: {
           style={{
             maxWidth: "90vw", maxHeight: "80vh",
             objectFit: "contain", cursor: "default",
-            borderRadius: 4,
           }}
         />
       )}

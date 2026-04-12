@@ -150,7 +150,7 @@ export const FeedCard = memo(function FeedCard({ article, index, onSignalEnter, 
           loading="lazy"
           onError={(e) => { e.currentTarget.style.display = "none" }}
           style={{
-            width: 96, height: 64, borderRadius: 8,
+            width: 96, height: 64,
             objectFit: "cover", flexShrink: 0, background: "var(--bg-elevated)",
           }}
         />

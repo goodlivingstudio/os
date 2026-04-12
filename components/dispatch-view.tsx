@@ -776,7 +776,7 @@ export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: stri
                     <div style={{ display: "flex", gap: 20 }}>
                       {/* Image thumbnail — left side (hidden on mobile) */}
                       <div className="pitch-thumb" style={{
-                        width: 150, height: 100, borderRadius: 8, overflow: "hidden", flexShrink: 0,
+                        width: 150, height: 100, overflow: "hidden", flexShrink: 0,
                         background: pitch.imageUrl ? "transparent" : `linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)`,
                       }}>
                         {pitch.imageUrl && (

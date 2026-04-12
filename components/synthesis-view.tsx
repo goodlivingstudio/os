@@ -387,7 +387,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
                         height: isMobile ? undefined : 100,
                         paddingTop: isMobile ? `${(2 / 3) * 100}%` : undefined,
                         position: isMobile ? "relative" : undefined,
-                        borderRadius: 8, overflow: "hidden", flexShrink: 0,
+                        overflow: "hidden", flexShrink: 0,
                         background: pattern.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
                       }}>
                         {pattern.imageUrl && (
