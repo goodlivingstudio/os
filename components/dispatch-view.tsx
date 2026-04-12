@@ -390,7 +390,7 @@ export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: stri
       })
       .catch(() => { setLoading(false); clearInterval(t); clearInterval(timer) })
     return () => { clearInterval(t); clearInterval(timer) }
-  }, [weekOffset, skin])
+  }, [weekOffset]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}>
@@ -400,7 +400,7 @@ export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: stri
         justifyContent: "space-between",
         padding: "0 20px", borderBottom: "1px solid var(--border)",
       }}>
-        <span style={labelStyle}>
+        <span style={{ ...labelStyle, color: "var(--text-primary)" }}>
           Dispatch
         </span>
         {data?.generatedAt && (
