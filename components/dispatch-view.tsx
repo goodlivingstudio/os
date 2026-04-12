@@ -440,7 +440,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
           <div style={{ padding: "0 0 64px" }}>
 
             {/* ─ Header image — 21:9 cinematic hero ─ */}
-            <div style={{
+            <div className="skin-tinted" style={{
               position: "relative", width: "100%", paddingTop: `${(9 / 21) * 100}%`, overflow: "hidden",
               background: data.headerImageUrl
                 ? "transparent"
@@ -730,7 +730,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
             {data.pitches && data.pitches.length > 0 && (() => {
               const breakImage = data.pitches.find(p => p.imageUrl)?.imageUrl
               return (
-                <div style={{
+                <div className="skin-tinted" style={{
                   position: "relative", width: "100%", paddingTop: `${(9 / 21) * 100}%`, overflow: "hidden",
                   marginTop: 56,
                   background: breakImage ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
