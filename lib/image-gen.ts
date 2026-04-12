@@ -134,7 +134,7 @@ export async function generateCardImage(
         body: JSON.stringify({
           input: {
             prompt,
-            size: aspect === "21:9" ? "1820x780" : "1365x1024",
+            size: aspect === "21:9" ? "2048x1024" : "1365x1024",
           },
         }),
       })

@@ -181,7 +181,14 @@ export async function POST(req: Request) {
   if (!apiKey) return Response.json({ error: "No API key" }, { status: 500 })
 
   try {
-    const { articles } = await req.json()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let body: { articles?: any[] }
+    try {
+      body = await req.json()
+    } catch {
+      return Response.json({ briefing: null, patterns: [], blindSpotNote: null, message: "Request body required" })
+    }
+    const { articles } = body
     if (!articles?.length) {
       return Response.json({ briefing: null, patterns: [], blindSpotNote: null })
     }
