@@ -324,7 +324,7 @@ const DISPATCH_STATUSES = [
 
 let _cachedDispatch: DispatchData | null = null
 
-export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) => void }) {
+export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: string) => void; skin?: string }) {
   const [data, setData] = useState<DispatchData | null>(_cachedDispatch)
   const [loading, setLoading] = useState(!_cachedDispatch)
   const [statusIdx, setStatusIdx] = useState(0)
@@ -356,7 +356,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
       setLoading(true)
       setStatusIdx(0)
       const t = setInterval(() => setStatusIdx(i => Math.min(i + 1, DISPATCH_STATUSES.length - 1)), 1800)
-      const res = await fetch("/api/dispatch")
+      const res = await fetch(`/api/dispatch${skin ? `?skin=${skin}` : ""}`)
       const d = await res.json()
       setData(d)
       _cachedDispatch = d
@@ -377,8 +377,11 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
     setLoading(true)
     const t = setInterval(() => setStatusIdx(i => Math.min(i + 1, DISPATCH_STATUSES.length - 1)), 1800)
     const timer = setInterval(() => setElapsed(e => e + 1), 1000)
-    const weekParam = weekOffset !== 0 ? `?week=${getWeekId(weekOffset)}` : ""
-    fetch(`/api/dispatch${weekParam}`)
+    const params = new URLSearchParams()
+    if (weekOffset !== 0) params.set("week", getWeekId(weekOffset))
+    if (skin) params.set("skin", skin)
+    const qs = params.toString() ? `?${params.toString()}` : ""
+    fetch(`/api/dispatch${qs}`)
       .then(r => r.json())
       .then(d => {
         setData(d)
@@ -387,7 +390,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
       })
       .catch(() => { setLoading(false); clearInterval(t); clearInterval(timer) })
     return () => { clearInterval(t); clearInterval(timer) }
-  }, [weekOffset])
+  }, [weekOffset, skin])
 
   return (
     <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}>

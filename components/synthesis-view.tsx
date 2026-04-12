@@ -19,6 +19,7 @@ interface SynthesisViewProps {
   articles: Article[]
   onDeliberate: (text: string) => void
   sortBy?: "urgency" | "layer"
+  skin?: string
 }
 
 interface AIPattern {
@@ -94,7 +95,7 @@ const LAYER_DOT: Record<string, string> = Object.fromEntries(
 
 // ─── Synthesis View ────────────────────────────────────────────────────────
 
-export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: SynthesisViewProps) {
+export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }: SynthesisViewProps) {
   const isTriage = sortBy === "urgency"
   const isMobile = typeof window !== "undefined" && window.innerWidth <= MOBILE_BREAKPOINT
   const scroll = useScrollGuard()
@@ -105,7 +106,16 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
   const [retryCount, setRetryCount] = useState(0)
   const fetched = useRef(false)
 
+  // Skin-aware cache key — each biome gets its own cached response
+  const synthCacheKey = skin ? `${SYNTHESIS_CACHE_KEY}:${skin}` : SYNTHESIS_CACHE_KEY
+  const prevSkin = useRef(skin)
+
   useEffect(() => {
+    // Allow refetch when skin changes
+    if (prevSkin.current !== skin) {
+      prevSkin.current = skin
+      fetched.current = false
+    }
     if (articles.length === 0 || fetched.current) return
     const annotated = articles.filter(a => a.synopsis || a.relevance)
     if (annotated.length < 3) return
@@ -114,7 +124,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
     // Stale-while-revalidate: show cached synthesis immediately
     let hasStale = false
     try {
-      const raw = localStorage.getItem(SYNTHESIS_CACHE_KEY)
+      const raw = localStorage.getItem(synthCacheKey)
       if (raw) {
         const { ts, data: cached } = JSON.parse(raw)
         if (cached?.briefing) {
@@ -139,14 +149,14 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
     fetch("/api/synthesis", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ articles: annotated.slice(0, 25) }),
+      body: JSON.stringify({ articles: annotated.slice(0, 25), skin }),
       signal: abort.signal,
     })
       .then(r => { clearTimeout(timeout); return r.json() })
       .then(result => {
         if (result.briefing) {
           setData(result)
-          try { localStorage.setItem(SYNTHESIS_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: result })) } catch { /* */ }
+          try { localStorage.setItem(synthCacheKey, JSON.stringify({ ts: Date.now(), data: result })) } catch { /* */ }
         } else if (!hasStale) {
           fetched.current = false
         }
@@ -166,7 +176,7 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer" }: Synt
       })
 
     return () => { abort.abort(); clearTimeout(timeout); if (t) clearInterval(t); if (timer) clearInterval(timer) }
-  }, [articles, retryCount]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [articles, retryCount, skin, synthCacheKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Week range for header
   const weekRange = (() => {

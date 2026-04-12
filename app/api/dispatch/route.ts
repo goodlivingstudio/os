@@ -118,12 +118,15 @@ export async function GET(request: Request) {
   const apiKey = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
   if (!apiKey) return Response.json({ error: "No API key" }, { status: 500 })
 
-  // Support week navigation: ?week=2026-w14
+  // Support week navigation: ?week=2026-w14 and skin-specific images: ?skin=mesa
   const { searchParams } = new URL(request.url)
   const weekParam = searchParams.get("week")
+  const skinParam = searchParams.get("skin") || instanceConfig.defaultTheme
   const currentWeekKey = getWeekKey()
   const currentWeekId = currentWeekKey.split(":").pop() || ""
-  const cacheKey = weekParam ? kvKey(`weekly:${weekParam}`) : currentWeekKey
+  // Cache key includes skin — each biome gets its own image set
+  const baseCacheKey = weekParam ? kvKey(`weekly:${weekParam}`) : currentWeekKey
+  const cacheKey = `${baseCacheKey}:${skinParam}`
   const isArchive = weekParam && weekParam !== currentWeekId
 
   if (!ARTICLE_STORE_AVAILABLE) {
@@ -209,8 +212,8 @@ export async function GET(request: Request) {
     }
 
     // Generate images: header + each pitch
-    // Use instance default theme for biome-specific imagery
-    const skinId = instanceConfig.defaultTheme
+    // Use client-specified skin for biome-specific imagery
+    const skinId = skinParam
     let pitches = result.pitches || []
     let headerImageUrl: string | undefined
     if (process.env.REPLICATE_API_TOKEN) {

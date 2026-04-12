@@ -81,7 +81,13 @@ function buildPrompt(
     const skin = skinId ? dir.skins?.[skinId] : undefined
     const geography = skin?.geography ?? ""
     const palette = skin?.palette ?? ""
-    return `${dir.style} ${formatHint} ${geography} ${palette} ${dir.mood} Scene: ${concept}. Do not include: ${dir.avoid}`.trim()
+
+    if (aspect === "21:9") {
+      // Heroes/breathers: anthemic — geography is the protagonist, concept sets the mood
+      return `${dir.style} ${formatHint} ${geography} ${palette} ${dir.mood} The atmosphere evokes: "${concept}". Do not include: ${dir.avoid}`.trim()
+    }
+    // Thumbnails: editorial — the scene IS the subject, geography and palette set the region
+    return `${dir.style} ${formatHint} PRIMARY SUBJECT: ${concept}. Set in this region: ${geography} ${palette} Do not include: ${dir.avoid}`.trim()
   }
 
   // Fallback to global style for instances without imageDirection
@@ -172,9 +178,9 @@ export async function generateCardImage(
     const predictionId = prediction.id
     if (!predictionId) return undefined
 
-    // Poll for result (max 30 seconds)
-    for (let attempt = 0; attempt < 15; attempt++) {
-      await new Promise(r => setTimeout(r, 2000))
+    // Poll for result (max 60 seconds — Recraft V3 can take up to 45s)
+    for (let attempt = 0; attempt < 20; attempt++) {
+      await new Promise(r => setTimeout(r, 3000))
 
       const pollRes = await fetch(`${REPLICATE_API}/predictions/${predictionId}`, {
         headers: { "Authorization": `Bearer ${token}` },
