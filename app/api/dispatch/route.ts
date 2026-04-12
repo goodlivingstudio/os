@@ -1,7 +1,7 @@
 // Dispatch endpoint — weekly intelligence brief → content pitch pipeline
 // Analyzes 7 days of article history and generates publishable content briefs
 import Anthropic from "@anthropic-ai/sdk"
-import { generateCardImages } from "@/lib/image-gen"
+// Image generation disabled for Dispatch — TBD for future session
 import { loadArticleHistory, ARTICLE_STORE_AVAILABLE } from "@/lib/article-store"
 import { trackUsage } from "@/lib/usage-tracker"
 import { INSTANCE_PREAMBLE } from "@/lib/prompts"
@@ -118,15 +118,12 @@ export async function GET(request: Request) {
   const apiKey = (process.env.DISPATCH_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY)
   if (!apiKey) return Response.json({ error: "No API key" }, { status: 500 })
 
-  // Support week navigation: ?week=2026-w14 and skin-specific images: ?skin=mesa
+  // Support week navigation: ?week=2026-w14
   const { searchParams } = new URL(request.url)
   const weekParam = searchParams.get("week")
-  const skinParam = searchParams.get("skin") || instanceConfig.defaultTheme
   const currentWeekKey = getWeekKey()
   const currentWeekId = currentWeekKey.split(":").pop() || ""
-  // Cache key includes skin — each biome gets its own image set
-  const baseCacheKey = weekParam ? kvKey(`weekly:${weekParam}`) : currentWeekKey
-  const cacheKey = `${baseCacheKey}:${skinParam}`
+  const cacheKey = weekParam ? kvKey(`weekly:${weekParam}`) : currentWeekKey
   const isArchive = weekParam && weekParam !== currentWeekId
 
   if (!ARTICLE_STORE_AVAILABLE) {
@@ -142,11 +139,8 @@ export async function GET(request: Request) {
     // Check KV cache first — avoid 10-20s Sonnet call on repeat visits
     if (KV_AVAILABLE) {
       try {
-        const raw = await kv.get<string>(cacheKey)
-        const cached = typeof raw === "string" ? JSON.parse(raw) : raw
+        const cached = await kv.get<Record<string, unknown>>(cacheKey)
         if (cached && (cached.pitches as unknown[])?.length > 0) {
-          // Images are optional on cache hit — serve text immediately
-          // The client already has images from its own localStorage cache
           return Response.json({
             available: true,
             ...cached,
@@ -214,33 +208,8 @@ export async function GET(request: Request) {
       return Response.json({ available: true, weekSummary: null, pitches: [], message: "Parse failed." })
     }
 
-    // Generate images: header + each pitch
-    // Use client-specified skin for biome-specific imagery
-    const skinId = skinParam
+    // Image generation disabled for Dispatch surface — TBD for future session
     let pitches = result.pitches || []
-    let headerImageUrl: string | undefined
-    if (process.env.REPLICATE_API_TOKEN) {
-      try {
-        // Hero image at 21:9 cinematic ratio — anthemic, biome sets the scene
-        const heroCard = [{ title: result.weekSummary?.split(/[.!?]/)[0] || "Weekly dispatch", layers: ["landscape"] }]
-        const heroUrls = await generateCardImages(heroCard, "dispatch", "21:9", skinId)
-        headerImageUrl = heroUrls[0] || undefined
-
-        // Pitch thumbnails at 3:2 — scene extrapolation makes them editorial
-        const pitchCards = pitches.map((p: { title: string; layers?: string[] }) => ({
-          title: p.title,
-          layers: p.layers,
-        }))
-        const pitchImageUrls = pitchCards.length > 0 ? await generateCardImages(pitchCards, "dispatch", "3:2", skinId) : []
-        pitches = pitches.map((p: Record<string, unknown>, i: number) => ({
-          ...p,
-          imageUrl: pitchImageUrls[i] || undefined,
-        }))
-      } catch (err) {
-        // Image generation failure shouldn't break dispatch — log and continue
-        console.error("[dispatch] Image generation failed:", err instanceof Error ? err.message : err)
-      }
-    }
 
     // Resolve citations in perspectives
     const ctxForCitations: ContextArticle[] = contextArticles.map(a => ({ title: a.title, url: a.url, source: a.source }))
@@ -313,29 +282,14 @@ export async function GET(request: Request) {
       weekSummarySources: weekSummarySources.length > 0 ? weekSummarySources : undefined,
       perspectives: perspectives.length > 0 ? perspectives : undefined,
       pitches,
-      headerImageUrl,
       sparklines,
       articleCount: articles.length,
       generatedAt: new Date().toISOString(),
     }
 
-    // Cache the analysis text WITHOUT images — images use content-addressable cache separately
-    // Strip imageUrl from pitches before caching to keep value under KV size limits
-    const cacheData = {
-      ...responseData,
-      pitches: pitches.map((p: Record<string, unknown>) => {
-        const { imageUrl, ...rest } = p
-        return rest
-      }),
-      headerImageUrl: undefined,
-    }
-    // Await KV write — 13KB text-only payload, completes in <100ms
+    // Cache to KV
     if (KV_AVAILABLE && pitches.length > 0) {
-      try {
-        await kv.set(cacheKey, JSON.stringify(cacheData), { ex: WEEK_TTL })
-      } catch (err) {
-        console.error("[dispatch] KV cache write failed:", err instanceof Error ? err.message : err)
-      }
+      kv.set(cacheKey, responseData, { ex: WEEK_TTL }).catch(() => {})
     }
 
     return Response.json({

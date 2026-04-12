@@ -324,7 +324,7 @@ const DISPATCH_STATUSES = [
 
 let _cachedDispatch: DispatchData | null = null
 
-export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: string) => void; skin?: string }) {
+export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) => void }) {
   const [data, setData] = useState<DispatchData | null>(_cachedDispatch)
   const [loading, setLoading] = useState(!_cachedDispatch)
   const [statusIdx, setStatusIdx] = useState(0)
@@ -356,7 +356,7 @@ export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: stri
       setLoading(true)
       setStatusIdx(0)
       const t = setInterval(() => setStatusIdx(i => Math.min(i + 1, DISPATCH_STATUSES.length - 1)), 1800)
-      const res = await fetch(`/api/dispatch${skin ? `?skin=${skin}` : ""}`)
+      const res = await fetch("/api/dispatch")
       const d = await res.json()
       setData(d)
       _cachedDispatch = d
@@ -377,11 +377,8 @@ export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: stri
     setLoading(true)
     const t = setInterval(() => setStatusIdx(i => Math.min(i + 1, DISPATCH_STATUSES.length - 1)), 1800)
     const timer = setInterval(() => setElapsed(e => e + 1), 1000)
-    const params = new URLSearchParams()
-    if (weekOffset !== 0) params.set("week", getWeekId(weekOffset))
-    if (skin) params.set("skin", skin)
-    const qs = params.toString() ? `?${params.toString()}` : ""
-    fetch(`/api/dispatch${qs}`)
+    const weekParam = weekOffset !== 0 ? `?week=${getWeekId(weekOffset)}` : ""
+    fetch(`/api/dispatch${weekParam}`)
       .then(r => r.json())
       .then(d => {
         setData(d)
