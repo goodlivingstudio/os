@@ -70,9 +70,9 @@ interface SynthesisData {
   heatmap?: { days: string[]; layers: HeatmapLayer[] }
 }
 
-const SYNTHESIS_CACHE_KEY = storageKey("synthesis")
+const SYNTHESIS_CACHE_KEY = storageKey("synthesis-v2") // v2: includes images
 const SYNTHESIS_TTL = 24 * 60 * 60 * 1000 // 24 hours
-const SYNTHESIS_FETCH_TIMEOUT = 45_000 // 45s — synthesis is heavier
+const SYNTHESIS_FETCH_TIMEOUT = 180_000 // 3 min — synthesis + image gen via Recraft V3
 
 const SYNTHESIS_STATUSES = [
   "$ synthesis --analyze",
