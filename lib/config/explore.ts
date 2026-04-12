@@ -278,23 +278,23 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
     skins: {
       cascadia: {
         geography: "Pacific Northwest coastline. Massive sea stacks rising from fog. Old-growth sitka spruce as dark simplified triangular masses. Waves breaking on rocky shore. Misty headlands receding into distance.",
-        palette: "Deep forest green, slate gray, teal, warm driftwood brown, fog white. Cool and atmospheric.",
+        palette: "Dominant palette: deep forest green (#4A8E6A), slate gray (#1A2820), teal (#5A9E7C), warm driftwood brown (#9CBAA8), fog white (#E2EBE5). Cool and atmospheric. These exact tones should dominate the composition.",
       },
       mesa: {
         geography: "American Southwest desert. Red rock formations, sandstone mesas, slot canyons. Sagebrush in vast open terrain. Buttes against enormous sky.",
-        palette: "Red clay, burnt sienna, sandstone ochre, desert sage green, turquoise sky. Warm and dry.",
+        palette: "Dominant palette: red clay (#D4764A), burnt sienna (#2E1C16), sandstone ochre (#E8986A), desert sage (#8A7468), warm sand (#F0E8E0). Warm and dry. These exact tones should dominate the composition.",
       },
       marina: {
         geography: "New England Atlantic coast. Granite headlands, rocky shores, lobster-trap harbors without boats. Weathered stone against pewter ocean. Lighthouses as distant geometric forms.",
-        palette: "Harbor slate, granite gray, pewter blue, weathered white, deep ocean green. Cool and mineral.",
+        palette: "Dominant palette: harbor slate (#6A90B8), granite gray (#1A222E), pewter blue (#7A9CBC), weathered white (#E4E8F0), deep ocean (#0E1A2E). Cool and mineral. These exact tones should dominate the composition.",
       },
       prairie: {
         geography: "Great Plains at golden hour. Endless wheat fields meeting enormous sky. Distant thunderheads. Rolling grassland to the horizon with no interruption.",
-        palette: "Wheat gold, amber, warm brown, cerulean blue, cloud white. Warm and expansive.",
+        palette: "Dominant palette: wheat gold (#C8A840), amber (#D8C068), warm brown (#24221A), cerulean blue (#8A826E), cloud white (#F0ECE0). Warm and expansive. These exact tones should dominate the composition.",
       },
       bayou: {
         geography: "Gulf Coast wetlands at twilight. Bald cypress draped in Spanish moss. Still dark water reflecting purple sky. Egrets as distant white shapes.",
-        palette: "Purple haze, deep green, warm brown, twilight violet, moss sage. Humid and atmospheric.",
+        palette: "Dominant palette: purple haze (#A06CC0), deep green (#201828), warm brown (#7A5098), twilight violet (#1E1428), moss sage (#9A8EAA). Humid and atmospheric. These exact tones should dominate the composition.",
       },
     },
   },

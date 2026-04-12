@@ -70,7 +70,7 @@ interface SynthesisData {
 }
 
 const SYNTHESIS_CACHE_KEY = storageKey("synthesis")
-const SYNTHESIS_TTL = 4 * 60 * 60 * 1000 // 4 hours
+const SYNTHESIS_TTL = 24 * 60 * 60 * 1000 // 24 hours
 const SYNTHESIS_FETCH_TIMEOUT = 45_000 // 45s — synthesis is heavier
 
 const SYNTHESIS_STATUSES = [
