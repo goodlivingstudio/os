@@ -272,10 +272,31 @@ When scoring and surfacing signals: weight SIGNAL sources heavily for urgency. W
   // ─── Image Generation — American Regionalist gouache ────────────────────────
 
   imageDirection: {
-    style: "Gouache painting on heavy paper. Opaque matte finish, no transparency or washes. Simplified geometric forms — figures are volumes defined by color planes meeting, not outlines. Flattened perspective where landscape recedes through overlapping color fields rather than linear vanishing points. Mid-century American illustrative tradition adjacent to WPA-era poster art. The compositional naivety of Grandma Moses with the color sophistication of Charley Harper. Every surface is a deliberate color decision. Shadows are warm color, not darkness.",
-    avoid: "photographic, 3D render, digital art, anime, text, watermark, photorealistic, hyperdetail, outlines, line art, sketch, pencil, charcoal, oil paint impasto, glossy, metallic, neon, gradient, lens flare",
-    palette: "Warm autumnal earth tones — cadmium orange, chromium oxide green, raw sienna, cerulean blue, burnt umber, yellow ochre. Saturated but not electric. The warmth of afternoon light on sandstone. Sky is always present and always a considered blue, never generic.",
-    mood: "Civic dignity without nationalism. The American landscape as protagonist — rolling hills, public lands, open sky, small structures in vast geography. Figures when present are part of the landscape, gathered in purpose, never isolated. The feeling of stewardship — people tending to something larger than themselves.",
+    style: "Gouache painting on textured paper. Opaque pigment, matte finish, visible brushwork. Wide landscape composition maintaining the scale of the wilderness. The image fills the entire frame edge to edge with no borders. A painting made with real paint by a deliberate hand.",
+    avoid: "photographic, 3D render, digital art, anime, watermark, photorealistic, hyperdetail, outlines, line art, sketch, pencil, charcoal, oil paint impasto, glossy, metallic, neon, gradient, lens flare, borders, frame edges, torn paper edges",
+    mood: "American wilderness at scale. The landscape is always the protagonist. Editorial and narrative — the scene should tell a story related to the subject matter, like a New Yorker or Atlantic feature illustration rendered in gouache.",
+    skins: {
+      cascadia: {
+        geography: "Pacific Northwest coastline. Massive sea stacks rising from fog. Old-growth sitka spruce as dark simplified triangular masses. Waves breaking on rocky shore. Misty headlands receding into distance.",
+        palette: "Deep forest green, slate gray, teal, warm driftwood brown, fog white. Cool and atmospheric.",
+      },
+      mesa: {
+        geography: "American Southwest desert. Red rock formations, sandstone mesas, slot canyons. Sagebrush in vast open terrain. Buttes against enormous sky.",
+        palette: "Red clay, burnt sienna, sandstone ochre, desert sage green, turquoise sky. Warm and dry.",
+      },
+      marina: {
+        geography: "New England Atlantic coast. Granite headlands, rocky shores, lobster-trap harbors without boats. Weathered stone against pewter ocean. Lighthouses as distant geometric forms.",
+        palette: "Harbor slate, granite gray, pewter blue, weathered white, deep ocean green. Cool and mineral.",
+      },
+      prairie: {
+        geography: "Great Plains at golden hour. Endless wheat fields meeting enormous sky. Distant thunderheads. Rolling grassland to the horizon with no interruption.",
+        palette: "Wheat gold, amber, warm brown, cerulean blue, cloud white. Warm and expansive.",
+      },
+      bayou: {
+        geography: "Gulf Coast wetlands at twilight. Bald cypress draped in Spanish moss. Still dark water reflecting purple sky. Egrets as distant white shapes.",
+        palette: "Purple haze, deep green, warm brown, twilight violet, moss sage. Humid and atmospheric.",
+      },
+    },
   },
 
   // ─── Feature Flags — Explore-specific opt-ins ──────────────────────────────
