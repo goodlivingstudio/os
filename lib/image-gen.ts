@@ -5,7 +5,9 @@
 
 import { downloadAsDataUri } from "@/lib/image-utils"
 import { trackUsage } from "@/lib/usage-tracker"
+import { createHash } from "crypto"
 import instanceConfig from "@/lib/config"
+import { kvKey } from "@/lib/config"
 
 export const REPLICATE_API = "https://api.replicate.com/v1"
 export const REPLICATE_MODEL = "recraft-ai/recraft-v3"
@@ -73,6 +75,33 @@ function buildPrompt(
   return `${GLOBAL_STYLE} ${formatHint} ${surfaceStyle} Evoking: "${concept}". ${layerHint}`.trim()
 }
 
+// ─── Content-Addressable Image Cache ────────────────────────────────────
+// Same insight title + surface + aspect + skin = same painting. No wasted
+// generations when a convergence pattern persists across daily refreshes.
+
+const IMAGE_CACHE_TTL = 7 * 24 * 60 * 60 // 7 days — outlives any single synthesis/dispatch cache
+
+function imageCacheKey(title: string, surface: string, aspect: string, skinId?: string): string {
+  const hash = createHash("sha256").update(`${title}|${surface}|${aspect}|${skinId || ""}`).digest("hex").slice(0, 16)
+  return kvKey(`img:${hash}`)
+}
+
+async function getCachedImage(key: string): Promise<string | null> {
+  try {
+    const { kv } = await import("@vercel/kv")
+    return await kv.get<string>(key)
+  } catch {
+    return null
+  }
+}
+
+async function setCachedImage(key: string, dataUri: string): Promise<void> {
+  try {
+    const { kv } = await import("@vercel/kv")
+    await kv.set(key, dataUri, { ex: IMAGE_CACHE_TTL })
+  } catch { /* KV write failure — image still returned, just not cached */ }
+}
+
 // ─── Image Generation ───────────────────────────────────────────────────────
 
 export async function generateCardImage(
@@ -84,6 +113,11 @@ export async function generateCardImage(
 ): Promise<string | undefined> {
   const token = process.env.REPLICATE_API_TOKEN
   if (!token) return undefined
+
+  // Content-addressable cache: same title = same painting
+  const cacheKey = imageCacheKey(title, surface, aspect, skinId)
+  const cached = await getCachedImage(cacheKey)
+  if (cached) return cached
 
   const prompt = buildPrompt(surface, title, layers, aspect, skinId)
 
@@ -128,9 +162,11 @@ export async function generateCardImage(
 
       const result = await pollRes.json()
       if (result.status === "succeeded" && result.output?.[0]) {
-        trackUsage({ endpoint: "image-gen", provider: "replicate", model: "flux-schnell", imageCount: 1 }).catch(() => {})
+        trackUsage({ endpoint: "image-gen", provider: "replicate", model: "recraft-v3", imageCount: 1 }).catch(() => {})
         // Download image and convert to permanent data URI
-        return await downloadAsDataUri(result.output[0])
+        const dataUri = await downloadAsDataUri(result.output[0])
+        if (dataUri) setCachedImage(cacheKey, dataUri).catch(() => {})
+        return dataUri
       }
       if (result.status === "failed" || result.status === "canceled") {
         return undefined

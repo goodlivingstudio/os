@@ -8,7 +8,7 @@ import { kv } from "@vercel/kv"
 import { kvKey } from "@/lib/config"
 
 const KV_KEY = kvKey("synthesis:weekly")
-const CACHE_TTL = 60 * 60 * 12 // 12 hours
+const CACHE_TTL = 60 * 60 * 24 // 24 hours — matches client-side SYNTHESIS_TTL
 
 import instanceConfig from "@/lib/config"
 

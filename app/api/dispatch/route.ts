@@ -26,7 +26,7 @@ function getWeekKey(): string {
   return kvKey(`weekly:${year}-w${week}`)
 }
 
-const WEEK_TTL = 90 * 24 * 60 * 60 // 90 days — archive support
+const WEEK_TTL = 49 * 24 * 60 * 60 // 7 weeks — one set per week, 7 weeks lookback
 
 // ─── Citation resolution ────────────────────────────────────────────────────
 
