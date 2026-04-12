@@ -318,7 +318,7 @@ export async function GET(request: Request) {
 
     // Cache if we have content — don't gate on images (Sonnet call is expensive)
     if (KV_AVAILABLE && pitches.length > 0) {
-      kv.set(getWeekKey(), responseData, { ex: WEEK_TTL }).catch(() => {})
+      kv.set(cacheKey, responseData, { ex: WEEK_TTL }).catch(() => {})
     }
 
     return Response.json({
