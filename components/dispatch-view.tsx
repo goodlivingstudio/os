@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { ArrowUpRight, X, ChevronLeft, ChevronRight, Copy, Check, TrendingUp, TrendingDown } from "lucide-react"
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts"
@@ -402,53 +402,63 @@ export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: stri
     const weekParam = weekOffset !== 0 ? `?week=${getWeekId(weekOffset)}` : ""
     fetch(`/api/dispatch${weekParam}`)
       .then(r => r.json())
-      .then(async (d) => {
+      .then(d => {
         setData(d)
         if (weekOffset === 0) {
           _cachedDispatch = d
           try { localStorage.setItem(DISPATCH_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: d })) } catch { /* */ }
         }
         setLoading(false); clearInterval(t); clearInterval(timer)
-
-        // Generate remaining skins in background — one at a time
-        if (weekOffset === 0 && d.pitches?.length > 0) {
-          const defaultSkin = d.pitches[0]?.images ? Object.keys(d.pitches[0].images)[0] : null
-          const allSkins = instanceConfig.themes.map((th: { id: string }) => th.id)
-          const remaining = allSkins.filter((s: string) => s !== defaultSkin)
-          const heroTitle = d.weekSummary?.split(/[.!?]/)[0] || "Weekly pitch"
-          const pitchTitles = d.pitches.map((p: { title: string }) => p.title)
-
-          for (const skinId of remaining) {
-            try {
-              const res = await fetch("/api/generate-skin", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ skinId, titles: pitchTitles, heroTitle, surface: "dispatch" }),
-              })
-              const skinData = await res.json()
-              if (skinData.images) {
-                setData((prev: DispatchData | null) => {
-                  if (!prev) return prev
-                  const updated = { ...prev }
-                  if (skinData.images._hero) {
-                    updated.headerImages = { ...(updated.headerImages || {}), [skinId]: skinData.images._hero }
-                  }
-                  updated.pitches = (updated.pitches || []).map((p: Pitch) => ({
-                    ...p,
-                    images: { ...(p.images || {}), [skinId]: skinData.images[p.title] || undefined },
-                  }))
-                  _cachedDispatch = updated
-                  try { localStorage.setItem(DISPATCH_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: updated })) } catch { /* */ }
-                  return updated
-                })
-              }
-            } catch { /* skin gen failed — continue */ }
-          }
-        }
       })
       .catch(() => { setLoading(false); clearInterval(t); clearInterval(timer) })
     return () => { clearInterval(t); clearInterval(timer) }
   }, [weekOffset]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Background skin generation — fires when data arrives with images for only one skin
+  const bgGenRunning = useRef(false)
+  useEffect(() => {
+    if (!data?.pitches?.length || bgGenRunning.current || weekOffset !== 0) return
+    const allSkins = instanceConfig.themes.map((th: { id: string }) => th.id)
+    const firstPitch = data.pitches[0]
+    const existingSkins = firstPitch.images ? Object.keys(firstPitch.images).filter(k => firstPitch.images?.[k]) : []
+    if (existingSkins.length >= allSkins.length) return
+    if (existingSkins.length === 0) return
+
+    bgGenRunning.current = true
+    const remaining = allSkins.filter(s => !existingSkins.includes(s))
+    const heroTitle = data.weekSummary?.split(/[.!?]/)[0] || "Weekly pitch"
+    const pitchTitles = data.pitches.map((p: Pitch) => p.title)
+
+    ;(async () => {
+      for (const skinId of remaining) {
+        try {
+          const res = await fetch("/api/generate-skin", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ skinId, titles: pitchTitles, heroTitle, surface: "dispatch" }),
+          })
+          const skinData = await res.json()
+          if (skinData.images) {
+            setData((prev: DispatchData | null) => {
+              if (!prev) return prev
+              const updated = { ...prev }
+              if (skinData.images._hero) {
+                updated.headerImages = { ...(updated.headerImages || {}), [skinId]: skinData.images._hero }
+              }
+              updated.pitches = (updated.pitches || []).map((p: Pitch) => ({
+                ...p,
+                images: { ...(p.images || {}), [skinId]: skinData.images[p.title] || undefined },
+              }))
+              _cachedDispatch = updated
+              try { localStorage.setItem(DISPATCH_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: updated })) } catch { /* */ }
+              return updated
+            })
+          }
+        } catch { /* continue */ }
+      }
+      bgGenRunning.current = false
+    })()
+  }, [data?.pitches?.length]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-primary)" }}>
