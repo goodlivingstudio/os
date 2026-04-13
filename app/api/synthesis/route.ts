@@ -300,7 +300,6 @@ export async function POST(req: Request) {
     result.heatmap = heatmap
 
     // Generate images for default skin only — fits within 300s serverless timeout
-    const skinId = instanceConfig.defaultTheme
     if (process.env.REPLICATE_API_TOKEN) {
       try {
         const heroTitle = result.headline || result.briefing?.split(/[.!?]/)[0] || "Weekly synthesis"
