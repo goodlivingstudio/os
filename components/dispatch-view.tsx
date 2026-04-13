@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { ArrowUpRight, X, ChevronLeft, ChevronRight, Pen, Copy, Check, TrendingUp, TrendingDown } from "lucide-react"
+import { ArrowUpRight, X, ChevronLeft, ChevronRight, Copy, Check, TrendingUp, TrendingDown } from "lucide-react"
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { CopyCardButton } from "@/components/copy-card-button"
@@ -465,17 +465,20 @@ export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: stri
           <div style={{ padding: "0 0 64px" }}>
 
             {/* ─ Header image — 21:9 cinematic hero ─ */}
-            <div  style={{
-              position: "relative", width: "100%", paddingTop: `${(9 / 21) * 100}%`, overflow: "hidden",
-              background: data.headerImageUrl
-                ? "transparent"
-                : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
-              animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
-            }}>
-              {data.headerImageUrl && (
-                <img src={data.headerImageUrl} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
-              )}
-            </div>
+            {(() => {
+              const heroImg = (skin && data.headerImages?.[skin]) || data.headerImageUrl
+              return (
+                <div style={{
+                  position: "relative", width: "100%", paddingTop: `${(9 / 21) * 100}%`, overflow: "hidden",
+                  background: heroImg ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
+                  animation: "signal-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
+                }}>
+                  {heroImg && (
+                    <img src={heroImg} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  )}
+                </div>
+              )
+            })()}
 
             {/* ─ EDITORIAL HEADER — centered broadsheet ─ */}
             <div className="dispatch-header-content" style={{
