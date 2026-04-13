@@ -201,6 +201,52 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
     return () => { abort.abort(); clearTimeout(timeout); clearInterval(t); clearInterval(timer) }
   }, [retryCount]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Background skin generation — fires when data arrives with images for only one skin
+  const bgGenRunning = useRef(false)
+  useEffect(() => {
+    if (!data?.patterns?.length || bgGenRunning.current) return
+    // Check if we already have all skins
+    const allSkins = instanceConfig.themes.map((th: { id: string }) => th.id)
+    const firstPattern = data.patterns[0]
+    const existingSkins = firstPattern.images ? Object.keys(firstPattern.images).filter(k => firstPattern.images?.[k]) : []
+    if (existingSkins.length >= allSkins.length) return // all skins populated
+    if (existingSkins.length === 0) return // no images at all yet — wait for initial gen
+
+    bgGenRunning.current = true
+    const remaining = allSkins.filter(s => !existingSkins.includes(s))
+    const heroTitle = data.headline || data.briefing?.split(/[.!?]/)[0] || "Weekly synthesis"
+    const patternTitles = data.patterns.map((p: AIPattern) => p.title)
+
+    ;(async () => {
+      for (const skinId of remaining) {
+        try {
+          const res = await fetch("/api/generate-skin", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ skinId, titles: patternTitles, heroTitle, surface: "synthesis" }),
+          })
+          const skinData = await res.json()
+          if (skinData.images) {
+            setData(prev => {
+              if (!prev) return prev
+              const updated = { ...prev }
+              if (skinData.images._hero) {
+                updated.headerImages = { ...(updated.headerImages || {}), [skinId]: skinData.images._hero }
+              }
+              updated.patterns = (updated.patterns || []).map((p: AIPattern) => ({
+                ...p,
+                images: { ...(p.images || {}), [skinId]: skinData.images[p.title] || undefined },
+              }))
+              try { localStorage.setItem(synthCacheKey, JSON.stringify({ ts: Date.now(), data: updated })) } catch { /* */ }
+              return updated
+            })
+          }
+        } catch { /* continue */ }
+      }
+      bgGenRunning.current = false
+    })()
+  }, [data?.patterns?.length]) // eslint-disable-line react-hooks/exhaustive-deps
+
   // Week range for header
   const weekRange = (() => {
     const now = new Date()
