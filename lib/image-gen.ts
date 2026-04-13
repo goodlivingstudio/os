@@ -7,6 +7,7 @@
 import { downloadAsDataUri } from "@/lib/image-utils"
 import { trackUsage } from "@/lib/usage-tracker"
 import { createHash } from "crypto"
+import Anthropic from "@anthropic-ai/sdk"
 import instanceConfig from "@/lib/config"
 import { kvKey } from "@/lib/config"
 
@@ -45,7 +46,6 @@ async function extrapolateScene(title: string, skinId?: string): Promise<string>
   const biomeHint = skin?.geography ? `The scene should be set in: ${skin.geography}` : "Set in American wilderness."
 
   try {
-    const { default: Anthropic } = await import("@anthropic-ai/sdk")
     const client = new Anthropic({ apiKey })
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
@@ -56,7 +56,8 @@ async function extrapolateScene(title: string, skinId?: string): Promise<string>
     trackUsage({ endpoint: "scene-extrapolation", provider: "anthropic", model: "claude-haiku-4-5-20251001", inputTokens: response.usage?.input_tokens, outputTokens: response.usage?.output_tokens }).catch(() => {})
     const text = response.content[0]?.type === "text" ? response.content[0].text.trim() : ""
     return text || title
-  } catch {
+  } catch (err) {
+    console.error("[scene-extrapolation] Failed:", err instanceof Error ? err.message : err)
     return title // Fallback to raw title if Haiku fails
   }
 }

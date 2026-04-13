@@ -324,7 +324,7 @@ const DISPATCH_STATUSES = [
 
 let _cachedDispatch: DispatchData | null = null
 
-const DISPATCH_CACHE_KEY = storageKey("dispatch")
+const DISPATCH_CACHE_KEY = storageKey("dispatch-v2") // v2: includes images
 const DISPATCH_TTL = 24 * 60 * 60 * 1000 // 24 hours
 
 export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) => void }) {
@@ -421,7 +421,7 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
         padding: "0 20px", borderBottom: "1px solid var(--border)",
       }}>
         <span style={{ ...TYPE.xs, color: "var(--text-primary)", textTransform: "uppercase", fontWeight: 500, letterSpacing: "0.04em" }}>
-          Dispatch
+          Pitch
         </span>
         {data?.generatedAt && (
           <span style={{ ...TYPE.xs, fontFamily: MONO, color: "var(--text-tertiary)" }}>
