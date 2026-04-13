@@ -72,7 +72,7 @@ interface SynthesisData {
   heatmap?: { days: string[]; layers: HeatmapLayer[] }
 }
 
-const SYNTHESIS_CACHE_KEY = storageKey("synthesis-v4") // v4: all-skin images
+const SYNTHESIS_CACHE_KEY = storageKey("synthesis-v5") // v5: background skin gen
 const SYNTHESIS_TTL = 24 * 60 * 60 * 1000 // 24 hours
 const SYNTHESIS_FETCH_TIMEOUT = 180_000 // 3 min — synthesis + image gen via Recraft V3
 
@@ -161,10 +161,44 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
       signal: abort.signal,
     })
       .then(r => { clearTimeout(timeout); return r.json() })
-      .then(result => {
+      .then(async (result) => {
         if (result.briefing) {
           setData(result)
           try { localStorage.setItem(synthCacheKey, JSON.stringify({ ts: Date.now(), data: result })) } catch { /* */ }
+
+          // Generate remaining skins in background — one at a time
+          const defaultSkin = result.patterns?.[0]?.images ? Object.keys(result.patterns[0].images)[0] : null
+          const allSkins = instanceConfig.themes.map((th: { id: string }) => th.id)
+          const remaining = allSkins.filter((s: string) => s !== defaultSkin)
+          const heroTitle = result.headline || result.briefing?.split(/[.!?]/)[0] || "Weekly synthesis"
+          const patternTitles = (result.patterns || []).map((p: { title: string }) => p.title)
+
+          for (const skinId of remaining) {
+            try {
+              const res = await fetch("/api/generate-skin", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ skinId, titles: patternTitles, heroTitle, surface: "synthesis" }),
+              })
+              const skinData = await res.json()
+              if (skinData.images) {
+                // Merge into current data
+                setData(prev => {
+                  if (!prev) return prev
+                  const updated = { ...prev }
+                  if (skinData.images._hero) {
+                    updated.headerImages = { ...(updated.headerImages || {}), [skinId]: skinData.images._hero }
+                  }
+                  updated.patterns = (updated.patterns || []).map((p: AIPattern) => ({
+                    ...p,
+                    images: { ...(p.images || {}), [skinId]: skinData.images[p.title] || undefined },
+                  }))
+                  try { localStorage.setItem(synthCacheKey, JSON.stringify({ ts: Date.now(), data: updated })) } catch { /* */ }
+                  return updated
+                })
+              }
+            } catch { /* skin generation failed — continue to next */ }
+          }
         } else {
           fetched.current = false // allow retry
         }
