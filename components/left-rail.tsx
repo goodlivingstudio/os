@@ -501,7 +501,7 @@ export function LeftRail({
               { id: "pulse" as const,     Icon: Activity,  label: "Source Pulse",  isView: true },
               { id: "shortcuts" as const, Icon: Keyboard,  label: "Shortcuts",    isView: false },
               { id: "export" as const,    Icon: FileDown,  label: "Export",        isView: false },
-              { id: "dispatch" as const,  Icon: Newspaper,  label: "Dispatch",    isView: true },
+              { id: "dispatch" as const,  Icon: Newspaper,  label: "Pitch",    isView: true },
             ]).map(item => {
               const isActive = item.isView && viewMode === item.id
               return (
@@ -897,7 +897,7 @@ export function LeftRail({
           { id: "pulse" as const,    Icon: Activity,  title: "Source Pulse",          isView: true },
           { id: "shortcuts" as const, Icon: Keyboard, title: "Keyboard shortcuts",   isView: false },
           { id: "export" as const,   Icon: FileDown,  title: "Quick Export",          isView: false },
-          { id: "dispatch" as const, Icon: Newspaper,  title: instanceConfig.branding.name, isView: true },
+          { id: "dispatch" as const, Icon: Newspaper,  title: "Pitch", isView: true },
         ]).map(item => {
           const isActive = item.isView && viewMode === item.id
           const hasBadge = item.id === "pulse" && feedHealth && feedHealth.sourcesFailed > 0

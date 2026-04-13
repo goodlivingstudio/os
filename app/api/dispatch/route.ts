@@ -1,7 +1,7 @@
 // Dispatch endpoint — weekly intelligence brief → content pitch pipeline
 // Analyzes 7 days of article history and generates publishable content briefs
 import Anthropic from "@anthropic-ai/sdk"
-// Image generation disabled for Dispatch — TBD for future session
+import { generateCardImages } from "@/lib/image-gen"
 import { loadArticleHistory, ARTICLE_STORE_AVAILABLE } from "@/lib/article-store"
 import { trackUsage } from "@/lib/usage-tracker"
 import { INSTANCE_PREAMBLE } from "@/lib/prompts"
@@ -208,8 +208,27 @@ export async function GET(request: Request) {
       return Response.json({ available: true, weekSummary: null, pitches: [], message: "Parse failed." })
     }
 
-    // Image generation disabled for Dispatch surface — TBD for future session
+    // Generate images: hero + pitch thumbnails (cached in localStorage on client)
+    const skinId = instanceConfig.defaultTheme
     let pitches = result.pitches || []
+    let headerImageUrl: string | undefined
+    if (process.env.REPLICATE_API_TOKEN) {
+      try {
+        const heroCard = [{ title: result.weekSummary?.split(/[.!?]/)[0] || "Weekly dispatch", layers: ["landscape"] }]
+        const heroUrls = await generateCardImages(heroCard, "dispatch", "21:9", skinId)
+        headerImageUrl = heroUrls[0] || undefined
+
+        const pitchCards = pitches.map((p: { title: string; layers?: string[] }) => ({
+          title: p.title, layers: p.layers,
+        }))
+        const pitchImageUrls = pitchCards.length > 0 ? await generateCardImages(pitchCards, "dispatch", "3:2", skinId) : []
+        pitches = pitches.map((p: Record<string, unknown>, i: number) => ({
+          ...p, imageUrl: pitchImageUrls[i] || undefined,
+        }))
+      } catch (err) {
+        console.error("[dispatch] Image generation failed:", err instanceof Error ? err.message : err)
+      }
+    }
 
     // Resolve citations in perspectives
     const ctxForCitations: ContextArticle[] = contextArticles.map(a => ({ title: a.title, url: a.url, source: a.source }))
@@ -282,6 +301,7 @@ export async function GET(request: Request) {
       weekSummarySources: weekSummarySources.length > 0 ? weekSummarySources : undefined,
       perspectives: perspectives.length > 0 ? perspectives : undefined,
       pitches,
+      headerImageUrl,
       sparklines,
       articleCount: articles.length,
       generatedAt: new Date().toISOString(),
