@@ -1,7 +1,7 @@
 // Dispatch endpoint — weekly intelligence brief → content pitch pipeline
 // Analyzes 7 days of article history and generates publishable content briefs
 import Anthropic from "@anthropic-ai/sdk"
-import { generateAllSkinImages } from "@/lib/image-gen"
+import { generateCardImages } from "@/lib/image-gen"
 import { loadArticleHistory, ARTICLE_STORE_AVAILABLE } from "@/lib/article-store"
 import { trackUsage } from "@/lib/usage-tracker"
 import { INSTANCE_PREAMBLE } from "@/lib/prompts"
@@ -208,23 +208,23 @@ export async function GET(request: Request) {
       return Response.json({ available: true, weekSummary: null, pitches: [], message: "Parse failed." })
     }
 
-    // Generate images for ALL skins — each biome gets its own imagery
-    // ~10 min generation, cached for the week in localStorage (7 weeks lookback)
+    // Generate images for default skin — fits within 300s serverless timeout
+    const skinId = instanceConfig.defaultTheme
     let pitches = result.pitches || []
     let headerImages: Record<string, string | undefined> = {}
     if (process.env.REPLICATE_API_TOKEN) {
       try {
         const heroCard = [{ title: result.weekSummary?.split(/[.!?]/)[0] || "Weekly pitch", layers: ["landscape"] }]
-        const heroAllSkins = await generateAllSkinImages(heroCard, "dispatch", "21:9")
-        headerImages = heroAllSkins[0] || {}
+        const heroUrls = await generateCardImages(heroCard, "dispatch", "21:9", skinId)
+        headerImages = { [skinId]: heroUrls[0] || undefined }
 
         const pitchCards = pitches.map((p: { title: string; layers?: string[] }) => ({
           title: p.title, layers: p.layers,
         }))
         if (pitchCards.length > 0) {
-          const allSkinImages = await generateAllSkinImages(pitchCards, "dispatch", "3:2")
+          const imageUrls = await generateCardImages(pitchCards, "dispatch", "3:2", skinId)
           pitches = pitches.map((p: Record<string, unknown>, i: number) => ({
-            ...p, images: allSkinImages[i] || {},
+            ...p, images: { [skinId]: imageUrls[i] || undefined },
           }))
         }
       } catch (err) {
