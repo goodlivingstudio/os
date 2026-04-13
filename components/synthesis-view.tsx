@@ -27,7 +27,8 @@ interface AIPattern {
   description: string
   layers: string[]
   signalCount: number
-  imageUrl?: string
+  imageUrl?: string    // legacy single-skin
+  images?: Record<string, string>  // per-skin images
   sources?: string[]
 }
 
@@ -65,12 +66,13 @@ interface SynthesisData {
   /** @deprecated Use cerebroTopics instead. Kept for backward compat with cached data. */
   cerebroProvocation?: string
   cerebroTopics?: CerebroTopic[]
-  headerImageUrl?: string
+  headerImageUrl?: string   // legacy single-skin
+  headerImages?: Record<string, string>  // per-skin hero images
   velocity?: { accelerating: VelocityItem[]; decelerating: VelocityItem[] }
   heatmap?: { days: string[]; layers: HeatmapLayer[] }
 }
 
-const SYNTHESIS_CACHE_KEY = storageKey("synthesis-v3") // v3: high-quality images
+const SYNTHESIS_CACHE_KEY = storageKey("synthesis-v4") // v4: all-skin images
 const SYNTHESIS_TTL = 24 * 60 * 60 * 1000 // 24 hours
 const SYNTHESIS_FETCH_TIMEOUT = 180_000 // 3 min — synthesis + image gen via Recraft V3
 
@@ -315,14 +317,19 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
             </div>
 
             {/* ─ IMAGE BAND — 21:9 cinematic hero ─ */}
-            <div  style={{
-              position: "relative", width: "100%", paddingTop: `${(9 / 21) * 100}%`, overflow: "hidden",
-              background: data.headerImageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
-            }}>
-              {data.headerImageUrl && (
-                <img src={data.headerImageUrl} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
-              )}
-            </div>
+            {(() => {
+              const heroImg = (skin && data.headerImages?.[skin]) || data.headerImageUrl
+              return (
+                <div style={{
+                  position: "relative", width: "100%", paddingTop: `${(9 / 21) * 100}%`, overflow: "hidden",
+                  background: heroImg ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
+                }}>
+                  {heroImg && (
+                    <img src={heroImg} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  )}
+                </div>
+              )
+            })()}
 
             {/* ─ SIGNAL VELOCITY ─ */}
             {data.velocity && (data.velocity.accelerating.length > 0 || data.velocity.decelerating.length > 0) && (
@@ -409,10 +416,10 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
                         paddingTop: isMobile ? `${(2 / 3) * 100}%` : undefined,
                         position: isMobile ? "relative" : undefined,
                         overflow: "hidden", flexShrink: 0,
-                        background: pattern.imageUrl ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
+                        background: ((skin && pattern.images?.[skin]) || pattern.imageUrl) ? "transparent" : "linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)",
                       }}>
-                        {pattern.imageUrl && (
-                          <img src={pattern.imageUrl} alt="" loading="lazy" style={{ position: isMobile ? "absolute" : undefined, inset: isMobile ? 0 : undefined, width: "100%", height: "100%", objectFit: "cover" }} />
+                        {((skin && pattern.images?.[skin]) || pattern.imageUrl) && (
+                          <img src={(skin && pattern.images?.[skin]) || pattern.imageUrl} alt="" loading="lazy" style={{ position: isMobile ? "absolute" : undefined, inset: isMobile ? 0 : undefined, width: "100%", height: "100%", objectFit: "cover" }} />
                         )}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>

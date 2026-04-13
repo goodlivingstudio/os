@@ -2,7 +2,7 @@
 import Anthropic from "@anthropic-ai/sdk"
 import { INSTANCE_PREAMBLE } from "@/lib/prompts"
 import { loadArticleHistory } from "@/lib/article-store"
-import { generateCardImages } from "@/lib/image-gen"
+import { generateAllSkinImages } from "@/lib/image-gen"
 import { trackUsage } from "@/lib/usage-tracker"
 import { kv } from "@vercel/kv"
 import { kvKey } from "@/lib/config"
@@ -288,25 +288,24 @@ export async function POST(req: Request) {
     result.velocity = velocity
     result.heatmap = heatmap
 
-    // Generate images: hero (21:9) + convergence thumbs (3:2)
-    // skinId from client request for biome-specific imagery
+    // Generate images for ALL skins — each biome gets its own imagery
+    // ~10 min generation, cached for 24h in localStorage
     if (process.env.REPLICATE_API_TOKEN) {
       try {
-        // Hero image at 21:9 cinematic ratio — anthemic, biome sets the scene
+        // Hero images at 21:9 — one per skin
         const heroTitle = result.headline || result.briefing?.split(/[.!?]/)[0] || "Weekly synthesis"
-        const heroUrls = await generateCardImages([{ title: heroTitle, layers: ["landscape"] }], "synthesis", "21:9", skinId)
-        result.headerImageUrl = heroUrls[0] || undefined
+        const heroAllSkins = await generateAllSkinImages([{ title: heroTitle, layers: ["landscape"] }], "synthesis", "21:9")
+        result.headerImages = heroAllSkins[0] || {}
 
-        // Convergence thumbnails at 3:2 — scene extrapolation makes them editorial
+        // Convergence thumbnails at 3:2 — scene extrapolation + all skins
         const patternCards = (result.patterns || []).map((p: { title: string; layers?: string[] }) => ({
-          title: p.title,
-          layers: p.layers,
+          title: p.title, layers: p.layers,
         }))
         if (patternCards.length > 0) {
-          const imageUrls = await generateCardImages(patternCards, "synthesis", "3:2", skinId)
+          const allSkinImages = await generateAllSkinImages(patternCards, "synthesis", "3:2")
           result.patterns = result.patterns.map((p: Record<string, unknown>, i: number) => ({
             ...p,
-            imageUrl: imageUrls[i] || undefined,
+            images: allSkinImages[i] || {},
           }))
         }
       } catch (err) {

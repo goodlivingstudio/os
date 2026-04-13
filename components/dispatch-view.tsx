@@ -28,7 +28,8 @@ interface Pitch {
   angle?: string
   urgency: string
   wordCount?: number
-  imageUrl?: string
+  imageUrl?: string    // legacy single-skin
+  images?: Record<string, string>  // per-skin images
   wildcard?: boolean
 }
 
@@ -44,7 +45,8 @@ interface DispatchData {
   weekSummary: string | null
   weekSummarySources?: CitationSource[]
   perspectives?: Perspective[]
-  headerImageUrl?: string
+  headerImageUrl?: string   // legacy single-skin
+  headerImages?: Record<string, string>  // per-skin hero images
   pitches: Pitch[]
   sparklines?: Record<string, { thisWeek: number[]; lastWeek: number[] } | number[]>
   articleCount?: number
@@ -324,10 +326,10 @@ const DISPATCH_STATUSES = [
 
 let _cachedDispatch: DispatchData | null = null
 
-const DISPATCH_CACHE_KEY = storageKey("dispatch-v2") // v2: includes images
+const DISPATCH_CACHE_KEY = storageKey("dispatch-v3") // v3: all-skin images
 const DISPATCH_TTL = 24 * 60 * 60 * 1000 // 24 hours
 
-export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) => void }) {
+export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: string) => void; skin?: string }) {
   // Try localStorage first, then module cache
   const initial = (() => {
     if (_cachedDispatch) return _cachedDispatch
@@ -750,7 +752,8 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
 
             {/* ─ BREATHER IMAGE — visual pause between data and editorial ─ */}
             {data.pitches && data.pitches.length > 0 && (() => {
-              const breakImage = data.pitches.find(p => p.imageUrl)?.imageUrl
+              const firstPitchWithImg = data.pitches.find(p => (skin && p.images?.[skin]) || p.imageUrl)
+              const breakImage = firstPitchWithImg ? ((skin && firstPitchWithImg.images?.[skin]) || firstPitchWithImg.imageUrl) : undefined
               return (
                 <div  style={{
                   position: "relative", width: "100%", paddingTop: `${(9 / 21) * 100}%`, overflow: "hidden",
@@ -797,10 +800,10 @@ export function DispatchView({ onDeliberate }: { onDeliberate: (text: string) =>
                       {/* Image thumbnail — left side (hidden on mobile) */}
                       <div className="pitch-thumb" style={{
                         width: 150, height: 100, overflow: "hidden", flexShrink: 0,
-                        background: pitch.imageUrl ? "transparent" : `linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)`,
+                        background: ((skin && pitch.images?.[skin]) || pitch.imageUrl) ? "transparent" : `linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%)`,
                       }}>
-                        {pitch.imageUrl && (
-                          <img src={pitch.imageUrl} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        {((skin && pitch.images?.[skin]) || pitch.imageUrl) && (
+                          <img src={(skin && pitch.images?.[skin]) || pitch.imageUrl} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                         )}
                       </div>
                       {/* Text content — right side */}
