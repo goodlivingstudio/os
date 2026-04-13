@@ -9,7 +9,6 @@
 
 /* Mineral — dark */
 :root {
-  --skin-tint:        #B8956A;
   --bg-primary:       #0E0D0B;
   --bg-surface:       #1A1815;
   --bg-elevated:      #252220;
@@ -327,11 +326,11 @@ html, body {
 }
 
 /* Mineral skin class — inherits from :root, exists so applyThemeClasses always works */
-:root.skin-mineral { --skin-tint: #B8956A; }
-:root.skin-mineral.day { --skin-tint: #8A7050; }
+:root.skin-mineral { }
+:root.skin-mineral.day { }
 
 /* ── Ink — sumi charcoal, vermillion red ──────────────────────────── */
-:root.skin-ink { --skin-tint: #C83028;
+:root.skin-ink {
   --bg-primary:       #0A0A0A;
   --bg-surface:       #151515;
   --bg-elevated:      #1E1E1E;
@@ -347,7 +346,7 @@ html, body {
   --synth-indicator:  #1E1818;
   --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.6), 0 0 0 1px rgba(200,48,40,0.06);
 }
-:root.skin-ink.day { --skin-tint: #A02020;
+:root.skin-ink.day {
   --bg-primary:       #FAFAFA;
   --bg-surface:       #F0F0EE;
   --bg-elevated:      #E6E4E2;
@@ -438,7 +437,7 @@ html, body {
 
 /* ── Cascadia — Pacific Northwest ────────────────────────────── */
 /* Moss-draped old growth, fern floor, temperate rainforest */
-:root.skin-cascadia { --skin-tint: #2D5A3D;
+:root.skin-cascadia {
   --bg-primary:       #0A120E;
   --bg-surface:       #121E17;
   --bg-elevated:      #1A2820;
@@ -454,7 +453,7 @@ html, body {
   --synth-indicator:  #1A2E22;
   --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(58,125,92,0.08);
 }
-:root.skin-cascadia.day { --skin-tint: #1E4030;
+:root.skin-cascadia.day {
   --bg-primary:       #E8F0EA;
   --bg-surface:       #D8E6DC;
   --bg-elevated:      #C8D8CE;
@@ -473,7 +472,7 @@ html, body {
 
 /* ── Mesa — American Southwest ───────────────────────────────── */
 /* Red rock, desert clay, turquoise sky at magic hour */
-:root.skin-mesa { --skin-tint: #8B4513;
+:root.skin-mesa {
   --bg-primary:       #150C0A;
   --bg-surface:       #221410;
   --bg-elevated:      #2E1C16;
@@ -489,7 +488,7 @@ html, body {
   --synth-indicator:  #2E1E14;
   --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,118,74,0.08);
 }
-:root.skin-mesa.day { --skin-tint: #6B3410;
+:root.skin-mesa.day {
   --bg-primary:       #FAF0E8;
   --bg-surface:       #F0E2D4;
   --bg-elevated:      #E6D4C4;
@@ -508,7 +507,7 @@ html, body {
 
 /* ── Marina — New England Coast ──────────────────────────────── */
 /* Granite harbor, slate water, lighthouse at November dusk */
-:root.skin-marina { --skin-tint: #4A6B7C;
+:root.skin-marina {
   --bg-primary:       #0A0E16;
   --bg-surface:       #121822;
   --bg-elevated:      #1A222E;
@@ -524,7 +523,7 @@ html, body {
   --synth-indicator:  #1A2436;
   --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(90,126,168,0.08);
 }
-:root.skin-marina.day { --skin-tint: #3A5565;
+:root.skin-marina.day {
   --bg-primary:       #EDF0F6;
   --bg-surface:       #DEE4EE;
   --bg-elevated:      #CED6E2;
@@ -543,7 +542,7 @@ html, body {
 
 /* ── Prairie — American Midwest ───────────────────────────────── */
 /* Wheat fields, open plains, golden hour on the Great Plains */
-:root.skin-prairie { --skin-tint: #C4A649;
+:root.skin-prairie {
   --bg-primary:       #0E0C08;
   --bg-surface:       #1A1810;
   --bg-elevated:      #24221A;
@@ -559,7 +558,7 @@ html, body {
   --synth-indicator:  #2A2414;
   --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(200,168,64,0.08);
 }
-:root.skin-prairie.day { --skin-tint: #9A8035;
+:root.skin-prairie.day {
   --bg-primary:       #FAF6E8;
   --bg-surface:       #F0EADC;
   --bg-elevated:      #E6DECC;
@@ -578,7 +577,7 @@ html, body {
 
 /* ── Bayou — Dirty South ─────────────────────────────────────── */
 /* Purple haze, double cup, chopped not slopped */
-:root.skin-bayou { --skin-tint: #6B4C8A;
+:root.skin-bayou {
   --bg-primary:       #0C0810;
   --bg-surface:       #16101E;
   --bg-elevated:      #201828;
@@ -594,7 +593,7 @@ html, body {
   --synth-indicator:  #221830;
   --shadow-tooltip:   0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(160,108,192,0.08);
 }
-:root.skin-bayou.day { --skin-tint: #523870;
+:root.skin-bayou.day {
   --bg-primary:       #F4EEF8;
   --bg-surface:       #E8DEF0;
   --bg-elevated:      #DCD0E4;
