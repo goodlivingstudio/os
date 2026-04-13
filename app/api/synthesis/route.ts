@@ -188,10 +188,21 @@ export async function POST(req: Request) {
     } catch {
       return Response.json({ briefing: null, patterns: [], blindSpotNote: null, message: "Request body required" })
     }
-    const { articles } = body
+    let { articles } = body
     const skinId = body.skin || instanceConfig.defaultTheme
+
+    // Self-sufficient: if no articles posted, load from article history
     if (!articles?.length) {
-      return Response.json({ briefing: null, patterns: [], blindSpotNote: null })
+      try {
+        const history = await loadArticleHistory(7)
+        if (history.length > 0) {
+          articles = history
+        } else {
+          return Response.json({ briefing: null, patterns: [], blindSpotNote: null })
+        }
+      } catch {
+        return Response.json({ briefing: null, patterns: [], blindSpotNote: null })
+      }
     }
 
     // Check KV cache first — skin-aware so each biome gets its own image set
