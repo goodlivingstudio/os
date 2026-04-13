@@ -326,7 +326,7 @@ const DISPATCH_STATUSES = [
 
 let _cachedDispatch: DispatchData | null = null
 
-const DISPATCH_CACHE_KEY = storageKey("dispatch-v4") // v4: background skin gen
+const DISPATCH_CACHE_KEY = storageKey("dispatch-v5") // v5: separate bg effect
 const DISPATCH_TTL = 24 * 60 * 60 * 1000 // 24 hours
 
 export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: string) => void; skin?: string }) {
@@ -402,49 +402,13 @@ export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: stri
     const weekParam = weekOffset !== 0 ? `?week=${getWeekId(weekOffset)}` : ""
     fetch(`/api/dispatch${weekParam}`)
       .then(r => r.json())
-      .then(async (d) => {
+      .then(d => {
         setData(d)
         if (weekOffset === 0) {
           _cachedDispatch = d
           try { localStorage.setItem(DISPATCH_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: d })) } catch { /* */ }
         }
         setLoading(false); clearInterval(t); clearInterval(timer)
-
-        // Generate remaining skins in background — one at a time
-        if (weekOffset === 0 && d.pitches?.length > 0) {
-          const defaultSkin = d.pitches[0]?.images ? Object.keys(d.pitches[0].images)[0] : null
-          const allSkins = instanceConfig.themes.map((th: { id: string }) => th.id)
-          const remaining = allSkins.filter((s: string) => s !== defaultSkin)
-          const heroTitle = d.weekSummary?.split(/[.!?]/)[0] || "Weekly pitch"
-          const pitchTitles = d.pitches.map((p: { title: string }) => p.title)
-
-          for (const skinId of remaining) {
-            try {
-              const res = await fetch("/api/generate-skin", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ skinId, titles: pitchTitles, heroTitle, surface: "dispatch" }),
-              })
-              const skinData = await res.json()
-              if (skinData.images) {
-                setData((prev: DispatchData | null) => {
-                  if (!prev) return prev
-                  const updated = { ...prev }
-                  if (skinData.images._hero) {
-                    updated.headerImages = { ...(updated.headerImages || {}), [skinId]: skinData.images._hero }
-                  }
-                  updated.pitches = (updated.pitches || []).map((p: Pitch) => ({
-                    ...p,
-                    images: { ...(p.images || {}), [skinId]: skinData.images[p.title] || undefined },
-                  }))
-                  _cachedDispatch = updated
-                  try { localStorage.setItem(DISPATCH_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: updated })) } catch { /* */ }
-                  return updated
-                })
-              }
-            } catch { /* skin gen failed — continue */ }
-          }
-        }
       })
       .catch(() => { setLoading(false); clearInterval(t); clearInterval(timer) })
     return () => { clearInterval(t); clearInterval(timer) }
