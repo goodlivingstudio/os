@@ -72,7 +72,7 @@ interface SynthesisData {
   heatmap?: { days: string[]; layers: HeatmapLayer[] }
 }
 
-const SYNTHESIS_CACHE_KEY = storageKey("synthesis-v5") // v5: background skin gen
+const SYNTHESIS_CACHE_KEY = storageKey("synthesis-v6") // v6: separate bg effect
 const SYNTHESIS_TTL = 24 * 60 * 60 * 1000 // 24 hours
 const SYNTHESIS_FETCH_TIMEOUT = 180_000 // 3 min — synthesis + image gen via Recraft V3
 

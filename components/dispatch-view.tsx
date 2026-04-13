@@ -326,7 +326,7 @@ const DISPATCH_STATUSES = [
 
 let _cachedDispatch: DispatchData | null = null
 
-const DISPATCH_CACHE_KEY = storageKey("dispatch-v4") // v4: background skin gen
+const DISPATCH_CACHE_KEY = storageKey("dispatch-v5") // v5: separate bg effect
 const DISPATCH_TTL = 24 * 60 * 60 * 1000 // 24 hours
 
 export function DispatchView({ onDeliberate, skin }: { onDeliberate: (text: string) => void; skin?: string }) {
