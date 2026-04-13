@@ -110,20 +110,6 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
 
   const synthCacheKey = SYNTHESIS_CACHE_KEY
 
-  // Load from localStorage on mount — independent of articles
-  useEffect(() => {
-    if (data) return // already have data
-    try {
-      const raw = localStorage.getItem(synthCacheKey)
-      if (raw) {
-        const { ts, data: cached } = JSON.parse(raw)
-        if (cached?.briefing) {
-          setData(cached)
-        }
-      }
-    } catch { /* */ }
-  }, [synthCacheKey]) // eslint-disable-line react-hooks/exhaustive-deps
-
   useEffect(() => {
     if (fetched.current) return
     fetched.current = true

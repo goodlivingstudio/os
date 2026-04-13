@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { ExternalLink, ArrowUpRight, ChevronUp, ChevronDown, Bookmark } from "lucide-react"
+import { ChevronUp, ChevronDown, Bookmark } from "lucide-react"
 import { TYPE, MONO, DISPLAY, metaStyle, labelStyle } from "@/lib/styles"
 import type { Article } from "@/lib/types"
 import instanceConfig, { storageKey, MOBILE_BREAKPOINT } from "@/lib/config"
@@ -418,11 +418,7 @@ function EpisodeCard({ episode, index, onClick, onSignalEnter, onSignalMove, onS
 
 const LAYER_FILTERS: { id: string; label: string }[] = [
   { id: "all", label: "All" },
-  { id: "opportunity", label: "Opportunity" },
-  { id: "position", label: "Position" },
-  { id: "discipline", label: "Discipline" },
-  { id: "landscape", label: "Landscape" },
-  { id: "culture", label: "Culture" },
+  ...instanceConfig.layers.map(l => ({ id: l.id, label: l.label })),
 ]
 
 export function AudioView({ onDeliberate, excludedSources, sortBy = "urgency", onSortChange, pinnedArticleIds, onPinArticle }: { onDeliberate?: (text: string) => void; excludedSources?: Set<string>; sortBy?: "urgency" | "layer"; onSortChange?: (mode: "urgency" | "layer") => void; pinnedArticleIds?: Set<string>; onPinArticle?: (article: Article) => void }) {
