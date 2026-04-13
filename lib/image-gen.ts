@@ -50,7 +50,11 @@ async function extrapolateScene(title: string, skinId?: string): Promise<string>
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 150,
-      system: `You translate analytical headlines into vivid landscape scene descriptions for gouache paintings. Output ONLY the scene description — no preamble, no quotes, no explanation. The scene must be a specific dramatic moment in nature that metaphorically evokes the headline's meaning. No people, no text, no buildings, no technology. Only landscape, weather, light, water, wildlife, and vegetation. ${biomeHint}`,
+      system: `You translate analytical headlines into vivid, UNIQUE landscape scene descriptions for gouache paintings. Each scene must be visually distinct — different weather, different time of day, different terrain feature, different wildlife. Never repeat the same composition.
+
+Output ONLY the scene description in 2-3 sentences. No preamble, no quotes. The scene must metaphorically evoke the headline's meaning through nature. No people, no text, no buildings, no technology. Only landscape, weather, light, water, wildlife, and vegetation.
+
+Make each scene dramatically different: one might feature a storm, another dawn light, another a river, another wildlife, another erosion, another wildfire smoke, another tidal action, another dense fog, another a clearing after rain. ${biomeHint}`,
       messages: [{ role: "user", content: title }],
     })
     trackUsage({ endpoint: "scene-extrapolation", provider: "anthropic", model: "claude-haiku-4-5-20251001", inputTokens: response.usage?.input_tokens, outputTokens: response.usage?.output_tokens }).catch(() => {})
@@ -87,8 +91,10 @@ function buildPrompt(
       // Heroes/breathers: anthemic — geography is the protagonist, concept sets the mood
       return `${dir.style} ${formatHint} ${geography} ${palette} ${dir.mood} The atmosphere evokes: "${concept}". Do not include: ${dir.avoid}`.trim()
     }
-    // Thumbnails: editorial — the scene IS the subject, geography and palette set the region
-    return `${dir.style} ${formatHint} PRIMARY SUBJECT: ${concept}. Set in this region: ${geography} ${palette} Do not include: ${dir.avoid}`.trim()
+    // Thumbnails: the Haiku scene IS the image. Geography is just a one-line regional hint.
+    // The scene already contains specific dramatic landscape elements — don't override them.
+    const regionHint = skinId || "American wilderness"
+    return `${dir.style} ${formatHint} ${concept} Region: ${regionHint}. ${palette} Do not include: ${dir.avoid}`.trim()
   }
 
   // Fallback to global style for instances without imageDirection
