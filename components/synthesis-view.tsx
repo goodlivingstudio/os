@@ -124,55 +124,40 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
     } catch { /* */ }
   }, [synthCacheKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Self-sufficient article fetching — don't depend on Signal tab
-  const [selfFetchedArticles, setSelfFetchedArticles] = useState<Article[]>([])
   useEffect(() => {
-    if (articles.length > 0 || selfFetchedArticles.length > 0) return
-    // No articles from parent — fetch our own
-    fetch("/api/news")
-      .then(r => r.json())
-      .then(d => {
-        if (d.articles?.length > 0) setSelfFetchedArticles(d.articles)
-      })
-      .catch(() => {})
-  }, [articles.length, selfFetchedArticles.length])
-
-  const effectiveArticles = articles.length > 0 ? articles : selfFetchedArticles
-
-  useEffect(() => {
-    if (effectiveArticles.length === 0 || fetched.current) return
-    const annotated = effectiveArticles.filter(a => a.synopsis || a.relevance)
-    if (annotated.length < 3) return
+    if (fetched.current) return
     fetched.current = true
 
-    // Check if localStorage cache is still fresh — skip fetch if so
-    let hasStale = false
+    // Check localStorage cache first
     try {
       const raw = localStorage.getItem(synthCacheKey)
       if (raw) {
         const { ts, data: cached } = JSON.parse(raw)
-        if (cached?.briefing) {
-          hasStale = true
-          if (Date.now() - ts < SYNTHESIS_TTL) return // fresh — skip fetch
+        if (cached?.briefing && Date.now() - ts < SYNTHESIS_TTL) {
+          setData(cached)
+          return // fresh cache — done
         }
+        if (cached?.briefing) setData(cached) // stale — show while refreshing
       }
     } catch { /* */ }
 
-    if (!hasStale) {
-      setLoading(true)
-      setStatusIdx(0)
-      setElapsed(0)
-    }
+    // Fetch from server — server loads its own articles if none provided
+    setLoading(true)
+    setStatusIdx(0)
+    setElapsed(0)
 
     const abort = new AbortController()
     const timeout = setTimeout(() => abort.abort(), SYNTHESIS_FETCH_TIMEOUT)
-    const t = !hasStale ? setInterval(() => setStatusIdx(i => Math.min(i + 1, SYNTHESIS_STATUSES.length - 1)), 1200) : undefined
-    const timer = !hasStale ? setInterval(() => setElapsed(e => e + 1), 1000) : undefined
+    const t = setInterval(() => setStatusIdx(i => Math.min(i + 1, SYNTHESIS_STATUSES.length - 1)), 1200)
+    const timer = setInterval(() => setElapsed(e => e + 1), 1000)
+
+    // Send articles if available from parent, otherwise server self-fetches
+    const annotated = articles.filter(a => a.synopsis || a.relevance).slice(0, 25)
 
     fetch("/api/synthesis", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ articles: annotated.slice(0, 25) }),
+      body: JSON.stringify(annotated.length > 0 ? { articles: annotated } : {}),
       signal: abort.signal,
     })
       .then(r => { clearTimeout(timeout); return r.json() })
@@ -180,26 +165,21 @@ export function SynthesisView({ articles, onDeliberate, sortBy = "layer", skin }
         if (result.briefing) {
           setData(result)
           try { localStorage.setItem(synthCacheKey, JSON.stringify({ ts: Date.now(), data: result })) } catch { /* */ }
-        } else if (!hasStale) {
-          fetched.current = false
+        } else {
+          fetched.current = false // allow retry
         }
         setLoading(false)
-        if (t) clearInterval(t)
-        if (timer) clearInterval(timer)
+        clearInterval(t); clearInterval(timer)
       })
-      .catch((err) => {
+      .catch(() => {
         clearTimeout(timeout)
-        if (err?.name === "AbortError" && !hasStale) {
-          // Timeout with no stale data — allow retry
-          fetched.current = false
-        }
+        fetched.current = false // allow retry
         setLoading(false)
-        if (t) clearInterval(t)
-        if (timer) clearInterval(timer)
+        clearInterval(t); clearInterval(timer)
       })
 
-    return () => { abort.abort(); clearTimeout(timeout); if (t) clearInterval(t); if (timer) clearInterval(timer) }
-  }, [effectiveArticles, retryCount, synthCacheKey]) // eslint-disable-line react-hooks/exhaustive-deps
+    return () => { abort.abort(); clearTimeout(timeout); clearInterval(t); clearInterval(timer) }
+  }, [retryCount]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Week range for header
   const weekRange = (() => {
