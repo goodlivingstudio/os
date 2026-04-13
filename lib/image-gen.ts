@@ -229,3 +229,82 @@ export async function generateCardImages(
 
   return results
 }
+
+// Generate images for ALL skins — returns { skinId: dataUri } map per card
+// Used when pre-generating biome variants for theme switching
+export async function generateAllSkinImages(
+  cards: { title: string; layers?: string[] }[],
+  surface: Surface = "synthesis",
+  aspect: AspectRatio = "3:2",
+): Promise<Record<string, string | undefined>[]> {
+  const skinIds = instanceConfig.themes.map(t => t.id)
+  // Pre-run scene extrapolation once per title (same scene, different geography)
+  const scenes: string[] = []
+  if (aspect === "3:2") {
+    for (const card of cards) {
+      scenes.push(await extrapolateScene(card.title))
+    }
+  }
+
+  const results: Record<string, string | undefined>[] = cards.map(() => ({}))
+
+  for (const skinId of skinIds) {
+    for (let i = 0; i < cards.length; i++) {
+      // For thumbnails, use pre-extrapolated scene but build prompt with skin-specific geography
+      const concept = aspect === "3:2" ? scenes[i] : cards[i].title
+      const prompt = buildPrompt(surface, concept, cards[i].layers, aspect, skinId)
+      const cacheKey = imageCacheKey(cards[i].title, surface, aspect, skinId)
+
+      // Check content-addressable cache first
+      const cached = await getCachedImage(cacheKey)
+      if (cached) {
+        results[i][skinId] = cached
+        continue
+      }
+
+      // Generate fresh
+      const token = process.env.REPLICATE_API_TOKEN
+      if (!token) continue
+
+      try {
+        let submitRes: Response | null = null
+        for (let retry = 0; retry < 3; retry++) {
+          submitRes = await fetch(`${REPLICATE_API}/models/${REPLICATE_MODEL}/predictions`, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ input: { prompt, size: aspect === "21:9" ? "1536x1024" : "1365x1024" } }),
+          })
+          if (submitRes.ok) break
+          if (submitRes.status === 429) { await new Promise(r => setTimeout(r, (retry + 1) * 5000)); continue }
+          break
+        }
+        if (!submitRes?.ok) continue
+        const prediction = await submitRes.json()
+        if (!prediction.id) continue
+
+        for (let attempt = 0; attempt < 20; attempt++) {
+          await new Promise(r => setTimeout(r, 3000))
+          const pollRes = await fetch(`${REPLICATE_API}/predictions/${prediction.id}`, { headers: { "Authorization": `Bearer ${token}` } })
+          if (!pollRes.ok) continue
+          const result = await pollRes.json()
+          const outputUrl = Array.isArray(result.output) ? result.output[0] : result.output
+          if (result.status === "succeeded" && outputUrl) {
+            trackUsage({ endpoint: "image-gen", provider: "replicate", model: "recraft-v3", imageCount: 1 }).catch(() => {})
+            const dataUri = await downloadAsDataUri(outputUrl)
+            if (dataUri) {
+              setCachedImage(cacheKey, dataUri).catch(() => {})
+              results[i][skinId] = dataUri
+            }
+            break
+          }
+          if (result.status === "failed" || result.status === "canceled") break
+        }
+      } catch { /* continue to next */ }
+
+      // Rate limit pause between generations
+      await new Promise(r => setTimeout(r, 2000))
+    }
+  }
+
+  return results
+}

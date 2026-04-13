@@ -1337,7 +1337,7 @@ export default function Page() {
           : viewMode === "pulse"
           ? <SourcePulseView articles={articles} feedHealth={feedHealth} fetchedAt={fetchedAt} />
           : viewMode === "dispatch"
-          ? <DispatchView onDeliberate={handleSynthesisDeliberate} />
+          ? <DispatchView onDeliberate={handleSynthesisDeliberate} skin={skin} />
           : viewMode === "synthesis"
           ? <SynthesisView articles={articles} onDeliberate={handleSynthesisDeliberate} sortBy={sortBy} skin={skin} />
           : viewMode === "audio"
